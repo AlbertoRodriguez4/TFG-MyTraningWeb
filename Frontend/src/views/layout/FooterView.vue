@@ -34,7 +34,7 @@
           <div class="brand-section">
             <div class="logo-wrapper">
               <div class="logo-glow-ring"></div>
-              <img src="../assets/imgs/Logo.png" alt="Logo" class="footer-logo" />
+              <img src="@/assets/imgs/Logo.png" alt="Logo" class="footer-logo" />
             </div>
             <h3 class="brand-name">The Training Hub</h3>
             <p class="brand-tagline">🎮 Level Up Your Fitness Journey</p>
@@ -141,22 +141,22 @@
           <div class="social-grid">
             <a href="#" class="social-card twitter" aria-label="Twitter">
               <div class="social-bg"></div>
-              <img src="../assets/imgs/twitter.png" alt="Twitter" class="social-icon" />
+              <img src="@/assets/imgs/twitter.png" alt="Twitter" class="social-icon" />
               <span class="social-name">Twitter</span>
             </a>
             <a href="#" class="social-card facebook" aria-label="Facebook">
               <div class="social-bg"></div>
-              <img src="../assets/imgs/facebook.png" alt="Facebook" class="social-icon" />
+              <img src="@/assets/imgs/facebook.png" alt="Facebook" class="social-icon" />
               <span class="social-name">Facebook</span>
             </a>
             <a href="#" class="social-card instagram" aria-label="Instagram">
               <div class="social-bg"></div>
-              <img src="../assets/imgs/instagram.png" alt="Instagram" class="social-icon" />
+              <img src="@/assets/imgs/instagram.png" alt="Instagram" class="social-icon" />
               <span class="social-name">Instagram</span>
             </a>
             <a href="#" class="social-card tiktok" aria-label="TikTok">
               <div class="social-bg"></div>
-              <img src="../assets/imgs/tik-tok.png" alt="TikTok" class="social-icon" />
+              <img src="@/assets/imgs/tik-tok.png" alt="TikTok" class="social-icon" />
               <span class="social-name">TikTok</span>
             </a>
           </div>

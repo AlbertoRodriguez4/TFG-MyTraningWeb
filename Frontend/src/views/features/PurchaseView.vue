@@ -58,7 +58,7 @@ watchEffect(() => {
 <style scoped>
 .shop-main {
   min-height: 100vh;
-  background-image: url('../assets/imgs/gimansio-fondo.jpg');
+  background-image: url('@/assets/imgs/gimansio-fondo.jpg');
   background-size: cover;
   background-position: center;
   background-attachment: fixed;

@@ -129,6 +129,11 @@ namespace AA2_CS.Repository
                 .ToList();
         }
 
+        public User? FindByEmail(string email)
+        {
+            return _context.Users.FirstOrDefault(u => u.email.ToLower() == email.ToLower());
+        }
+
         public User Login(string email, string plainPassword)
         {
             var user = _context.Users

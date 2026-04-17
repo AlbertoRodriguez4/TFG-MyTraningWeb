@@ -19,7 +19,7 @@ export const usePlanStore = defineStore('plan', () => {
             const data = await response.json()
             plan.value = data.map((d: any) => ({
                 id: d.id,
-                userId: d.userId,
+                userId: d.userId ?? d.userid,
                 description: d.description
             }))
         } catch (error) {

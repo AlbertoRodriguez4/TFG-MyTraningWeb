@@ -41,7 +41,7 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
-  async function registerUser(newUser: User): Promise<{ success: boolean; userId?: number; emailSent?: boolean }> {
+  async function registerUser(newUser: User): Promise<{ success: boolean; userId?: number; emailSent?: boolean; email?: string }> {
     try {
       const response = await fetch(`${BASE_URL}/api/auth/register`, {
         method: "POST",
@@ -57,7 +57,8 @@ export const useUserStore = defineStore('user', () => {
       return {
         success: true,
         userId: data.userId,
-        emailSent: data.emailSent !== false
+        emailSent: data.emailSent !== false,
+        email: data.email
       };
     } catch (error) {
       logger.error("Error registering user:", error);
@@ -65,17 +66,15 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
-  async function verifyEmail(code: string): Promise<boolean> {
+  async function verifyEmail(email: string, code: string): Promise<boolean> {
     try {
-      const token = localStorage.getItem('token');
       const response = await fetch(`${BASE_URL}/api/auth/verify-email`, {
         method: "POST",
         mode: "cors",
         headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
+          "Content-Type": "application/json"
         },
-        body: JSON.stringify({ code })
+        body: JSON.stringify({ email, code })
       });
 
       if (!response.ok) return false;
@@ -87,16 +86,15 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
-  async function resendVerificationCode(): Promise<boolean> {
+  async function resendVerificationCode(email: string): Promise<boolean> {
     try {
-      const token = localStorage.getItem('token');
       const response = await fetch(`${BASE_URL}/api/auth/resend-verification`, {
         method: "POST",
         mode: "cors",
         headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        }
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ email })
       });
 
       if (!response.ok) return false;
@@ -137,7 +135,7 @@ export const useUserStore = defineStore('user', () => {
         id: Number(decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"]),
         name: decoded.name,
         email: decoded.email,
-        passwordhash: decoded.passwordhash,
+        passwordhash: '',
         role: decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"],
         level: Number(decoded.level),
         strength: Number(decoded.strength),
@@ -210,7 +208,7 @@ export const useUserStore = defineStore('user', () => {
     }
   }, 5 * 60 * 1000); // 5 minutos
 
-  async function loginUser(email: string, password: string): Promise<boolean> {
+  async function loginUser(email: string, password: string): Promise<{ success: boolean; requiresEmailVerification?: boolean; message?: string }> {
     try {
       const response = await fetch(`${BASE_URL}/api/auth/login`, {
         method: "POST",
@@ -219,7 +217,18 @@ export const useUserStore = defineStore('user', () => {
         body: JSON.stringify({ email, password })
       });
 
-      if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+      if (response.status === 403) {
+        const data = await response.json();
+        return {
+          success: false,
+          requiresEmailVerification: true,
+          message: data?.message || 'Debes verificar tu email antes de iniciar sesión.'
+        };
+      }
+
+      if (!response.ok) {
+        return { success: false, message: `HTTP error! Status: ${response.status}` };
+      }
 
       const data = await response.json();
       const token = data.token;
@@ -231,7 +240,7 @@ export const useUserStore = defineStore('user', () => {
         id: Number(decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"]),
         name: decoded.name,
         email: decoded.email,
-        passwordhash: decoded.passwordhash,
+        passwordhash: '',
         role: decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"],
         level: Number(decoded.level),
         strength: Number(decoded.strength),
@@ -246,10 +255,10 @@ export const useUserStore = defineStore('user', () => {
         avatarUrl: decoded.avatarUrl && decoded.avatarUrl !== "" ? decoded.avatarUrl : null
       };
 
-      return true;
+      return { success: true };
     } catch (error) {
       logger.error("Login failed:", error);
-      return false;
+      return { success: false, message: 'Error inesperado al iniciar sesión.' };
     }
   }
 

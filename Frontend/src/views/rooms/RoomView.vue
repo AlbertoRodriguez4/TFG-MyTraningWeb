@@ -2,6 +2,7 @@
 import { useRoomStore } from '@/stores/RoomStore';
 import { useUserRoomStore } from '@/stores/UsersRoomStore';
 import { useUserStore } from '@/stores/userStore';
+import { logger } from '@/utils/logger';
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 import RoomRender from '../../components/Renders/RoomRender.vue';
 
@@ -199,7 +200,7 @@ async function calculateStats() {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url('../assets/imgs/gimansio-fondo.jpg');
+  background-image: url('@/assets/imgs/gimansio-fondo.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

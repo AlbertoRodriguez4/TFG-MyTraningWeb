@@ -69,7 +69,7 @@ namespace AA2_CS.JWT
                 new Claim(ClaimTypes.Role, user.role),
                 new Claim("email", user.email),
                 new Claim("name", user.name),
-                new Claim("passwordhash", user.passwordhash), 
+                new Claim("emailVerified", user.isEmailVerified ? "true" : "false"),
                 
                 new Claim("level", user.level.ToString()),
                 
@@ -94,7 +94,8 @@ namespace AA2_CS.JWT
                 new Claim("avatarUrl", user.avatarUrl ?? "") 
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JwtSettings:Key"]));
+            var signingKey = _config["JwtSettings:Key"] ?? throw new InvalidOperationException("Falta JwtSettings:Key.");
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signingKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(

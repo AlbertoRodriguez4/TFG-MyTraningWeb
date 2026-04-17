@@ -50,11 +50,14 @@ export const useRoomStore = defineStore('room', () => {
 
             const data = await response.json();
             room.value = data.map((d: any) => ({
-                id: d.room.id,
-                name: d.room.name,
-                minlevel: d.room.minlevel,
-                minstats: d.room.minstats,
-                minconsistency: d.room.minconsistency
+                id: d.id ?? d.room?.id,
+                name: d.name ?? d.room?.name,
+                minlevel: d.minlevel ?? d.room?.minlevel,
+                minstats: d.minstats ?? d.room?.minstats,
+                minconsistency: d.minconsistency ?? d.room?.minconsistency,
+                description: d.description ?? d.room?.description ?? '',
+                date: d.date ?? d.room?.date ?? '',
+                localization: d.localization ?? d.room?.localization ?? ''
             }));
         } catch (error) {
             logger.error("Error fetching sorted rooms:", error);
@@ -82,10 +85,10 @@ export const useRoomStore = defineStore('room', () => {
 
             const data = await response.json();
 
-            const createdRoom = {
-                id: data,
+            const createdRoom: Room = {
+                id: data.roomId ?? data.id ?? data,
                 ...newRoom,
-                users: []
+                localization: ''
             };
 
             room.value.push(createdRoom);

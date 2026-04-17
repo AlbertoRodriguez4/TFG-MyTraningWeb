@@ -2,6 +2,7 @@ using AA2_CS.Model;
 using AA2_CS.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace AA2_CS.Controllers
 {
@@ -24,6 +25,13 @@ namespace AA2_CS.Controllers
         {
             try
             {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (!int.TryParse(userIdClaim, out var currentUserId))
+                {
+                    return Unauthorized("Token inválido.");
+                }
+
+                request.userid = currentUserId;
                 // request.room ya trae description y date automáticamente del JSON
                 var roomId = _roomService.CreateRoomWithUser(request.room, request.userid);
 
@@ -50,7 +58,7 @@ namespace AA2_CS.Controllers
         }
 
         [HttpPut("{id}")]
-        // [Authorize(Roles = Roles.userStaff)] // Descomenta si usas roles
+        [Authorize(Roles = "userStaff,userMaster")]
         public IActionResult UpdateRoom(int id, [FromBody] Room room)
         {
             try
@@ -69,7 +77,7 @@ namespace AA2_CS.Controllers
         }
 
         [HttpDelete("{id}")]
-        // [Authorize(Roles = Roles.userStaff)]
+        [Authorize(Roles = "userStaff,userMaster")]
         public IActionResult DeleteRoom(int id)
         {
             try

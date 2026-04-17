@@ -18,7 +18,7 @@ namespace AA2_CS.Controllers
 
 
         [HttpPost]
-        // [Authorize]
+        [Authorize(Roles = Roles.userMaster)]
         public IActionResult AddUser([FromBody] User user)
         {
             try
@@ -36,8 +36,6 @@ namespace AA2_CS.Controllers
         [Authorize] 
             public async Task<ActionResult<User>> UpdateUser(int id, User user)
         {
-            Console.WriteLine($"Received update request for user ID: {id}");
-            Console.WriteLine($"User data: {System.Text.Json.JsonSerializer.Serialize(user)}");
             try
             {
                 var currentUserIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -86,7 +84,6 @@ namespace AA2_CS.Controllers
         {
             try
             {
-                Console.WriteLine("hola");
                 var users = _userService.FindAll();
                 return Ok(users);
             }
@@ -102,6 +99,16 @@ namespace AA2_CS.Controllers
         {
             try
             {
+                var currentUserIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                var currentUserRole = User.FindFirst(ClaimTypes.Role)?.Value;
+                bool isSelf = currentUserIdClaim == id.ToString();
+                bool isAdmin = currentUserRole == Roles.userMaster;
+
+                if (!isSelf && !isAdmin)
+                {
+                    return Forbid();
+                }
+
                 var user = _userService.FindById(id);
                 return user != null ? Ok(user) : NotFound();
             }
@@ -141,8 +148,19 @@ namespace AA2_CS.Controllers
             }
         }
         [HttpPost("equip/{userId}/{itemId}")]
+        [Authorize]
         public IActionResult EquipItem(int userId, int itemId)
         {
+            var currentUserIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var currentUserRole = User.FindFirst(ClaimTypes.Role)?.Value;
+            bool isSelf = currentUserIdClaim == userId.ToString();
+            bool isAdmin = currentUserRole == Roles.userMaster;
+
+            if (!isSelf && !isAdmin)
+            {
+                return Forbid();
+            }
+
             var result = _userService.EquipItem(userId, itemId);
             if (result.Contains("not found") || result.Contains("No posees"))
                 return BadRequest(result);
@@ -151,8 +169,19 @@ namespace AA2_CS.Controllers
         }
 
         [HttpPost("unequip/{userId}/{type}")]
+        [Authorize]
         public IActionResult UnequipItem(int userId, string type)
         {
+            var currentUserIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var currentUserRole = User.FindFirst(ClaimTypes.Role)?.Value;
+            bool isSelf = currentUserIdClaim == userId.ToString();
+            bool isAdmin = currentUserRole == Roles.userMaster;
+
+            if (!isSelf && !isAdmin)
+            {
+                return Forbid();
+            }
+
             var result = _userService.UnequipItem(userId, type);
             return Ok(result);
         }

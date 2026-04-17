@@ -64,6 +64,10 @@ const positionConfig = {
 
 const config = positionConfig[props.position]
 const isGold = props.position === 1
+const ringClass = config.ringClass
+const cardClass = config.cardClass
+const pedestalClass = config.pedestalClass
+const badgeText = config.badgeText
 
 const getEquipItem = () => {
   return props.user.equippedStrengthItem || props.user.equippedEnduranceItem

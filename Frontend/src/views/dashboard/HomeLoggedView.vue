@@ -125,7 +125,7 @@ function scrollToTop() {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url('../assets/imgs/gimansio-fondo.jpg');
+  background-image: url('@/assets/imgs/gimansio-fondo.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

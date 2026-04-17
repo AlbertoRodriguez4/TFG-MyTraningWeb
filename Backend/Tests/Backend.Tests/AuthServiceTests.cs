@@ -71,7 +71,8 @@ public class AuthServiceTests
             name = "User Login",
             email = "login@test.com",
             passwordhash = "123456",
-            role = Roles.userNormal
+            role = Roles.userNormal,
+            isEmailVerified = true
         });
 
         var token = authService.Login("login@test.com", "123456");

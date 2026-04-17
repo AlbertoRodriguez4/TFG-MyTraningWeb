@@ -1,9 +1,7 @@
-using AA2_CS.Model;
 using AA2_CS.Service;
 using Microsoft.EntityFrameworkCore;
 using AA2_CS.Database;
 using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using AA2_CS.JWT;
 using AA2_CS.Services;
@@ -16,20 +14,30 @@ Environment.SetEnvironmentVariable("ASPNETCORE_URLS", "http://+:6873");
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend",
-        policy => policy.WithOrigins("http://localhost:5173") // Actualiza el puerto del frontend
+        policy => policy.WithOrigins("http://localhost:5173", "http://127.0.0.1:5173")
                         .AllowAnyHeader()
                         .AllowAnyMethod()
-                        .AllowCredentials()); // Permitir cookies/autenticación si es necesario
+                        .AllowCredentials());
 });
 
-// Agregar servicios a la contenedor
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+if (string.IsNullOrWhiteSpace(connectionString))
+{
+    throw new InvalidOperationException("Falta ConnectionStrings:DefaultConnection en la configuración.");
+}
+
+var jwtKey = builder.Configuration["JwtSettings:Key"];
+if (string.IsNullOrWhiteSpace(jwtKey))
+{
+    throw new InvalidOperationException("Falta JwtSettings:Key en la configuración.");
+}
+
+// Agregar servicios al contenedor
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddControllers();  // Asegúrate de agregar esto para registrar los controladores
+builder.Services.AddControllers();
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql("Host=localhost;Port=3786;Database=postgres;Username=postgres;Password=password")); // Para conexión con PostgreSQL, cambiado "postgres" a "localhost" y el puerto, de 5432 a 3786
-
-
+    options.UseNpgsql(connectionString));
 
 // Registrar los servicios específicos
 builder.Services.AddScoped<UserService>();
@@ -58,6 +66,10 @@ builder.Services.AddScoped<NotificationPreferenceRepository, NotificationPrefere
 builder.Services.AddScoped<NotificationPreferenceService, NotificationPreferenceService>();
 builder.Services.AddScoped<NotificationService, NotificationService>();
 builder.Services.AddHostedService<NotificationBackgroundService>();
+builder.Services.AddHttpClient<CoachAIService>(client =>
+{
+    client.Timeout = TimeSpan.FromSeconds(60);
+});
 
 // Configuración de JWT para autenticación
 builder.Services.AddAuthentication("Bearer")
@@ -68,11 +80,12 @@ builder.Services.AddAuthentication("Bearer")
         {
             ValidateIssuer = true, //verificar que el issuer sea válido
             ValidateAudience = true, //verificar que el audience sea valido
-            ValidateLifetime = false, //verificar que el token no haya expirado
+            ValidateLifetime = true, //verificar que el token no haya expirado
             ValidateIssuerSigningKey = true, //verificar la clave de firma sea válida
             ValidIssuer = config["JwtSettings:Issuer"], //el emisor que se espera (The Training Hub)
             ValidAudience = config["JwtSettings:Audience"], //la audiencia que se espera (The Training Hub Users)
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JwtSettings:Key"])) //clave secreta usada para validar la firma del token
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
+            ClockSkew = TimeSpan.FromMinutes(1)
         };
     });
 
@@ -104,3 +117,4 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+

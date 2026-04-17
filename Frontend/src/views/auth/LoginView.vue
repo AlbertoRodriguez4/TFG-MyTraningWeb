@@ -16,7 +16,7 @@ const rememberMe = ref(false)
 
 const store = useUserStore()
 const router = useRouter()
-const { validateEmail, validatePassword, clearErrors } = useAuthValidation()
+const { validateEmail, validatePassword, clearErrors, errors } = useAuthValidation()
 
 // Snackbar
 const snackbar = ref(false)
@@ -78,12 +78,17 @@ async function handleLogin() {
   try {
     const loginResult = await store.loginUser(emailTrimmed, passwordTrimmed)
 
-    if (loginResult && store.loggedUser?.email === emailTrimmed) {
+    if (loginResult.success && store.loggedUser?.email === emailTrimmed) {
       // Guardar o limpiar el email según la preferencia ANTES de redirigir
       applyRememberMe(emailTrimmed)
 
       showSnackbar('¡Bienvenido de vuelta, entrenador!', 'success')
       setTimeout(() => { router.push('/homeLogged') }, 1500)
+    } else if (loginResult.requiresEmailVerification) {
+      showSnackbar(loginResult.message || 'Debes verificar tu correo antes de iniciar sesión.', 'warning')
+      setTimeout(() => {
+        router.push({ name: 'verifyEmail', query: { email: emailTrimmed } })
+      }, 1200)
     } else {
       errorMessage.value = 'Usuario o contraseña incorrectos.'
       showSnackbar('Usuario o contraseña incorrectos. Verifica tus credenciales.', 'error')

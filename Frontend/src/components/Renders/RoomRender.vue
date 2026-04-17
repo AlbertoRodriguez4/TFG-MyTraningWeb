@@ -101,11 +101,11 @@ function isJoined(roomId: number) {
 
 // Comprueba si el usuario cumple los requisitos mínimos de la sala
 function canJoin(room: { minlevel: number; minstats: number; minconsistency: number }) {
-  const u = loggedUser.value as any
+  const u = loggedUser.value
   if (!u) return false
-  const level       = u.level       ?? u.nivelUsuario  ?? 0
-  const stats       = u.stats       ?? u.statsUsuario  ?? 0
-  const consistency = u.consistency ?? u.consistencia  ?? 0
+  const level = u.level ?? 0
+  const stats = (u.strength ?? 0) + (u.endurance ?? 0)
+  const consistency = u.consistencyStreak ?? 0
   return level >= room.minlevel && stats >= room.minstats && consistency >= room.minconsistency
 }
 

@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/userStore'
 import { logger } from '@/utils/logger'
 
 const router = useRouter()
+const route = useRoute()
 const store = useUserStore()
 
 const verificationCode = ref('')
+const verificationEmail = ref('')
 const errorMessage = ref('')
 const successMessage = ref('')
 const isLoading = ref(false)
@@ -28,7 +30,8 @@ const showSnackbar = (message: string, color: string = 'error') => {
   snackbar.value = true
 }
 
-const formatCode = (value: string) => {
+const formatCode = (event: Event) => {
+  const value = (event.target as HTMLInputElement | null)?.value || ''
   // Solo permitir números y limitar a 6 dígitos
   const numeric = value.replace(/[^0-9]/g, '')
   if (numeric.length <= 6) {
@@ -46,20 +49,27 @@ const verifyEmail = async () => {
     return
   }
 
+  if (!verificationEmail.value) {
+    errorMessage.value = 'No se encontró el email para verificar'
+    showSnackbar('No se encontró el email de verificación.', 'error')
+    return
+  }
+
   isLoading.value = true
 
   try {
-    const result = await store.verifyEmail(verificationCode.value)
+    const result = await store.verifyEmail(verificationEmail.value, verificationCode.value)
 
     if (result) {
       successMessage.value = '¡Email verificado correctamente!'
       showSnackbar('¡Email verificado! Redirigiendo...', 'success')
 
-      // Actualizar el usuario logueado
-      await store.refreshLoggedUser()
+      if (store.loggedUser) {
+        await store.refreshLoggedUser()
+      }
 
       setTimeout(() => {
-        router.push({ name: 'homeLogged' })
+        router.push({ name: store.loggedUser ? 'homeLogged' : 'login' })
       }, 1500)
     } else {
       errorMessage.value = 'Código inválido o expirado'
@@ -81,7 +91,13 @@ const resendCode = async () => {
   errorMessage.value = ''
 
   try {
-    const result = await store.resendVerificationCode()
+    if (!verificationEmail.value) {
+      errorMessage.value = 'No se encontró el email para reenviar el código'
+      showSnackbar('No se encontró el email de verificación.', 'error')
+      return
+    }
+
+    const result = await store.resendVerificationCode(verificationEmail.value)
 
     if (result) {
       successMessage.value = 'Se ha reenviado el código a tu correo'
@@ -117,16 +133,19 @@ const startCountdown = () => {
 }
 
 onMounted(() => {
-  // Verificar que el usuario esté logueado
-  if (!store.loggedUser) {
-    showSnackbar('Debes iniciar sesión para verificar tu email', 'warning')
+  const emailFromQuery = typeof route.query.email === 'string' ? route.query.email.trim() : ''
+  verificationEmail.value = emailFromQuery || store.loggedUser?.email || ''
+
+  if (!verificationEmail.value) {
+    showSnackbar('Debes indicar un email para verificar tu cuenta', 'warning')
     setTimeout(() => {
       router.push({ name: 'login' })
     }, 1500)
+    return
   }
 
   // Si ya está verificado, redirigir
-  if (store.loggedUser && (store.loggedUser as any).isEmailVerified) {
+  if (store.loggedUser && (store.loggedUser as any).isEmailVerified && store.loggedUser.email === verificationEmail.value) {
     showSnackbar('Tu email ya está verificado', 'success')
     setTimeout(() => {
       router.push({ name: 'homeLogged' })
@@ -171,7 +190,7 @@ onBeforeUnmount(() => {
           <h2 class="verify-title">Verifica tu Email</h2>
           <p class="verify-subtitle">
             Hemos enviado un código de 6 dígitos a
-            <span class="email-highlight">{{ store.loggedUser?.email }}</span>
+            <span class="email-highlight">{{ verificationEmail }}</span>
           </p>
         </div>
 

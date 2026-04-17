@@ -4,8 +4,10 @@ using AA2_CS.Model;
 using AA2_CS.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class TaskController : ControllerBase
 {
     private readonly TasksService _tasksService;
@@ -20,6 +22,12 @@ public class TaskController : ControllerBase
     {
         try
         {
+            if (!TryGetCurrentUserId(out var userId))
+            {
+                return Unauthorized("Token inválido.");
+            }
+
+            task.userId = userId;
             var result = _tasksService.Add(task);
             return result > 0 ? Ok(task) : BadRequest("Failed to add task");
         }
@@ -29,12 +37,28 @@ public class TaskController : ControllerBase
         }
     }
     [HttpPut("{id}")]
-    public IActionResult UpdateTask([FromBody] Task updatedTask)
+    public IActionResult UpdateTask(int id, [FromBody] Task updatedTask)
     {
         try
         {
+            if (id != updatedTask.id)
+            {
+                return BadRequest("Task ID mismatch.");
+            }
+
+            var existingTask = _tasksService.FindById(id);
+            if (existingTask == null)
+            {
+                return NotFound($"Task with ID {id} not found");
+            }
+
+            if (!CanAccessUserResource(existingTask.userId))
+            {
+                return Forbid();
+            }
+
             var result = _tasksService.Update(updatedTask);
-            if (result == null)
+            if (result == 0)
             {
                 return NotFound($"Task with ID {updatedTask.id} not found");
             }
@@ -48,6 +72,11 @@ public class TaskController : ControllerBase
     [HttpGet]
     public IActionResult GetAllTasks()
     {
+        if (!IsAdmin())
+        {
+            return Forbid();
+        }
+
         try
         {
             var tasks = _tasksService.FindAll();
@@ -61,6 +90,11 @@ public class TaskController : ControllerBase
     [HttpGet("user/{userId}")]
     public IActionResult GetTasksByUserId(int userId)
     {
+        if (!CanAccessUserResource(userId))
+        {
+            return Forbid();
+        }
+
         try
         {
             var tasks = _tasksService.FindByUserId(userId);
@@ -81,6 +115,12 @@ public class TaskController : ControllerBase
             {
                 return NotFound($"Task with ID {id} not found");
             }
+
+            if (!CanAccessUserResource(task.userId))
+            {
+                return Forbid();
+            }
+
             return Ok(task);
         }
         catch (Exception ex)
@@ -98,6 +138,12 @@ public class TaskController : ControllerBase
             {
                 return NotFound($"Task with ID {id} not found");
             }
+
+            if (!CanAccessUserResource(task.userId))
+            {
+                return Forbid();
+            }
+
             var result = _tasksService.Delete(task);
             return result > 0 ? Ok($"Task with ID {id} deleted successfully") : BadRequest("Failed to delete task");
         }
@@ -111,6 +157,17 @@ public class TaskController : ControllerBase
     {
         try
         {
+            var task = _tasksService.FindById(taskId);
+            if (task == null)
+            {
+                return NotFound("Task not found");
+            }
+
+            if (!CanAccessUserResource(task.userId))
+            {
+                return Forbid();
+            }
+
             var result = _tasksService.CompleteTask(taskId);
             if (result == "Task not found")
             {
@@ -126,5 +183,26 @@ public class TaskController : ControllerBase
         {
             return StatusCode(500, $"Internal server error: {ex.Message}");
         }
+    }
+
+    private bool TryGetCurrentUserId(out int userId)
+    {
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        return int.TryParse(userIdClaim, out userId);
+    }
+
+    private bool IsAdmin()
+    {
+        return User.FindFirst(ClaimTypes.Role)?.Value == Roles.userMaster;
+    }
+
+    private bool CanAccessUserResource(int userId)
+    {
+        if (!TryGetCurrentUserId(out var currentUserId))
+        {
+            return false;
+        }
+
+        return currentUserId == userId || IsAdmin();
     }
 }

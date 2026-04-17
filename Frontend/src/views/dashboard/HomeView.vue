@@ -304,7 +304,7 @@ function changePage(page: number) {
                     <div class="phone-frame">
                       <div class="phone-notch"></div>
                       <div class="phone-screen">
-                        <v-img src="../assets/imgs/People.png" alt="TheTrainingHub App" class="phone-content" cover />
+                        <v-img src="@/assets/imgs/People.png" alt="TheTrainingHub App" class="phone-content" cover />
                         <!-- Overlay con brillo dinámico -->
                         <div class="screen-shine"></div>
                       </div>

@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using AA2_CS.Model;
 using AA2_CS.Service;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 using System;
 using System.Threading.Tasks;
 
@@ -8,6 +10,7 @@ namespace AA2_CS.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UserRoomController : ControllerBase
     {
         private readonly UserRoomService _userRoomService;
@@ -25,6 +28,11 @@ namespace AA2_CS.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
+            if (!IsAdmin())
+            {
+                return Forbid();
+            }
+
             try
             {
                 var result = _userRoomService.GetAll();
@@ -41,6 +49,11 @@ namespace AA2_CS.Controllers
         [HttpGet("user/{userId}")]
         public IActionResult GetByUserId(int userId)
         {
+            if (!CanAccessUserResource(userId))
+            {
+                return Forbid();
+            }
+
             try
             {
                 var result = _userRoomService.FindByUserId(userId);
@@ -75,6 +88,11 @@ namespace AA2_CS.Controllers
         {
             try
             {
+                if (!CanAccessUserResource(userRoom.userid))
+                {
+                    return Forbid();
+                }
+
                 // Opcional: Validar si la relación ya existe antes de agregar
                 var existing = _userRoomService.FindByCompositeKey(userRoom.userid, userRoom.roomid);
                 if (existing != null)
@@ -120,6 +138,11 @@ namespace AA2_CS.Controllers
         {
             try
             {
+                if (!CanAccessUserResource(userId))
+                {
+                    return Forbid();
+                }
+
                 // Validar que los IDs de la URL coincidan con el cuerpo (opcional, pero recomendado)
                 if (userId != updatedUserRoom.userid || roomId != updatedUserRoom.roomid)
                 {
@@ -147,6 +170,11 @@ namespace AA2_CS.Controllers
         {
             try
             {
+                if (!CanAccessUserResource(userId))
+                {
+                    return Forbid();
+                }
+
                 var result = _userRoomService.Delete(userId, roomId);
                 
                 if (result == 0)
@@ -160,6 +188,27 @@ namespace AA2_CS.Controllers
             {
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
+        }
+
+        private bool TryGetCurrentUserId(out int userId)
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            return int.TryParse(userIdClaim, out userId);
+        }
+
+        private bool IsAdmin()
+        {
+            return User.FindFirst(ClaimTypes.Role)?.Value == Roles.userMaster;
+        }
+
+        private bool CanAccessUserResource(int userId)
+        {
+            if (!TryGetCurrentUserId(out var currentUserId))
+            {
+                return false;
+            }
+
+            return currentUserId == userId || IsAdmin();
         }
     }
 }

@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using AA2_CS.Model;
@@ -29,6 +28,10 @@ namespace AA2_CS.Controllers
 
                 return Ok(new { token });
             }
+            catch (EmailNotVerifiedException ex)
+            {
+                return StatusCode(403, new { message = ex.Message, requiresEmailVerification = true });
+            }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
@@ -40,23 +43,23 @@ namespace AA2_CS.Controllers
         {
             try
             {
-                var (registeredUser, token, emailSent) = await _authService.RegisterAsync(user);
+                var (registeredUser, emailSent) = await _authService.RegisterAsync(user);
 
                 if (!emailSent)
                 {
-                    // El registro fue exitoso pero no se pudo enviar el email
                     return Ok(new {
-                        token,
                         message = "Usuario registrado correctamente, pero no se pudo enviar el correo de verificación",
-                        emailSent = false
+                        emailSent = false,
+                        userId = registeredUser.id,
+                        email = registeredUser.email
                     });
                 }
 
                 return Ok(new {
-                    token,
                     message = "Usuario registrado correctamente. Se ha enviado un código de verificación a tu correo.",
                     emailSent = true,
-                    userId = registeredUser.id
+                    userId = registeredUser.id,
+                    email = registeredUser.email
                 });
             }
             catch (Exception ex)
@@ -66,19 +69,17 @@ namespace AA2_CS.Controllers
         }
 
         [HttpPost("verify-email")]
-        [Authorize]
+        [AllowAnonymous]
         public async Task<IActionResult> VerifyEmail([FromBody] VerifyEmailRequest request)
         {
             try
             {
-                // Obtener el ID del usuario desde el token JWT
-                var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-                if (userIdClaim is null || !int.TryParse(userIdClaim.Value, out int userId))
+                if (string.IsNullOrWhiteSpace(request.Email) || string.IsNullOrWhiteSpace(request.Code))
                 {
-                    return Unauthorized("Token inválido");
+                    return BadRequest(new { message = "Email y código son obligatorios" });
                 }
 
-                var isVerified = await _authService.VerifyEmailAsync(userId, request.Code);
+                var isVerified = await _authService.VerifyEmailAsync(request.Email, request.Code);
 
                 if (isVerified)
                 {
@@ -96,19 +97,17 @@ namespace AA2_CS.Controllers
         }
 
         [HttpPost("resend-verification")]
-        [Authorize]
-        public async Task<IActionResult> ResendVerification()
+        [AllowAnonymous]
+        public async Task<IActionResult> ResendVerification([FromBody] ResendVerificationRequest request)
         {
             try
             {
-                // Obtener el ID del usuario desde el token JWT
-                var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-                if (userIdClaim is null || !int.TryParse(userIdClaim.Value, out int userId))
+                if (string.IsNullOrWhiteSpace(request.Email))
                 {
-                    return Unauthorized("Token inválido");
+                    return BadRequest(new { message = "El email es obligatorio" });
                 }
 
-                var emailSent = await _authService.ResendVerificationEmailAsync(userId);
+                var emailSent = await _authService.ResendVerificationEmailAsync(request.Email);
 
                 if (emailSent)
                 {

@@ -73,7 +73,7 @@ const register = async () => {
 
   // Validaciones usando el composable
   if (!validateName(nameTrimmed)) {
-    errorMessage.value = errors.name
+    errorMessage.value = errors.name || ''
     showSnackbar(errors.name || 'Nombre inválido', 'warning')
     isLoading.value = false
     return
@@ -88,7 +88,7 @@ const register = async () => {
   }
 
   if (!validateEmail(emailTrimmed)) {
-    errorMessage.value = errors.email
+    errorMessage.value = errors.email || ''
     showSnackbar(errors.email || 'Email inválido', 'warning')
     isLoading.value = false
     return
@@ -104,7 +104,7 @@ const register = async () => {
   }
 
   if (!validateConfirmPassword(passwordTrimmed, confirmPasswordTrimmed)) {
-    errorMessage.value = errors.confirmPassword
+    errorMessage.value = errors.confirmPassword || ''
     showSnackbar(errors.confirmPassword || 'Las contraseñas no coinciden', 'error')
     isLoading.value = false
     return
@@ -124,8 +124,8 @@ const register = async () => {
     experience: 0,
     xpRequired: 100,
     xpRemaining: 100,
-    equippedStrengthItemId: 0,
-    equippedEnduranceItemId: 0,
+    equippedStrengthItemId: null,
+    equippedEnduranceItemId: null,
     avatarUrl: ''
   }
 
@@ -139,31 +139,15 @@ const register = async () => {
       return
     }
 
-    // Iniciar sesión automáticamente
-    const loginResult = await store.loginUser(emailTrimmed, passwordTrimmed)
+    const emailToVerify = result.email || emailTrimmed
+    const successMessage = result.emailSent
+      ? 'Registro exitoso. Verifica tu email para continuar.'
+      : 'Registro exitoso, pero no se pudo enviar el email automáticamente. Puedes reenviar el código.'
 
-    if (loginResult && store.loggedUser?.email === emailTrimmed) {
-      if (result.emailSent) {
-        // Redirigir a la página de verificación
-        showSnackbar('Registro exitoso. Verifica tu email para continuar.', 'success')
-        setTimeout(() => {
-          router.push({ name: 'verifyEmail' })
-        }, 1500)
-      } else {
-        // El email no se envió, pero el registro fue exitoso
-        showSnackbar('Registro exitoso, pero no se pudo enviar el email de verificación.', 'warning')
-        setTimeout(() => {
-          router.push({ name: 'homeLogged' })
-        }, 1500)
-      }
-    } else {
-      errorMessage.value = 'El registro fue exitoso, pero hubo un error al iniciar sesión.'
-      showSnackbar('Registro exitoso. Por favor, inicia sesión manualmente.', 'warning')
-      isLoading.value = false
-      setTimeout(() => {
-        router.push({ name: 'login' })
-      }, 2000)
-    }
+    showSnackbar(successMessage, result.emailSent ? 'success' : 'warning')
+    setTimeout(() => {
+      router.push({ name: 'verifyEmail', query: { email: emailToVerify } })
+    }, 1500)
   } catch (error) {
     console.error(error)
     errorMessage.value = 'Error inesperado. Intenta más tarde.'

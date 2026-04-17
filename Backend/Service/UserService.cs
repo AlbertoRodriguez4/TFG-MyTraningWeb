@@ -152,6 +152,11 @@ namespace AA2_CS.Service
             return _repository.FindByCharacteristic(name);
         }
 
+        public User? FindByEmail(string email)
+        {
+            return _repository.FindByEmail(email);
+        }
+
         public User Login(string email, string passwordhash)
         {
             return _repository.Login(email, passwordhash);

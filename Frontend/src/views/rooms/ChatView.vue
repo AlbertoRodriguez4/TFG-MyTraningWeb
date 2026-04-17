@@ -89,6 +89,7 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useSubscriptionStore } from '@/stores/SubscriptionStore'
+import { API_BASE_URL, getAuthHeaders } from '@/config/api'
 import { logger } from '@/utils/logger'
 import ChatSidebar from '../../components/CoachAI/ChatSidebar.vue'
 import ChatHeader from '../../components/CoachAI/ChatHeader.vue'
@@ -179,34 +180,29 @@ async function handleSend(text) {
   const typingId = Date.now() + 1
   messages.value.push({ id: typingId, role: 'assistant', isTyping: true, time: '' })
 
-  // Juntar tu prompt original con los datos físicos extraídos
-  const systemPrompt = `Eres CoachAI, un entrenador personal y nutricionista virtual experto, amigable y motivador.
-Respondes ÚNICAMENTE preguntas sobre actividad física, entrenamiento, nutrición deportiva, recuperación muscular y bienestar físico.
-Si alguien pregunta algo fuera de estos temas, redirige amablemente al fitness.
-Tono: energético, motivador, cercano. Usa **negritas** para puntos clave.
-Listas con "• ". Respuestas concisas pero completas. Siempre en español.` + getUserContext();
-
   try {
-    // Ejemplo usando la API gratuita de Groq (formato estándar OpenAI)
-    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    const token = localStorage.getItem('token')
+    if (!token) {
+      throw new Error('No hay sesión activa para usar CoachAI.')
+    }
+
+    const res = await fetch(`${API_BASE_URL}/api/CoachAI/chat`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${import.meta.env.VITE_GROQ_API_KEY}`
-      },
+      headers: getAuthHeaders(token),
       body: JSON.stringify({
-        model: 'llama-3.3-70b-versatile', messages: [
-          { role: 'system', content: systemPrompt },
-          ...buildHistory()
-        ],
-        max_tokens: 1000,
-        temperature: 0.7
+        mensaje: t,
+        historial: buildHistory(),
+        contextoUsuario: getUserContext()
       })
     })
 
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}))
+      throw new Error(errorData?.message || 'No se pudo obtener respuesta del CoachAI.')
+    }
+
     const data = await res.json()
-    // La respuesta en Groq/OpenAI viene en choices[0].message.content
-    const reply = data.choices?.[0]?.message?.content || 'No pude procesar tu mensaje. Inténtalo de nuevo.'
+    const reply = data?.reply || 'No pude procesar tu mensaje. Inténtalo de nuevo.'
 
     messages.value = messages.value.filter(m => m.id !== typingId)
     messages.value.push({ id: Date.now() + 2, role: 'assistant', text: reply, time: now() })

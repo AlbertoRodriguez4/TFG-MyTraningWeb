@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Mail;
 using System.Text;
+using Microsoft.Extensions.Configuration;
 
 namespace AA2_CS.Service
 {
@@ -13,15 +14,14 @@ namespace AA2_CS.Service
         private readonly string _fromEmail;
         private readonly string _fromName;
 
-        public EmailService()
+        public EmailService(IConfiguration configuration)
         {
-            // Configuración SMTP de Gmail
-            _smtpServer = "smtp.gmail.com";
-            _smtpPort = 587;
-            _smtpUser = "a26873@svalero.com";
-            _smtpPass = "dmux uzgn dsvv cxsq"; // App password
-            _fromEmail = "a26873@svalero.com";
-            _fromName = "The Training Hub";
+            _smtpServer = configuration["EmailSettings:SmtpServer"] ?? throw new InvalidOperationException("Falta EmailSettings:SmtpServer.");
+            _smtpPort = int.TryParse(configuration["EmailSettings:SmtpPort"], out var smtpPort) ? smtpPort : 587;
+            _smtpUser = configuration["EmailSettings:SmtpUser"] ?? throw new InvalidOperationException("Falta EmailSettings:SmtpUser.");
+            _smtpPass = configuration["EmailSettings:SmtpPass"] ?? throw new InvalidOperationException("Falta EmailSettings:SmtpPass.");
+            _fromEmail = configuration["EmailSettings:FromEmail"] ?? _smtpUser;
+            _fromName = configuration["EmailSettings:FromName"] ?? "The Training Hub";
         }
 
         public async Task<bool> SendVerificationEmail(string toEmail, string userName, string verificationCode)

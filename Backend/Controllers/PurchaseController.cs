@@ -73,6 +73,13 @@ namespace AA2_CS.Controllers
         {
             try
             {
+                var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out int userId))
+                {
+                    return Unauthorized("Token inválido: No contiene ID de usuario.");
+                }
+
+                purchase.userid = userId;
                 var item = _itemService.FindById(purchase.itemid);
                 var id = _purchaseService.Add(purchase); // Agrega una nueva compra
 

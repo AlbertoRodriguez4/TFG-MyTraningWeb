@@ -188,3 +188,6 @@ C:\Users\alber\Desktop\TFG como lo borre me suicido\Backend\Tests\Backend.Tests\
 C:\Users\alber\Desktop\TFG como lo borre me suicido\Backend\Tests\Backend.Tests\bin\Debug\net8.0\Tests\Backend.Tests\bin\Debug\net8.0\Tests\Backend.Tests\bin\Debug\net8.0\Backend.Tests.runtimeconfig.json
 C:\Users\alber\Desktop\TFG como lo borre me suicido\Backend\Tests\Backend.Tests\bin\Debug\net8.0\Tests\Backend.Tests\bin\Debug\net8.0\Tests\Backend.Tests\bin\Debug\net8.0\Tests\Backend.Tests\obj\Backend.Tests.csproj.nuget.dgspec.json
 C:\Users\alber\Desktop\TFG como lo borre me suicido\Backend\Tests\Backend.Tests\bin\Debug\net8.0\Tests\Backend.Tests\bin\Debug\net8.0\Tests\Backend.Tests\bin\Debug\net8.0\Tests\Backend.Tests\obj\project.assets.json
+C:\Users\alber\Desktop\TFG como lo borre me suicido\TFG MyTraningWeb\Backend\Tests\Backend.Tests\obj\Debug\net8.0\Backend.Tests.dll
+C:\Users\alber\Desktop\TFG como lo borre me suicido\TFG MyTraningWeb\Backend\Tests\Backend.Tests\obj\Debug\net8.0\refint\Backend.Tests.dll
+C:\Users\alber\Desktop\TFG como lo borre me suicido\TFG MyTraningWeb\Backend\Tests\Backend.Tests\obj\Debug\net8.0\Backend.Tests.pdb
