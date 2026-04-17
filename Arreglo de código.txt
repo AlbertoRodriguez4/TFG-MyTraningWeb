@@ -1,0 +1,148 @@
+Arreglo de código: 
+
+ Voy a revisar el código frontend para identificar las partes más importantes que necesitan cambios:
+
+  Searched for 6 patterns, read 4 files (ctrl+o to expand)
+
+● 🔍 Análisis del Código Frontend - Partes Críticas a Cambiar
+
+  He revisado todo el código frontend. Aquí están los problemas más importantes clasificados por prioridad:
+
+  ---
+  🔴 CRÍTICOS (Seguridad / Funcionalidad)
+
+  ┌─────┬──────────────────────────┬─────────────────────────────────────────────────┬──────────┬───────────────────────────────┐
+  │  #  │         Problema         │                     Archivo                     │  Línea   │            Riesgo             │
+  ├─────┼──────────────────────────┼─────────────────────────────────────────────────┼──────────┼───────────────────────────────┤
+  │ 1   │ API KEY expuesta de Groq │ ChatView.vue                                    │ 195      │ Alto - Credential hardcodeada │
+  ├─────┼──────────────────────────┼─────────────────────────────────────────────────┼──────────┼───────────────────────────────┤
+  │ 2   │ console.error sin logger │ LoginView.vue, RegisterView.vue, RoomRender.vue │ Varias   │ Medio - Logs en producción    │
+  ├─────┼──────────────────────────┼─────────────────────────────────────────────────┼──────────┼───────────────────────────────┤
+  │ 3   │ Uso de as any            │ RoomRender.vue:104, VerifyEmailView.vue:129     │ 104, 129 │ Medio - Sin type safety       │
+  └─────┴──────────────────────────┴─────────────────────────────────────────────────┴──────────┴───────────────────────────────┘
+
+  ---
+  🟠 RECOMENDADOS (Buenas prácticas)
+
+  ┌─────┬────────────────────────────┬───────────────────────────────────────────────────────────────────┐
+  │  #  │          Problema          │                        Archivos afectados                         │
+  ├─────┼────────────────────────────┼───────────────────────────────────────────────────────────────────┤
+  │ 1   │ Falta archivo .env.example │ No existe - los devs no saben qué variables configurar            │
+  ├─────┼────────────────────────────┼───────────────────────────────────────────────────────────────────┤
+  │ 2   │ console.log en templates   │ AdminPanel.vue, RoomList.vue, RoomRender.vue (líneas de template) │
+  ├─────┼────────────────────────────┼───────────────────────────────────────────────────────────────────┤
+  │ 3   │ JWTDecode sin logger       │ JWTDecode.ts:20 - usa console.error directamente                  │
+  └─────┴────────────────────────────┴───────────────────────────────────────────────────────────────────┘
+
+  ---
+  🟡 OPCIONALES (Limpieza)
+
+  ┌─────┬─────────────────────────────────────────┬─────────────────────────────────────────────────────────────────┐
+  │  #  │                Problema                 │                            Ubicación                            │
+  ├─────┼─────────────────────────────────────────┼─────────────────────────────────────────────────────────────────┤
+  │ 1   │ Variables de entorno con espacios       │ .env línea 2-3 tienen espacios alrededor de =                   │
+  ├─────┼─────────────────────────────────────────┼─────────────────────────────────────────────────────────────────┤
+  │ 2   │ consistencystreak en decodificación JWT │ userStore.ts:143,188 - correcto pero inconsistente con el resto │
+  └─────┴─────────────────────────────────────────┴─────────────────────────────────────────────────────────────────┘
+
+  ---
+  📋 Acciones Recomendadas (en orden de prioridad):
+
+  1. Mover API KEY de Groq a .env (CRÍTICO)
+
+  // ChatView.vue línea 195
+  'Authorization': `Bearer ${import.meta.env.VITE_GROQ_API_KEY}`
+  # .env (actualizar)
+  VITE_GROQ_API_KEY=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
+
+  2. Reemplazar console.error restantes (RECOMENDADO)
+
+  - LoginView.vue:93 → logger.error()
+  - RegisterView.vue:168 → logger.error()
+  - RoomRender.vue:90 → logger.error()
+  - JWTDecode.ts:20 → logger.error()
+
+  3. Eliminar as any (RECOMENDADO)
+
+  - RoomRender.vue:104 - Extender interfaz User con campos opcionales
+  - VerifyEmailView.vue:129 - Agregar isEmailVerified a interfaz User
+
+  4. Corregir .env (OPCIONAL)
+
+  # Actual
+  CLOUDINARY_CLOUD_NAME = dujhkokjo  # espacios alrededor de =
+
+  # Debería ser
+  CLOUDINARY_CLOUD_NAME=dujhkokjo
+
+  5. Crear .env.example (RECOMENDADO)
+
+  VITE_API_BASE_URL=http://localhost:6873
+  VITE_GROQ_API_KEY=your_key_here
+  CLOUDINARY_CLOUD_NAME=your_cloud_name
+  CLOUDINARY_UPLOAD_PRESET=your_preset
+
+  ---
+  ¿Quieres que aplique estos cambios? Puedo empezar por los críticos (API KEY + logger) o todos de una vez.
+
+✻ Cooked for 33s
+
+
+ He encontrado varios patrones de código duplicado e inconsistencias similares al caso consistencyStreak:                                     
+                            
+  🔍 Hallazgos de Código Duplicado/Inconsistente                                                                                               
+  
+  1. iscompleted vs isCompleted ⚠️ CRÍTICO                                                                                                        
+  Problema: El modelo Routine.ts usa isCompleted pero toda la aplicación usa iscompleted.                                                      
+  
+  // src/components/Models/Routine.ts:8
+  isCompleted: boolean;  // ← Definición incorrecta
+
+  // src/components/Models/Routines.ts:7
+  iscompleted: boolean;  // ← Correcto (usado en toda la app)
+
+  Impacto: 20+ archivos usan iscompleted, pero el modelo define isCompleted. Esto rompe la seguridad de tipos.
+
+  2. createdat vs createdAt ℹ️ MENOR
+
+  Todo el frontend usa createdat (snake_case del backend). Es consistente pero no sigue camelCase de TypeScript. No es crítico porque viene del
+   backend así.
+
+  3. userid vs userId ⚠️ IMPORTANTE
+
+  Problema: Hay inconsistencia entre stores y modelos:
+
+  // Models (correcto - camelCase)
+  src/components/Models/Purchase.ts: userId: number
+  src/components/Models/PurchasedItem.ts: userId: number
+  src/components/Models/Plan.ts: userId: number
+
+  // Stores (incorrecto - mezcla)
+  src/stores/UsersRoomStore.ts: userid: number (línea 8)
+  src/stores/PurchaseStore.ts: addPurchase(userid: number, ...) (línea 34)
+  src/stores/RoomStore.ts: userid: number (línea 66)
+
+  4. passwordhash ℹ️ CONSISTENTE
+
+  Todo el código usa passwordhash (snake_case). Es consistente en todos lados, aunque no sea camelCase ideal. Viene así del backend.
+
+  5. equippedStrengthItemId / equippedEnduranceItemId ✅ CONSISTENTE
+
+  Estos campos están correctamente unificados en camelCase en todo el frontend.
+
+  ---
+  📋 Prioridades de Limpieza
+
+  ┌───────────┬───────────────────────────────────────────────────────┬───────────────────────────────────────────────────┐
+  │ Prioridad │                       Problema                        │                Archivos afectados                 │
+  ├───────────┼───────────────────────────────────────────────────────┼───────────────────────────────────────────────────┤
+  │ CRÍTICA   │ isCompleted → iscompleted                             │ Routine.ts + alinear todo                         │
+  ├───────────┼───────────────────────────────────────────────────────┼───────────────────────────────────────────────────┤
+  │ ALTA      │ userid → userId en stores                             │ UsersRoomStore.ts, PurchaseStore.ts, RoomStore.ts │
+  ├───────────┼───────────────────────────────────────────────────────┼───────────────────────────────────────────────────┤
+  │ MEDIA     │ as any type assertions                                │ RoomRender.vue, VerifyEmailView.vue               │
+  ├───────────┼───────────────────────────────────────────────────────┼───────────────────────────────────────────────────┤
+  │ BAJA      │ createdat → createdAt (opcional, depende del backend) │ Múltiples componentes                             │
+  └───────────┴───────────────────────────────────────────────────────┴───────────────────────────────────────────────────┘
+
+  ¿Quieres que aplique las correcciones para iscompleted y userId ahora?

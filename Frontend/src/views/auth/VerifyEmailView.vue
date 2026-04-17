@@ -1,0 +1,761 @@
+<script setup lang="ts">
+import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { useRouter } from 'vue-router'
+import { useUserStore } from '@/stores/userStore'
+import { logger } from '@/utils/logger'
+
+const router = useRouter()
+const store = useUserStore()
+
+const verificationCode = ref('')
+const errorMessage = ref('')
+const successMessage = ref('')
+const isLoading = ref(false)
+const isResending = ref(false)
+const countdown = ref(0)
+
+// Referencia al intervalo para limpiarlo en onBeforeUnmount
+let countdownInterval: number | null = null
+
+// Snackbar states
+const snackbar = ref(false)
+const snackbarMessage = ref('')
+const snackbarColor = ref('error')
+
+const showSnackbar = (message: string, color: string = 'error') => {
+  snackbarMessage.value = message
+  snackbarColor.value = color
+  snackbar.value = true
+}
+
+const formatCode = (value: string) => {
+  // Solo permitir números y limitar a 6 dígitos
+  const numeric = value.replace(/[^0-9]/g, '')
+  if (numeric.length <= 6) {
+    verificationCode.value = numeric
+  }
+}
+
+const verifyEmail = async () => {
+  errorMessage.value = ''
+  successMessage.value = ''
+
+  if (verificationCode.value.length !== 6) {
+    errorMessage.value = 'El código debe tener 6 dígitos'
+    showSnackbar('Por favor, introduce los 6 dígitos del código', 'warning')
+    return
+  }
+
+  isLoading.value = true
+
+  try {
+    const result = await store.verifyEmail(verificationCode.value)
+
+    if (result) {
+      successMessage.value = '¡Email verificado correctamente!'
+      showSnackbar('¡Email verificado! Redirigiendo...', 'success')
+
+      // Actualizar el usuario logueado
+      await store.refreshLoggedUser()
+
+      setTimeout(() => {
+        router.push({ name: 'homeLogged' })
+      }, 1500)
+    } else {
+      errorMessage.value = 'Código inválido o expirado'
+      showSnackbar('Código inválido o expirado. Intenta de nuevo.', 'error')
+    }
+  } catch (error) {
+    logger.error(error)
+    errorMessage.value = 'Error al verificar. Intenta más tarde.'
+    showSnackbar('Error del servidor. Intenta más tarde.', 'error')
+  } finally {
+    isLoading.value = false
+  }
+}
+
+const resendCode = async () => {
+  if (countdown.value > 0) return
+
+  isResending.value = true
+  errorMessage.value = ''
+
+  try {
+    const result = await store.resendVerificationCode()
+
+    if (result) {
+      successMessage.value = 'Se ha reenviado el código a tu correo'
+      showSnackbar('Código reenviado correctamente', 'success')
+      startCountdown()
+    } else {
+      errorMessage.value = 'No se pudo reenviar el código'
+      showSnackbar('Error al reenviar el código', 'error')
+    }
+  } catch (error) {
+    logger.error(error)
+    errorMessage.value = 'Error al reenviar. Intenta más tarde.'
+    showSnackbar('Error del servidor. Intenta más tarde.', 'error')
+  } finally {
+    isResending.value = false
+  }
+}
+
+const startCountdown = () => {
+  // Limpiar intervalo anterior si existe
+  if (countdownInterval) {
+    clearInterval(countdownInterval)
+  }
+
+  countdown.value = 60
+  countdownInterval = window.setInterval(() => {
+    countdown.value--
+    if (countdown.value <= 0 && countdownInterval) {
+      clearInterval(countdownInterval)
+      countdownInterval = null
+    }
+  }, 1000)
+}
+
+onMounted(() => {
+  // Verificar que el usuario esté logueado
+  if (!store.loggedUser) {
+    showSnackbar('Debes iniciar sesión para verificar tu email', 'warning')
+    setTimeout(() => {
+      router.push({ name: 'login' })
+    }, 1500)
+  }
+
+  // Si ya está verificado, redirigir
+  if (store.loggedUser && (store.loggedUser as any).isEmailVerified) {
+    showSnackbar('Tu email ya está verificado', 'success')
+    setTimeout(() => {
+      router.push({ name: 'homeLogged' })
+    }, 1500)
+  }
+})
+
+onBeforeUnmount(() => {
+  // Limpiar el intervalo si el componente se desmonta
+  if (countdownInterval) {
+    clearInterval(countdownInterval)
+    countdownInterval = null
+  }
+})
+</script>
+
+<template>
+  <div class="verify-wrapper">
+    <!-- Gradient orbs -->
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <!-- Grid lines -->
+    <div class="grid-lines"></div>
+
+    <div class="verify-container">
+      <!-- Header -->
+      <div class="header-banner">
+        <div class="logo-container">
+          <div class="logo-icon">
+            <img src="@/assets/imgs/Logo.png" alt="Training Hub" class="main-logo" />
+          </div>
+        </div>
+        <h1 class="hero-title">{{ $t('slogan') }}</h1>
+        <p class="hero-subtitle">VERIFICACIÓN DE CUENTA</p>
+      </div>
+
+      <!-- Main Content -->
+      <div class="verify-card">
+        <div class="verify-header">
+          <div class="verify-icon">📧</div>
+          <h2 class="verify-title">Verifica tu Email</h2>
+          <p class="verify-subtitle">
+            Hemos enviado un código de 6 dígitos a
+            <span class="email-highlight">{{ store.loggedUser?.email }}</span>
+          </p>
+        </div>
+
+        <!-- Success Message -->
+        <div v-if="successMessage" class="success-alert">
+          <span class="success-icon">✓</span>
+          <span class="success-text">{{ successMessage }}</span>
+        </div>
+
+        <!-- Error Alert -->
+        <div v-if="errorMessage" class="error-alert">
+          <span class="error-icon">⚠️</span>
+          <span class="error-text">{{ errorMessage }}</span>
+        </div>
+
+        <!-- Code Input -->
+        <div class="code-section">
+          <label class="code-label">CÓDIGO DE VERIFICACIÓN</label>
+          <div class="code-input-container">
+            <input
+              v-model="verificationCode"
+              @input="formatCode"
+              type="text"
+              class="code-input"
+              placeholder="000000"
+              maxlength="6"
+              :disabled="isLoading"
+              autocomplete="one-time-code"
+            />
+          </div>
+          <p class="code-hint">Introduce los 6 dígitos que recibiste por correo</p>
+        </div>
+
+        <!-- Verify Button -->
+        <v-btn
+          @click="verifyEmail"
+          size="x-large"
+          class="verify-btn"
+          :loading="isLoading"
+          :disabled="isLoading || verificationCode.length !== 6"
+          block
+        >
+          <span v-if="!isLoading" class="btn-text">
+            <span>Verificar Email</span>
+            <span class="btn-arrow">→</span>
+          </span>
+          <span v-else class="btn-loading">
+            <v-progress-circular indeterminate size="20" width="2" color="white"></v-progress-circular>
+            <span>Verificando...</span>
+          </span>
+        </v-btn>
+
+        <!-- Resend Section -->
+        <div class="resend-section">
+          <p class="resend-text">¿No recibiste el código?</p>
+          <v-btn
+            @click="resendCode"
+            variant="text"
+            size="small"
+            class="resend-btn"
+            :disabled="isResending || countdown > 0"
+            :loading="isResending"
+          >
+            <span v-if="countdown > 0">
+              Reenviar en {{ countdown }}s
+            </span>
+            <span v-else>
+              Reenviar código
+            </span>
+          </v-btn>
+        </div>
+
+        <!-- Separator -->
+        <div class="separator">
+          <div class="separator-line"></div>
+        </div>
+
+        <!-- Back to Login -->
+        <v-btn
+          variant="outlined"
+          size="large"
+          class="back-btn"
+          to="/login"
+          block
+        >
+          Volver al inicio
+        </v-btn>
+      </div>
+
+      <!-- Info Cards -->
+      <div class="info-grid">
+        <div class="info-card">
+          <div class="info-icon">⏱️</div>
+          <h3 class="info-title">Expira en 15 min</h3>
+          <p class="info-desc">El código es válido por 15 minutos desde su envío</p>
+        </div>
+
+        <div class="info-card">
+          <div class="info-icon">🔒</div>
+          <h3 class="info-title">Seguro</h3>
+          <p class="info-desc">Tu información está protegida y encriptada</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Snackbar -->
+    <v-snackbar v-model="snackbar" :color="snackbarColor" :timeout="4000" location="top" rounded="pill">
+      <div class="snackbar-content">
+        <span class="snackbar-icon">
+          {{ snackbarColor === 'success' ? '✓' : snackbarColor === 'warning' ? '⚠' : '✕' }}
+        </span>
+        <span>{{ snackbarMessage }}</span>
+      </div>
+      <template v-slot:actions>
+        <v-btn variant="text" @click="snackbar = false" size="small">
+          Cerrar
+        </v-btn>
+      </template>
+    </v-snackbar>
+  </div>
+</template>
+
+<style scoped>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.verify-wrapper {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 50%, #0f0a1a 100%);
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Orbes de luz */
+.orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 1;
+  animation: pulse 4s ease-in-out infinite;
+}
+
+.orb-1 {
+  top: 10%;
+  left: 20%;
+  width: 400px;
+  height: 400px;
+  background: rgba(139, 92, 246, 0.15);
+}
+
+.orb-2 {
+  bottom: 10%;
+  right: 20%;
+  width: 400px;
+  height: 400px;
+  background: rgba(34, 211, 238, 0.15);
+  animation-delay: 2s;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.1);
+  }
+}
+
+/* Grid lines */
+.grid-lines {
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(139, 92, 246, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(139, 92, 246, 0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.verify-container {
+  position: relative;
+  z-index: 2;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* Header */
+.header-banner {
+  text-align: center;
+  margin-bottom: 2rem;
+  animation: fadeIn 0.8s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.logo-container {
+  margin-bottom: 1.5rem;
+}
+
+.logo-icon {
+  display: inline-block;
+  padding: 1rem;
+  background: rgba(139, 92, 246, 0.1);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 24px;
+  backdrop-filter: blur(10px);
+}
+
+.main-logo {
+  height: 60px;
+  filter: drop-shadow(0 0 20px rgba(139, 92, 246, 0.5));
+}
+
+.hero-title {
+  font-size: 2rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #a78bfa, #22d3ee);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.5rem;
+}
+
+.hero-subtitle {
+  font-size: 0.75rem;
+  color: #64748b;
+  letter-spacing: 3px;
+  font-weight: 600;
+}
+
+/* Verify Card */
+.verify-card {
+  background: rgba(15, 15, 30, 0.6);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: 24px;
+  padding: 2.5rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  animation: slideUp 0.8s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.verify-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.verify-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.verify-title {
+  font-size: 1.75rem;
+  color: #f8fafc;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+.verify-subtitle {
+  color: #94a3b8;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.email-highlight {
+  color: #a78bfa;
+  font-weight: 600;
+  display: block;
+  margin-top: 0.5rem;
+  word-break: break-all;
+}
+
+/* Success Alert */
+.success-alert {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.success-icon {
+  font-size: 1.5rem;
+  color: #22c55e;
+}
+
+.success-text {
+  color: #86efac;
+  font-size: 0.9rem;
+}
+
+/* Error Alert */
+.error-alert {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  animation: shake 0.3s ease;
+}
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-10px);
+  }
+  75% {
+    transform: translateX(10px);
+  }
+}
+
+.error-icon {
+  font-size: 1.5rem;
+}
+
+.error-text {
+  color: #fca5a5;
+  font-size: 0.9rem;
+}
+
+/* Code Section */
+.code-section {
+  margin-bottom: 1.5rem;
+}
+
+.code-label {
+  display: block;
+  font-size: 0.7rem;
+  color: #64748b;
+  font-weight: 600;
+  letter-spacing: 2px;
+  margin-bottom: 0.75rem;
+  text-align: center;
+}
+
+.code-input-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 0.75rem;
+}
+
+.code-input {
+  width: 100%;
+  max-width: 280px;
+  padding: 1rem;
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: 1rem;
+  background: rgba(0, 0, 0, 0.3);
+  border: 2px solid rgba(139, 92, 246, 0.3);
+  border-radius: 16px;
+  color: #f8fafc;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.code-input:focus {
+  border-color: #a78bfa;
+  box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.15);
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.code-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.code-input::placeholder {
+  letter-spacing: 0.5rem;
+  color: #475569;
+}
+
+.code-hint {
+  text-align: center;
+  color: #64748b;
+  font-size: 0.85rem;
+}
+
+/* Verify Button */
+.verify-btn {
+  background: linear-gradient(135deg, #8b5cf6, #22d3ee) !important;
+  color: white !important;
+  font-weight: 600 !important;
+  border-radius: 12px !important;
+  text-transform: none !important;
+  letter-spacing: 0.5px !important;
+  margin-bottom: 1.5rem;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 8px 24px rgba(139, 92, 246, 0.4) !important;
+}
+
+.verify-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(139, 92, 246, 0.6) !important;
+}
+
+.btn-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.btn-arrow {
+  font-size: 1.2rem;
+  transition: transform 0.3s ease;
+}
+
+.verify-btn:hover:not(:disabled) .btn-arrow {
+  transform: translateX(5px);
+}
+
+.btn-loading {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* Resend Section */
+.resend-section {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.resend-text {
+  color: #64748b;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.resend-btn {
+  color: #a78bfa !important;
+  font-weight: 600 !important;
+  text-transform: none !important;
+}
+
+.resend-btn:disabled {
+  opacity: 0.5;
+}
+
+/* Separator */
+.separator {
+  margin: 1.5rem 0;
+}
+
+.separator-line {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.3), transparent);
+}
+
+/* Back Button */
+.back-btn {
+  border-color: rgba(139, 92, 246, 0.3) !important;
+  color: #a78bfa !important;
+  font-weight: 600 !important;
+  border-radius: 12px !important;
+  text-transform: none !important;
+  transition: all 0.3s ease !important;
+}
+
+.back-btn:hover {
+  border-color: #a78bfa !important;
+  background: rgba(139, 92, 246, 0.1) !important;
+  transform: translateY(-2px);
+}
+
+/* Info Grid */
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-top: 2rem;
+  animation: fadeIn 0.8s ease-out 0.2s both;
+}
+
+.info-card {
+  background: rgba(15, 15, 30, 0.4);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(139, 92, 246, 0.1);
+  border-radius: 16px;
+  padding: 1.5rem;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.info-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(139, 92, 246, 0.3);
+  background: rgba(15, 15, 30, 0.6);
+}
+
+.info-card .info-icon {
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.info-title {
+  color: #a78bfa;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.info-desc {
+  color: #94a3b8;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .verify-container {
+    padding: 1rem;
+  }
+
+  .verify-card {
+    padding: 2rem 1.5rem;
+  }
+
+  .hero-title {
+    font-size: 1.5rem;
+  }
+
+  .verify-title {
+    font-size: 1.5rem;
+  }
+
+  .code-input {
+    font-size: 1.5rem;
+    letter-spacing: 0.5rem;
+    padding: 0.75rem;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>

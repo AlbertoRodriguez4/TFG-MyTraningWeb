@@ -1,0 +1,49 @@
+/* Variables CSS para temas */
+
+/* Tema oscuro (default) */
+:root,
+html.dark,
+html[data-theme="dark"] {
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #242424;
+  --bg-tertiary: #2d2d2d;
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.8);
+  --text-muted: rgba(255, 255, 255, 0.6);
+  --border-color: rgba(255, 255, 255, 0.1);
+  --accent-color: #ffcc00;
+  --accent-hover: #ffd633;
+  --card-bg: rgba(20, 20, 20, 0.5);
+}
+
+/* Tema claro */
+html.light,
+html[data-theme="light"] {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f5f5f5;
+  --bg-tertiary: #eeeeee;
+  --text-primary: #1a1a1a;
+  --text-secondary: rgba(0, 0, 0, 0.8);
+  --text-muted: rgba(0, 0, 0, 0.6);
+  --border-color: rgba(0, 0, 0, 0.1);
+  --accent-color: #ffcc00;
+  --accent-hover: #e6b800;
+  --card-bg: rgba(255, 255, 255, 0.95);
+}
+
+/* Aplicar variables globales */
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+/* Vuetify usa estas variables */
+.v-application {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.v-card {
+  background-color: var(--card-bg) !important;
+  border-color: var(--border-color) !important;
+}
