@@ -267,21 +267,21 @@ function changePage(page: number) {
                 </v-btn>
               </div>
 
-              <!-- Stats en tiempo real -->
+              <!-- Stats descriptivas -->
               <div class="live-stats">
                 <div class="stat-card">
-                  <div class="stat-value">1,247</div>
+                  <div class="stat-value">Comunidad</div>
                   <div class="stat-label">
                     <v-icon size="16" color="success">mdi-circle</v-icon>
-                    Usuarios activos ahora
+                    Activa y en crecimiento
                   </div>
                 </div>
                 <div class="stat-separator"></div>
                 <div class="stat-card">
-                  <div class="stat-value">89.4K</div>
+                  <div class="stat-value">Progreso</div>
                   <div class="stat-label">
                     <v-icon size="16" color="amber">mdi-fire</v-icon>
-                    Retos completados
+                    Retos y recompensas
                   </div>
                 </div>
               </div>
@@ -322,8 +322,8 @@ function changePage(page: number) {
                       <v-icon size="32" color="white">mdi-lightning-bolt</v-icon>
                     </div>
                     <div class="metric-data">
-                      <div class="metric-value">+150</div>
-                      <div class="metric-label">XP Ganado</div>
+                      <div class="metric-value">+XP</div>
+                      <div class="metric-label">Gana experiencia</div>
                       <div class="metric-badge">¡ÉPICO!</div>
                     </div>
                   </div>
@@ -335,14 +335,14 @@ function changePage(page: number) {
                       <div class="level-crown">
                         <v-icon size="40" color="white">mdi-crown</v-icon>
                       </div>
-                      <div class="level-number">12</div>
+                      <div class="level-number">Lvl</div>
                     </div>
                     <div class="level-progress-bar">
-                      <div class="level-progress-fill" style="width: 73%">
-                        <span class="progress-percentage">73%</span>
+                      <div class="level-progress-fill" style="width: 60%">
+                        <span class="progress-percentage">Sube</span>
                       </div>
                     </div>
-                    <div class="metric-label">Nivel Actual</div>
+                    <div class="metric-label">Sube de nivel</div>
                   </div>
 
                   <!-- Sala Social Izquierda Inferior -->
@@ -354,7 +354,7 @@ function changePage(page: number) {
                     </div>
                     <div class="room-title">
                       <v-icon size="24" color="white">mdi-account-group</v-icon>
-                      <span>Sala Entrenamiento</span>
+                      <span>Salas sociales</span>
                     </div>
                     <div class="room-members">
                       <div class="member-avatars">
@@ -362,7 +362,7 @@ function changePage(page: number) {
                           <v-icon size="20" color="white">mdi-account</v-icon>
                         </div>
                       </div>
-                      <div class="member-count">+12 entrenando</div>
+                      <div class="member-count">Entrena en grupo</div>
                     </div>
                   </div>
 
@@ -375,8 +375,8 @@ function changePage(page: number) {
                         <div class="particle" v-for="n in 8" :key="n"></div>
                       </div>
                     </div>
-                    <div class="streak-count">7 DÍAS</div>
-                    <div class="metric-label">Racha Activa</div>
+                    <div class="streak-count">RACHA</div>
+                    <div class="metric-label">Mantén la constancia</div>
                   </div>
 
                   <!-- Monedas Derecha Centro -->
@@ -388,8 +388,8 @@ function changePage(page: number) {
                         <div class="sparkle" v-for="n in 6" :key="n"></div>
                       </div>
                     </div>
-                    <div class="coins-earned">+50</div>
-                    <div class="metric-label">Monedas</div>
+                    <div class="coins-earned">+Coins</div>
+                    <div class="metric-label">Gana recompensas</div>
                   </div>
 
                   <!-- Estadística Circular Superior Izquierda -->
@@ -402,9 +402,9 @@ function changePage(page: number) {
                     </svg>
                     <div class="circular-content">
                       <v-icon size="32" color="white">mdi-target</v-icon>
-                      <div class="circular-percentage">75%</div>
+                      <div class="circular-percentage">Meta</div>
                     </div>
-                    <div class="metric-label-small">Objetivo</div>
+                    <div class="metric-label-small">Alcanza tus metas</div>
                   </div>
                 </div>
 
@@ -425,7 +425,7 @@ function changePage(page: number) {
                   <div class="mega-stat-icon">
                     <v-icon size="48" color="amber">mdi-account-multiple</v-icon>
                   </div>
-                  <div class="mega-stat-value">10K+</div>
+                  <div class="mega-stat-value">Comunidad</div>
                   <div class="mega-stat-label">Usuarios Activos</div>
                 </div>
 
@@ -433,7 +433,7 @@ function changePage(page: number) {
                   <div class="mega-stat-icon gradient-success">
                     <v-icon size="48" color="white">mdi-dumbbell</v-icon>
                   </div>
-                  <div class="mega-stat-value">250K+</div>
+                  <div class="mega-stat-value">Entrena</div>
                   <div class="mega-stat-label">Entrenamientos</div>
                 </div>
 
@@ -441,7 +441,7 @@ function changePage(page: number) {
                   <div class="mega-stat-icon gradient-warning">
                     <v-icon size="48" color="white">mdi-trophy</v-icon>
                   </div>
-                  <div class="mega-stat-value">500+</div>
+                  <div class="mega-stat-value">Retos</div>
                   <div class="mega-stat-label">Retos Disponibles</div>
                 </div>
 
@@ -449,8 +449,8 @@ function changePage(page: number) {
                   <div class="mega-stat-icon gradient-info">
                     <v-icon size="48" color="white">mdi-star</v-icon>
                   </div>
-                  <div class="mega-stat-value">4.9</div>
-                  <div class="mega-stat-label">Valoración Media</div>
+                  <div class="mega-stat-value">Premium</div>
+                  <div class="mega-stat-label">Calidad garantizada</div>
                 </div>
               </div>
             </v-col>
@@ -566,7 +566,7 @@ function changePage(page: number) {
                   <div class="gym-card-footer">
                     <div class="gym-distance">
                       <v-icon small color="blue">mdi-walk</v-icon>
-                      <span>~ 1.2 km</span>
+                      <span>Cerca de ti</span>
                     </div>
                     <v-btn size="small" color="primary" variant="text" class="gym-action-btn">
                       Ver más

@@ -44,14 +44,11 @@ const labelMap: Record<StatKey, string> = {
   gold: 'Oro',
 }
 
-const maxValues: Record<StatKey, number> = {
-  strength: 100000,
-  endurance: 100000,
-  gold: 1000000,
-}
-
 const calculateProgress = (stat: StatKey, value: number): number => {
-  const maxValue = maxValues[stat]
+  // El progreso se calcula dinámicamente basado en el valor actual
+  // Usando un multiplicador para que siempre haya espacio de mejora
+  const multiplier = 1.5
+  const maxValue = Math.max(value * multiplier, 1)
   const percentage = (value / maxValue) * 100
   return Math.min(percentage, 100)
 }
@@ -152,7 +149,6 @@ const formatNumber = (value: number): string => {
                 <span class="stat-value" :style="{ color: colorMap[stat] }">
                   {{ formatNumber(loggedUser[stat]) }}
                 </span>
-                <span class="stat-max">/ {{ formatNumber(maxValues[stat]) }}</span>
               </div>
             </div>
             <div class="stat-percentage">

@@ -48,22 +48,22 @@
             <div class="stat-item">
               <span class="stat-icon">👥</span>
               <div class="stat-info">
-                <span class="stat-value">10K+</span>
-                <span class="stat-label">Usuarios</span>
+                <span class="stat-value">Comunidad</span>
+                <span class="stat-label">Activa</span>
               </div>
             </div>
             <div class="stat-item">
               <span class="stat-icon">🏆</span>
               <div class="stat-info">
-                <span class="stat-value">50K+</span>
-                <span class="stat-label">Retos</span>
+                <span class="stat-value">Retos</span>
+                <span class="stat-label">Diarios</span>
               </div>
             </div>
             <div class="stat-item">
               <span class="stat-icon">⚡</span>
               <div class="stat-info">
-                <span class="stat-value">100K+</span>
-                <span class="stat-label">Check-ins</span>
+                <span class="stat-value">Progreso</span>
+                <span class="stat-label">Real</span>
               </div>
             </div>
           </div>

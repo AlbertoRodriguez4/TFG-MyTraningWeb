@@ -53,8 +53,8 @@
             </div>
 
             <div class="pricing-info">
-              <span class="price-tag">10€<small>/mes</small></span>
-              <p class="price-desc">Cancela cuando quieras. Sin permanencia.</p>
+              <span class="price-tag">Premium</span>
+              <p class="price-desc">Consulta los planes disponibles. Sin permanencia.</p>
             </div>
 
             <v-btn
