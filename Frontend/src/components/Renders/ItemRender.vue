@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watchEffect } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useItemStore } from '@/stores/itemStore'
 import { useUserStore } from '@/stores/userStore'
 import { usePurchaseStore } from '@/stores/PurchaseStore'
 import type { Item } from '@/components/Models/Item'
+
+const { t } = useI18n()
 
 const itemStore = useItemStore()
 const userStore = useUserStore()
@@ -56,18 +59,18 @@ const handleBuy = async () => {
   try {
     const purchase = await purchaseStore.addPurchase(userId, item.id, item.price)
     if (purchase && purchase.id) {
-      showSnackbar("Compra realizada correctamente", "success")
+      showSnackbar(t('purchase_success'), "success")
       await userStore.refreshLoggedUser()
       closePopup()
     } else {
-      throw new Error("Respuesta inválida del servidor")
+      throw new Error(t('invalid_server_response'))
     }
   } catch (error: any) {
     const message = error?.data?.message
     if (message?.includes("no tiene suficiente oro")) {
-      showSnackbar("No tienes suficiente oro para realizar esta compra.", "error")
+      showSnackbar(t('not_enough_gold_snackbar'), "error")
     } else {
-      showSnackbar(message || "Hubo un problema al realizar la compra.", "error")
+      showSnackbar(message || t('purchase_error'), "error")
     }
     closePopup()
   }
@@ -109,7 +112,7 @@ const handleImageError = (event: Event) => {
         </div>
         <div>
           <h2 class="section-title">{{ $t('Rotacion Diaria') }}</h2>
-          <p class="section-subtitle">{{ $t('Ofertas limitadas que cambian cada día') }}</p>
+          <p class="section-subtitle">{{ $t('shop_subtitle') }}</p>
         </div>
         <div class="daily-badge">
           <v-icon size="20" color="#FFD700">mdi-timer-sand</v-icon>
@@ -130,7 +133,7 @@ const handleImageError = (event: Event) => {
           <div class="item-card daily-item" @click="openPopup(item)">
             <div class="item-glow" :style="{ background: `radial-gradient(circle, ${getItemColor(item.type)}40 0%, transparent 70%)` }"></div>
             <div class="daily-ribbon">
-              <span>DIARIO</span>
+              <span>{{ $t('daily_ribbon') }}</span>
             </div>
 
             <div class="item-image-wrapper" :style="{ borderColor: getItemColor(item.type), boxShadow: `0 0 20px ${getItemColor(item.type)}40` }">
@@ -173,7 +176,7 @@ const handleImageError = (event: Event) => {
               block
             >
               <v-icon left size="18">mdi-cart</v-icon>
-              {{ canAfford(item.price) ? $t('comprar') : $t('oro insuficiente') }}
+              {{ canAfford(item.price) ? $t('comprar') : $t('not_enough_gold') }}
             </v-btn>
           </div>
         </v-col>
@@ -188,7 +191,7 @@ const handleImageError = (event: Event) => {
         </div>
         <div>
           <h2 class="section-title strength-title">{{ $t('Objetos de fuerza') }}</h2>
-          <p class="section-subtitle">{{ $t('Aumenta tu poder físico') }}</p>
+          <p class="section-subtitle">{{ $t('strength_label') }}</p>
         </div>
       </div>
 
@@ -244,7 +247,7 @@ const handleImageError = (event: Event) => {
               block
             >
               <v-icon left size="18">mdi-cart</v-icon>
-              {{ canAfford(item.price) ? $t('comprar') : $t('oro insuficiente') }}
+              {{ canAfford(item.price) ? $t('comprar') : $t('not_enough_gold') }}
             </v-btn>
           </div>
         </v-col>
@@ -259,7 +262,7 @@ const handleImageError = (event: Event) => {
         </div>
         <div>
           <h2 class="section-title endurance-title">{{ $t('Objetos de resistencia') }}</h2>
-          <p class="section-subtitle">{{ $t('Mejora tu aguante') }}</p>
+          <p class="section-subtitle">{{ $t('endurance_label') }}</p>
         </div>
       </div>
 
@@ -315,7 +318,7 @@ const handleImageError = (event: Event) => {
               block
             >
               <v-icon left size="18">mdi-cart</v-icon>
-              {{ canAfford(item.price) ? $t('comprar') : $t('oro insuficiente') }}
+              {{ canAfford(item.price) ? $t('comprar') : $t('not_enough_gold') }}
             </v-btn>
           </div>
         </v-col>
@@ -347,7 +350,7 @@ const handleImageError = (event: Event) => {
         <v-card-text class="dialog-content">
           <div class="purchase-info">
             <div class="info-row">
-              <span class="info-label">{{ $t('Precio') }}:</span>
+              <span class="info-label">{{ $t('price') }}:</span>
               <div class="info-value gold-value">
                 <v-icon size="20" color="#FFD700">mdi-currency-usd</v-icon>
                 <strong>{{ selectedItem?.price }}</strong>
@@ -355,7 +358,7 @@ const handleImageError = (event: Event) => {
             </div>
 
             <div class="info-row">
-              <span class="info-label">{{ $t('Bonificación') }}:</span>
+              <span class="info-label">{{ $t('bonus_label') }}:</span>
               <div class="info-value">
                 <v-icon :color="getItemColor(selectedItem?.type || '')" size="20">{{ getItemIcon(selectedItem?.type || '') }}</v-icon>
                 <strong :style="{ color: getItemColor(selectedItem?.type || '') }">+{{ selectedItem?.bonus }}</strong>
@@ -365,7 +368,7 @@ const handleImageError = (event: Event) => {
             </div>
 
             <div class="info-row balance-row" :class="{ 'insufficient': !canAfford(selectedItem?.price || 0) }">
-              <span class="info-label">{{ $t('Tu oro') }}:</span>
+              <span class="info-label">{{ $t('gold_label') }}:</span>
               <div class="info-value">
                 <strong>{{ loggedUser?.gold || 0 }}</strong>
               </div>
@@ -378,7 +381,7 @@ const handleImageError = (event: Event) => {
             variant="tonal"
             class="mt-4"
           >
-            {{ $t('No tienes suficiente oro para esta compra') }}
+            {{ $t('not_enough_gold') }}
           </v-alert>
         </v-card-text>
 
@@ -394,7 +397,7 @@ const handleImageError = (event: Event) => {
             @click="handleBuy"
           >
             <v-icon left size="18">mdi-cart-check</v-icon>
-            {{ $t('confirmar compra') }}
+            {{ $t('complete_purchase') }}
           </v-btn>
         </v-card-actions>
       </v-card>

@@ -74,6 +74,7 @@ public class GeocodificacionRepository
             var result = JsonSerializer.Deserialize<OverpassResult>(json, options);
 
             var lista = new List<Establecimientos>();
+            var vistos = new HashSet<string>();
 
             if (result?.Elements != null)
             {
@@ -103,13 +104,41 @@ public class GeocodificacionRepository
                     }
                     // --------------------------
 
+                    var nombre = el.Tags?.Name?.Trim();
+                    if (string.IsNullOrWhiteSpace(nombre) || nombre.Equals("Sin nombre", StringComparison.OrdinalIgnoreCase))
+                        continue;
+
+                    // Evitar duplicados por nombre + coordenadas redondeadas (4 decimales ≈ 11m)
+                    string claveUnica = $"{nombre.ToLowerInvariant()}|{Math.Round(elLat, 4)}|{Math.Round(elLon, 4)}";
+                    if (!vistos.Add(claveUnica))
+                        continue;
+
+                    // --- Extraer información adicional ---
+                    string telefono = !string.IsNullOrWhiteSpace(el.Tags?.ContactPhone)
+                        ? el.Tags.ContactPhone
+                        : el.Tags?.Phone;
+
+                    string sitioWeb = !string.IsNullOrWhiteSpace(el.Tags?.ContactWebsite)
+                        ? el.Tags.ContactWebsite
+                        : el.Tags?.Website;
+
+                    string horario = el.Tags?.OpeningHours;
+                    string accesibilidad = el.Tags?.Wheelchair;
+                    string operador = el.Tags?.Operator;
+                    // ---------------------------------------
+
                     lista.Add(new Establecimientos
                     {
-                        Nombre = el.Tags?.Name ?? "Sin nombre",
+                        Nombre = nombre,
                         Lat = elLat,
                         Lon = elLon,
                         Direccion = direccionFinal,
-                        Tipo = tipo
+                        Tipo = tipo,
+                        Telefono = telefono,
+                        SitioWeb = sitioWeb,
+                        HorarioApertura = horario,
+                        Accesibilidad = accesibilidad,
+                        Operador = operador
                     });
                 }
             }
@@ -181,6 +210,27 @@ public class Tags
 
     [JsonPropertyName("addr:city")]
     public string City { get; set; }
+
+    [JsonPropertyName("phone")]
+    public string Phone { get; set; }
+
+    [JsonPropertyName("contact:phone")]
+    public string ContactPhone { get; set; }
+
+    [JsonPropertyName("website")]
+    public string Website { get; set; }
+
+    [JsonPropertyName("contact:website")]
+    public string ContactWebsite { get; set; }
+
+    [JsonPropertyName("opening_hours")]
+    public string OpeningHours { get; set; }
+
+    [JsonPropertyName("wheelchair")]
+    public string Wheelchair { get; set; }
+
+    [JsonPropertyName("operator")]
+    public string Operator { get; set; }
 }
 
 // --- CLASE MODELO FALTANTE PARA NOMINATIM ---

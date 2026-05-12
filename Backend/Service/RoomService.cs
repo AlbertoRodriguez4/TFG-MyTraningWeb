@@ -18,9 +18,9 @@ namespace AA2_CS.Service
             throw new NotImplementedException("Use CreateRoomWithUser instead.");
         }
 
-        public int CreateRoomWithUser(Room entity, int userId)
+        public int CreateRoomWithUser(Room entity, int userId, string? userRole)
         {
-            return _repository.CreateRoomWithUser(entity, userId);
+            return _repository.CreateRoomWithUser(entity, userId, userRole);
         }
 
         public int Delete(Room entity)

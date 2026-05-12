@@ -13,13 +13,15 @@ namespace AA2_CS.Services
         private readonly JWTConfigurer _jwtConfigurer;
         private readonly EmailService _emailService;
         private readonly EmailVerificationRepository _verificationRepository;
+        private readonly NotificationPreferenceRepository _notificationPreferenceRepository;
 
-        public AuthService(UserService userService, JWTConfigurer jwtConfigurer, EmailService emailService, EmailVerificationRepository verificationRepository)
+        public AuthService(UserService userService, JWTConfigurer jwtConfigurer, EmailService emailService, EmailVerificationRepository verificationRepository, NotificationPreferenceRepository notificationPreferenceRepository)
         {
             _userService = userService;
             _jwtConfigurer = jwtConfigurer;
             _emailService = emailService;
             _verificationRepository = verificationRepository;
+            _notificationPreferenceRepository = notificationPreferenceRepository;
         }
 
         public string Login(string email, string password)
@@ -41,6 +43,21 @@ namespace AA2_CS.Services
             await _verificationRepository.InvalidatePreviousAsync(registeredUser.id);
             var verification = new EmailVerification(registeredUser.id, verificationCode, expirationMinutes: 15);
             await _verificationRepository.AddAsync(verification);
+
+            // Crear preferencias de notificación por defecto
+            var defaultPref = new NotificationPreference
+            {
+                userid = registeredUser.id,
+                inactivityEnabled = true,
+                inactivityDays = 3,
+                roomsEnabled = true,
+                purchasesEnabled = true,
+                subscriptionExpiryEnabled = true,
+                createdat = DateTime.UtcNow,
+                updatedat = DateTime.UtcNow
+            };
+            await _notificationPreferenceRepository.AddAsync(defaultPref);
+
             bool emailSent = await _emailService.SendVerificationEmail(registeredUser.email, registeredUser.name, verificationCode);
             return (registeredUser, emailSent);
         }

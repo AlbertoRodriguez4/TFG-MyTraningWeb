@@ -3,35 +3,35 @@
     <v-card-text class="pa-6">
       <h3 class="text-h5 font-weight-bold mb-4 text-white">
   <v-icon color="purple" class="mr-2">mdi-calendar-week</v-icon>
-  Resumen Semanal
+  {{ $t('weeklySummary.title') }}
 </h3>
       <v-row>
         <v-col cols="6" md="3">
           <div class="summary-item">
             <v-icon size="40" color="purple">mdi-calendar-check</v-icon>
             <div class="summary-value">{{ completedRoutines }}</div>
-            <div class="summary-label">Entrenamientos</div>
+            <div class="summary-label">{{ $t('weeklySummary.trainings') }}</div>
           </div>
         </v-col>
         <v-col cols="6" md="3">
           <div class="summary-item">
             <v-icon size="40" color="amber">mdi-lightning-bolt</v-icon>
             <div class="summary-value">{{ userXP }}</div>
-            <div class="summary-label">XP Ganada</div>
+            <div class="summary-label">{{ $t('weeklySummary.xpEarned') }}</div>
           </div>
         </v-col>
         <v-col cols="6" md="3">
           <div class="summary-item">
             <v-icon size="40" color="orange">mdi-fire</v-icon>
             <div class="summary-value">{{ streak }}</div>
-            <div class="summary-label">Días Racha</div>
+            <div class="summary-label">{{ $t('weeklySummary.streakDays') }}</div>
           </div>
         </v-col>
         <v-col cols="6" md="3">
           <div class="summary-item">
             <v-icon size="40" color="green">mdi-target</v-icon>
             <div class="summary-value">{{ Math.round(xpProgress) }}%</div>
-            <div class="summary-label">Progreso</div>
+            <div class="summary-label">{{ $t('weeklySummary.progress') }}</div>
           </div>
         </v-col>
       </v-row>

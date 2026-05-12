@@ -8,14 +8,14 @@
           <div class="hero-text">
             <v-chip color="purple" dark class="mb-4 hero-badge elevation-4">
               <v-icon small left>mdi-fire</v-icon>
-              {{ streak }} días en racha
+              {{ $t('hero.streakDays', { streak }) }}
             </v-chip>
             <h1 class="display-2 font-weight-black white--text mb-4 hero-title">
-              Tu Calendario de<br>
-              <span class="gradient-text-hero">Entrenamiento</span>
+              {{ $t('hero.titleLine1') }}<br>
+              <span class="gradient-text-hero">{{ $t('hero.titleLine2') }}</span>
             </h1>
             <p class="text-h6 white--text mb-6 hero-subtitle">
-              Planifica, entrena y alcanza tus objetivos con nuestro sistema gamificado
+              {{ $t('hero.subtitle') }}
             </p>
             <div class="hero-actions">
               <v-btn
@@ -26,7 +26,7 @@
                 @click="handleCreateRoutine"
               >
                 <v-icon left color="purple">mdi-plus-circle</v-icon>
-                <span class="purple--text font-weight-bold">Crear Rutina</span>
+                <span class="purple--text font-weight-bold">{{ $t('calendar.createRoutineButton') }}</span>
               </v-btn>
               <v-btn
                 x-large
@@ -36,7 +36,7 @@
                 @click="showStats = true"
               >
                 <v-icon left>mdi-chart-timeline-variant</v-icon>
-                Ver Estadísticas
+                {{ $t('hero.viewStats') }}
               </v-btn>
             </div>
           </div>
@@ -59,27 +59,26 @@
       <v-card class="rest-dialog">
         <v-card-title class="rest-dialog-title">
           <v-icon large color="white" class="mr-3">mdi-sleep</v-icon>
-          <span>¡Momento de descansar!</span>
+          <span>{{ $t('restDialog.title') }}</span>
         </v-card-title>
         <v-card-text class="rest-dialog-text">
-          <p class="text-h6 mb-3">Ya has entrenado hoy 💪</p>
+          <p class="text-h6 mb-3">{{ $t('restDialog.alreadyTrained') }}</p>
           <p class="text-body-1">
-            Recuerda: <strong>la parte más importante de cualquier rutina es el descanso</strong>. 
-            Tu cuerpo necesita tiempo para recuperarse y crecer más fuerte.
+            {{ $t('restDialog.restAdvice') }}
           </p>
-          <p class="text-body-2 mt-3 purple--text text--lighten-1">
-            ✨ Vuelve mañana para continuar tu racha de {{ streak }} días
+          <p class="text-body-2 mt-3" style="color: #d8b4fe; font-weight: 600;">
+            {{ $t('restDialog.comeBackTomorrow', { streak }) }}
           </p>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
-            color="purple"
-            text
+            color="#a78bfa"
+            variant="elevated"
             large
             @click="showRestDialog = false"
           >
-            Entendido
+            {{ $t('common.gotIt') }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -314,6 +313,7 @@ export default defineComponent({
 .rest-dialog {
   border-radius: 16px;
   overflow: hidden;
+  background-color: #1e293b;
 }
 
 .rest-dialog-title {
@@ -327,10 +327,17 @@ export default defineComponent({
 .rest-dialog-text {
   padding: 32px 24px;
   text-align: center;
+  color: #f8fafc;
 }
 
 .rest-dialog-text p {
   line-height: 1.6;
+  color: #f8fafc;
+}
+
+.rest-dialog-text .text-h6 {
+  color: #ffffff;
+  font-weight: 700;
 }
 
 @media (max-width: 960px) {
@@ -398,6 +405,7 @@ export default defineComponent({
 
   .rest-dialog-text .text-h6 {
     font-size: 1rem !important;
+    color: #ffffff;
   }
 
   .rest-dialog-text .text-body-1 {

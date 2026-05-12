@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { API_BASE_URL, getAuthHeaders } from '@/config/api'
 import { logger } from '@/utils/logger'
 
@@ -19,6 +20,7 @@ export interface Subscription {
 }
 
 export const useSubscriptionStore = defineStore('subscription', () => {
+  const { t } = useI18n()
   const activeSubscription = ref<Subscription | null>(null)
   const subscriptionHistory = ref<Subscription[]>([])
   const hasActiveSubscription = ref(false)
@@ -48,7 +50,7 @@ export const useSubscriptionStore = defineStore('subscription', () => {
       hasActiveSubscription.value = data.hasActiveSubscription
     } catch (err) {
       logger.error('Error checking subscription:', err)
-      error.value = 'No se pudo verificar el estado de la suscripción'
+      error.value = t('subscription_check_error')
       hasActiveSubscription.value = false
     } finally {
       isLoading.value = false
@@ -85,7 +87,7 @@ export const useSubscriptionStore = defineStore('subscription', () => {
       return data
     } catch (err) {
       logger.error('Error getting active subscription:', err)
-      error.value = 'No se pudo obtener la suscripción activa'
+      error.value = t('subscription_active_error')
       activeSubscription.value = null
       hasActiveSubscription.value = false
       return null
@@ -118,7 +120,7 @@ export const useSubscriptionStore = defineStore('subscription', () => {
       return data
     } catch (err) {
       logger.error('Error getting subscription history:', err)
-      error.value = 'No se pudo obtener el historial de suscripciones'
+      error.value = t('subscription_history_error')
       return []
     } finally {
       isLoading.value = false
@@ -144,7 +146,7 @@ export const useSubscriptionStore = defineStore('subscription', () => {
       if (!response.ok) {
         return {
           success: false,
-          error: result.message || 'Error al procesar la compra'
+          error: result.message || t('subscription_purchase_error')
         }
       }
 
@@ -153,14 +155,14 @@ export const useSubscriptionStore = defineStore('subscription', () => {
 
       return {
         success: true,
-        message: result.message || '¡Suscripción activada con éxito!'
+        message: result.message || t('subscription_activated')
       }
     } catch (err) {
       logger.error('Error purchasing subscription:', err)
-      error.value = 'Error de conexión al procesar el pago'
+      error.value = t('subscription_payment_connection_error')
       return {
         success: false,
-        error: 'Error de conexión al procesar el pago'
+        error: t('subscription_payment_connection_error')
       }
     } finally {
       isLoading.value = false
@@ -186,7 +188,7 @@ export const useSubscriptionStore = defineStore('subscription', () => {
       if (!response.ok) {
         return {
           success: false,
-          error: result.message || 'Error al renovar la suscripción'
+          error: result.message || t('subscription_renew_error')
         }
       }
 
@@ -195,14 +197,14 @@ export const useSubscriptionStore = defineStore('subscription', () => {
 
       return {
         success: true,
-        message: result.message || '¡Suscripción renovada con éxito!'
+        message: result.message || t('subscription_renewed')
       }
     } catch (err) {
       logger.error('Error renewing subscription:', err)
-      error.value = 'Error de conexión al renovar'
+      error.value = t('subscription_renew_connection_error')
       return {
         success: false,
-        error: 'Error de conexión al renovar'
+        error: t('subscription_renew_connection_error')
       }
     } finally {
       isLoading.value = false
@@ -228,7 +230,7 @@ export const useSubscriptionStore = defineStore('subscription', () => {
       if (!response.ok) {
         return {
           success: false,
-          error: result.message || 'Error al cancelar la suscripción'
+          error: result.message || t('subscription_cancel_error')
         }
       }
 
@@ -238,14 +240,14 @@ export const useSubscriptionStore = defineStore('subscription', () => {
 
       return {
         success: true,
-        message: result.message || 'Suscripción cancelada'
+        message: result.message || t('subscription_cancelled')
       }
     } catch (err) {
       logger.error('Error cancelling subscription:', err)
-      error.value = 'Error de conexión al cancelar'
+      error.value = t('subscription_cancel_connection_error')
       return {
         success: false,
-        error: 'Error de conexión al cancelar'
+        error: t('subscription_cancel_connection_error')
       }
     } finally {
       isLoading.value = false

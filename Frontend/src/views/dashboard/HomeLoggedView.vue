@@ -41,9 +41,9 @@ function scrollToTop() {
           <div class="banner-content">
             <div class="welcome-icon">💪</div>
             <div class="welcome-text">
-              <h1 class="welcome-title">{{ $t('bienvenido') || 'Bienvenido' }}, <span class="username">{{
+              <h1 class="welcome-title">{{ $t('bienvenido') }}, <span class="username">{{
                 loggedUser.name }}</span></h1>
-              <p class="welcome-subtitle">{{ $t('listo_entrenar') || '¿Listo para superar tus límites?' }}</p>
+              <p class="welcome-subtitle">{{ $t('listo_entrenar') }}</p>
             </div>
           </div>
           <div class="banner-decoration">
@@ -57,7 +57,7 @@ function scrollToTop() {
         <section class="panel-section" v-if="loggedUser?.role !== 'userMaster'">
           <div class="section-header">
             <div class="section-icon">📊</div>
-            <h2 class="section-title">{{ $t('estadisticas') || 'Tus Estadísticas' }}</h2>
+            <h2 class="section-title">{{ $t('estadisticas') }}</h2>
             <div class="section-line"></div>
           </div>
           <div class="panel-wrapper">
@@ -69,7 +69,7 @@ function scrollToTop() {
         <section class="panel-section" v-if="loggedUser?.role !== 'userMaster'">
           <div class="section-header">
             <div class="section-icon">🎒</div>
-            <h2 class="section-title">{{ $t('inventario') || 'Tu Inventario' }}</h2>
+            <h2 class="section-title">{{ $t('inventario') }}</h2>
             <div class="section-line"></div>
           </div>
           <div class="panel-wrapper">
@@ -81,20 +81,13 @@ function scrollToTop() {
         <section class="panel-section admin-section" v-if="loggedUser?.role === 'userMaster'">
           <div class="section-header">
             <div class="section-icon admin-icon">⚙️</div>
-            <h2 class="section-title admin-title">{{ $t('panel_admin') || 'Panel de Administración' }}</h2>
+            <h2 class="section-title admin-title">{{ $t('panel_admin') }}</h2>
             <div class="section-line admin-line"></div>
           </div>
           <div class="panel-wrapper admin-wrapper">
             <AdminPanel v-model:selectedItem="selectedItem" v-model:selectedUser="selectedUser" />
           </div>
-          <button class="fab" @click="scrollToTop">
-            <span class="fab-icon">↑</span>
-          </button>
-          <div class="fab-container">
-            <button class="fab" @click="scrollToTop">
-              <span class="fab-icon">↑</span>
-            </button>
-          </div>
+          
         </section>
       </v-container>
     </v-main>

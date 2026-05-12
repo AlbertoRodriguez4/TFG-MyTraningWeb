@@ -3,10 +3,13 @@ import { useRoomStore } from '@/stores/RoomStore'
 import { useUserRoomStore } from '@/stores/UsersRoomStore'
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import CreateRoomPopup from '../PopUps/RoomPopup.vue'
 import { useUserStore } from '@/stores/userStore'
 import EditRoomPopup from '../PopUps/EditRoomPopup.vue'
 import RoomCard from './RoomCard.vue'
+
+const { t } = useI18n()
 
 const store = useRoomStore()
 const userRoomStore = useUserRoomStore()
@@ -150,35 +153,35 @@ const goToRoom = (roomId: number) => {
 
         <!-- Header -->
         <div class="rooms-header">
-            <div class="header-left">
-                <div class="header-icon-wrap">🏛️</div>
-                <div>
-                    <h2 class="header-title">Salas de Entrenamiento</h2>
-                    <p class="header-sub">{{ filteredRooms.length }} salas disponibles</p>
-                </div>
+        <div class="header-left">
+            <div class="header-icon-wrap">🏛️</div>
+            <div>
+                <h2 class="header-title">{{ $t('training_rooms') }}</h2>
+                <p class="header-sub">{{ $t('rooms_available', { count: filteredRooms.length }) }}</p>
             </div>
-            <button @click="showPopup" class="create-btn">
-                <span class="create-plus">+</span> Crear sala
-            </button>
+        </div>
+        <button @click="showPopup" class="create-btn">
+            <span class="create-plus">+</span> {{ $t('create_room') }}
+        </button>
         </div>
 
         <!-- Controls -->
         <div class="controls-bar">
             <div class="search-box">
                 <span class="search-icon">🔍</span>
-                <input v-model="searchTerm" type="text" placeholder="Buscar sala..." class="search-input" />
+                <input v-model="searchTerm" type="text" :placeholder="$t('search_room')" class="search-input" />
             </div>
             <div class="sort-group">
                 <button @click="toggleSort('level')" class="sort-btn" :class="{ active: sortField === 'level' }">
                     <span class="sort-icon">📊</span>
-                    Nivel
+                    {{ $t('level_label') }}
                     <span v-if="sortField === 'level'" class="sort-arrow">
                         {{ sortDirection === 'asc' ? '↑' : '↓' }}
                     </span>
                 </button>
                 <button @click="toggleSort('stats')" class="sort-btn" :class="{ active: sortField === 'stats' }">
                     <span class="sort-icon">💪</span>
-                    Stats
+                    {{ $t('stats_label') }}
                     <span v-if="sortField === 'stats'" class="sort-arrow">
                         {{ sortDirection === 'asc' ? '↑' : '↓' }}
                     </span>
@@ -196,8 +199,8 @@ const goToRoom = (roomId: number) => {
         <!-- Empty state -->
         <div v-if="filteredRooms.length === 0" class="empty-state">
             <div class="empty-icon">🏋️‍♂️</div>
-            <p class="empty-title">No se encontraron salas</p>
-            <p class="empty-sub">Ajusta la búsqueda o crea una nueva sala</p>
+            <p class="empty-title">{{ $t('no_rooms_found') }}</p>
+            <p class="empty-sub">{{ $t('adjust_search') }}</p>
         </div>
 
         <!-- Lista de cards -->
@@ -217,8 +220,11 @@ const goToRoom = (roomId: number) => {
         </div>
 
         <p v-if="filteredRooms.length > 0" class="pagination-info">
-            {{ (currentPage - 1) * itemsPerPage + 1 }}–{{ Math.min(currentPage * itemsPerPage, filteredRooms.length) }}
-            de {{ filteredRooms.length }} salas
+            {{ $t('rooms_pagination', {
+                start: (currentPage - 1) * itemsPerPage + 1,
+                end: Math.min(currentPage * itemsPerPage, filteredRooms.length),
+                total: filteredRooms.length
+            }) }}
         </p>
 
         <!-- Popups -->

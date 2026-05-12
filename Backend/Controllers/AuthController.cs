@@ -10,10 +10,12 @@ namespace AA2_CS.Controllers
     public class AuthController : ControllerBase
     {
         private readonly AuthService _authService;
+        private readonly ILogger<AuthController> _logger;
 
-        public AuthController(AuthService authService)
+        public AuthController(AuthService authService, ILogger<AuthController> logger)
         {
             _authService = authService;
+            _logger = logger;
         }
 
         [HttpPost("login")]
@@ -32,96 +34,68 @@ namespace AA2_CS.Controllers
             {
                 return StatusCode(403, new { message = ex.Message, requiresEmailVerification = true });
             }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            // El middleware global capturará cualquier otra excepción inesperada
         }
 
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] User user)
         {
-            try
+            var (registeredUser, emailSent) = await _authService.RegisterAsync(user);
+
+            if (!emailSent)
             {
-                var (registeredUser, emailSent) = await _authService.RegisterAsync(user);
-
-                if (!emailSent)
-                {
-                    return Ok(new {
-                        message = "Usuario registrado correctamente, pero no se pudo enviar el correo de verificación",
-                        emailSent = false,
-                        userId = registeredUser.id,
-                        email = registeredUser.email
-                    });
-                }
-
                 return Ok(new {
-                    message = "Usuario registrado correctamente. Se ha enviado un código de verificación a tu correo.",
-                    emailSent = true,
+                    message = "Usuario registrado correctamente, pero no se pudo enviar el correo de verificación",
+                    emailSent = false,
                     userId = registeredUser.id,
                     email = registeredUser.email
                 });
             }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+
+            return Ok(new {
+                message = "Usuario registrado correctamente. Se ha enviado un código de verificación a tu correo.",
+                emailSent = true,
+                userId = registeredUser.id,
+                email = registeredUser.email
+            });
         }
 
         [HttpPost("verify-email")]
         [AllowAnonymous]
         public async Task<IActionResult> VerifyEmail([FromBody] VerifyEmailRequest request)
         {
-            try
+            if (string.IsNullOrWhiteSpace(request.Email) || string.IsNullOrWhiteSpace(request.Code))
             {
-                if (string.IsNullOrWhiteSpace(request.Email) || string.IsNullOrWhiteSpace(request.Code))
-                {
-                    return BadRequest(new { message = "Email y código son obligatorios" });
-                }
-
-                var isVerified = await _authService.VerifyEmailAsync(request.Email, request.Code);
-
-                if (isVerified)
-                {
-                    return Ok(new { message = "Correo verificado exitosamente" });
-                }
-                else
-                {
-                    return BadRequest(new { message = "Código de verificación inválido o expirado" });
-                }
+                return BadRequest(new { message = "Email y código son obligatorios" });
             }
-            catch (Exception ex)
+
+            var isVerified = await _authService.VerifyEmailAsync(request.Email, request.Code);
+
+            if (isVerified)
             {
-                return BadRequest(ex.Message);
+                return Ok(new { message = "Correo verificado exitosamente" });
             }
+
+            return BadRequest(new { message = "Código de verificación inválido o expirado" });
         }
 
         [HttpPost("resend-verification")]
         [AllowAnonymous]
         public async Task<IActionResult> ResendVerification([FromBody] ResendVerificationRequest request)
         {
-            try
+            if (string.IsNullOrWhiteSpace(request.Email))
             {
-                if (string.IsNullOrWhiteSpace(request.Email))
-                {
-                    return BadRequest(new { message = "El email es obligatorio" });
-                }
-
-                var emailSent = await _authService.ResendVerificationEmailAsync(request.Email);
-
-                if (emailSent)
-                {
-                    return Ok(new { message = "Se ha reenviado el código de verificación a tu correo" });
-                }
-                else
-                {
-                    return BadRequest(new { message = "No se pudo reenviar el código de verificación. Es posible que tu correo ya esté verificado" });
-                }
+                return BadRequest(new { message = "El email es obligatorio" });
             }
-            catch (Exception ex)
+
+            var emailSent = await _authService.ResendVerificationEmailAsync(request.Email);
+
+            if (emailSent)
             {
-                return BadRequest(ex.Message);
+                return Ok(new { message = "Se ha reenviado el código de verificación a tu correo" });
             }
+
+            return BadRequest(new { message = "No se pudo reenviar el código de verificación. Es posible que tu correo ya esté verificado" });
         }
     }
 }

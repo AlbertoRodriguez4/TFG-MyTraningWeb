@@ -18,6 +18,9 @@ import ProfileSettingsView from '@/views/profile/ProfileSettingsView.vue'
 import HealthCalculatorView from '@/views/features/HealthCalculatorView.vue'
 import ChatView from '@/views/rooms/ChatView.vue'
 import PaymentView from '@/views/plans/PaymentView.vue'
+import AchievementsView from '@/views/features/AchievementsView.vue'
+import BodyMetricsView from '@/views/features/BodyMetricsView.vue'
+import ExercisesView from '@/views/features/ExercisesView.vue'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -66,7 +69,6 @@ const routes: RouteRecordRaw[] = [
     path: '/verify-email',
     name: 'verifyEmail',
     component: VerifyEmailView,
-    meta: { requiresAuth: true },
   },
   {
     path: '/login',
@@ -107,6 +109,24 @@ const routes: RouteRecordRaw[] = [
     path: '/payment',
     name: 'payment',
     component: PaymentView,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/achievements',
+    name: 'achievements',
+    component: AchievementsView,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/body-metrics',
+    name: 'bodyMetrics',
+    component: BodyMetricsView,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/exercises',
+    name: 'exercises',
+    component: ExercisesView,
     meta: { requiresAuth: true },
   }
 ]

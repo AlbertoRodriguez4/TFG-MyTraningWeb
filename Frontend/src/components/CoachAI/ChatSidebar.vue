@@ -18,13 +18,13 @@
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
           </svg>
-          Chat
+          {{ t('chat.navChat') }}
         </a>  
       </nav>
 
       <!-- Stats -->
       <div class="stats-block">
-        <p class="stats-title">HOY</p>
+        <p class="stats-title">{{ t('common.today') }}</p>
         <div class="stat-row" v-for="s in stats" :key="s.label">
           <span class="stat-emoji">{{ s.emoji }}</span>
           <div class="stat-info">
@@ -43,10 +43,10 @@
       <div class="user-row">
         <div class="user-ava">A</div>
         <div class="user-data">
-          <span class="user-name">{{ loggedUser?.name || 'Usuario' }}</span>
-          <span class="user-plan">Plan Premium</span>
+          <span class="user-name">{{ loggedUser?.name || t('common.user') }}</span>
+          <span class="user-plan">{{ t('chat.premiumPlan') }}</span>
         </div>
-        <div class="upgrade-pip" title="Mejora tu plan" />
+        <div class="upgrade-pip" :title="t('chat.upgradePlan')" />
       </div>
 
     </div>
@@ -54,9 +54,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useUserStore } from '../../stores/userStore'
 import { logger } from '@/utils/logger'
+
+const { t } = useI18n()
 
 defineProps({
   open: { type: Boolean, default: false }
@@ -75,9 +78,9 @@ interface Stat {
 
 // 1. Estado inicial limpio (se muestra mientras carga)
 const stats = ref<Stat[]>([
-  { emoji: '🔥', label: 'Calorías', value: '--- kcal', pct: 0, color: 'fill-orange' },
-  { emoji: '🥩', label: 'Proteína', value: '--- g', pct: 0, color: 'fill-red' },
-  { emoji: '🍚', label: 'Carbos', value: '--- g', pct: 0, color: 'fill-yellow' },
+  { emoji: '🔥', label: t('chat.calories'), value: '--- kcal', pct: 0, color: 'fill-orange' },
+  { emoji: '🥩', label: t('chat.protein'), value: '--- g', pct: 0, color: 'fill-red' },
+  { emoji: '🍚', label: t('chat.carbs'), value: '--- g', pct: 0, color: 'fill-yellow' },
 ])
 
 // 2. Extraemos los datos más importantes al montar el componente
@@ -92,23 +95,21 @@ onMounted(() => {
       stats.value = [
         {
           emoji: '🔥',
-          label: 'Calorías',
+          label: t('chat.calories'),
           value: `${parsed.tdee} kcal`,
-          // Nota: Si luego añades un registro de lo comido hoy, 
-          // aquí calcularías: (consumido / tdee) * 100
           pct: 100,
           color: 'fill-orange'
         },
         {
           emoji: '🥩',
-          label: 'Proteína',
+          label: t('chat.protein'),
           value: `${parsed.macros?.protein} g`,
           pct: 100,
           color: 'fill-red'
         },
         {
           emoji: '🍚',
-          label: 'Carbos',
+          label: t('chat.carbs'),
           value: `${parsed.macros?.carbs} g`,
           pct: 100,
           color: 'fill-yellow'

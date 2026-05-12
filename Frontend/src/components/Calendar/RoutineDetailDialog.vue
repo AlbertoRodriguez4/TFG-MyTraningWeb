@@ -17,7 +17,7 @@
                             <v-icon small left>
                                 {{ routine.iscompleted ? 'mdi-check' : 'mdi-clock-outline' }}
                             </v-icon>
-                            {{ routine.iscompleted ? 'Completada' : 'Pendiente' }}
+                            {{ routine.iscompleted ? t('common.completed') : t('common.pending') }}
                         </v-chip>
                     </div>
                 </div>
@@ -30,7 +30,7 @@
                 <div class="section">
                     <div class="section-label">
                         <v-icon color="purple" class="mr-2">mdi-text</v-icon>
-                        Descripción
+                        {{ t('common.description') }}
                     </div>
                     <p class="section-text">{{ routine.description }}</p>
                 </div>
@@ -41,7 +41,7 @@
                             <v-icon :color="getDifficultyColor(routine.difficulty)" large>
                                 mdi-gauge
                             </v-icon>
-                            <div class="info-label">Dificultad</div>
+                            <div class="info-label">{{ t('common.difficulty') }}</div>
                             <div class="info-value" :style="{ color: getDifficultyColor(routine.difficulty) }">
                                 {{ getDifficultyText(routine.difficulty) }}
                             </div>
@@ -51,7 +51,7 @@
                     <v-col cols="12" sm="4">
                         <div class="info-card">
                             <v-icon color="amber" large>mdi-star</v-icon>
-                            <div class="info-label">Experiencia</div>
+                            <div class="info-label">{{ t('common.experience') }}</div>
                             <div class="info-value" style="color: #FFA726">+{{ routine.reward }} XP</div>
                         </div>
                     </v-col>
@@ -59,7 +59,7 @@
                     <v-col cols="12" sm="4">
                         <div class="info-card">
                             <v-icon color="yellow darken-2" large>mdi-coin</v-icon>
-                            <div class="info-label">Monedas</div>
+                            <div class="info-label">{{ t('common.coins') }}</div>
                             <div class="info-value" style="color: #F9A825">+50</div>
                         </div>
                     </v-col>
@@ -68,7 +68,7 @@
                 <div class="section">
                     <div class="section-label">
                         <v-icon color="purple" class="mr-2">mdi-calendar</v-icon>
-                        Fecha programada
+                        {{ t('routineDetail.scheduledDate') }}
                     </div>
                     <p class="section-text">{{ routine.createdat ? formatDate(routine.createdat.toString()) : '-' }}</p>
                 </div>
@@ -77,8 +77,8 @@
                     <div class="completed-message">
                         <v-icon large color="success" class="mr-3">mdi-trophy</v-icon>
                         <div>
-                            <div class="font-weight-bold">¡Excelente trabajo! 🎉</div>
-                            <div class="text-caption">Has completado esta rutina con éxito</div>
+                            <div class="font-weight-bold">{{ t('routineDetail.greatJob') }}</div>
+                            <div class="text-caption">{{ t('routineDetail.completedSuccess') }}</div>
                         </div>
                     </div>
                 </v-alert>
@@ -87,7 +87,7 @@
             <v-card-actions class="routine-actions">
                 <v-spacer></v-spacer>
                 <v-btn text large @click="$emit('update:modelValue', false)">
-                    Cerrar
+                    {{ t('common.close') }}
                 </v-btn>
                 <v-btn 
                     v-if="!routine.iscompleted" 
@@ -98,7 +98,7 @@
                     @click="showConfirmDialog = true"
                 >
                     <v-icon left>mdi-check-circle</v-icon>
-                    Marcar como completada
+                    {{ t('routineDetail.markCompleted') }}
                 </v-btn>
             </v-card-actions>
         </v-card>
@@ -108,22 +108,22 @@
             <v-card class="confirm-dialog">
                 <v-card-title class="text-h5 confirm-title">
                     <v-icon large color="amber" class="mr-2">mdi-alert-circle</v-icon>
-                    ¿Estás seguro?
+                    {{ t('common.areYouSure') }}
                 </v-card-title>
                 <v-card-text class="confirm-text">
-                    <p>Estás a punto de marcar esta rutina como completada.</p>
+                    <p>{{ t('routineDetail.confirmCompleteText') }}</p>
                     <v-alert type="warning" dense outlined class="mt-3" color="amber">
-                        <strong>⚠️ Esta acción no se puede deshacer</strong>
+                        <strong>{{ t('routineDetail.actionCannotBeUndone') }}</strong>
                     </v-alert>
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn text @click="showConfirmDialog = false" class="cancel-btn">
-                        Cancelar
+                        {{ t('common.cancel') }}
                     </v-btn>
                     <v-btn color="success" @click="confirmComplete" class="confirm-btn">
                         <v-icon left>mdi-check</v-icon>
-                        Sí, completar
+                        {{ t('routineDetail.yesComplete') }}
                     </v-btn>
                 </v-card-actions>
             </v-card>
@@ -133,6 +133,7 @@
 
 <script lang="ts">
 import { defineComponent, type PropType, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import type { Routines } from '@/components/Models/Routines';
 
 export default defineComponent({
@@ -148,8 +149,9 @@ export default defineComponent({
         }
     },
     emits: ['update:modelValue', 'complete'],
-    setup(props, { emit }) {
-        const showConfirmDialog = ref(false);
+  setup(props, { emit }) {
+    const { t, locale } = useI18n();
+    const showConfirmDialog = ref(false);
 
         const confirmComplete = () => {
             if (props.routine) {
@@ -159,13 +161,13 @@ export default defineComponent({
         };
 
         const getDifficultyText = (difficulty: number): string => {
-            const difficulties: Record<number, string> = {
-                1: 'Fácil',
-                2: 'Moderada',
-                3: 'Difícil',
-                4: 'Extrema'
+            const map: Record<number, string> = {
+                1: t('difficulty.easy'),
+                2: t('difficulty.medium'),
+                3: t('difficulty.hard'),
+                4: t('difficulty.extreme')
             };
-            return difficulties[difficulty] || 'Desconocida';
+            return map[difficulty] || t('difficulty.medium');
         };
 
         const getDifficultyColor = (difficulty: number): string => {
@@ -187,7 +189,7 @@ export default defineComponent({
                 month: 'long',
                 day: 'numeric'
             };
-            return date.toLocaleDateString('es-ES', options);
+            return date.toLocaleDateString(locale.value, options);
         };
 
         return {
@@ -195,7 +197,8 @@ export default defineComponent({
             confirmComplete,
             getDifficultyText,
             getDifficultyColor,
-            formatDate
+            formatDate,
+            t
         };
     }
 });

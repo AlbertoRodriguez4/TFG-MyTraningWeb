@@ -6,13 +6,15 @@ namespace AA2_CS.Service
     {
         private readonly TasksRepository _tasksRepository;
         private readonly UserRepository _userRepository;
-        private readonly UserService _userService; // INYECCIÓN DEL USER SERVICE
+        private readonly UserService _userService;
+        private readonly AchievementService _achievementService;
 
-        public TasksService(TasksRepository tasksRepository, UserRepository userRepository, UserService userService)
+        public TasksService(TasksRepository tasksRepository, UserRepository userRepository, UserService userService, AchievementService achievementService)
         {
             _tasksRepository = tasksRepository;
             _userRepository = userRepository;
             _userService = userService;
+            _achievementService = achievementService;
         }
 
         public int Add(Model.Task entity)
@@ -48,7 +50,7 @@ namespace AA2_CS.Service
         {
             return _tasksRepository.FindByUserId(userId);
         }
-        public string CompleteTask(int taskId)
+        public async System.Threading.Tasks.Task<string> CompleteTask(int taskId)
         {
             var task = _tasksRepository.FindById(taskId);
             if (task == null) return "Task not found";
@@ -105,11 +107,35 @@ namespace AA2_CS.Service
             _userRepository.Update(user);
 
             // 6. APLICAR EXPERIENCIA (Usando el nuevo sistema)
-            // Aquí asumimos que la 'reward' de la tarea es la cantidad de XP que gana
-            // O puedes definir una fórmula fija, ej: task.reward * 2
             _userService.AddExperience(user.id, task.reward);
 
+            // 7. VERIFICAR LOGROS
+            await CheckAchievementsAsync(user.id);
+
             return "Task completed and rewards applied successfully";
+        }
+
+        private async System.Threading.Tasks.Task CheckAchievementsAsync(int userId)
+        {
+            var user = _userRepository.FindById(userId);
+            if (user == null) return;
+
+            // Logros por tareas completadas
+            var completedTasksCount = _tasksRepository.FindByUserId(userId).Count(t => t.iscompleted);
+            await _achievementService.CheckAndUnlockAsync(userId, "tasks_completed", completedTasksCount);
+
+            // Logros por racha
+            await _achievementService.CheckAndUnlockAsync(userId, "streak_days", user.consistencystreak);
+
+            // Logros por nivel
+            await _achievementService.CheckAndUnlockAsync(userId, "level_reached", user.level);
+
+            // Logros por oro
+            await _achievementService.CheckAndUnlockAsync(userId, "gold_earned", user.gold);
+
+            // Logros por stats
+            await _achievementService.CheckAndUnlockAsync(userId, "strength_reached", user.strength);
+            await _achievementService.CheckAndUnlockAsync(userId, "endurance_reached", user.endurance);
         }
     }
 }

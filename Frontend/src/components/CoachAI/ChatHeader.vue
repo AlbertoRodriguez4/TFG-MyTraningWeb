@@ -2,7 +2,7 @@
   <header class="topbar">
 
     <!-- Mobile menu button -->
-    <button class="menu-btn" @click="$emit('toggle-sidebar')" aria-label="Menú">
+    <button class="menu-btn" @click="$emit('toggle-sidebar')"       :aria-label="t('chat.menuAria')">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
         <line x1="3" y1="6"  x2="21" y2="6"/>
         <line x1="3" y1="12" x2="21" y2="12"/>
@@ -22,7 +22,7 @@
         <p class="topbar-name">CoachAI</p>
         <p class="topbar-status">
           <span class="pulse-dot"/>
-          Online · Listo para entrenar
+          {{ t('chat.onlineStatus') }}
         </p>
       </div>
     </div>
@@ -39,6 +39,8 @@
 </template>
 
 <script setup>
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 defineEmits(['toggle-sidebar'])
 </script>
 

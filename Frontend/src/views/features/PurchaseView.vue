@@ -29,7 +29,7 @@ watchEffect(() => {
                 <h1 class="shop-title">
                   {{ $t('tienda') }}
                 </h1>
-                <p class="shop-subtitle">{{ $t('mejora tus atributos con objetos únicos') }}</p>
+                <p class="shop-subtitle">{{ $t('shop_subtitle') }}</p>
               </div>
             </div>
             

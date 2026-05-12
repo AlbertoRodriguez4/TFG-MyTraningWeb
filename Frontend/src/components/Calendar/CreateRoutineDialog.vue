@@ -14,10 +14,10 @@
           <div class="header-text">
             <div class="level-badge">
               <v-icon small color="white">mdi-star</v-icon>
-              <span>CREAR RUTINA</span>
+              <span>{{ t('calendar.createRoutineTitle') }}</span>
             </div>
             <h2 class="text-h3 font-weight-black white--text mb-2 title-glow">
-              Nueva Rutina Épica
+              {{ t('calendar.newEpicRoutine') }}
             </h2>
             <div class="d-flex align-center">
               <div class="date-chip">
@@ -34,6 +34,24 @@
 
       <!-- Contenido del formulario -->
       <v-card-text class="pa-8 dialog-body">
+        <!-- Advertencia si la fecha es pasada -->
+        <v-alert
+          v-if="isPastDate"
+          type="warning"
+          colored-border
+          border="start"
+          elevation="2"
+          class="mb-6"
+        >
+          <div class="d-flex align-center">
+            <v-icon color="amber" class="mr-3">mdi-calendar-remove</v-icon>
+            <div>
+              <div class="font-weight-bold">{{ t('calendar.cannotCreatePast') }}</div>
+              <div class="text-caption">{{ t('calendar.selectFutureDate') }}</div>
+            </div>
+          </div>
+        </v-alert>
+
         <!-- Nombre de la rutina con efecto gaming -->
         <div class="form-section mb-8">
           <div class="section-header mb-4">
@@ -41,16 +59,16 @@
               <v-icon color="white" size="24">mdi-format-title</v-icon>
             </div>
             <div>
-              <div class="section-title">Nombre de tu Rutina</div>
-              <div class="section-subtitle">Dale un nombre épico a tu entrenamiento</div>
+              <div class="section-title">{{ t('calendar.routineNameTitle') }}</div>
+              <div class="section-subtitle">{{ t('calendar.routineNameSubtitle') }}</div>
             </div>
             <v-chip x-small color="error" class="ml-auto chip-required">
               <v-icon x-small left>mdi-alert-circle</v-icon>
-              Requerido
+              {{ t('common.required') }}
             </v-chip>
           </div>
           <div class="input-wrapper">
-            <v-text-field v-model="localRoutineName" placeholder="Ej: Destrucción de Piernas - Día del Juicio" outlined
+            <v-text-field v-model="localRoutineName" :placeholder="t('calendar.routineNamePlaceholder')" outlined
               dense color="purple" hide-details="auto" class="custom-textfield-epic">
               <template v-slot:prepend-inner>
                 <div class="input-icon-wrapper">
@@ -78,12 +96,12 @@
               <v-icon color="white" size="24">mdi-target</v-icon>
             </div>
             <div>
-              <div class="section-title">Enfoque de Entrenamiento</div>
-              <div class="section-subtitle">Selecciona el tipo de entrenamiento</div>
+              <div class="section-title">{{ t('calendar.trainingFocusTitle') }}</div>
+              <div class="section-subtitle">{{ t('calendar.trainingFocusSubtitle') }}</div>
             </div>
             <v-chip x-small color="error" class="ml-auto chip-required">
               <v-icon x-small left>mdi-alert-circle</v-icon>
-              Requerido
+              {{ t('common.required') }}
             </v-chip>
           </div>
           <div class="training-type-selector">
@@ -113,17 +131,17 @@
               <v-icon color="white" size="24">mdi-clipboard-list-outline</v-icon>
             </div>
             <div>
-              <div class="section-title">Ejercicios Principales</div>
-              <div class="section-subtitle">Define tu arsenal de ejercicios</div>
+              <div class="section-title">{{ t('calendar.mainExercisesTitle') }}</div>
+              <div class="section-subtitle">{{ t('calendar.mainExercisesSubtitle') }}</div>
             </div>
             <v-chip x-small color="error" class="ml-auto chip-required">
               <v-icon x-small left>mdi-alert-circle</v-icon>
-              Requerido
+              {{ t('common.required') }}
             </v-chip>
           </div>
           <div class="input-wrapper">
             <v-textarea v-model="localRoutineExercises"
-              placeholder="Lista tus ejercicios con sets y reps:&#10;🔥 Sentadilla Profunda 4x10 (RPE 9)&#10;💪 Prensa Inclinada 3x12&#10;⚡ Peso Muerto Rumano 4x8&#10;🎯 Extensiones de Cuádriceps 3x15"
+              :placeholder="t('calendar.exercisesPlaceholder')"
               outlined color="purple" hide-details="auto" rows="5" class="custom-textfield-epic" auto-grow>
               <template v-slot:prepend-inner>
                 <div class="input-icon-wrapper">
@@ -142,7 +160,7 @@
           <div class="tips-box mt-3">
             <v-icon small color="amber" class="mr-2">mdi-lightbulb-on</v-icon>
             <span class="text-caption font-weight-medium">
-              Pro Tip: Incluye series, repeticiones y RPE para maximizar tu progreso
+              {{ t('calendar.proTip') }}
             </span>
           </div>
         </div>
@@ -157,8 +175,8 @@
                   <v-icon color="white" size="24">mdi-speedometer</v-icon>
                 </div>
                 <div>
-                  <div class="section-title">Nivel de Desafío</div>
-                  <div class="section-subtitle">¿Qué tan intenso será?</div>
+                  <div class="section-title">{{ t('calendar.challengeLevelTitle') }}</div>
+                  <div class="section-subtitle">{{ t('calendar.challengeLevelSubtitle') }}</div>
                 </div>
               </div>
               <div class="difficulty-selector">
@@ -185,13 +203,13 @@
                   <v-icon color="white" size="24">mdi-clock-fast</v-icon>
                 </div>
                 <div>
-                  <div class="section-title">Duración Estimada</div>
-                  <div class="section-subtitle">Tiempo de entrenamiento</div>
+                  <div class="section-title">{{ t('calendar.estimatedDurationTitle') }}</div>
+                  <div class="section-subtitle">{{ t('calendar.estimatedDurationSubtitle') }}</div>
                 </div>
               </div>
               <div class="duration-display">
                 <div class="duration-value">{{ estimatedDuration }}</div>
-                <div class="duration-unit">minutos</div>
+                <div class="duration-unit">{{ t('common.minutes') }}</div>
               </div>
               <v-slider v-model="estimatedDuration" :min="15" :max="120" :step="15" color="purple"
                 track-color="grey lighten-3" class="custom-slider-epic mt-4" hide-details>
@@ -204,7 +222,7 @@
               </v-slider>
               <div class="duration-bonus mt-2">
                 <v-icon small color="success">mdi-plus-circle</v-icon>
-                <span>+{{ durationBonus }} XP por intensidad</span>
+                <span>{{ t('calendar.durationBonus', { bonus: durationBonus }) }}</span>
               </div>
             </div>
           </v-col>
@@ -219,10 +237,10 @@
               </div>
               <div>
                 <h3 class="text-h4 font-weight-black mb-1">
-                  Recompensas Épicas
+                  {{ t('calendar.epicRewardsTitle') }}
                 </h3>
                 <p class="rewards-subtitle mb-0">
-                  Completa esta rutina y conquista estas recompensas
+                  {{ t('calendar.epicRewardsSubtitle') }}
                 </p>
               </div>
             </div>
@@ -237,7 +255,7 @@
                   <v-icon size="48" color="white">mdi-star-circle</v-icon>
                 </div>
                 <div class="reward-amount">{{ calculatedXP }}</div>
-                <div class="reward-label">Experiencia</div>
+                <div class="reward-label">{{ t('calendar.rewardXP') }}</div>
                 <div class="reward-progress">
                   <v-progress-linear :value="75" height="6" color="white" background-color="rgba(255,255,255,0.2)"
                     rounded></v-progress-linear>
@@ -254,10 +272,10 @@
                   <v-icon size="48" color="white">mdi-cash-multiple</v-icon>
                 </div>
                 <div class="reward-amount">{{ calculatedRewards.gold }}</div>
-                <div class="reward-label">Monedas</div>
+                <div class="reward-label">{{ t('calendar.rewardCoins') }}</div>
                 <div class="reward-info">
                   <v-icon x-small color="white">mdi-store</v-icon>
-                  <span>Úsalas en la tienda</span>
+                  <span>{{ t('calendar.useInShop') }}</span>
                 </div>
               </div>
             </v-col>
@@ -270,10 +288,10 @@
                   <v-icon size="48" color="white">mdi-arm-flex</v-icon>
                 </div>
                 <div class="reward-amount">+{{ calculatedRewards.strength }}</div>
-                <div class="reward-label">Fuerza</div>
+                <div class="reward-label">{{ t('calendar.rewardStrength') }}</div>
                 <div class="reward-info">
                   <v-icon x-small color="white">mdi-trending-up</v-icon>
-                  <span>Mejora tu poder</span>
+                  <span>{{ t('calendar.improvePower') }}</span>
                 </div>
               </div>
             </v-col>
@@ -286,10 +304,10 @@
                   <v-icon size="48" color="white">mdi-run-fast</v-icon>
                 </div>
                 <div class="reward-amount">+{{ calculatedRewards.endurance }}</div>
-                <div class="reward-label">Resistencia</div>
+                <div class="reward-label">{{ t('calendar.rewardEndurance') }}</div>
                 <div class="reward-info">
                   <v-icon x-small color="white">mdi-lightning-bolt</v-icon>
-                  <span>Aumenta tu energía</span>
+                  <span>{{ t('calendar.increaseEnergy') }}</span>
                 </div>
               </div>
             </v-col>
@@ -302,10 +320,10 @@
                   <v-icon size="48" color="white">mdi-fire</v-icon>
                 </div>
                 <div class="reward-amount">+1</div>
-                <div class="reward-label">Racha Activa</div>
+                <div class="reward-label">{{ t('calendar.rewardStreak') }}</div>
                 <div class="reward-info">
                   <v-icon x-small color="white">mdi-trending-up</v-icon>
-                  <span>Mantén el impulso</span>
+                  <span>{{ t('calendar.keepMomentum') }}</span>
                 </div>
               </div>
             </v-col>
@@ -315,15 +333,15 @@
           <div class="achievements-preview">
             <div class="achievement-item">
               <v-icon color="amber">mdi-medal</v-icon>
-              <span>Primera Rutina Completada</span>
+              <span>{{ t('calendar.achievementFirstRoutine') }}</span>
             </div>
             <div class="achievement-item">
               <v-icon color="purple">mdi-crown</v-icon>
-              <span>Desbloquea Salas Premium</span>
+              <span>{{ t('calendar.achievementPremiumRooms') }}</span>
             </div>
             <div class="achievement-item">
               <v-icon color="blue">mdi-account-group</v-icon>
-              <span>+10 Puntos de Comunidad</span>
+              <span>{{ t('calendar.achievementCommunityPoints') }}</span>
             </div>
           </div>
         </div>
@@ -335,23 +353,23 @@
         <div class="footer-stats">
           <div class="stat-item">
             <v-icon small color="grey darken-1">mdi-calendar-check</v-icon>
-            <span>Fecha: {{ formatDate }}</span>
+            <span>{{ t('calendar.footerDate', { date: formatDate }) }}</span>
           </div>
           <div class="stat-item">
             <v-icon small color="grey darken-1">mdi-account</v-icon>
-            <span>Personal</span>
+            <span>{{ t('calendar.footerPersonal') }}</span>
           </div>
         </div>
         <v-spacer></v-spacer>
         <v-btn x-large text @click="handleClose" class="px-8 cancel-btn">
           <v-icon left>mdi-close-circle-outline</v-icon>
-          Cancelar
+          {{ t('common.cancel') }}
         </v-btn>
         <v-btn x-large color="purple" dark depressed @click="handleCreate" :disabled="!isFormValid" :loading="creating"
           class="px-10 ml-4 create-btn-epic" elevation="8">
           <v-icon left size="28">mdi-rocket-launch</v-icon>
           <span class="button-text">
-            <span class="main-text">Crear Rutina</span>
+            <span class="main-text">{{ t('calendar.createRoutineButton') }}</span>
             <span class="sub-text">+{{ calculatedXP }} XP</span>
           </span>
         </v-btn>
@@ -362,12 +380,16 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import type { Routines } from '../Models/Routines';
+
+const { t } = useI18n();
 
 // Props
 interface Props {
   value?: boolean;
   selectedDay?: number | null;
+  selectedDate?: Date | null;
   monthName: string;
   routineName?: string;
   routineExercises?: string;
@@ -377,6 +399,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   value: false,
   selectedDay: null,
+  selectedDate: null,
   routineName: '',
   routineExercises: ''
 });
@@ -415,62 +438,71 @@ const localRoutineName = ref('');
 const localRoutineExercises = ref('');
 const trainingFocus = ref('strength'); // NUEVO
 
-const difficultyLevels: DifficultyLevel[] = [
+const difficultyLevels = computed<DifficultyLevel[]>(() => [
   {
     value: 0,
-    label: 'Principiante',
+    label: t('difficulty.beginner'),
     icon: 'mdi-leaf',
     color: '#4caf50',
     xpBonus: 0
   },
   {
     value: 1,
-    label: 'Intermedio',
+    label: t('difficulty.intermediate'),
     icon: 'mdi-lightning-bolt',
     color: '#ff9800',
     xpBonus: 50
   },
   {
     value: 2,
-    label: 'Avanzado',
+    label: t('difficulty.advanced'),
     icon: 'mdi-fire',
     color: '#f44336',
     xpBonus: 100
   }
-];
+]);
 
 // NUEVO: Tipos de entrenamiento
-const trainingTypes: TrainingType[] = [
+const trainingTypes = computed<TrainingType[]>(() => [
   {
     value: 'strength',
-    label: 'Fuerza',
+    label: t('calendar.strength'),
     icon: 'mdi-dumbbell',
     color: '#e74c3c',
-    description: 'Aumenta Fuerza'
+    description: t('calendar.strengthDesc')
   },
   {
     value: 'endurance',
-    label: 'Resistencia',
+    label: t('calendar.endurance'),
     icon: 'mdi-run-fast',
     color: '#3498db',
-    description: 'Aumenta Resistencia'
+    description: t('calendar.enduranceDesc')
   },
   {
     value: 'ambas',
-    label: 'Híbrido',
+    label: t('calendar.hybrid'),
     icon: 'mdi-star-four-points',
     color: '#9b59b6',
-    description: 'Fuerza + Resistencia'
+    description: t('calendar.hybridDesc')
   }
-];
+]);
 
 // Computed
 const formatDate = computed(() => {
-  return `${props.selectedDay} de ${props.monthName}`;
+  return `${props.selectedDay} ${t('common.of')} ${props.monthName}`;
+});
+
+const isPastDate = computed(() => {
+  if (!props.selectedDate) return false;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const selected = new Date(props.selectedDate);
+  selected.setHours(0, 0, 0, 0);
+  return selected.getTime() < today.getTime();
 });
 
 const isFormValid = computed(() => {
-  return localRoutineName.value && localRoutineExercises.value && trainingFocus.value;
+  return localRoutineName.value && localRoutineExercises.value && trainingFocus.value && !isPastDate.value;
 });
 
 const durationBonus = computed(() => {
@@ -479,7 +511,7 @@ const durationBonus = computed(() => {
 
 const calculatedXP = computed(() => {
   const baseXP = 100;
-  const difficultyBonus = difficultyLevels[selectedDifficulty.value].xpBonus;
+  const difficultyBonus = difficultyLevels.value[selectedDifficulty.value]?.xpBonus ?? 0;
   return baseXP + difficultyBonus + durationBonus.value;
 });
 
@@ -539,6 +571,8 @@ const handleCreate = async () => {
   await new Promise(resolve => setTimeout(resolve, 500));
 
   // Crear objeto que cumple con la interfaz Routines
+  // Usar la fecha seleccionada en el calendario, o hoy si no hay fecha
+  const routineDate = props.selectedDate ? new Date(props.selectedDate) : new Date();
   const newRoutine: Routines = {
     id: 0,
     name: localRoutineName.value,
@@ -547,7 +581,7 @@ const handleCreate = async () => {
     reward: calculatedXP.value,
     trainingfocus: trainingFocus.value, // NUEVO CAMPO
     iscompleted: false,
-    createdat: new Date(),
+    createdat: routineDate,
     userId: props.userId
   };
 

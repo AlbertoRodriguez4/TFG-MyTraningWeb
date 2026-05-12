@@ -7,6 +7,11 @@ namespace AA2_CS.Model
         public double Lon { get; set; }
         public string Direccion { get; set; }
         public string Tipo { get; set; }
+        public string Telefono { get; set; }
+        public string SitioWeb { get; set; }
+        public string HorarioApertura { get; set; }
+        public string Accesibilidad { get; set; }
+        public string Operador { get; set; }
 
         public Establecimientos() { }
 

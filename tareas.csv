@@ -1,0 +1,37 @@
+Issue,Descripción,Etiqueta,Sprint,Fecha Inicio,Fecha Fin
+Diseñar esquema Entidad-Relación de la Base de Datos,Crear diagrama para PostgreSQL,Diseño,Sprint 1,2025-12-22,2026-01-05
+Diseñar mockups y arquitectura visual,Crear en Figma la paleta Dark Mode y componentes,Diseño,Sprint 1,2025-12-22,2026-01-05
+Definir reglas de gamificación,Fórmulas de experiencia niveles y economía,Diseño,Sprint 1,2025-12-22,2026-01-05
+Crear repositorios en GitHub y estructura base .NET 8,Inicializar el proyecto backend con capas lógicas,Backend,Sprint 2,2026-01-06,2026-01-19
+Instalar y configurar Entity Framework Core,Configurar conexión Npgsql y migraciones,Backend,Sprint 2,2026-01-06,2026-01-19
+Inicializar proyecto Frontend,Vite Vue 3 y configuración de Vuetify,Frontend,Sprint 2,2026-01-06,2026-01-19
+Configurar JWT Authentication,Middleware de seguridad y manejo de excepciones,Backend,Sprint 3,2026-01-20,2026-02-02
+Desarrollar CRUD de Usuarios y encriptación,Registro Login y BCrypt,Backend,Sprint 3,2026-01-20,2026-02-02
+Integrar cliente SMTP,Envío de correos de verificación con plantilla HTML,Backend,Sprint 3,2026-01-20,2026-02-02
+Desarrollar CRUD de Rutinas Tareas y Ejercicios,Lógica de negocio deportiva,Backend,Sprint 4,2026-02-03,2026-02-16
+Programar lógica de subida de nivel,Cálculo de constancia oro y XP al completar tareas,Backend,Sprint 4,2026-02-03,2026-02-16
+Configurar integración con ExerciseDB,Cliente HTTP y fallback local,Backend,Sprint 4,2026-02-03,2026-02-16
+Desarrollar CRUD de Salas (Rooms),Creación y Matchmaking por requisitos,Backend,Sprint 5,2026-02-17,2026-03-02
+Lógica de Check-ins y geolocalización,Recompensas por asistir a gimnasios,Backend,Sprint 5,2026-02-17,2026-03-02
+Endpoints de Tienda inventario y logros,Sistema de compras y economía,Backend,Sprint 5,2026-02-17,2026-03-02
+Maquetar Login Registro y Verificación,Vistas públicas con Vuetify,Frontend,Sprint 6,2026-03-03,2026-03-16
+Conectar autenticación con API,Guardar JWT en LocalStorage y Pinia,Frontend,Sprint 6,2026-03-03,2026-03-16
+Crear menú de navegación y Layout,Sidebar y Header interactivos,Frontend,Sprint 6,2026-03-03,2026-03-16
+Desarrollar calendario de rutinas,Vista interactiva para checkear entrenamientos,Frontend,Sprint 7,2026-03-17,2026-03-30
+Interfaz de Tienda e Inventario,Renderizado de items y compra,Frontend,Sprint 7,2026-03-17,2026-03-30
+Panel de estadísticas,Dashboard con stats de fuerza resistencia y ranking,Frontend,Sprint 7,2026-03-17,2026-03-30
+Vistas de comunidad,Listado de Salas disponibles y uniones,Frontend,Sprint 8,2026-03-31,2026-04-13
+Integrar visor de mapas Leaflet,Renderizar mapa y marcadores,Frontend,Sprint 8,2026-03-31,2026-04-13
+Consumir API Nominatim y OverpassQL,Buscar puntos de interés deportivo en un radio,Frontend,Sprint 8,2026-03-31,2026-04-13
+Configurar Groq API (LLaMA 3.3),Servicio de IA en el Backend,IA,Sprint 9,2026-04-14,2026-04-27
+Sistema de inyección de contexto IA,Procesar prompt oculto con stats del usuario,IA,Sprint 9,2026-04-14,2026-04-27
+Maquetar interfaz de Chat (Coach AI),Vista de mensajería asíncrona,Frontend,Sprint 9,2026-04-14,2026-04-27
+Simular pasarela de pago Premium,Formularios de tarjeta y validación,Frontend,Sprint 10,2026-04-28,2026-05-11
+Bloqueo de rutas (Router Guards),Restringir calculadoras y Chat AI sin suscripción,Frontend,Sprint 10,2026-04-28,2026-05-11
+Gráficos de evolución corporal,Integración de Chart.js para peso y medidas,Frontend,Sprint 10,2026-04-28,2026-05-11
+Redactar Dockerfiles,Contenedores de Backend (.NET) y Frontend (Nginx),DevOps,Sprint 11,2026-05-12,2026-05-25
+Configurar docker-compose,Orquestar API DB y UI en un solo comando,DevOps,Sprint 11,2026-05-12,2026-05-25
+YAML de GitHub Actions,Pipeline CI/CD automatizado,DevOps,Sprint 11,2026-05-12,2026-05-25
+Escribir pruebas unitarias con xUnit,Testear lógicas clave de gamificación,Testing,Sprint 12,2026-05-26,2026-06-09
+Bugfixing y limpieza de código,Preparar release final para el tribunal,Testing,Sprint 12,2026-05-26,2026-06-09
+Redactar Memoria Técnica,Documentación TFG y Anexos,Documentación,Sprint 12,2026-05-26,2026-06-09

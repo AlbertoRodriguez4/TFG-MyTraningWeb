@@ -2,21 +2,40 @@
 import { ref, computed, onMounted, watch } from 'vue'
 import { useUserStore } from '@/stores/userStore'
 import { useItemStore } from '@/stores/itemStore'
+import { useAchievementStore } from '@/stores/achievementStore'
 import EditUserPopup from '../PopUps/EditUserPopup.vue'
 import EditItemPopup from '../PopUps/EditItemPopup.vue'
+import EditAchievementPopup from '../PopUps/EditAchievementPopup.vue'
 import type { User } from '@/components/Models/User'
 import type { Item } from '@/components/Models/Item'
+import type { Achievement } from '@/stores/achievementStore'
 import router from '@/router'
 import { useI18n } from 'vue-i18n'
+import { logger } from '@/utils/logger'
 
 const store = useUserStore()
 const loggedUser = computed(() => store.loggedUser)
 const itemStore = useItemStore()
+const achievementStore = useAchievementStore()
 const selectedUser = defineModel<User | null>('selectedUser')
 const selectedItem = defineModel<Item | null>('selectedItem')
+const selectedAchievement = ref<Achievement | null>(null)
 const showPopup = ref(false)
+const showItemPopup = ref(false)
+const showAchievementPopup = ref(false)
 const userSearch = ref('')
 const itemSearch = ref('')
+const achievementSearch = ref('')
+const adminError = ref('')
+const showAdminError = ref(false)
+
+watch(adminError, (val) => {
+  showAdminError.value = !!val
+})
+
+watch(showAdminError, (val) => {
+  if (!val) adminError.value = ''
+})
 const { t, locale } = useI18n()
 locale.value = 'es'
 
@@ -26,13 +45,34 @@ const totalItems = computed(() => itemStore.items.length)
 const activeUsers = computed(() => store.user.filter(u => u.role !== 'userMaster').length)
 
 onMounted(async () => {
-    if (loggedUser.value?.email && loggedUser.value.passwordhash) {
-        await store.getItems()
+  adminError.value = ''
+  if (loggedUser.value?.email && loggedUser.value.passwordhash) {
+    try {
+      await store.getItems()
+    } catch {
+      // silenciar
     }
-    if (loggedUser.value?.role === 'userMaster') {
-        await store.fetchUser()
-        await itemStore.fetchItems()
+  }
+  if (loggedUser.value?.role === 'userMaster') {
+    try {
+      await store.fetchUser()
+    } catch (e: any) {
+      adminError.value = t('error_loading_users')
+      logger.error('Error cargando usuarios:', e)
     }
+    try {
+      await itemStore.fetchItems()
+    } catch (e: any) {
+      adminError.value = t('error_loading_items')
+      logger.error('Error cargando items:', e)
+    }
+    try {
+      await achievementStore.fetchAllAchievements()
+    } catch (e: any) {
+      adminError.value = t('error_loading_achievements')
+      logger.error('Error cargando logros:', e)
+    }
+  }
 })
 
 watch(
@@ -45,13 +85,13 @@ watch(
     { immediate: true }
 )
 
-const openPopup = (item: Item) => {
+const openItemPopup = (item: Item | null = null) => {
     selectedItem.value = item
-    showPopup.value = true
+    showItemPopup.value = true
 }
 
-const closePopup = () => {
-    showPopup.value = false
+const closeItemPopup = () => {
+    showItemPopup.value = false
     selectedItem.value = null
 }
 
@@ -72,6 +112,20 @@ const filteredUsers = computed(() =>
 const filteredItems = computed(() =>
     itemStore.items.filter(item => item.name.toLowerCase().includes(itemSearch.value.toLowerCase()))
 )
+
+const filteredAchievements = computed(() =>
+    achievementStore.achievements.filter(a => a.name.toLowerCase().includes(achievementSearch.value.toLowerCase()))
+)
+
+const openAchievementPopup = (achievement: Achievement | null = null) => {
+    selectedAchievement.value = achievement
+    showAchievementPopup.value = true
+}
+
+const closeAchievementPopup = () => {
+    showAchievementPopup.value = false
+    selectedAchievement.value = null
+}
 </script>
 
 <template>
@@ -103,12 +157,12 @@ const filteredItems = computed(() =>
       <!-- Title Section -->
       <div class="hero-title-section">
         <h1 class="hero-title">
-          <span class="title-top">CONTROL CENTER</span>
+          <span class="title-top">{{ $t('admin_panel') }}</span>
           <span class="title-main">{{ loggedUser?.name }}</span>
         </h1>
         <div class="admin-badge">
           <v-icon size="20">mdi-shield-crown</v-icon>
-          <span>MASTER ADMIN</span>
+          <span>{{ $t('admin_panel') }}</span>
         </div>
       </div>
 
@@ -128,7 +182,7 @@ const filteredItems = computed(() =>
           </div>
           <div class="stat-content">
             <div class="stat-mega-value">{{ totalUsers }}</div>
-            <div class="stat-mega-label">{{ $t('USUARIOS TOTALES') }}</div>
+            <div class="stat-mega-label">{{ $t('users') }}</div>
           </div>
           <div class="stat-shine"></div>
         </div>
@@ -140,7 +194,7 @@ const filteredItems = computed(() =>
           </div>
           <div class="stat-content">
             <div class="stat-mega-value">{{ totalItems }}</div>
-            <div class="stat-mega-label">{{ $t('ITEMS DISPONIBLES') }}</div>
+            <div class="stat-mega-label">{{ $t('items') }}</div>
           </div>
           <div class="stat-shine"></div>
         </div>
@@ -152,7 +206,7 @@ const filteredItems = computed(() =>
           </div>
           <div class="stat-content">
             <div class="stat-mega-value">{{ activeUsers }}</div>
-            <div class="stat-mega-label">{{ $t('USUARIOS ACTIVOS') }}</div>
+            <div class="stat-mega-label">{{ $t('active_users') }}</div>
           </div>
           <div class="stat-shine"></div>
         </div>
@@ -170,8 +224,8 @@ const filteredItems = computed(() =>
                 <v-icon size="28" color="white">mdi-account-group</v-icon>
               </div>
               <div class="panel-title-group">
-                <h2 class="panel-title">{{ $t('GESTIÓN DE USUARIOS') }}</h2>
-                <p class="panel-subtitle">Administra todos los atletas registrados</p>
+                <h2 class="panel-title">{{ $t('user_management') }}</h2>
+                <p class="panel-subtitle">{{ $t('manage_athletes') }}</p>
               </div>
             </div>
             <div class="panel-counter">
@@ -186,7 +240,7 @@ const filteredItems = computed(() =>
                 v-model="userSearch"
                 variant="solo"
                 density="comfortable"
-                :placeholder="$t('Buscar usuario...')"
+                :placeholder="$t('buscar')"
                 class="search-input"
                 hide-details
                 clearable
@@ -224,14 +278,14 @@ const filteredItems = computed(() =>
                   @click="openUserPopup(user)"
                 >
                   <v-icon size="18">mdi-pencil</v-icon>
-                  <span>EDITAR</span>
+                  <span>{{ $t('edit_label') }}</span>
                 </v-btn>
               </div>
 
               <!-- Empty State -->
               <div v-if="filteredUsers.length === 0" class="empty-state">
                 <v-icon size="80" color="rgba(255,255,255,0.1)">mdi-account-off-outline</v-icon>
-                <p>No se encontraron usuarios</p>
+                <p>{{ $t('no_users_found') }}</p>
               </div>
             </div>
           </div>
@@ -247,8 +301,8 @@ const filteredItems = computed(() =>
                 <v-icon size="28" color="white">mdi-gift-open</v-icon>
               </div>
               <div class="panel-title-group">
-                <h2 class="panel-title">{{ $t('GESTIÓN DE ITEMS') }}</h2>
-                <p class="panel-subtitle">Controla recompensas y objetos</p>
+                <h2 class="panel-title">{{ $t('item_management') }}</h2>
+                <p class="panel-subtitle">{{ $t('control_rewards') }}</p>
               </div>
             </div>
             <div class="panel-counter">
@@ -258,12 +312,12 @@ const filteredItems = computed(() =>
 
           <div class="panel-body">
             <!-- Search Bar -->
-            <div class="search-container">
+            <div class="search-container d-flex gap-4">
               <v-text-field
                 v-model="itemSearch"
                 variant="solo"
                 density="comfortable"
-                :placeholder="$t('Buscar ítem...')"
+                :placeholder="$t('search_item')"
                 class="search-input"
                 hide-details
                 clearable
@@ -272,6 +326,16 @@ const filteredItems = computed(() =>
                   <v-icon color="#A855F7">mdi-magnify</v-icon>
                 </template>
               </v-text-field>
+              <v-btn
+                color="purple"
+                variant="elevated"
+                class="action-btn"
+                style="height: 48px; border-radius: 12px;"
+                @click="openItemPopup(null)"
+              >
+                <v-icon>mdi-plus</v-icon>
+                <span>{{ $t('create_item') }}</span>
+              </v-btn>
             </div>
 
             <!-- Items List -->
@@ -284,31 +348,32 @@ const filteredItems = computed(() =>
               >
                 <div class="entity-avatar">
                   <div class="avatar-ring ring-purple"></div>
-                  <v-icon color="#A855F7" size="24">mdi-gift</v-icon>
+                  <img v-if="item.imageUrl" :src="item.imageUrl" class="avatar-img" alt="item" />
+                  <v-icon v-else color="#A855F7" size="24">mdi-gift</v-icon>
                 </div>
                 
                 <div class="entity-info">
                   <div class="entity-name">{{ item.name }}</div>
                   <div class="entity-meta">
                     <v-icon size="14">mdi-tag</v-icon>
-                    <span>Item #{{ item.id }}</span>
+                    <span>{{ $t('items') }} #{{ item.id }}</span>
                   </div>
                 </div>
 
                 <v-btn
                   class="action-btn btn-edit"
                   size="small"
-                  @click="openPopup(item)"
+                  @click="openItemPopup(item)"
                 >
                   <v-icon size="18">mdi-pencil</v-icon>
-                  <span>EDITAR</span>
+                  <span>{{ $t('edit_label') }}</span>
                 </v-btn>
               </div>
 
               <!-- Empty State -->
               <div v-if="filteredItems.length === 0" class="empty-state">
                 <v-icon size="80" color="rgba(255,255,255,0.1)">mdi-package-variant-closed-remove</v-icon>
-                <p>No se encontraron ítems</p>
+                <p>{{ $t('no_items_found') }}</p>
               </div>
             </div>
           </div>
@@ -316,13 +381,110 @@ const filteredItems = computed(() =>
       </v-col>
     </v-row>
 
+    <!-- ACHIEVEMENTS PANEL -->
+    <v-row class="management-section mt-4">
+      <v-col cols="12">
+        <div class="panel-card panel-achievements">
+          <div class="panel-header">
+            <div class="panel-header-content">
+              <div class="panel-icon-badge" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); box-shadow: 0 8px 25px rgba(245,158,11,0.4);">
+                <v-icon size="28" color="white">mdi-trophy</v-icon>
+              </div>
+              <div class="panel-title-group">
+                <h2 class="panel-title">{{ $t('achievement_management') }}</h2>
+                <p class="panel-subtitle">{{ $t('manage_achievements') }}</p>
+              </div>
+            </div>
+            <div class="panel-counter" style="border-color: rgba(245,158,11,0.5);">
+              <span class="counter-number">{{ filteredAchievements.length }}</span>
+            </div>
+          </div>
+
+          <div class="panel-body">
+            <div class="search-container d-flex gap-4">
+              <v-text-field
+                v-model="achievementSearch"
+                variant="solo"
+                density="comfortable"
+                :placeholder="$t('search_achievement')"
+                class="search-input"
+                hide-details
+                clearable
+              >
+                <template v-slot:prepend-inner>
+                  <v-icon color="#f59e0b">mdi-magnify</v-icon>
+                </template>
+              </v-text-field>
+              <v-btn
+                color="amber"
+                variant="elevated"
+                class="action-btn"
+                style="height: 48px; border-radius: 12px;"
+                @click="openAchievementPopup(null)"
+              >
+                <v-icon>mdi-plus</v-icon>
+                <span>{{ $t('create_achievement') }}</span>
+              </v-btn>
+            </div>
+
+            <div class="entity-list">
+              <div
+                v-for="(achievement, index) in filteredAchievements"
+                :key="achievement.id"
+                class="entity-item achievement-item"
+                :style="{ animationDelay: (index * 0.05) + 's' }"
+              >
+                <div class="entity-avatar" style="background: linear-gradient(135deg, rgba(245,158,11,0.2), rgba(217,119,6,0.2));">
+                  <div class="avatar-ring" style="border-color: #f59e0b;"></div>
+                  <img v-if="achievement.iconUrl && achievement.iconUrl.startsWith('http')" :src="achievement.iconUrl" class="avatar-img" alt="achievement" />
+                  <v-icon v-else color="#f59e0b" size="24">{{ achievement.iconUrl || 'mdi-trophy' }}</v-icon>
+                </div>
+
+                <div class="entity-info">
+                  <div class="entity-name">{{ achievement.name }}</div>
+                  <div class="entity-meta">
+                    <v-icon size="14">mdi-tag</v-icon>
+                    <span>{{ achievement.category }} — {{ achievement.requirementType }} ({{ achievement.requirementValue }})</span>
+                  </div>
+                </div>
+
+                <div class="achievement-rewards mr-4">
+                  <v-chip v-if="achievement.rewardGold > 0" x-small color="amber" class="mr-1">+{{ achievement.rewardGold }} 🪙</v-chip>
+                  <v-chip v-if="achievement.rewardXP > 0" x-small color="purple">+{{ achievement.rewardXP }} XP</v-chip>
+                </div>
+
+                <v-btn
+                  class="action-btn btn-edit"
+                  size="small"
+                  @click="openAchievementPopup(achievement)"
+                >
+                  <v-icon size="18">mdi-pencil</v-icon>
+                  <span>{{ $t('edit_label') }}</span>
+                </v-btn>
+              </div>
+
+              <div v-if="filteredAchievements.length === 0" class="empty-state">
+                <v-icon size="80" color="rgba(255,255,255,0.1)">mdi-trophy-off</v-icon>
+                <p>{{ $t('no_achievements_found') }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </v-col>
+    </v-row>
+
+    <!-- Error alert -->
+    <v-snackbar v-model="showAdminError" :timeout="5000" color="error" location="top" rounded="pill">
+      {{ adminError }}
+    </v-snackbar>
+
     <!-- Popups -->
     <EditItemPopup
-      v-if="selectedItem"
-      :visible="showPopup"
+      :visible="showItemPopup"
       :item="selectedItem"
-      @close="closePopup"
-      @edit="(item) => console.log('Editando', item)"
+      @close="closeItemPopup"
+      @save="itemStore.fetchItems()"
+      @delete="itemStore.fetchItems()"
     />
     <EditUserPopup
       v-if="selectedUser"
@@ -330,6 +492,13 @@ const filteredItems = computed(() =>
       :user="selectedUser"
       @close="closeUserPopup"
       @edit="(user) => console.log('Editando', user)"
+    />
+    <EditAchievementPopup
+      :visible="showAchievementPopup"
+      :achievement="selectedAchievement"
+      @close="closeAchievementPopup"
+      @save="achievementStore.fetchAllAchievements()"
+      @delete="achievementStore.fetchAllAchievements()"
     />
   </v-container>
 </template>
@@ -737,6 +906,10 @@ const filteredItems = computed(() =>
   border-color: rgba(168, 85, 247, 0.3);
 }
 
+.panel-achievements {
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
 .panel-card:hover {
   box-shadow: 0 25px 70px rgba(0, 0, 0, 0.5);
 }
@@ -773,6 +946,11 @@ const filteredItems = computed(() =>
   box-shadow: 0 8px 25px rgba(168, 85, 247, 0.4);
 }
 
+.panel-achievements .panel-icon-badge {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
+}
+
 .panel-title-group {
   flex: 1;
 }
@@ -804,6 +982,10 @@ const filteredItems = computed(() =>
 
 .panel-items .panel-counter {
   border-color: rgba(168, 85, 247, 0.5);
+}
+
+.panel-achievements .panel-counter {
+  border-color: rgba(245, 158, 11, 0.5);
 }
 
 .counter-number {
@@ -857,18 +1039,54 @@ const filteredItems = computed(() =>
     0 0 20px rgba(168, 85, 247, 0.2) !important;
 }
 
+:deep(.panel-achievements .search-input .v-field:hover) {
+  border-color: rgba(245, 158, 11, 0.3) !important;
+}
+
+:deep(.panel-achievements .search-input .v-field--focused) {
+  border-color: rgba(245, 158, 11, 0.6) !important;
+  box-shadow: 
+    inset 0 2px 8px rgba(0, 0, 0, 0.3),
+    0 0 20px rgba(245, 158, 11, 0.2) !important;
+}
+
 :deep(.search-input .v-field__input) {
   color: white !important;
   font-size: 1rem !important;
 }
 
 /* Entity List */
+.entity-list {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+  padding-right: 0.5rem;
+}
+
+.entity-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.entity-list::-webkit-scrollbar-track {
+  background: rgba(30, 41, 59, 0.3);
+  border-radius: 4px;
+}
+
+.entity-list::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.3);
+  border-radius: 4px;
+}
+
 .entity-list::-webkit-scrollbar-thumb:hover {
   background: rgba(0, 210, 255, 0.6);
 }
 
 .panel-items .entity-list::-webkit-scrollbar-thumb:hover {
   background: rgba(168, 85, 247, 0.6);
+}
+
+.panel-achievements .entity-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(245, 158, 11, 0.6);
 }
 
 /* Entity Item */
@@ -908,6 +1126,11 @@ const filteredItems = computed(() =>
   box-shadow: 0 4px 20px rgba(168, 85, 247, 0.2);
 }
 
+.achievement-item:hover {
+  border-color: rgba(245, 158, 11, 0.4);
+  box-shadow: 0 4px 20px rgba(245, 158, 11, 0.2);
+}
+
 /* Entity Avatar */
 .entity-avatar {
   position: relative;
@@ -923,6 +1146,10 @@ const filteredItems = computed(() =>
 
 .item-item .entity-avatar {
   background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(124, 58, 237, 0.2));
+}
+
+.achievement-item .entity-avatar {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(217, 119, 6, 0.2));
 }
 
 .avatar-ring {
@@ -960,6 +1187,13 @@ const filteredItems = computed(() =>
   font-weight: 900;
   color: white;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.avatar-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  object-fit: cover;
 }
 
 /* Entity Info */

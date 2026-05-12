@@ -2,7 +2,10 @@
 import { useUserStore } from "@/stores/userStore"
 import { useRoomStore } from "@/stores/RoomStore"
 import { ref, watch } from "vue"
+import { useI18n } from 'vue-i18n'
 import { logger } from '@/utils/logger'
+
+const { t } = useI18n()
 
 const props = defineProps({
   isVisible: Boolean,
@@ -69,23 +72,23 @@ function resetForm() {
 
 function validateInputs(): boolean {
   if (!roomName.value.trim()) {
-    error.value = "El nombre de la sala es obligatorio."
+    error.value = t('room_name_required')
     return false
   }
   if (!roomDate.value) {
-    error.value = "La fecha del evento es obligatoria."
+    error.value = t('event_date_required')
     return false
   }
   if (!roomLocalization.value) {
-    error.value = "La ubicación es obligatoria."
+    error.value = t('location_required')
     return false
   }
   if (minLevel.value === null || isNaN(minLevel.value) || minLevel.value < 1) {
-    error.value = "El nivel mínimo debe ser un número mayor o igual a 1."
+    error.value = t('min_level_error')
     return false
   }
   if (minStats.value === null || isNaN(minStats.value) || minStats.value < 0) {
-    error.value = "Las estadísticas mínimas deben ser un número válido."
+    error.value = t('min_stats_error')
     return false
   }
   return true
@@ -97,7 +100,7 @@ async function createRoom() {
   if (!validateInputs()) return
 
   if (!loggedUser.value?.id) {
-    error.value = "Usuario no logueado."
+    error.value = t('user_not_logged_in')
     logger.error(error.value)
     return
   }
@@ -107,7 +110,7 @@ async function createRoom() {
 
   const newRoom = {
     name: roomName.value.trim(),
-    description: roomDescription.value.trim() || 'Sin descripción disponible',
+    description: roomDescription.value.trim() || t('room_no_description'),
     date: dateString,
     localization: roomLocalization.value,
     minlevel: minLevel.value as number,
@@ -117,11 +120,11 @@ async function createRoom() {
 
   try {
     await roomStore.createRoom(newRoom, loggedUser.value.id)
-    showSnackbar("Sala creada correctamente", 'success')
+    showSnackbar(t('room_created_success'), 'success')
     closePopup()
   } catch (e) {
-    error.value = "Error al crear la sala."
-    showSnackbar("Error al crear la sala", 'error')
+    error.value = t('room_create_error')
+    showSnackbar(t('room_create_error'), 'error')
     logger.error(e)
   }
 }
@@ -145,7 +148,7 @@ async function createRoom() {
           </div>
           <div class="header-text">
             <h2 class="card-title">{{ $t('crear') }}</h2>
-            <p class="card-subtitle">Configura tu nueva sala de entrenamiento</p>
+            <p class="card-subtitle">{{ $t('configure_new_room') }}</p>
           </div>
         </div>
         
@@ -203,11 +206,11 @@ async function createRoom() {
           <div class="form-field">
             <label class="field-label">
               <v-icon size="18" class="label-icon">mdi-text-box</v-icon>
-              {{ $t('descripcion') || 'Descripción' }}
+              {{ $t('descripcion') }}
             </label>
             <v-textarea
               v-model="roomDescription"
-              :placeholder="$t('descripcion de la sala') || 'Describe brevemente esta sala de entrenamiento...'"
+              :placeholder="$t('descripcion de la sala')"
               variant="outlined"
               density="comfortable"
               class="custom-field custom-textarea"
@@ -227,7 +230,7 @@ async function createRoom() {
           <div class="form-field">
             <label class="field-label">
               <v-icon size="18" class="label-icon">mdi-calendar-clock</v-icon>
-              {{ $t('fecha del evento') || 'Fecha del Evento' }}
+              {{ $t('fecha del evento') }}
             </label>
             <v-text-field
               v-model="roomDate"
@@ -250,11 +253,11 @@ async function createRoom() {
           <div class="form-field">
             <label class="field-label">
               <v-icon size="18" class="label-icon">mdi-map-marker</v-icon>
-              {{ $t('ubicacion') || 'Ubicación' }}
+              {{ $t('location_label') }}
             </label>
             <v-text-field
               v-model="roomLocalization"
-              :placeholder="$t('insertar ubicacion') || 'Ej: Pabellón Municipal, Calle Mayor 123, Zaragoza'"
+              :placeholder="$t('location_placeholder')"
               required
               variant="outlined"
               density="comfortable"
@@ -272,7 +275,7 @@ async function createRoom() {
           <div class="requirements-section">
             <div class="section-header">
               <v-icon color="#ffcc00" size="20">mdi-shield-lock</v-icon>
-              <span class="section-title">Requisitos de Acceso</span>
+              <span class="section-title">{{ $t('access_requirements') }}</span>
             </div>
 
             <div class="requirements-grid">
@@ -326,7 +329,7 @@ async function createRoom() {
               <div class="form-field full-width">
                 <label class="field-label">
                   <v-icon size="16" class="label-icon">mdi-calendar-check</v-icon>
-                  Consistencia Mínima
+                  {{ $t('min_consistency') }}
                 </label>
                 <v-text-field
                   v-model.number="minConsistency"

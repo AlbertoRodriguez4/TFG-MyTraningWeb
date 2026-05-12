@@ -7,7 +7,7 @@
         color="#FFD700"
         indeterminate
       />
-      <p class="loading-text">Cargando información de suscripción...</p>
+      <p class="loading-text">{{ $t('loading_subscription') }}</p>
     </div>
 
     <!-- No Subscription -->
@@ -15,7 +15,7 @@
       <v-card class="settings-card plan-card" elevation="0" border>
         <v-card-title class="card-title">
           <v-icon>mdi-crown-outline</v-icon>
-          Tu Suscripción
+          {{ $t('your_subscription') }}
         </v-card-title>
 
         <v-divider class="card-divider" />
@@ -26,35 +26,35 @@
 
             <h3 class="plan-name">Plan Gratuito</h3>
             <p class="plan-description">
-              Estás utilizando el plan gratuito. Actualiza a Premium para desbloquear todas las funcionalidades.
+              {{ $t('free_plan') }}
             </p>
 
             <div class="premium-features">
               <div class="feature">
                 <v-icon size="small">mdi-check-circle</v-icon>
-                <span>Calculadoras de salud (IMC, calorías)</span>
+                <span>{{ $t('health_calculators') }}</span>
               </div>
               <div class="feature">
                 <v-icon size="small">mdi-check-circle</v-icon>
-                <span>Chat con Coach AI personalizado</span>
+                <span>{{ $t('chat_coach_ai') }}</span>
               </div>
               <div class="feature">
                 <v-icon size="small">mdi-check-circle</v-icon>
-                <span>Rutinas personalizadas</span>
+                <span>{{ $t('premiumRoutines') }}</span>
               </div>
               <div class="feature">
                 <v-icon size="small">mdi-check-circle</v-icon>
-                <span>Seguimiento avanzado de progreso</span>
+                <span>{{ $t('advanced_tracking') }}</span>
               </div>
               <div class="feature">
                 <v-icon size="small">mdi-check-circle</v-icon>
-                <span>Soporte prioritario</span>
+                <span>{{ $t('soporte_247') }}</span>
               </div>
             </div>
 
             <div class="pricing-info">
-              <span class="price-tag">Premium</span>
-              <p class="price-desc">Consulta los planes disponibles. Sin permanencia.</p>
+              <span class="price-tag">10€<small>/mes</small></span>
+              <p class="price-desc">{{ $t('cancel_anytime') }}</p>
             </div>
 
             <v-btn
@@ -64,7 +64,7 @@
               @click="goToPayment"
             >
               <v-icon start>mdi-lock-check</v-icon>
-              Suscribirse a Premium
+              {{ $t('subscribe_now') }}
             </v-btn>
           </div>
         </v-card-text>
@@ -77,7 +77,7 @@
       <v-card class="settings-card plan-card" elevation="0" border>
         <v-card-title class="card-title">
           <v-icon>mdi-crown</v-icon>
-          Plan Actual
+          {{ $t('your_subscription') }}
         </v-card-title>
 
         <v-divider class="card-divider" />
@@ -86,18 +86,18 @@
           <div class="current-plan">
             <div class="plan-badge premium">PREMIUM</div>
 
-            <h3 class="plan-name">{{ subscription?.planType || 'Premium Plan' }}</h3>
+            <h3 class="plan-name">{{ subscription?.planType || $t('plan_premium') }}</h3>
             <p class="plan-price">{{ subscription?.monthlyPrice.toFixed(2) }}€ <span class="period">/mes</span></p>
 
             <div class="renewal-info">
               <v-icon size="small" color="#4ade80">mdi-calendar-check</v-icon>
-              <span>Renovación el <strong>{{ formatDate(subscription?.endDate) }}</strong></span>
+              <span>{{ $t('renewal_on') }} <strong>{{ formatDate(subscription?.endDate) }}</strong></span>
             </div>
 
             <div class="plan-status">
               <v-chip color="#4ade80" text-color="#000" size="small">
                 <v-icon start size="small">mdi-check-circle</v-icon>
-                Activa
+                {{ $t('premium_active') }}
               </v-chip>
             </div>
 
@@ -109,7 +109,7 @@
                 @click="renewSubscription"
                 :loading="isRenewing"
               >
-                Renovar ahora
+                {{ $t('subscribe_now') }}
               </v-btn>
               <v-btn
                 variant="outlined"
@@ -119,7 +119,7 @@
                 @click="confirmCancel"
                 :loading="isCancelling"
               >
-                Cancelar suscripción
+                {{ $t('cancel_subscription') }}
               </v-btn>
             </div>
           </div>
@@ -130,7 +130,7 @@
       <v-card class="settings-card" elevation="0" border>
         <v-card-title class="card-title">
           <v-icon>mdi-receipt</v-icon>
-          Historial de Suscripción
+          {{ $t('subscription_history') }}
         </v-card-title>
 
         <v-divider class="card-divider" />
@@ -140,7 +140,7 @@
             <div class="table-header">
               <div class="table-col">Fecha Inicio</div>
               <div class="table-col">Fecha Fin</div>
-              <div class="table-col">Precio</div>
+              <div class="table-col">{{ $t('price') }}</div>
               <div class="table-col">Estado</div>
             </div>
 
@@ -179,14 +179,14 @@
       <v-card class="dialog-card">
         <v-card-title class="dialog-title">
           <v-icon color="#ff9500">mdi-alert-circle</v-icon>
-          ¿Cancelar suscripción?
+          {{ $t('cancel_subscription_confirm') }}
         </v-card-title>
         <v-card-text class="dialog-text">
-          Podrás seguir usando las funciones premium hasta el final del período de facturación. ¿Estás seguro?
+          {{ $t('cancel_subscription_text') }}
         </v-card-text>
         <v-card-actions class="dialog-actions">
           <v-btn variant="text" @click="showCancelDialog = false">Volver</v-btn>
-          <v-btn color="error" @click="cancelSubscription">Sí, cancelar</v-btn>
+          <v-btn color="error" @click="cancelSubscription">{{ $t('yes_cancel') }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -201,10 +201,12 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useSubscriptionStore } from '@/stores/SubscriptionStore'
 import { useUserStore } from '@/stores/userStore'
 import { logger } from '@/utils/logger'
 
+const { t } = useI18n()
 const router = useRouter()
 const route = useRoute()
 const subscriptionStore = useSubscriptionStore()
@@ -227,7 +229,7 @@ onMounted(async () => {
 
   // Check if coming from payment success
   if (route.query.subscribed === 'true') {
-    showSnackbarMessage('¡Suscripción activada con éxito!', 'success')
+    showSnackbarMessage(t('subscription_activated'), 'success')
     router.replace({ query: {} })
   }
 })
@@ -242,7 +244,7 @@ async function loadSubscriptionData() {
     }
   } catch (error) {
     logger.error('Error loading subscription:', error)
-    showSnackbarMessage('Error al cargar la información de suscripción', 'error')
+    showSnackbarMessage(t('subscription_load_error'), 'error')
   } finally {
     isLoading.value = false
   }
@@ -253,13 +255,13 @@ async function renewSubscription() {
   try {
     const result = await subscriptionStore.renewSubscription()
     if (result.success) {
-      showSnackbarMessage(result.message || '¡Suscripción renovada!', 'success')
+      showSnackbarMessage(result.message || t('subscription_renewed'), 'success')
     } else {
-      showSnackbarMessage(result.error || 'Error al renovar', 'error')
+      showSnackbarMessage(result.error || t('subscription_renew_error'), 'error')
     }
   } catch (error) {
     logger.error('Error renewing subscription:', error)
-    showSnackbarMessage('Error al renovar la suscripción', 'error')
+    showSnackbarMessage(t('subscription_renew_error'), 'error')
   } finally {
     isRenewing.value = false
   }
@@ -278,14 +280,14 @@ async function cancelSubscription() {
   try {
     const result = await subscriptionStore.cancelSubscription(subscription.value.subscriptionId)
     if (result.success) {
-      showSnackbarMessage(result.message || 'Suscripción cancelada', 'success')
+      showSnackbarMessage(result.message || t('subscription_cancelled'), 'success')
       await loadSubscriptionData()
     } else {
-      showSnackbarMessage(result.error || 'Error al cancelar', 'error')
+      showSnackbarMessage(result.error || t('subscription_cancel_error'), 'error')
     }
   } catch (error) {
     logger.error('Error cancelling subscription:', error)
-    showSnackbarMessage('Error al cancelar la suscripción', 'error')
+    showSnackbarMessage(t('subscription_cancel_error'), 'error')
   } finally {
     isCancelling.value = false
   }

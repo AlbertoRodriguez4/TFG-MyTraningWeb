@@ -5,6 +5,18 @@ import { useUserStore } from "./userStore";
 import { API_BASE_URL, getAuthHeaders, hasValidToken } from '@/config/api';
 import { logger } from '@/utils/logger';
 
+// Helpers para normalizar fechas del backend
+function parseRoutine(raw: any): Routines {
+    return {
+        ...raw,
+        createdat: raw.createdat ? new Date(raw.createdat) : new Date()
+    };
+}
+
+function parseRoutines(data: any[]): Routines[] {
+    return Array.isArray(data) ? data.map(parseRoutine) : [];
+}
+
 export const useRoutineStore = defineStore('routine', () => {
     // --- State ---
     const selectedRoutineId = ref<number | null>(null);
@@ -21,7 +33,7 @@ export const useRoutineStore = defineStore('routine', () => {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
             const data = await response.json();
-            routines.value = data;
+            routines.value = parseRoutines(data);
         } catch (error) {
             logger.error('Error fetching routines:', error);
         }
@@ -38,7 +50,7 @@ export const useRoutineStore = defineStore('routine', () => {
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
-            const newRoutine = await response.json();
+            const newRoutine = parseRoutine(await response.json());
             routines.value.push(newRoutine);
         } catch (error) {
             logger.error('Error creating routine:', error);
@@ -56,7 +68,7 @@ export const useRoutineStore = defineStore('routine', () => {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
             const data = await response.json();
-            routines.value = data;
+            routines.value = parseRoutines(data);
         }
         catch (error) {
             logger.error('Error fetching routines by user ID:', error);

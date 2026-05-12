@@ -2,9 +2,12 @@
 import { ref, onMounted, watch, computed } from 'vue';
 import { RouterLink } from 'vue-router';
 import { useMapStore } from '@/stores/mapStore';
+import { useI18n } from 'vue-i18n';
 import * as L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { logger } from '@/utils/logger';
+
+const { t } = useI18n();
 
 const mapStore = useMapStore();
 const map = ref<L.Map | null>(null);
@@ -96,8 +99,8 @@ async function searchByAddress() {
     const coords = await mapStore.getCooredadas(searchAddress.value);
     await searchGymsNearLocation(coords.lat, coords.lon);
   } catch (error) {
-    logger.error('Error buscando dirección:', error);
-    showSnackbar('No se pudo encontrar la dirección. Intenta con otra.', 'error');
+    logger.error(t('address_search_error'), error);
+    showSnackbar(t('home_could_not_find_address'), 'error');
   } finally {
     loading.value = false;
   }
@@ -112,7 +115,7 @@ async function searchGymsNearLocation(lat: number, lon: number) {
   if (map.value) {
     const userMarker = L.marker([lat, lon], { icon: userIcon })
       .addTo(map.value as L.Map)
-      .bindPopup('📍 Tu ubicación');
+      .bindPopup(t('home_your_location'));
     markers.value.push(userMarker);
     map.value.setView([lat, lon], 14);
   }
@@ -126,7 +129,7 @@ async function searchGymsNearLocation(lat: number, lon: number) {
       if (gym.lat && gym.lon && map.value) {
         const marker = L.marker([parseFloat(gym.lat), parseFloat(gym.lon)], { icon: gymIcon })
           .addTo(map.value as L.Map)
-          .bindPopup(`<strong>${gym.name || 'Gimnasio'}</strong><br>${gym.address || ''}`);
+          .bindPopup(`<strong>${gym.nombre || 'Gimnasio'}</strong><br>${gym.direccion || ''}<br>${gym.telefono ? '📞 ' + gym.telefono : ''}<br>${gym.sitioWeb ? '🌐 <a href="' + gym.sitioWeb + '" target="_blank">Web</a>' : ''}`);
 
         marker.on('click', () => {
           selectedGym.value = gym;
@@ -192,10 +195,10 @@ function changePage(page: number) {
 
               <!-- Subtítulo mejorado -->
               <p class="epic-subtitle mb-8">
-                Únete a <strong>TheTrainingHub</strong>, la primera plataforma que combina
+                <span v-html="$t('home_join_traininghub')"></span>
                 <span class="highlight">fitness social</span>,
-                <span class="highlight">gamificación</span> y
-                <span class="highlight">recompensas épicas</span>.
+                <span class="highlight">{{ $t('home_gamification') }}</span> y
+                <span class="highlight">{{ $t('home_epic_rewards') }}</span>.
                 Entrena con amigos, conquista retos y sube de nivel como nunca antes.
               </p>
 
@@ -206,8 +209,8 @@ function changePage(page: number) {
                     <v-icon size="32" color="white">mdi-account-group</v-icon>
                   </div>
                   <div class="feature-content">
-                    <div class="feature-title">Salas Sociales</div>
-                    <div class="feature-desc">Entrena en grupo</div>
+                    <div class="feature-title">{{ $t('training_rooms') }}</div>
+                    <div class="feature-desc">{{ $t('train_group') }}</div>
                   </div>
                 </div>
 
@@ -216,8 +219,8 @@ function changePage(page: number) {
                     <v-icon size="32" color="white">mdi-target</v-icon>
                   </div>
                   <div class="feature-content">
-                    <div class="feature-title">Retos Épicos</div>
-                    <div class="feature-desc">Compite y gana</div>
+                    <div class="feature-title">{{ $t('home_epic_challenges') }}</div>
+                    <div class="feature-desc">{{ $t('challenges') }}</div>
                   </div>
                 </div>
 
@@ -236,7 +239,7 @@ function changePage(page: number) {
                     <v-icon size="32" color="white">mdi-cash-multiple</v-icon>
                   </div>
                   <div class="feature-content">
-                    <div class="feature-title">Economía Virtual</div>
+                    <div class="feature-title">{{ $t('home_virtual_economy') }}</div>
                     <div class="feature-desc">Gana recompensas</div>
                   </div>
                 </div>
@@ -260,28 +263,28 @@ function changePage(page: number) {
                   <div class="btn-content">
                     <v-icon size="28" class="mr-3">mdi-map-marker-radius</v-icon>
                     <div>
-                      <div class="btn-main-text">Buscar Gimnasio</div>
+                      <div class="btn-main-text">{{ $t('buscar') }}</div>
                       <div class="btn-sub-text">Cerca de ti</div>
                     </div>
                   </div>
                 </v-btn>
               </div>
 
-              <!-- Stats descriptivas -->
+              <!-- Stats en tiempo real -->
               <div class="live-stats">
                 <div class="stat-card">
-                  <div class="stat-value">Comunidad</div>
+                  <div class="stat-value">1,247</div>
                   <div class="stat-label">
                     <v-icon size="16" color="success">mdi-circle</v-icon>
-                    Activa y en crecimiento
+                    {{ $t('active_users') }}
                   </div>
                 </div>
                 <div class="stat-separator"></div>
                 <div class="stat-card">
-                  <div class="stat-value">Progreso</div>
+                  <div class="stat-value">89.4K</div>
                   <div class="stat-label">
                     <v-icon size="16" color="amber">mdi-fire</v-icon>
-                    Retos y recompensas
+                    {{ $t('available_challenges') }}
                   </div>
                 </div>
               </div>
@@ -322,9 +325,9 @@ function changePage(page: number) {
                       <v-icon size="32" color="white">mdi-lightning-bolt</v-icon>
                     </div>
                     <div class="metric-data">
-                      <div class="metric-value">+XP</div>
-                      <div class="metric-label">Gana experiencia</div>
-                      <div class="metric-badge">¡ÉPICO!</div>
+                      <div class="metric-value">+150</div>
+                      <div class="metric-label">XP Ganado</div>
+                      <div class="metric-badge">{{ $t('home_epic_badge') }}</div>
                     </div>
                   </div>
 
@@ -335,14 +338,14 @@ function changePage(page: number) {
                       <div class="level-crown">
                         <v-icon size="40" color="white">mdi-crown</v-icon>
                       </div>
-                      <div class="level-number">Lvl</div>
+                      <div class="level-number">12</div>
                     </div>
                     <div class="level-progress-bar">
-                      <div class="level-progress-fill" style="width: 60%">
-                        <span class="progress-percentage">Sube</span>
+                      <div class="level-progress-fill" style="width: 73%">
+                        <span class="progress-percentage">73%</span>
                       </div>
                     </div>
-                    <div class="metric-label">Sube de nivel</div>
+                    <div class="metric-label">Nivel Actual</div>
                   </div>
 
                   <!-- Sala Social Izquierda Inferior -->
@@ -354,7 +357,7 @@ function changePage(page: number) {
                     </div>
                     <div class="room-title">
                       <v-icon size="24" color="white">mdi-account-group</v-icon>
-                      <span>Salas sociales</span>
+                      <span>Sala Entrenamiento</span>
                     </div>
                     <div class="room-members">
                       <div class="member-avatars">
@@ -362,7 +365,7 @@ function changePage(page: number) {
                           <v-icon size="20" color="white">mdi-account</v-icon>
                         </div>
                       </div>
-                      <div class="member-count">Entrena en grupo</div>
+                      <div class="member-count">+12 entrenando</div>
                     </div>
                   </div>
 
@@ -375,8 +378,8 @@ function changePage(page: number) {
                         <div class="particle" v-for="n in 8" :key="n"></div>
                       </div>
                     </div>
-                    <div class="streak-count">RACHA</div>
-                    <div class="metric-label">Mantén la constancia</div>
+                    <div class="streak-count">7 {{ $t('home_days') }}</div>
+                    <div class="metric-label">{{ $t('active_streak') }}</div>
                   </div>
 
                   <!-- Monedas Derecha Centro -->
@@ -388,8 +391,8 @@ function changePage(page: number) {
                         <div class="sparkle" v-for="n in 6" :key="n"></div>
                       </div>
                     </div>
-                    <div class="coins-earned">+Coins</div>
-                    <div class="metric-label">Gana recompensas</div>
+                    <div class="coins-earned">+50</div>
+                    <div class="metric-label">{{ $t('coins') }}</div>
                   </div>
 
                   <!-- Estadística Circular Superior Izquierda -->
@@ -402,9 +405,9 @@ function changePage(page: number) {
                     </svg>
                     <div class="circular-content">
                       <v-icon size="32" color="white">mdi-target</v-icon>
-                      <div class="circular-percentage">Meta</div>
+                      <div class="circular-percentage">75%</div>
                     </div>
-                    <div class="metric-label-small">Alcanza tus metas</div>
+                    <div class="metric-label-small">{{ $t('objective') }}</div>
                   </div>
                 </div>
 
@@ -419,38 +422,215 @@ function changePage(page: number) {
           <!-- Sección de confianza -->
           <v-row class="trust-section mt-16">
             <v-col cols="12" class="text-center">
-              <p class="trust-text mb-6">Únete a la comunidad de fitness gamificado más grande</p>
+              <p class="trust-text mb-6">{{ $t('footer_join_community') }}</p>
               <div class="stats-row">
                 <div class="mega-stat">
                   <div class="mega-stat-icon">
                     <v-icon size="48" color="amber">mdi-account-multiple</v-icon>
                   </div>
-                  <div class="mega-stat-value">Comunidad</div>
-                  <div class="mega-stat-label">Usuarios Activos</div>
+                  <div class="mega-stat-value">10K+</div>
+                  <div class="mega-stat-label">{{ $t('active_users') }}</div>
                 </div>
 
                 <div class="mega-stat">
                   <div class="mega-stat-icon gradient-success">
                     <v-icon size="48" color="white">mdi-dumbbell</v-icon>
                   </div>
-                  <div class="mega-stat-value">Entrena</div>
-                  <div class="mega-stat-label">Entrenamientos</div>
+                  <div class="mega-stat-value">250K+</div>
+                  <div class="mega-stat-label">{{ $t('workouts') }}</div>
                 </div>
 
                 <div class="mega-stat">
                   <div class="mega-stat-icon gradient-warning">
                     <v-icon size="48" color="white">mdi-trophy</v-icon>
                   </div>
-                  <div class="mega-stat-value">Retos</div>
-                  <div class="mega-stat-label">Retos Disponibles</div>
+                  <div class="mega-stat-value">500+</div>
+                  <div class="mega-stat-label">{{ $t('available_challenges') }}</div>
                 </div>
 
                 <div class="mega-stat">
                   <div class="mega-stat-icon gradient-info">
                     <v-icon size="48" color="white">mdi-star</v-icon>
                   </div>
-                  <div class="mega-stat-value">Premium</div>
-                  <div class="mega-stat-label">Calidad garantizada</div>
+                  <div class="mega-stat-value">4.9</div>
+                  <div class="mega-stat-label">{{ $t('home_average_rating') }}</div>
+                </div>
+              </div>
+            </v-col>
+          </v-row>
+
+          <!-- Todas las características -->
+          <v-row class="all-features-section">
+            <v-col cols="12" class="text-center mb-8">
+              <h2 class="features-section-title">{{ $t('home_all_features_title') }}</h2>
+              <p class="features-section-subtitle">{{ $t('home_all_features_subtitle') }}</p>
+            </v-col>
+            <v-col cols="12">
+              <div class="features-categories-grid">
+                <!-- Entrenamiento -->
+                <div class="category-card">
+                  <div class="category-card-header">
+                    <div class="category-card-icon gradient-purple">
+                      <v-icon size="28" color="white">mdi-dumbbell</v-icon>
+                    </div>
+                    <span class="category-card-title">{{ $t('category_training') }}</span>
+                  </div>
+                  <div class="category-features-list">
+                    <div class="category-feature-item">
+                      <v-icon size="22" color="#a78bfa">mdi-calendar-check</v-icon>
+                      <div class="cf-content">
+                        <div class="cf-title">{{ $t('routines') }}</div>
+                        <div class="cf-desc">{{ $t('routines_desc') }}</div>
+                      </div>
+                    </div>
+                    <div class="category-feature-item">
+                      <v-icon size="22" color="#a78bfa">mdi-book-open-variant</v-icon>
+                      <div class="cf-content">
+                        <div class="cf-title">{{ $t('exercises_title') }}</div>
+                        <div class="cf-desc">{{ $t('exercises_desc_short') }}</div>
+                      </div>
+                    </div>
+                    <div class="category-feature-item">
+                      <v-icon size="22" color="#a78bfa">mdi-account-group</v-icon>
+                      <div class="cf-content">
+                        <div class="cf-title">{{ $t('training_rooms') }}</div>
+                        <div class="cf-desc">{{ $t('rooms_desc_short') }}</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Progreso -->
+                <div class="category-card">
+                  <div class="category-card-header">
+                    <div class="category-card-icon gradient-blue">
+                      <v-icon size="28" color="white">mdi-chart-line</v-icon>
+                    </div>
+                    <span class="category-card-title">{{ $t('category_progress') }}</span>
+                  </div>
+                  <div class="category-features-list">
+                    <div class="category-feature-item">
+                      <v-icon size="22" color="#22d3ee">mdi-lightning-bolt</v-icon>
+                      <div class="cf-content">
+                        <div class="cf-title">{{ $t('levels') }} & XP</div>
+                        <div class="cf-desc">{{ $t('levels_desc') }}</div>
+                      </div>
+                    </div>
+                    <div class="category-feature-item">
+                      <v-icon size="22" color="#22d3ee">mdi-scale-bathroom</v-icon>
+                      <div class="cf-content">
+                        <div class="cf-title">{{ $t('body_metrics_title') }}</div>
+                        <div class="cf-desc">{{ $t('metrics_desc_short') }}</div>
+                      </div>
+                    </div>
+                    <div class="category-feature-item">
+                      <v-icon size="22" color="#22d3ee">mdi-medal</v-icon>
+                      <div class="cf-content">
+                        <div class="cf-title">{{ $t('achievements') }}</div>
+                        <div class="cf-desc">{{ $t('achievements_desc_short') }}</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Social -->
+                <div class="category-card">
+                  <div class="category-card-header">
+                    <div class="category-card-icon gradient-pink">
+                      <v-icon size="28" color="white">mdi-earth</v-icon>
+                    </div>
+                    <span class="category-card-title">{{ $t('category_social') }}</span>
+                  </div>
+                  <div class="category-features-list">
+                    <div class="category-feature-item">
+                      <v-icon size="22" color="#f093fb">mdi-account-multiple</v-icon>
+                      <div class="cf-content">
+                        <div class="cf-title">{{ $t('train_group') }}</div>
+                        <div class="cf-desc">{{ $t('join_rooms') }}</div>
+                      </div>
+                    </div>
+                    <div class="category-feature-item">
+                      <v-icon size="22" color="#f093fb">mdi-chat</v-icon>
+                      <div class="cf-content">
+                        <div class="cf-title">{{ $t('chat_rooms') }}</div>
+                        <div class="cf-desc">{{ $t('chat_desc_short') }}</div>
+                      </div>
+                    </div>
+                    <div class="category-feature-item">
+                      <v-icon size="22" color="#f093fb">mdi-trophy</v-icon>
+                      <div class="cf-content">
+                        <div class="cf-title">{{ $t('Ranking') }}</div>
+                        <div class="cf-desc">{{ $t('ranking_desc_short') }}</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Premium -->
+                <div class="category-card premium-card">
+                  <div class="category-card-header">
+                    <div class="category-card-icon gradient-gold">
+                      <v-icon size="28" color="white">mdi-star</v-icon>
+                    </div>
+                    <span class="category-card-title">{{ $t('category_premium') }}</span>
+                    <span class="premium-mini-badge">PREMIUM</span>
+                  </div>
+                  <div class="category-features-list">
+                    <div class="category-feature-item">
+                      <v-icon size="22" color="#ffd700">mdi-robot</v-icon>
+                      <div class="cf-content">
+                        <div class="cf-title">{{ $t('coach_ai') }}</div>
+                        <div class="cf-desc">{{ $t('coach_ai_desc_short') }}</div>
+                      </div>
+                    </div>
+                    <div class="category-feature-item">
+                      <v-icon size="22" color="#ffd700">mdi-calculator</v-icon>
+                      <div class="cf-content">
+                        <div class="cf-title">{{ $t('calculator') }}</div>
+                        <div class="cf-desc">{{ $t('calculator_desc_short') }}</div>
+                      </div>
+                    </div>
+                    <div class="category-feature-item">
+                      <v-icon size="22" color="#ffd700">mdi-clipboard-list</v-icon>
+                      <div class="cf-content">
+                        <div class="cf-title">{{ $t('plans') }}</div>
+                        <div class="cf-desc">{{ $t('plans_desc_short') }}</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Economía -->
+                <div class="category-card">
+                  <div class="category-card-header">
+                    <div class="category-card-icon gradient-green">
+                      <v-icon size="28" color="white">mdi-cash-multiple</v-icon>
+                    </div>
+                    <span class="category-card-title">{{ $t('category_economy') }}</span>
+                  </div>
+                  <div class="category-features-list">
+                    <div class="category-feature-item">
+                      <v-icon size="22" color="#4ade80">mdi-store</v-icon>
+                      <div class="cf-content">
+                        <div class="cf-title">{{ $t('shop_header') }}</div>
+                        <div class="cf-desc">{{ $t('shop_desc_short') }}</div>
+                      </div>
+                    </div>
+                    <div class="category-feature-item">
+                      <v-icon size="22" color="#4ade80">mdi-bag-personal</v-icon>
+                      <div class="cf-content">
+                        <div class="cf-title">{{ $t('inventario') }}</div>
+                        <div class="cf-desc">{{ $t('inventory_desc_short') }}</div>
+                      </div>
+                    </div>
+                    <div class="category-feature-item">
+                      <v-icon size="22" color="#4ade80">mdi-bitcoin</v-icon>
+                      <div class="cf-content">
+                        <div class="cf-title">{{ $t('coins') }}</div>
+                        <div class="cf-desc">{{ $t('coins_desc_short') }}</div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </v-col>
@@ -485,8 +665,8 @@ function changePage(page: number) {
                 <div class="search-box-header">
                   <v-icon color="purple" size="28" class="mr-3">mdi-magnify</v-icon>
                   <div>
-                    <div class="search-box-title">Buscar por ubicación</div>
-                    <div class="search-box-subtitle">Encuentra gimnasios cerca de ti</div>
+                    <div class="search-box-title">{{ $t('home_search_location') }}</div>
+                    <div class="search-box-subtitle">{{ $t('home_search_location') }}</div>
                   </div>
                 </div>
 
@@ -502,7 +682,7 @@ function changePage(page: number) {
                   <v-col cols="12" md="4">
                     <v-btn block size="x-large" class="search-btn-epic" :loading="loading" @click="searchByAddress">
                       <v-icon left size="24">mdi-radar</v-icon>
-                      Buscar Gimnasios
+                      {{ $t('buscar') }}
                     </v-btn>
                   </v-col>
                 </v-row>
@@ -559,17 +739,39 @@ function changePage(page: number) {
                     </h4>
                     <p class="gym-address-epic">
                       <v-icon small color="grey">mdi-map-marker</v-icon>
-                      {{ gym.direccion || 'Dirección no disponible' }}
+                      {{ gym.direccion || $t('home_address_not_available') }}
                     </p>
+                    <div class="gym-extra-info">
+                      <p v-if="gym.telefono" class="gym-extra-line">
+                        <v-icon small color="primary">mdi-phone</v-icon>
+                        <span>{{ gym.telefono }}</span>
+                      </p>
+                      <p v-if="gym.sitioWeb" class="gym-extra-line">
+                        <v-icon small color="primary">mdi-web</v-icon>
+                        <a :href="gym.sitioWeb" target="_blank" rel="noopener noreferrer" class="gym-link">{{ $t('home_visit_website') }}</a>
+                      </p>
+                      <p v-if="gym.horarioApertura" class="gym-extra-line">
+                        <v-icon small color="primary">mdi-clock-outline</v-icon>
+                        <span>{{ gym.horarioApertura }}</span>
+                      </p>
+                      <p v-if="gym.accesibilidad" class="gym-extra-line">
+                        <v-icon small color="primary">mdi-wheelchair-accessibility</v-icon>
+                        <span>{{ $t('home_accessibility') }}: {{ gym.accesibilidad }}</span>
+                      </p>
+                      <p v-if="gym.operador" class="gym-extra-line">
+                        <v-icon small color="primary">mdi-domain</v-icon>
+                        <span>{{ gym.operador }}</span>
+                      </p>
+                    </div>
                   </div>
 
                   <div class="gym-card-footer">
                     <div class="gym-distance">
                       <v-icon small color="blue">mdi-walk</v-icon>
-                      <span>Cerca de ti</span>
+                      <span>~ 1.2 km</span>
                     </div>
                     <v-btn size="small" color="primary" variant="text" class="gym-action-btn">
-                      Ver más
+                      {{ $t('home_see_more') }}
                       <v-icon right small>mdi-arrow-right</v-icon>
                     </v-btn>
                   </div>
@@ -582,7 +784,7 @@ function changePage(page: number) {
               <div v-if="totalPages > 1" class="pagination-container-epic">
                 <div class="pagination-info">
                   <v-icon color="primary" class="mr-2">mdi-information-outline</v-icon>
-                  <span>Página {{ currentPage }} de {{ totalPages }}</span>
+                  <span>{{ $t('home_page_of', [currentPage, totalPages]) }}</span>
                 </div>
 
                 <div class="pagination-controls">
@@ -622,7 +824,7 @@ function changePage(page: number) {
                 </div>
 
                 <div class="pagination-jump">
-                  <span class="jump-label">Ir a página:</span>
+                  <span class="jump-label">{{ $t('home_go_to_page') }}</span>
                   <v-select v-model="currentPage" :items="Array.from({ length: totalPages }, (_, i) => i + 1)"
                     variant="outlined" density="compact" hide-details class="page-select"
                     @update:model-value="changePage"></v-select>
@@ -1827,6 +2029,32 @@ function changePage(page: number) {
   align-items: center;
   gap: 6px;
   margin: 0;
+}
+
+.gym-extra-info {
+  margin-top: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.gym-extra-line {
+  font-size: 0.85rem;
+  color: #555;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+}
+
+.gym-link {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.gym-link:hover {
+  text-decoration: underline;
 }
 
 .gym-card-footer {
@@ -3486,5 +3714,156 @@ function changePage(page: number) {
   .map-element-epic {
     height: 400px;
   }
+}
+
+/* ===== ALL FEATURES SECTION ===== */
+.all-features-section {
+  padding-top: 4rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.features-section-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-weight: 800;
+  color: white;
+  margin-bottom: 0.5rem;
+}
+
+.features-section-subtitle {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 500;
+}
+
+.features-categories-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
+
+.category-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 1.5rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
+}
+
+.category-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(102, 126, 234, 0.5);
+  box-shadow: 0 16px 48px rgba(102, 126, 234, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.premium-card {
+  border-color: rgba(255, 193, 7, 0.2);
+  background: linear-gradient(135deg, rgba(255, 193, 7, 0.05), rgba(139, 92, 246, 0.05));
+}
+
+.premium-card:hover {
+  border-color: rgba(255, 193, 7, 0.5);
+  box-shadow: 0 16px 48px rgba(255, 193, 7, 0.2);
+}
+
+.category-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.category-card-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.gradient-purple {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+}
+
+.gradient-blue {
+  background: linear-gradient(135deg, #4facfe, #00f2fe);
+  box-shadow: 0 8px 24px rgba(79, 172, 254, 0.4);
+}
+
+.gradient-pink {
+  background: linear-gradient(135deg, #f093fb, #f5576c);
+  box-shadow: 0 8px 24px rgba(245, 87, 108, 0.4);
+}
+
+.gradient-gold {
+  background: linear-gradient(135deg, #ffd700, #ff8c00);
+  box-shadow: 0 8px 24px rgba(255, 140, 0, 0.4);
+}
+
+.gradient-green {
+  background: linear-gradient(135deg, #4ade80, #22c55e);
+  box-shadow: 0 8px 24px rgba(74, 222, 128, 0.4);
+}
+
+.category-card-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: white;
+}
+
+.premium-mini-badge {
+  margin-left: auto;
+  font-size: 0.6rem;
+  font-weight: 800;
+  color: #0a0a0f;
+  background: linear-gradient(135deg, #ffd700, #ffb700);
+  padding: 0.2rem 0.5rem;
+  border-radius: 50px;
+  letter-spacing: 1px;
+}
+
+.category-features-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.category-feature-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.category-feature-item:hover {
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.cf-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cf-title {
+  color: #e2e8f0;
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.cf-desc {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.8rem;
+  line-height: 1.3;
 }
 </style>

@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import CreditCardForm from '@/components/payment/CreditCardForm.vue'
 import PaymentSummary from '@/components/payment/PaymentSummary.vue'
 import PaymentSnackbar from '@/components/payment/PaymentSnackbar.vue'
+
+const { t } = useI18n()
 
 const snackbarRef = ref<InstanceType<typeof PaymentSnackbar>>()
 
@@ -23,14 +26,13 @@ const handlePaymentSuccess = () => {
       <!-- Sección de encabezado -->
       <div class="header-section">
         <div class="header-content">
-          <div class="header-badge">Pago seguro y verificado</div>
-          <h1 class="page-title">Completa tu compra</h1>
-          <p class="page-subtitle">Ingresa tus datos de pago para acceder inmediatamente a todos los beneficios</p>
+          <div class="header-badge">{{ $t('secure_payment_verified') }}</div>
+          <h1 class="page-title">{{ $t('complete_purchase') }}</h1>
+          <p class="page-subtitle">{{ $t('enter_payment_data') }}</p>
         </div>
       </div>
 
       <!-- Contenido principal -->
-      <!-- Reemplaza esto en el template -->
       <div class="content-section">
         <div class="payment-grid">
           <div class="payment-col form-col">
@@ -49,8 +51,8 @@ const handlePaymentSuccess = () => {
             <v-icon size="28">mdi-shield-check</v-icon>
           </div>
           <div class="trust-text">
-            <div class="trust-title">Pago 100% seguro</div>
-            <div class="trust-desc">Encriptación SSL 256-bit con certificado verificado</div>
+            <div class="trust-title">{{ $t('payment_100_secure') }}</div>
+            <div class="trust-desc">{{ $t('ssl_encryption') }}</div>
           </div>
         </div>
 
@@ -61,8 +63,8 @@ const handlePaymentSuccess = () => {
             <v-icon size="28">mdi-undo</v-icon>
           </div>
           <div class="trust-text">
-            <div class="trust-title">Garantía 30 días</div>
-            <div class="trust-desc">Reembolso completo sin hacer preguntas</div>
+            <div class="trust-title">{{ $t('guarantee_30_days') }}</div>
+            <div class="trust-desc">{{ $t('full_refund') }}</div>
           </div>
         </div>
 
@@ -73,8 +75,8 @@ const handlePaymentSuccess = () => {
             <v-icon size="28">mdi-lightning-bolt</v-icon>
           </div>
           <div class="trust-text">
-            <div class="trust-title">Acceso inmediato</div>
-            <div class="trust-desc">Activa tu suscripción al instante después de pagar</div>
+            <div class="trust-title">{{ $t('immediate_access') }}</div>
+            <div class="trust-desc">{{ $t('activate_subscription_now') }}</div>
           </div>
         </div>
       </div>
@@ -357,6 +359,19 @@ const handlePaymentSuccess = () => {
 }
 
 @media (max-width: 960px) {
+  .payment-grid {
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .payment-col > * {
+    height: auto;
+  }
+
+  .summary-col {
+    order: -1;
+  }
+
   .trust-section {
     flex-direction: column;
     gap: 1.5rem;
@@ -371,51 +386,71 @@ const handlePaymentSuccess = () => {
     width: 100%;
     justify-content: flex-start;
   }
+
+  .blob-1 {
+    width: 300px;
+    height: 300px;
+    top: -100px;
+    right: -100px;
+  }
+
+  .blob-2 {
+    width: 250px;
+    height: 250px;
+    bottom: -100px;
+    left: -100px;
+  }
 }
 
 @media (max-width: 600px) {
   .checkout-container {
-    padding: 1.5rem 1rem;
+    padding: 1rem 0.75rem;
   }
 
   .header-section {
-    margin-bottom: 2.5rem;
-    padding: 1rem 0;
+    margin-bottom: 2rem;
+    padding: 0.5rem 0;
   }
 
   .header-badge {
-    font-size: 0.75rem;
-    padding: 0.4rem 0.9rem;
+    font-size: 0.7rem;
+    padding: 0.35rem 0.8rem;
+    margin-bottom: 1rem;
   }
 
   .page-title {
-    font-size: 2rem;
+    font-size: 1.65rem;
+    letter-spacing: -0.5px;
   }
 
   .page-subtitle {
-    font-size: 0.95rem;
+    font-size: 0.9rem;
+    line-height: 1.5;
   }
 
   .content-section {
-    margin-bottom: 2.5rem;
+    margin-bottom: 2rem;
   }
 
   .payment-grid {
-    gap: 1.5rem;
+    gap: 1.25rem;
   }
 
   .trust-section {
-    padding: 2rem 1rem;
-    border-radius: 16px;
+    padding: 1.5rem 1rem;
+    border-radius: 14px;
+    margin-top: 1rem;
+    gap: 1.25rem;
   }
 
   .trust-card {
-    gap: 0.9rem;
+    gap: 0.8rem;
   }
 
   .trust-icon {
-    width: 48px;
-    height: 48px;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
   }
 
   .trust-title {
@@ -429,20 +464,38 @@ const handlePaymentSuccess = () => {
 
 @media (max-width: 480px) {
   .checkout-container {
-    padding: 1rem 0.8rem;
+    padding: 0.75rem 0.5rem;
+  }
+
+  .header-section {
+    margin-bottom: 1.5rem;
   }
 
   .page-title {
-    font-size: 1.75rem;
+    font-size: 1.45rem;
   }
 
   .page-subtitle {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
   }
 
   .trust-section {
     gap: 1rem;
-    padding: 1.5rem 1rem;
+    padding: 1.25rem 0.75rem;
+    border-radius: 12px;
+  }
+
+  .trust-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .trust-title {
+    font-size: 0.8rem;
+  }
+
+  .trust-desc {
+    font-size: 0.7rem;
   }
 }
 </style>

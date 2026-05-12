@@ -3,10 +3,12 @@ import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/userStore'
 import { logger } from '@/utils/logger'
+import { useI18n } from 'vue-i18n'
 
 const router = useRouter()
 const route = useRoute()
 const store = useUserStore()
+const { t } = useI18n()
 
 const verificationCode = ref('')
 const verificationEmail = ref('')
@@ -44,14 +46,14 @@ const verifyEmail = async () => {
   successMessage.value = ''
 
   if (verificationCode.value.length !== 6) {
-    errorMessage.value = 'El código debe tener 6 dígitos'
-    showSnackbar('Por favor, introduce los 6 dígitos del código', 'warning')
+    errorMessage.value = t('code_6_digits')
+    showSnackbar(t('please_enter_6'), 'warning')
     return
   }
 
   if (!verificationEmail.value) {
-    errorMessage.value = 'No se encontró el email para verificar'
-    showSnackbar('No se encontró el email de verificación.', 'error')
+    errorMessage.value = t('email_not_found_verify')
+    showSnackbar(t('email_verif_not_found'), 'error')
     return
   }
 
@@ -61,8 +63,8 @@ const verifyEmail = async () => {
     const result = await store.verifyEmail(verificationEmail.value, verificationCode.value)
 
     if (result) {
-      successMessage.value = '¡Email verificado correctamente!'
-      showSnackbar('¡Email verificado! Redirigiendo...', 'success')
+      successMessage.value = t('email_verified_success')
+      showSnackbar(t('email_verified_redirect'), 'success')
 
       if (store.loggedUser) {
         await store.refreshLoggedUser()
@@ -72,13 +74,13 @@ const verifyEmail = async () => {
         router.push({ name: store.loggedUser ? 'homeLogged' : 'login' })
       }, 1500)
     } else {
-      errorMessage.value = 'Código inválido o expirado'
-      showSnackbar('Código inválido o expirado. Intenta de nuevo.', 'error')
+      errorMessage.value = t('code_invalid')
+      showSnackbar(t('code_invalid_retry'), 'error')
     }
   } catch (error) {
     logger.error(error)
-    errorMessage.value = 'Error al verificar. Intenta más tarde.'
-    showSnackbar('Error del servidor. Intenta más tarde.', 'error')
+    errorMessage.value = t('verify_error')
+    showSnackbar(t('server_error'), 'error')
   } finally {
     isLoading.value = false
   }
@@ -92,25 +94,25 @@ const resendCode = async () => {
 
   try {
     if (!verificationEmail.value) {
-      errorMessage.value = 'No se encontró el email para reenviar el código'
-      showSnackbar('No se encontró el email de verificación.', 'error')
+      errorMessage.value = t('email_not_found_resend')
+      showSnackbar(t('email_verif_not_found'), 'error')
       return
     }
 
     const result = await store.resendVerificationCode(verificationEmail.value)
 
     if (result) {
-      successMessage.value = 'Se ha reenviado el código a tu correo'
-      showSnackbar('Código reenviado correctamente', 'success')
+      successMessage.value = t('code_resent')
+      showSnackbar(t('code_resent_success'), 'success')
       startCountdown()
     } else {
-      errorMessage.value = 'No se pudo reenviar el código'
-      showSnackbar('Error al reenviar el código', 'error')
+      errorMessage.value = t('could_not_resend')
+      showSnackbar(t('resend_error'), 'error')
     }
   } catch (error) {
     logger.error(error)
-    errorMessage.value = 'Error al reenviar. Intenta más tarde.'
-    showSnackbar('Error del servidor. Intenta más tarde.', 'error')
+    errorMessage.value = t('resend_error_later')
+    showSnackbar(t('server_error'), 'error')
   } finally {
     isResending.value = false
   }
@@ -137,7 +139,7 @@ onMounted(() => {
   verificationEmail.value = emailFromQuery || store.loggedUser?.email || ''
 
   if (!verificationEmail.value) {
-    showSnackbar('Debes indicar un email para verificar tu cuenta', 'warning')
+    showSnackbar(t('indicate_email'), 'warning')
     setTimeout(() => {
       router.push({ name: 'login' })
     }, 1500)
@@ -146,7 +148,7 @@ onMounted(() => {
 
   // Si ya está verificado, redirigir
   if (store.loggedUser && (store.loggedUser as any).isEmailVerified && store.loggedUser.email === verificationEmail.value) {
-    showSnackbar('Tu email ya está verificado', 'success')
+    showSnackbar(t('email_already_verified'), 'success')
     setTimeout(() => {
       router.push({ name: 'homeLogged' })
     }, 1500)
@@ -180,16 +182,16 @@ onBeforeUnmount(() => {
           </div>
         </div>
         <h1 class="hero-title">{{ $t('slogan') }}</h1>
-        <p class="hero-subtitle">VERIFICACIÓN DE CUENTA</p>
+        <p class="hero-subtitle">{{ $t('account_verification') }}</p>
       </div>
 
       <!-- Main Content -->
       <div class="verify-card">
         <div class="verify-header">
           <div class="verify-icon">📧</div>
-          <h2 class="verify-title">Verifica tu Email</h2>
+          <h2 class="verify-title">{{ $t('verify_your_email') }}</h2>
           <p class="verify-subtitle">
-            Hemos enviado un código de 6 dígitos a
+            {{ $t('sent_6_digit') }}
             <span class="email-highlight">{{ verificationEmail }}</span>
           </p>
         </div>
@@ -208,7 +210,7 @@ onBeforeUnmount(() => {
 
         <!-- Code Input -->
         <div class="code-section">
-          <label class="code-label">CÓDIGO DE VERIFICACIÓN</label>
+          <label class="code-label">{{ $t('verification_code_label') }}</label>
           <div class="code-input-container">
             <input
               v-model="verificationCode"
@@ -221,7 +223,7 @@ onBeforeUnmount(() => {
               autocomplete="one-time-code"
             />
           </div>
-          <p class="code-hint">Introduce los 6 dígitos que recibiste por correo</p>
+          <p class="code-hint">{{ $t('enter_6_digits') }}</p>
         </div>
 
         <!-- Verify Button -->
@@ -234,18 +236,18 @@ onBeforeUnmount(() => {
           block
         >
           <span v-if="!isLoading" class="btn-text">
-            <span>Verificar Email</span>
+            <span>{{ $t('verify_email_btn') }}</span>
             <span class="btn-arrow">→</span>
           </span>
           <span v-else class="btn-loading">
             <v-progress-circular indeterminate size="20" width="2" color="white"></v-progress-circular>
-            <span>Verificando...</span>
+            <span>{{ $t('verifying') }}</span>
           </span>
         </v-btn>
 
         <!-- Resend Section -->
         <div class="resend-section">
-          <p class="resend-text">¿No recibiste el código?</p>
+          <p class="resend-text">{{ $t('didnt_receive') }}</p>
           <v-btn
             @click="resendCode"
             variant="text"
@@ -255,10 +257,10 @@ onBeforeUnmount(() => {
             :loading="isResending"
           >
             <span v-if="countdown > 0">
-              Reenviar en {{ countdown }}s
+              {{ $t('resend_in') }} {{ countdown }}s
             </span>
             <span v-else>
-              Reenviar código
+              {{ $t('resend_code') }}
             </span>
           </v-btn>
         </div>
@@ -276,7 +278,7 @@ onBeforeUnmount(() => {
           to="/login"
           block
         >
-          Volver al inicio
+          {{ $t('back_home') }}
         </v-btn>
       </div>
 
@@ -284,14 +286,14 @@ onBeforeUnmount(() => {
       <div class="info-grid">
         <div class="info-card">
           <div class="info-icon">⏱️</div>
-          <h3 class="info-title">Expira en 15 min</h3>
-          <p class="info-desc">El código es válido por 15 minutos desde su envío</p>
+          <h3 class="info-title">{{ $t('expires_15min') }}</h3>
+          <p class="info-desc">{{ $t('code_valid_15') }}</p>
         </div>
 
         <div class="info-card">
           <div class="info-icon">🔒</div>
-          <h3 class="info-title">Seguro</h3>
-          <p class="info-desc">Tu información está protegida y encriptada</p>
+          <h3 class="info-title">{{ $t('secure') }}</h3>
+          <p class="info-desc">{{ $t('info_protected') }}</p>
         </div>
       </div>
     </div>
@@ -306,7 +308,7 @@ onBeforeUnmount(() => {
       </div>
       <template v-slot:actions>
         <v-btn variant="text" @click="snackbar = false" size="small">
-          Cerrar
+          {{ $t('close') }}
         </v-btn>
       </template>
     </v-snackbar>

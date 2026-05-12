@@ -15,14 +15,16 @@ namespace AA2_CS.Controllers
         private readonly AuthService _authService;
         private readonly NotificationService _notificationService;
         private readonly ItemService _itemService;
+        private readonly IServiceProvider _serviceProvider;
 
         // Constructor del controlador, se inyecta el servicio de compras
-        public PurchaseController(PurchaseService purchaseService, AuthService authService, NotificationService notificationService, ItemService itemService)
+        public PurchaseController(PurchaseService purchaseService, AuthService authService, NotificationService notificationService, ItemService itemService, IServiceProvider serviceProvider)
         {
             _purchaseService = purchaseService;
             _authService = authService;
             _notificationService = notificationService;
             _itemService = itemService;
+            _serviceProvider = serviceProvider;
         }
 
         // Ruta para obtener todas las compras
@@ -83,15 +85,22 @@ namespace AA2_CS.Controllers
                 var item = _itemService.FindById(purchase.itemid);
                 var id = _purchaseService.Add(purchase); // Agrega una nueva compra
 
-                // Enviar recibo de compra por email (fire-and-forget)
+                // Enviar recibo de compra por email (fire-and-forget con scope propio)
                 if (item != null)
                 {
+                    var capturedUserId = purchase.userid;
+                    var capturedItemName = item.name;
+                    var capturedItemType = item.type;
+                    var capturedItemBonus = item.bonus;
+                    var capturedItemPrice = item.price;
                     _ = System.Threading.Tasks.Task.Run(async () =>
                     {
                         try
                         {
-                            await _notificationService.SendPurchaseReceiptIfNeeded(
-                                purchase.userid, item.name, item.type, item.bonus, item.price);
+                            using var scope = _serviceProvider.CreateScope();
+                            var notificationService = scope.ServiceProvider.GetRequiredService<NotificationService>();
+                            await notificationService.SendPurchaseReceiptIfNeeded(
+                                capturedUserId, capturedItemName, capturedItemType, capturedItemBonus, capturedItemPrice);
                         }
                         catch (Exception ex)
                         {

@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 interface PlanItem {
   name: string
@@ -10,17 +13,17 @@ interface PlanItem {
 }
 
 const selectedPlan = computed<PlanItem>(() => ({
-  name: 'Plan Premium',
-  period: 'Mensual',
+  name: t('plan_premium'),
+  period: t('monthly'),
   price: 10.00,
   originalPrice: 10.00,
   features: [
-    'Acceso a todas las calculadoras de salud',
-    'Chat ilimitado con Coach AI personalizado',
-    'Rutinas de entrenamiento personalizadas',
-    'Seguimiento detallado de progreso',
-    'Soporte prioritario 24/7',
-    'Actualizaciones semanales de contenido'
+    t('feature_health_calculators'),
+    t('feature_coach_ai_chat'),
+    t('feature_custom_routines'),
+    t('feature_progress_tracking'),
+    t('feature_priority_support'),
+    t('feature_weekly_updates')
   ]
 }))
 
@@ -34,8 +37,8 @@ const discountPercentage = computed(() =>
   <div class="summary">
     <!-- Encabezado del resumen -->
     <div class="summary-header">
-      <h2 class="summary-title">Tu compra</h2>
-      <p class="summary-subtitle">Revisa lo que vas a obtener</p>
+      <h2 class="summary-title">{{ $t('your_purchase') }}</h2>
+      <p class="summary-subtitle">{{ $t('review_what_you_get') }}</p>
     </div>
 
     <!-- Tarjeta del plan -->
@@ -43,7 +46,7 @@ const discountPercentage = computed(() =>
       <!-- Badge de descuento -->
       <div v-if="discount > 0" class="discount-badge">
         <span class="discount-icon">⚡</span>
-        <span class="discount-text">Ahorra {{ discountPercentage }}%</span>
+        <span class="discount-text">{{ $t('save_label') }} {{ discountPercentage }}%</span>
       </div>
 
       <!-- Contenido del plan -->
@@ -68,25 +71,25 @@ const discountPercentage = computed(() =>
     </div>
 
     <!-- Desglose de pedido -->
-    <div class="order-breakdown">
+      <div class="order-breakdown">
       <div class="breakdown-row">
-        <span class="breakdown-label">Subtotal</span>
+        <span class="breakdown-label">{{ $t('subtotal') }}</span>
         <span class="breakdown-value">€{{ selectedPlan.originalPrice.toFixed(2) }}</span>
       </div>
 
       <div v-if="discount > 0" class="breakdown-row discount-row">
-        <span class="breakdown-label">Descuento</span>
+        <span class="breakdown-label">{{ $t('discount') }}</span>
         <span class="breakdown-value discount">-€{{ discount.toFixed(2) }}</span>
       </div>
 
       <div class="breakdown-divider"></div>
 
       <div class="breakdown-row total-row">
-        <span class="breakdown-label">Total a pagar</span>
+        <span class="breakdown-label">{{ $t('total_to_pay') }}</span>
         <span class="breakdown-value">€{{ selectedPlan.price.toFixed(2) }}</span>
       </div>
 
-      <p class="payment-period">/mes, cancela cuando quieras</p>
+      <p class="payment-period">{{ $t('per_month_cancel_anytime') }}</p>
     </div>
 
     <!-- Garantía -->
@@ -95,8 +98,8 @@ const discountPercentage = computed(() =>
         <v-icon size="28">mdi-shield-check</v-icon>
       </div>
       <div class="guarantee-text">
-        <div class="guarantee-title">Garantía de 30 días</div>
-        <div class="guarantee-desc">Reembolso sin hacer preguntas</div>
+        <div class="guarantee-title">{{ $t('30_day_guarantee') }}</div>
+        <div class="guarantee-desc">{{ $t('full_refund') }}</div>
       </div>
     </div>
 
@@ -104,15 +107,15 @@ const discountPercentage = computed(() =>
     <div class="additional-benefits">
       <div class="benefit-item">
         <v-icon size="20" color="#22c55e">mdi-lightning-bolt</v-icon>
-        <span>Acceso instantáneo</span>
+        <span>{{ $t('instant_access') }}</span>
       </div>
       <div class="benefit-item">
         <v-icon size="20" color="#3b82f6">mdi-lock</v-icon>
-        <span>Datos seguros</span>
+        <span>{{ $t('secure_data') }}</span>
       </div>
       <div class="benefit-item">
         <v-icon size="20" color="#a855f7">mdi-cancel</v-icon>
-        <span>Cancela siempre</span>
+        <span>{{ $t('cancel_always') }}</span>
       </div>
     </div>
   </div>

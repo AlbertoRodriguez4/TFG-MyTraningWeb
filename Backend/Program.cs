@@ -2,10 +2,13 @@ using AA2_CS.Service;
 using Microsoft.EntityFrameworkCore;
 using AA2_CS.Database;
 using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
 using AA2_CS.JWT;
 using AA2_CS.Services;
 using AA2_CS.Repository;
+using AA2_CS.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 Environment.SetEnvironmentVariable("ASPNETCORE_URLS", "http://+:6873");
@@ -35,7 +38,11 @@ if (string.IsNullOrWhiteSpace(jwtKey))
 // Agregar servicios al contenedor
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+    });
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
 
@@ -66,16 +73,33 @@ builder.Services.AddScoped<NotificationPreferenceRepository, NotificationPrefere
 builder.Services.AddScoped<NotificationPreferenceService, NotificationPreferenceService>();
 builder.Services.AddScoped<NotificationService, NotificationService>();
 builder.Services.AddHostedService<NotificationBackgroundService>();
+
+// Nuevos servicios y repositorios
+builder.Services.AddScoped<AchievementRepository, AchievementRepository>();
+builder.Services.AddScoped<AchievementService, AchievementService>();
+builder.Services.AddScoped<BodyMetricRepository, BodyMetricRepository>();
+builder.Services.AddScoped<BodyMetricService, BodyMetricService>();
+builder.Services.AddScoped<ExerciseRepository, ExerciseRepository>();
+builder.Services.AddScoped<ExerciseService, ExerciseService>();
 builder.Services.AddHttpClient<CoachAIService>(client =>
 {
     client.Timeout = TimeSpan.FromSeconds(60);
 });
+builder.Services.AddHttpClient<ExerciseDbClient>(client =>
+{
+    client.Timeout = TimeSpan.FromSeconds(30);
+});
+builder.Services.AddSingleton<ExerciseImageFallbackService>();
+
+// Evitar que JwtSecurityTokenHandler transforme los claim types (ej: role -> http://schemas...)
+JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
 // Configuración de JWT para autenticación
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", options =>
     {
         var config = builder.Configuration;
+        options.MapInboundClaims = false; // .NET 8: evitar mapeo automático de claims
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true, //verificar que el issuer sea válido
@@ -85,7 +109,9 @@ builder.Services.AddAuthentication("Bearer")
             ValidIssuer = config["JwtSettings:Issuer"], //el emisor que se espera (The Training Hub)
             ValidAudience = config["JwtSettings:Audience"], //la audiencia que se espera (The Training Hub Users)
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
-            ClockSkew = TimeSpan.FromMinutes(1)
+            ClockSkew = TimeSpan.FromMinutes(1),
+            RoleClaimType = ClaimTypes.Role,
+            NameClaimType = ClaimTypes.NameIdentifier
         };
     });
 
@@ -112,6 +138,9 @@ app.Urls.Add("http://0.0.0.0:6873");
 app.UseHttpsRedirection();
 app.UseAuthentication(); // Usar la autenticación para JWT y los tokens
 app.UseAuthorization();
+
+// Middleware global de manejo de excepciones
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 // Mapeo de controladores
 app.MapControllers();

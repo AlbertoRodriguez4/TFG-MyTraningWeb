@@ -1,11 +1,13 @@
+import i18n from '@/i18n/i18nConfigurer'
+
 export function decodeToken(token: string): any {
   if (!token || typeof token !== 'string') {
-    throw new Error('Token inválido o vacío');
+    throw new Error(i18n.global.t('jwt_invalid_token'));
   }
 
   const parts = token.split('.');
   if (parts.length !== 3) {
-    throw new Error('Token JWT malformado');
+    throw new Error(i18n.global.t('jwt_malformed'));
   }
 
   try {
@@ -18,6 +20,6 @@ export function decodeToken(token: string): any {
     return JSON.parse(decoded);
   } catch (err) {
     console.error('Fallo al decodificar el token:', err);
-    throw new Error('No se pudo decodificar el token JWT');
+    throw new Error(i18n.global.t('jwt_decode_error'));
   }
 }

@@ -74,9 +74,11 @@
 
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useUserStore } from '@/stores/userStore'
 import { logger } from '@/utils/logger'
 
+const { t } = useI18n()
 const userStore = useUserStore()
 const passwordForm = ref()
 const isUpdating = ref(false)
@@ -124,14 +126,14 @@ async function handleUpdatePassword() {
     )
 
     if (success) {
-      showSnackbar('¡Contraseña actualizada con éxito!', 'success')
+      showSnackbar(t('password_updated'), 'success')
       passwordForm.value.reset()
     } else {
-      showSnackbar('Error: La contraseña actual no es correcta.', 'error')
+      showSnackbar(t('current_password_incorrect'), 'error')
     }
   } catch (error) {
     logger.error(error)
-    showSnackbar('Ha ocurrido un error inesperado. Inténtalo de nuevo.', 'error')
+    showSnackbar(t('unexpected_error_retry'), 'error')
   } finally {
     isUpdating.value = false
   }

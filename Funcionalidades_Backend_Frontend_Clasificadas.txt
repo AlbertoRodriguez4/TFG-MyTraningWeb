@@ -1,0 +1,404 @@
+================================================================================
+RESUMEN DE FUNCIONALIDADES POR CAPA Y CATEGORIA
+The Training Hub - TFG Alberto Rodriguez Penalva
+================================================================================
+
+Este documento clasifica TODAS las funcionalidades del proyecto segun:
+  1. Capa tecnica: BACKEND vs FRONTEND
+  2. Categoria funcional (segun diagramas de la carpeta "Imagenes Diagrama BBDD"):
+     - Identidad y Seguridad
+     - Entrenamiento y Salud
+     - Comunidad y Social
+     - Gamificacion y Economia
+     - Gestion de Plan Premium
+
+================================================================================
+
+# BACKEND - FUNCIONALIDADES (C# / .NET 8)
+
+================================================================================
+## 1. IDENTIDAD Y SEGURIDAD
+================================================================================
+
+[Autenticacion]
+  - Login con email y contrasena (JWT Bearer Token)
+  - Registro de nuevos usuarios
+  - Verificacion de correo electronico (codigo de verificacion por email)
+  - Reenvio de codigo de verificacion
+  - Cambio de contrasena (verificando contrasena actual)
+  - Decodificacion y validacion de tokens JWT
+  - Claims de identidad: UserId, Name, Email, Role, Level, Stats
+
+[Autorizacion y Roles]
+  - Roles de usuario: userMaster (admin), userStaff (moderador), usuario estandar
+  - Autorizacion basada en roles ([Authorize(Roles = ...)])
+  - Autorizacion basada en claims (IsSelfOrAdmin)
+  - Proteccion de endpoints segun rol y propiedad del recurso
+
+[Gestion de Usuarios]
+  - CRUD completo de usuarios (solo admin)
+  - Obtener usuario por ID
+  - Busqueda de usuarios por nombre/caracteristica
+  - Actualizacion de perfil de usuario
+  - Eliminacion de usuarios
+  - Obtencion del Top 3 usuarios por nivel/stats
+
+[Preferencias de Notificacion]
+  - Configuracion de preferencias de notificacion por usuario
+  - Activacion/desactivacion de notificaciones por inactividad
+  - Reset de preferencias a valores por defecto
+
+[Seguridad]
+  - Hashing de contrasenas con BCrypt
+  - Middleware global de manejo de excepciones
+  - CORS configurado para origenes especificos
+  - Validacion de tokens expirados
+
+================================================================================
+## 2. ENTRENAMIENTO Y SALUD
+================================================================================
+
+[Metricas Corporales (Body Metrics)]
+  - Registro de metricas: peso, altura, grasa corporal, pecho, cintura, brazos, muslos
+  - Registro de foto de progreso y notas
+  - CRUD completo de metricas corporales
+  - Obtencion de metricas por usuario
+  - Obtencion de la metrica mas reciente
+  - Calculo automatico de IMC
+
+[Ejercicios]
+  - CRUD de ejercicios (admin/staff)
+  - Busqueda de ejercicios por nombre/descripcion
+  - Filtrado de ejercicios por grupo muscular
+  - Integracion con API externa ExerciseDB (obtencion de ejercicios reales)
+  - Fallback de imagenes para ejercicios
+  - Datos enriquecidos: dificultad, equipo, instrucciones, errores comunes
+
+[Rutinas y Tareas (Tasks)]
+  - CRUD de rutinas/tareas de entrenamiento
+  - Asociacion de ejercicios a tareas (sets, reps)
+  - Completar tarea (ganancia de XP, oro, verificacion de logros)
+  - Obtencion de rutinas por usuario
+  - Obtencion de ejercicios asociados a una tarea
+
+[Coach AI (Premium)]
+  - Chat con inteligencia artificial (Groq API - modelo Llama 3.3 70B)
+  - Generacion de respuestas personalizadas sobre entrenamiento
+  - Restriccion de acceso solo a usuarios con suscripcion premium
+
+================================================================================
+## 3. COMUNIDAD Y SOCIAL
+================================================================================
+
+[Salas (Rooms)]
+  - CRUD de salas de entrenamiento
+  - Creacion de salas con requisitos: nivel minimo, stats minimos, consistencia minima
+  - Campos de sala: nombre, descripcion, fecha, localizacion
+  - Ordenacion de salas por nivel (asc/desc)
+  - Ordenacion de salas por stats (asc/desc)
+  - Busqueda de salas por nombre
+  - Obtencion de salas con usuarios incluidos
+
+[Union a Salas (Users_Rooms)]
+  - Unirse a una sala (validando requisitos)
+  - Salir de una sala
+  - Obtencion de salas de un usuario
+  - Obtencion de miembros de una sala
+  - Actualizacion de relacion usuario-sala
+
+[Check-ins]
+  - Registro de check-ins en salas
+  - Obtencion de XP ganada por check-in
+
+[Geolocalizacion y Mapas]
+  - Geocodificacion de direcciones (Nominatim/OpenStreetMap)
+  - Busqueda de establecimientos cercanos (gimnasios, parques, etc.)
+  - Filtrado por tipo de establecimiento y radio de busqueda
+
+[Notificaciones por Email]
+  - Notificacion de creacion de sala
+  - Notificacion de union a sala
+  - Servicio de notificaciones con preferencias configurables
+  - Background service de notificaciones
+
+================================================================================
+## 4. GAMIFICACION Y ECONOMIA
+================================================================================
+
+[Sistema de Nivel y XP]
+  - Sistema de niveles basado en experiencia (XP)
+  - Calculo de XP requerido y XP restante para subir de nivel
+  - Ganancia de XP al completar tareas y check-ins
+  - Subida de nivel automatica
+
+[Sistema de Oro]
+  - Moneda virtual (gold)
+  - Ganancia de oro al completar tareas y logros
+  - Gasto de oro en compras de items
+
+[Estadisticas de Usuario]
+  - Fuerza (strength)
+  - Resistencia (endurance)
+  - Racha de consistencia (consistencyStreak)
+
+[Items y Tienda]
+  - CRUD de items (admin/staff)
+  - Tipos de items: fuerza, resistencia, generales
+  - Atributos: nombre, tipo, bonus, precio, imagen
+  - Rotacion diaria de items aleatorios (fuerza, resistencia, generales)
+  - Busqueda de items
+
+[Compras (Purchases)]
+  - Compra de items con oro
+  - Validacion de saldo suficiente
+  - Historial de compras por usuario
+  - Obtencion de items comprados (inventario)
+  - Envio de recibo de compra por email
+
+[Equipamiento]
+  - Equipar item de fuerza o resistencia
+  - Desequipar item
+  - Validacion de posesion del item
+  - Aplicacion de bonus al equipar
+
+[Logros (Achievements)]
+  - CRUD de logros (admin/staff)
+  - Atributos: nombre, descripcion, icono, categoria, requisito, recompensa
+  - Desbloqueo automatico de logros al cumplir requisitos
+  - Logros secretos
+  - Recompensas de oro y XP por desbloquear logros
+  - Marcado de logros como vistos
+  - Conteo de logros totales y nuevos
+
+[Ranking]
+  - Top 3 usuarios por nivel y estadisticas
+  - Visualizacion de items equipados en ranking
+
+================================================================================
+## 5. GESTION DE PLAN PREMIUM
+================================================================================
+
+[Planes (Plans)]
+  - CRUD de planes de entrenamiento (admin/staff)
+  - Asociacion de planes a usuarios
+
+[Suscripciones (Subscriptions)]
+  - Compra de suscripcion premium mensual (simulacion de pago)
+  - Renovacion de suscripcion
+  - Cancelacion de suscripcion
+  - Verificacion de suscripcion activa
+  - Historial de suscripciones por usuario
+  - Listado de todas las suscripciones (admin)
+  - Desactivacion automatica de suscripciones expiradas
+  - Envio de confirmacion de compra por email
+  - Precio mensual configurable
+
+[Restricciones Premium]
+  - Bloqueo de Coach AI sin suscripcion
+  - Bloqueo de calculadora avanzada sin suscripcion
+  - Middleware de verificacion de suscripcion en rutas protegidas
+
+================================================================================
+# FRONTEND - FUNCIONALIDADES (Vue 3 / TypeScript)
+
+================================================================================
+## 1. IDENTIDAD Y SEGURIDAD
+================================================================================
+
+[Autenticacion]
+  - Pantalla de Login (LoginView)
+  - Pantalla de Registro (RegisterView)
+  - Pantalla de Verificacion de Email (VerifyEmailView)
+  - Inicializacion de sesion desde token JWT almacenado
+  - Refresco automatico de sesion cada 5 minutos
+  - Logout
+
+[Gestion de Perfil]
+  - Pantalla de configuracion de perfil (ProfileSettingsView)
+  - Formulario de edicion de perfil (ProfileForm)
+  - Subida/actualizacion de avatar
+  - Cambio de contrasena (SecuritySettings)
+
+[Preferencias]
+  - Configuracion de notificaciones (NotificationSettings)
+  - Activacion/desactivacion de alertas por inactividad
+
+[Admin]
+  - Pantalla de gestion de usuarios (UserView)
+  - Lista de usuarios con busqueda
+  - Popup de edicion de usuario (EditUserPopup)
+  - Popup de eliminacion de usuario
+  - Visualizacion de Top 3 usuarios (PodiumUser)
+
+[Router Guards]
+  - Proteccion de rutas autenticadas (requiresAuth)
+  - Proteccion de rutas para invitados (requiresGuest)
+  - Redireccion segun estado de autenticacion
+
+================================================================================
+## 2. ENTRENAMIENTO Y SALUD
+================================================================================
+
+[Metricas Corporales]
+  - Pantalla de metricas corporales (BodyMetricsView)
+  - Formulario de registro de metricas
+  - Historial de metricas con graficos (Chart.js)
+  - Calculadora de IMC integrada
+  - Visualizacion de foto de progreso
+
+[Ejercicios]
+  - Pantalla de ejercicios (ExercisesView)
+  - Lista de ejercicios con busqueda
+  - Filtrado por grupo muscular
+  - Tarjetas de ejercicio con imagen, dificultad, equipo
+  - Detalle de ejercicio con instrucciones
+
+[Rutinas]
+  - Pantalla de rutinas (RutinaView)
+  - Calendario de entrenamiento (CalendarGrid, TrainingCalendar)
+  - Creacion de rutinas (CreateRoutineDialog)
+  - Asociacion de ejercicios a rutinas (sets, reps)
+  - Completar rutina/tarea
+  - Dialogo de subida de nivel (LevelUpDialog)
+  - Resumen semanal (WeeklySummary)
+  - Estadisticas de rutinas (RoutineStats, StatsCards)
+
+[Coach AI (Premium)]
+  - Pantalla de chat con IA (ChatView)
+  - Burbujas de chat (ChatBubble, ChatMessage)
+  - Composicion de mensajes (ChatComposer, ChatInput)
+  - Sidebar de conversaciones (ChatSidebar)
+  - Header del chat (ChatHeader)
+
+[Calculadoras de Salud]
+  - Pantalla de calculadoras (HealthCalculatorView)
+  - Calculadora de IMC (BmiCalculatorModern)
+  - Calculadora de calorias (CaloriesCalculatorModern)
+  - Historial de salud (HealthHistoryModern)
+
+================================================================================
+## 3. COMUNIDAD Y SOCIAL
+================================================================================
+
+[Salas]
+  - Pantalla de listado de salas (RoomView)
+  - Tarjetas de sala con requisitos (RoomCard)
+  - Creacion de sala (RoomPopup)
+  - Edicion de sala (EditRoomPopup)
+  - Ordenacion por nivel y stats
+  - Renderizado de salas (RoomRender)
+
+[Union y Chat]
+  - Pantalla de detalle de sala (JoinRoomView)
+  - Union a sala
+  - Salir de sala
+  - Visualizacion de miembros de sala
+  - Chat de sala (ChatView)
+
+[Mapas]
+  - Visualizacion de mapa con Leaflet
+  - Geocodificacion de direcciones
+  - Busqueda de establecimientos cercanos
+  - Marcadores en mapa (mapStore)
+
+================================================================================
+## 4. GAMIFICACION Y ECONOMIA
+================================================================================
+
+[Tienda de Items]
+  - Pantalla de compras (PurchaseView)
+  - Listado de items disponibles
+  - Items diarios rotativos (fuerza, resistencia, generales)
+  - Popup de compra (PurchasePopup)
+  - Panel de inventario (InventoryPanel)
+  - Renderizado de items (ItemRender)
+
+[Equipamiento]
+  - Equipar items de fuerza/resistencia desde inventario
+  - Desequipar items
+  - Visualizacion de items equipados en perfil
+
+[Logros]
+  - Pantalla de logros (AchievementsView)
+  - Listado de logros desbloqueados y bloqueados
+  - Logros secretos
+  - Notificacion de nuevos logros
+  - Popup de edicion de logros (EditAchievementPopup)
+
+[Estadisticas y Ranking]
+  - Panel de estadisticas de usuario (UserStatsPanel)
+  - Estadisticas de comunidad (CommunityStats)
+  - Podio de top 3 usuarios (PodiumUser)
+  - Lista de usuarios (UserList)
+  - Vista de perfil de usuario (UserViewHeader)
+
+[Sistema de Nivel]
+  - Dialogo de subida de nivel (LevelUpDialog)
+  - Barra de progreso de XP
+  - Visualizacion de nivel, fuerza, resistencia, oro
+  - Racha de consistencia
+
+================================================================================
+## 5. GESTION DE PLAN PREMIUM
+================================================================================
+
+[Planes]
+  - Pantalla de planes (PlanView)
+  - Listado de planes disponibles
+  - Renderizado de planes (PlanRender)
+
+[Pago y Suscripcion]
+  - Pantalla de pago (PaymentView)
+  - Formulario de tarjeta de credito (CreditCardForm)
+  - Resumen de pago (PaymentSummary)
+  - Checkout (CheckOutPage)
+  - Snackbar de confirmacion (PaymentSnackbar)
+
+[Gestion de Suscripcion]
+  - Tarjeta de suscripcion activa (SubscriptionCard)
+  - Verificacion de suscripcion activa
+  - Renovacion de suscripcion
+  - Cancelacion de suscripcion
+  - Historial de suscripciones
+
+[Restricciones Premium en Frontend]
+  - Bloqueo de rutas premium en router (requiresPremium)
+  - Redireccion a planes si no hay suscripcion
+  - Verificacion de suscripcion antes de acceder a Coach AI y calculadoras
+
+================================================================================
+# RESUMEN CRUZADO BACKEND <-> FRONTEND POR CATEGORIA
+================================================================================
+
+IDENTIDAD Y SEGURIDAD
+  Backend: AuthController, UserController, NotificationPreferenceController,
+           JWTConfigurer, EmailService, BCrypt, Middleware
+  Frontend: LoginView, RegisterView, VerifyEmailView, ProfileSettingsView,
+            userStore, NotificationPreferencesStore, router guards
+
+ENTRENAMIENTO Y SALUD
+  Backend: BodyMetricController, ExerciseController, TaskController,
+           CoachAIController, ExerciseDbClient, CoachAIService
+  Frontend: BodyMetricsView, ExercisesView, RutinaView, ChatView (CoachAI),
+            HealthCalculatorView, bodyMetricStore, exerciseStore, RoutineStore
+
+COMUNIDAD Y SOCIAL
+  Backend: RoomController, UserRoomController, GeocodificacionController,
+           NotificationService, EmailService
+  Frontend: RoomView, JoinRoomView, ChatView (salas), RoomStore,
+            UsersRoomStore, mapStore, RoomCard, RoomList
+
+GAMIFICACION Y ECONOMIA
+  Backend: AchievementController, ItemController, PurchaseController,
+           UserController (equip/unequip), TaskController (complete)
+  Frontend: PurchaseView, AchievementsView, UserView, InventoryPanel,
+            itemStore, PurchaseStore, achievementStore, UserStatsPanel
+
+GESTION DE PLAN PREMIUM
+  Backend: PlanController, SubscriptionController, SubscriptionService
+  Frontend: PlanView, PaymentView, SubscriptionStore, PlanStore,
+            SubscriptionCard, CreditCardForm, router premium guards
+
+================================================================================
+FIN DEL DOCUMENTO
+================================================================================

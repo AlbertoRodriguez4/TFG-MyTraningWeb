@@ -37,9 +37,9 @@
               <img src="@/assets/imgs/Logo.png" alt="Logo" class="footer-logo" />
             </div>
             <h3 class="brand-name">The Training Hub</h3>
-            <p class="brand-tagline">🎮 Level Up Your Fitness Journey</p>
+            <p class="brand-tagline">🎮 {{ $t('level_up_fitness') }}</p>
             <p class="brand-description">
-              La plataforma gamificada definitiva para transformar tus entrenamientos en una aventura épica.
+              {{ $t('footer_platform_desc') }}
             </p>
           </div>
 
@@ -48,22 +48,22 @@
             <div class="stat-item">
               <span class="stat-icon">👥</span>
               <div class="stat-info">
-                <span class="stat-value">Comunidad</span>
-                <span class="stat-label">Activa</span>
+                <span class="stat-value">10K+</span>
+                <span class="stat-label">{{ $t('users') }}</span>
               </div>
             </div>
             <div class="stat-item">
               <span class="stat-icon">🏆</span>
               <div class="stat-info">
-                <span class="stat-value">Retos</span>
-                <span class="stat-label">Diarios</span>
+                <span class="stat-value">50K+</span>
+                <span class="stat-label">{{ $t('challenges') }}</span>
               </div>
             </div>
             <div class="stat-item">
               <span class="stat-icon">⚡</span>
               <div class="stat-info">
-                <span class="stat-value">Progreso</span>
-                <span class="stat-label">Real</span>
+                <span class="stat-value">100K+</span>
+                <span class="stat-label">{{ $t('check_ins') }}</span>
               </div>
             </div>
           </div>
@@ -73,28 +73,28 @@
         <div class="footer-column links-column">
           <h4 class="column-title">
             <span class="title-icon">🔗</span>
-            Enlaces Rápidos
+            {{ $t('footer_quick_links') }}
           </h4>
           <ul class="footer-links">
             <li><a href="#" class="footer-link">
               <span class="link-icon">🏠</span>
-              <span class="link-text">Inicio</span>
+              <span class="link-text">{{ $t('home_link') }}</span>
             </a></li>
             <li><a href="#" class="footer-link">
               <span class="link-icon">🎯</span>
-              <span class="link-text">Retos</span>
+              <span class="link-text">{{ $t('challenges_link') }}</span>
             </a></li>
             <li><a href="#" class="footer-link">
               <span class="link-icon">👥</span>
-              <span class="link-text">Salas</span>
+              <span class="link-text">{{ $t('rooms_link') }}</span>
             </a></li>
             <li><a href="#" class="footer-link">
               <span class="link-icon">📊</span>
-              <span class="link-text">Estadísticas</span>
+              <span class="link-text">{{ $t('statistics') }}</span>
             </a></li>
             <li><a href="#" class="footer-link">
               <span class="link-icon">🏅</span>
-              <span class="link-text">Logros</span>
+              <span class="link-text">{{ $t('achievements') }}</span>
             </a></li>
           </ul>
         </div>
@@ -103,28 +103,28 @@
         <div class="footer-column resources-column">
           <h4 class="column-title">
             <span class="title-icon">📚</span>
-            Recursos
+            {{ $t('resources') }}
           </h4>
           <ul class="footer-links">
             <li><a href="#" class="footer-link">
               <span class="link-icon">❓</span>
-              <span class="link-text">Centro de Ayuda</span>
+              <span class="link-text">{{ $t('help_center') }}</span>
             </a></li>
             <li><a href="#" class="footer-link">
               <span class="link-icon">📖</span>
-              <span class="link-text">Guía de Usuario</span>
+              <span class="link-text">{{ $t('footer_user_guide') }}</span>
             </a></li>
             <li><a href="#" class="footer-link">
               <span class="link-icon">💡</span>
-              <span class="link-text">Tips de Entrenamiento</span>
+              <span class="link-text">{{ $t('training_tips') }}</span>
             </a></li>
             <li><a href="#" class="footer-link">
               <span class="link-icon">🎓</span>
-              <span class="link-text">Tutoriales</span>
+              <span class="link-text">{{ $t('tutorials') }}</span>
             </a></li>
             <li><a href="#" class="footer-link">
               <span class="link-icon">📰</span>
-              <span class="link-text">Blog</span>
+              <span class="link-text">{{ $t('blog') }}</span>
             </a></li>
           </ul>
         </div>
@@ -133,10 +133,10 @@
         <div class="footer-column community-column">
           <h4 class="column-title">
             <span class="title-icon">🌟</span>
-            Comunidad
+            {{ $t('community') }}
           </h4>
           
-          <p class="social-intro">Únete a nuestra comunidad y conecta con miles de entrenadores</p>
+          <p class="social-intro">{{ $t('footer_join_community') }}</p>
           
           <div class="social-grid">
             <a href="#" class="social-card twitter" aria-label="Twitter">
@@ -164,8 +164,8 @@
           <!-- Newsletter -->
           <div class="newsletter-box">
             <div class="newsletter-icon">📧</div>
-            <p class="newsletter-text">Recibe tips y actualizaciones</p>
-            <button class="newsletter-btn">Suscribirse</button>
+            <p class="newsletter-text">{{ $t('newsletter_text') }}</p>
+            <button class="newsletter-btn">{{ $t('subscribe') }}</button>
           </div>
         </div>
       </div>
@@ -182,7 +182,7 @@
         <div class="bottom-left">
           <p class="copyright">© 2025 The Training Hub. All rights reserved.</p>
           <p class="made-with">
-            Made with <span class="heart">❤️</span> by fitness enthusiasts
+            {{ $t('made_with') }} <span class="heart">❤️</span> {{ $t('by_fitness_enthusiasts') }}
           </p>
         </div>
 
@@ -190,11 +190,11 @@
           <div class="badge-container">
             <div class="achievement-badge">
               <span class="badge-emoji">🎮</span>
-              <span class="badge-text">Gamified Platform</span>
+              <span class="badge-text">{{ $t('gamified_platform') }}</span>
             </div>
             <div class="achievement-badge">
               <span class="badge-emoji">🔒</span>
-              <span class="badge-text">Secure & Safe</span>
+              <span class="badge-text">{{ $t('secure_safe') }}</span>
             </div>
           </div>
         </div>

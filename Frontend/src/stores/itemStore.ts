@@ -102,6 +102,24 @@ export const useItemStore = defineStore('item', () => {
         }
     }
 
+    async function createItem(item: Omit<Item, 'id'>): Promise<Item | null> {
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/Item`, {
+                method: 'POST',
+                mode: 'cors',
+                headers: getAuthHeaders(),
+                body: JSON.stringify(item)
+            });
+            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+            const created = await response.json();
+            await fetchItems();
+            return created as Item;
+        } catch (error) {
+            logger.error('Error creating item:', error);
+            return null;
+        }
+    }
+
     async function deleteItem(itemid: number): Promise<void> {
         try {
             const response = await fetch(`${API_BASE_URL}/api/Item/${itemid}`, {
@@ -127,6 +145,7 @@ export const useItemStore = defineStore('item', () => {
         fetchDailyStrengthItems,
         fetchDailyEnduranceItems,
         fetchDailyGeneralItems,
+        createItem,
         editItem,
         deleteItem
     };

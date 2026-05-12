@@ -3,10 +3,13 @@ import { useRoomStore } from '@/stores/RoomStore'
 import { useUserRoomStore } from '@/stores/UsersRoomStore'
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import CreateRoomPopup from '../PopUps/RoomPopup.vue'
 import { useUserStore } from '@/stores/userStore'
 import EditRoomPopup from '../PopUps/EditRoomPopup.vue'
 import RoomCard from '../Cards/RoomCard.vue'
+
+const { t } = useI18n()
 
 const store = useRoomStore()
 const userRoomStore = useUserRoomStore()
@@ -14,26 +17,24 @@ const userStore = useUserStore()
 const router = useRouter()
 const loggedUser = ref(userStore.loggedUser)
 
-const sortField      = ref<'level' | 'stats' | null>(null)
-const sortDirection  = ref<'asc' | 'desc'>('asc')
-const searchTerm     = ref('')
-const activeFilter   = ref<'joinable' | 'joined' | null>(null)
+const sortField = ref<'level' | 'stats' | null>(null)
+const sortDirection = ref<'asc' | 'desc'>('asc')
+const searchTerm = ref('')
+const activeFilter = ref<'joinable' | 'joined' | 'trainer' | null>(null)
 
 const selectedRoom = defineModel<{
   id: number; name: string; minlevel: number; minstats: number
   minconsistency: number; description: string; date: string; localization: string
 } | null>('selectedItem')
-const showRoomPopup  = ref(false)
+const showRoomPopup = ref(false)
 const isPopupVisible = ref(false)
 
-const currentPage  = ref(1)
-const itemsPerPage = 3
+const currentPage = ref(1)
+const itemsPerPage = 9
 
 const roomMemberCounts = ref<Map<number, number>>(new Map())
-// Set con los IDs de salas en las que el usuario ya está
-const joinedRoomIds    = ref<Set<number>>(new Set())
+const joinedRoomIds = ref<Set<number>>(new Set())
 
-// Event listeners para limpiar
 const handleMembershipChange = async () => {
   await loadJoinedRooms()
   await loadRoomMemberCounts()
@@ -49,7 +50,6 @@ onMounted(async () => {
   await loadRoomMemberCounts()
   await loadJoinedRooms()
 
-  // Escuchar evento de cambio de membresía
   window.addEventListener('room-membership-changed', handleMembershipChange)
   window.addEventListener('focus', handleFocus)
 })
@@ -59,8 +59,8 @@ onUnmounted(() => {
   window.removeEventListener('focus', handleFocus)
 })
 
-watch(searchTerm,    () => { currentPage.value = 1 })
-watch(activeFilter,  () => { currentPage.value = 1 })
+watch(searchTerm, () => { currentPage.value = 1 })
+watch(activeFilter, () => { currentPage.value = 1 })
 
 async function loadRoomMemberCounts() {
   for (const room of store.room) {
@@ -79,7 +79,6 @@ async function loadJoinedRooms() {
     const ids = new Set<number>()
     for (const room of store.room) {
       await userRoomStore.fetchMembersByRoomId(room.id)
-      // currentRoomMembers contiene objetos { userid, roomid, user: {...} }
       const members = userRoomStore.currentRoomMembers
       if (members.some((m) => m.userid === loggedUser.value?.id)) {
         ids.add(room.id)
@@ -99,7 +98,6 @@ function isJoined(roomId: number) {
   return joinedRoomIds.value.has(roomId)
 }
 
-// Comprueba si el usuario cumple los requisitos mínimos de la sala
 function canJoin(room: { minlevel: number; minstats: number; minconsistency: number }) {
   const u = loggedUser.value
   if (!u) return false
@@ -119,7 +117,7 @@ function toggleSort(field: 'level' | 'stats') {
   currentPage.value = 1
 }
 
-function toggleFilter(filter: 'joinable' | 'joined') {
+function toggleFilter(filter: 'joinable' | 'joined' | 'trainer') {
   activeFilter.value = activeFilter.value === filter ? null : filter
 }
 
@@ -135,7 +133,6 @@ const filteredRooms = computed(() => {
   const term = searchTerm.value.toLowerCase()
   let result = store.room.filter(r => r.name.toLowerCase().includes(term))
 
-  // Filtro de dificultad/sort
   if (sortField.value) {
     const f = sortField.value === 'level' ? 'minlevel' : 'minstats'
     result = [...result].sort((a, b) =>
@@ -143,11 +140,12 @@ const filteredRooms = computed(() => {
     )
   }
 
-  // Filtros de membresía
   if (activeFilter.value === 'joined') {
     result = result.filter(r => isJoined(r.id))
   } else if (activeFilter.value === 'joinable') {
     result = result.filter(r => !isJoined(r.id) && canJoin(r))
+  } else if (activeFilter.value === 'trainer') {
+    result = result.filter(r => r.creatorRole === 'userStaff')
   }
 
   return result
@@ -200,11 +198,11 @@ const pageNumbers = computed(() => {
   return pages
 })
 
-function showPopup()  { isPopupVisible.value = true  }
+function showPopup() { isPopupVisible.value = true }
 function closePopup() { isPopupVisible.value = false }
 
 async function handleCreateRoom(newRoom: any) {
-  await store.createRoom(newRoom, loggedUser.value?.id ?? 0)
+  await store.createRoom(newRoom, loggedUser.value?.id ?? 0, loggedUser.value?.role)
   await loadRoomMemberCounts()
   closePopup()
 }
@@ -233,153 +231,166 @@ function goToRoom(roomId: number) {
 
 <template>
   <div class="rooms-wrapper">
-
-    <!-- ── Header ── -->
+    <!-- Header -->
     <div class="rooms-header">
       <div class="header-left">
-        <div class="header-icon">🏛️</div>
+        <div class="header-icon">
+          <span>🏛️</span>
+        </div>
         <div class="header-text">
-          <h2 class="header-title">Salas de Entrenamiento</h2>
+          <h2 class="header-title">{{ $t('training_rooms') }}</h2>
           <p class="header-sub">
             <span class="sub-dot"></span>
-            {{ filteredRooms.length }} salas disponibles
+            {{ $t('rooms_available', { count: filteredRooms.length }) }}
           </p>
         </div>
       </div>
       <button @click="showPopup" class="create-btn">
-        <span class="create-plus">＋</span>
-        <span>Crear sala</span>
+        <span class="create-plus">+</span>
+        <span>{{ $t('create_room') }}</span>
       </button>
     </div>
 
-    <!-- ── Divider ── -->
+    <!-- Divider -->
     <div class="header-rule">
       <div class="rule-line"></div>
       <div class="rule-glow"></div>
     </div>
 
-    <!-- ── Controls ── -->
-    <div class="controls-bar">
-      <!-- Búsqueda -->
+    <!-- Controls -->
+    <div class="controls-section">
+      <!-- Search -->
       <div class="search-box">
         <span class="search-icon">🔍</span>
         <input
           v-model="searchTerm"
           type="text"
-          placeholder="Buscar sala..."
+          :placeholder="$t('search_room')"
           class="search-input"
         />
         <span v-if="searchTerm" class="search-clear" @click="searchTerm = ''">✕</span>
       </div>
-    </div>
 
-    <!-- ── Filtros combinados ── -->
-    <div class="all-filters">
-      <!-- Filtros de ordenación -->
-      <div class="filter-section">
-        <span class="filter-section-title">Ordenar por:</span>
-        <button
-          class="mfilter-btn mfilter-level"
-          :class="{ active: sortField === 'level' }"
-          @click="toggleSort('level')"
-        >
-          <span class="mfilter-icon">📊</span>
-          <span class="mfilter-label">Nivel</span>
-          <span v-if="sortField === 'level'" class="sort-indicator">
-            {{ sortDirection === 'asc' ? '↑' : '↓' }}
-          </span>
-        </button>
+      <!-- Filters Bar -->
+      <div class="filters-bar">
+        <div class="filter-group">
+          <span class="filter-group-label">{{ $t('sort_by') }}</span>
+          <button
+            class="filter-chip sort-chip"
+            :class="{ active: sortField === 'level' }"
+            @click="toggleSort('level')"
+          >
+            <span class="chip-icon">📊</span>
+            <span class="chip-text">{{ $t('level_label') }}</span>
+            <span v-if="sortField === 'level'" class="sort-arrow">
+              {{ sortDirection === 'asc' ? '↑' : '↓' }}
+            </span>
+          </button>
+          <button
+            class="filter-chip sort-chip"
+            :class="{ active: sortField === 'stats' }"
+            @click="toggleSort('stats')"
+          >
+            <span class="chip-icon">💪</span>
+            <span class="chip-text">{{ $t('stats_label') }}</span>
+            <span v-if="sortField === 'stats'" class="sort-arrow">
+              {{ sortDirection === 'asc' ? '↑' : '↓' }}
+            </span>
+          </button>
+        </div>
 
-        <button
-          class="mfilter-btn mfilter-stats"
-          :class="{ active: sortField === 'stats' }"
-          @click="toggleSort('stats')"
-        >
-          <span class="mfilter-icon">💪</span>
-          <span class="mfilter-label">Stats</span>
-          <span v-if="sortField === 'stats'" class="sort-indicator">
-            {{ sortDirection === 'asc' ? '↑' : '↓' }}
-          </span>
+        <div class="filter-group">
+          <span class="filter-group-label">{{ $t('filter_by') }}</span>
+          <button
+            class="filter-chip filter-joined"
+            :class="{ active: activeFilter === 'joined' }"
+            @click="toggleFilter('joined')"
+          >
+            <span class="chip-icon">✅</span>
+            <span class="chip-text">{{ $t('joined_rooms') }}</span>
+          </button>
+          <button
+            class="filter-chip filter-joinable"
+            :class="{ active: activeFilter === 'joinable' }"
+            @click="toggleFilter('joinable')"
+          >
+            <span class="chip-icon">🚀</span>
+            <span class="chip-text">{{ $t('available_rooms') }}</span>
+          </button>
+          <button
+            class="filter-chip filter-trainer"
+            :class="{ active: activeFilter === 'trainer' }"
+            @click="toggleFilter('trainer')"
+          >
+            <span class="chip-icon">🏅</span>
+            <span class="chip-text">{{ $t('trainer_rooms') }}</span>
+          </button>
+        </div>
+
+        <button class="filter-chip filter-clear" @click="clearAllFilters">
+          <span class="chip-icon">🧹</span>
+          <span class="chip-text">{{ $t('clear_filters') }}</span>
         </button>
       </div>
-
-      <!-- Filtros de membresía -->
-      <div class="filter-section">
-        <span class="filter-section-title">Filtrar por:</span>
-        <button
-          class="mfilter-btn mfilter-joined"
-          :class="{ active: activeFilter === 'joined' }"
-          @click="toggleFilter('joined')"
-        >
-          <span class="mfilter-icon">✅</span>
-          <span class="mfilter-label">Unidas</span>
-        </button>
-
-        <button
-          class="mfilter-btn mfilter-joinable"
-          :class="{ active: activeFilter === 'joinable' }"
-          @click="toggleFilter('joinable')"
-        >
-          <span class="mfilter-icon">🚀</span>
-          <span class="mfilter-label">Disponibles</span>
-        </button>
-      </div>
-
-      <!-- Botón limpiar filtros -->
-      <button
-        class="mfilter-btn mfilter-clear"
-        @click="clearAllFilters"
-      >
-        <span class="mfilter-icon">🧹</span>
-        <span class="mfilter-label">Limpiar filtros</span>
-      </button>
     </div>
 
-    <!-- ── Contador ── -->
+    <!-- Results Counter -->
     <div class="results-bar">
       <div class="results-line"></div>
-      <span class="results-label">{{ paginatedRooms.length }} / {{ filteredRooms.length }} salas</span>
+      <span class="results-label">
+        {{ paginatedRooms.length }} / {{ filteredRooms.length }} {{ $t('rooms') }}
+      </span>
       <div class="results-line"></div>
     </div>
 
-    <!-- ── Empty state ── -->
+    <!-- Empty State -->
     <div v-if="filteredRooms.length === 0" class="empty-state">
       <div class="empty-emoji">
-        {{ activeFilter === 'joined' ? '🔒' : activeFilter === 'joinable' ? '🚧' : '🏋️‍♂️' }}
+        {{ activeFilter === 'joined' ? '🔒' : activeFilter === 'joinable' ? '🚧' : activeFilter === 'trainer' ? '🏅' : '🏋️‍♂️' }}
       </div>
       <p class="empty-title">
         {{
-          activeFilter === 'joined'   ? 'No estás en ninguna sala' :
-          activeFilter === 'joinable' ? 'No cumples requisitos para ninguna sala disponible' :
-          'Sin resultados'
+          activeFilter === 'joined' ? $t('not_in_any_room') :
+          activeFilter === 'joinable' ? $t('no_requirements_met') :
+          activeFilter === 'trainer' ? $t('no_trainer_rooms') :
+          $t('no_results')
         }}
       </p>
       <p class="empty-sub">
         {{
-          activeFilter === 'joined'   ? 'Únete a una sala para verla aquí' :
-          activeFilter === 'joinable' ? 'Sigue entrenando para subir tus stats' :
-          'Ajusta la búsqueda o crea una nueva sala'
+          activeFilter === 'joined' ? $t('join_room_to_see') :
+          activeFilter === 'joinable' ? $t('keep_training') :
+          activeFilter === 'trainer' ? $t('no_trainer_rooms_desc') :
+          $t('adjust_search')
         }}
       </p>
     </div>
 
-    <!-- ── Lista ── -->
-    <div v-else class="rooms-list">
+    <!-- Grid de Salas -->
+    <TransitionGroup
+      v-else
+      name="room-grid"
+      tag="div"
+      class="rooms-grid"
+      appear
+    >
       <RoomCard
         v-for="room in paginatedRooms"
         :key="room.id"
         :room="{ ...room, localization: room.localization ?? '' }"
         :member-count="getMemberCount(room.id)"
         :is-staff="loggedUser?.role === 'userStaff'"
+        :creator-role="room.creatorRole"
         @view="goToRoom"
         @edit="openEditPopup"
       />
-    </div>
+    </TransitionGroup>
 
-    <!-- ── Paginación ── -->
+    <!-- Paginación -->
     <div v-if="filteredRooms.length > 0 && totalPages > 1" class="pagination">
       <button class="page-btn page-nav" :disabled="currentPage === 1" @click="previousPage">
-        ← <span class="nav-label">Anterior</span>
+        <span class="nav-arrow">←</span>
+        <span class="nav-label">{{ $t('previous') }}</span>
       </button>
       <div class="page-numbers">
         <button
@@ -392,13 +403,17 @@ function goToRoom(roomId: number) {
         >{{ page }}</button>
       </div>
       <button class="page-btn page-nav" :disabled="currentPage === totalPages" @click="nextPage">
-        <span class="nav-label">Siguiente</span> →
+        <span class="nav-label">{{ $t('next') }}</span>
+        <span class="nav-arrow">→</span>
       </button>
     </div>
 
     <p v-if="filteredRooms.length > 0" class="pagination-info">
-      {{ (currentPage - 1) * itemsPerPage + 1 }}–{{ Math.min(currentPage * itemsPerPage, filteredRooms.length) }}
-      de {{ filteredRooms.length }} salas
+      {{ $t('rooms_pagination', {
+        start: (currentPage - 1) * itemsPerPage + 1,
+        end: Math.min(currentPage * itemsPerPage, filteredRooms.length),
+        total: filteredRooms.length
+      }) }}
     </p>
 
     <!-- Popups -->
@@ -416,7 +431,7 @@ function goToRoom(roomId: number) {
 <style scoped>
 .rooms-wrapper {
   width: 100%;
-  max-width: 960px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 2rem 1.5rem 3rem;
   font-family: 'Inter', system-ui, sans-serif;
@@ -439,31 +454,38 @@ function goToRoom(roomId: number) {
 }
 
 .header-icon {
-  font-size: 1.5rem;
-  width: 48px; height: 48px;
+  font-size: 1.75rem;
+  width: 56px;
+  height: 56px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(251, 191, 36, 0.1);
-  border: 1px solid rgba(251, 191, 36, 0.3);
-  border-radius: 14px;
-  box-shadow: 0 0 20px rgba(251, 191, 36, 0.15), inset 0 0 12px rgba(251, 191, 36, 0.08);
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.15), rgba(245, 158, 11, 0.1));
+  border: 1px solid rgba(251, 191, 36, 0.35);
+  border-radius: 16px;
+  box-shadow: 0 0 24px rgba(251, 191, 36, 0.15), inset 0 0 16px rgba(251, 191, 36, 0.08);
   flex-shrink: 0;
+  animation: icon-float 3s ease-in-out infinite;
+}
+
+@keyframes icon-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
 }
 
 .header-title {
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   font-weight: 900;
   color: #f8fafc;
   margin: 0 0 0.2rem;
-  letter-spacing: -0.4px;
+  letter-spacing: -0.5px;
 }
 
 .header-sub {
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   color: #64748b;
   margin: 0;
   text-transform: uppercase;
@@ -472,41 +494,47 @@ function goToRoom(roomId: number) {
 }
 
 .sub-dot {
-  width: 5px; height: 5px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   background: #fbbf24;
-  box-shadow: 0 0 6px #fbbf24;
+  box-shadow: 0 0 8px #fbbf24;
   animation: sdot 2s ease-in-out infinite;
 }
+
 @keyframes sdot {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0.2; }
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(0.6); }
 }
 
 .create-btn {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
-  padding: 0.5625rem 1.125rem;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
   background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
   border: 1px solid rgba(251, 191, 36, 0.5);
-  border-radius: 10px;
+  border-radius: 12px;
   color: #0f172a;
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   font-weight: 800;
   cursor: pointer;
-  transition: all 0.22s ease;
-  box-shadow: 0 3px 16px rgba(251, 191, 36, 0.4);
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 20px rgba(251, 191, 36, 0.4);
   white-space: nowrap;
 }
 
 .create-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 24px rgba(251, 191, 36, 0.55);
-  filter: brightness(1.1);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 28px rgba(251, 191, 36, 0.55);
+  filter: brightness(1.15);
 }
 
-.create-plus { font-size: 1rem; line-height: 1; font-weight: 300; }
+.create-plus {
+  font-size: 1.25rem;
+  line-height: 1;
+  font-weight: 300;
+}
 
 /* ── Divider ── */
 .header-rule {
@@ -519,7 +547,7 @@ function goToRoom(roomId: number) {
 .rule-line {
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, transparent, rgba(251, 191, 36, 0.3) 30%, rgba(251, 191, 36, 0.3) 70%, transparent);
+  background: linear-gradient(90deg, transparent, rgba(251, 191, 36, 0.35) 30%, rgba(251, 191, 36, 0.35) 70%, transparent);
 }
 
 .rule-glow {
@@ -527,82 +555,95 @@ function goToRoom(roomId: number) {
   top: -2px;
   left: 50%;
   transform: translateX(-50%);
-  width: 120px; height: 5px;
-  background: radial-gradient(ellipse, rgba(251,191,36,0.55), transparent 70%);
+  width: 140px;
+  height: 5px;
+  background: radial-gradient(ellipse, rgba(251,191,36,0.6), transparent 70%);
   filter: blur(3px);
 }
 
 /* ── Controls ── */
-.controls-bar {
+.controls-section {
   display: flex;
-  margin-bottom: 0.5rem;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .search-box {
-  flex: 1;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-  padding: 0.5625rem 0.875rem;
-  transition: all 0.2s;
+  border-radius: 14px;
+  padding: 0.75rem 1rem;
+  transition: all 0.3s ease;
+  max-width: 480px;
+  width: 100%;
 }
 
 .search-box:focus-within {
   border-color: rgba(251, 191, 36, 0.5);
-  background: rgba(251, 191, 36, 0.05);
+  background: rgba(251, 191, 36, 0.04);
   box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.1);
 }
 
-.search-icon { font-size: 0.75rem; opacity: 0.45; flex-shrink: 0; }
+.search-icon {
+  font-size: 0.875rem;
+  opacity: 0.5;
+  flex-shrink: 0;
+}
 
 .search-input {
   flex: 1;
   border: none;
   outline: none;
   background: transparent;
-  font-size: 0.8125rem;
+  font-size: 0.9375rem;
   color: #e2e8f0;
   min-width: 0;
+  font-family: inherit;
 }
 
-.search-input::placeholder { color: #475569; }
+.search-input::placeholder {
+  color: #475569;
+}
 
 .search-clear {
-  font-size: 0.625rem;
+  font-size: 0.75rem;
   color: #64748b;
   cursor: pointer;
-  padding: 0.1rem 0.25rem;
-  border-radius: 4px;
-  transition: color 0.2s;
+  padding: 0.2rem 0.35rem;
+  border-radius: 6px;
+  transition: all 0.2s;
   flex-shrink: 0;
 }
-.search-clear:hover { color: #94a3b8; }
 
-/* ════════════════════════════════════════
-   FILTROS COMBINADOS
-   ════════════════════════════════════════ */
-.all-filters {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 1.25rem;
-  flex-wrap: wrap;
-  padding: 0.75rem 1rem;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
+.search-clear:hover {
+  color: #94a3b8;
+  background: rgba(255, 255, 255, 0.06);
 }
 
-.filter-section {
+/* Filters Bar */
+.filters-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 0.875rem 1.125rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+}
+
+.filter-group {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  flex-wrap: wrap;
 }
 
-.filter-section-title {
+.filter-group-label {
   font-size: 0.6875rem;
   text-transform: uppercase;
   letter-spacing: 0.8px;
@@ -611,187 +652,219 @@ function goToRoom(roomId: number) {
   margin-right: 0.25rem;
 }
 
-.mfilter-btn {
+.filter-chip {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
-  padding: 0.5rem 0.9rem;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  gap: 0.35rem;
+  padding: 0.5rem 0.875rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 10px;
   font-size: 0.8125rem;
   font-weight: 700;
-  color: #64748b;
+  color: #94a3b8;
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
-  position: relative;
-  overflow: hidden;
+  font-family: inherit;
 }
 
-.mfilter-btn:hover {
-  color: #94a3b8;
+.filter-chip:hover {
+  color: #e2e8f0;
   border-color: rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.07);
   transform: translateY(-1px);
 }
 
-/* Ordenación - Nivel */
-.mfilter-level {
+/* Sort chips */
+.sort-chip {
   background: rgba(139, 92, 246, 0.08);
-  border-color: rgba(139, 92, 246, 0.3);
+  border-color: rgba(139, 92, 246, 0.25);
   color: #c4b5fd;
 }
 
-.mfilter-level:hover {
-  background: rgba(139, 92, 246, 0.12);
+.sort-chip:hover {
+  background: rgba(139, 92, 246, 0.14);
   border-color: rgba(139, 92, 246, 0.4);
 }
 
-.mfilter-level.active {
-  background: rgba(139, 92, 246, 0.15);
+.sort-chip.active {
+  background: rgba(139, 92, 246, 0.2);
   border-color: rgba(139, 92, 246, 0.5);
   color: #a78bfa;
-  box-shadow:
-    0 0 0 1px rgba(139, 92, 246, 0.2),
-    0 4px 16px rgba(139, 92, 246, 0.15);
+  box-shadow: 0 0 0 1px rgba(139, 92, 246, 0.2), 0 4px 16px rgba(139, 92, 246, 0.15);
 }
 
-/* Ordenación - Stats */
-.mfilter-stats {
-  background: rgba(244, 114, 182, 0.08);
-  border-color: rgba(244, 114, 182, 0.3);
-  color: #f472b6;
+.sort-arrow {
+  font-weight: 900;
+  font-size: 0.875rem;
+  margin-left: 0.1rem;
 }
 
-.mfilter-stats:hover {
-  background: rgba(244, 114, 182, 0.12);
-  border-color: rgba(244, 114, 182, 0.4);
-}
-
-.mfilter-stats.active {
-  background: rgba(244, 114, 182, 0.15);
-  border-color: rgba(244, 114, 182, 0.5);
-  color: #f472b6;
-  box-shadow:
-    0 0 0 1px rgba(244, 114, 182, 0.2),
-    0 4px 16px rgba(244, 114, 182, 0.15);
-}
-
-/* Filtro Unidas */
-.mfilter-joined {
+/* Filter Joined */
+.filter-joined {
   background: rgba(56, 189, 248, 0.08);
-  border-color: rgba(56, 189, 248, 0.3);
+  border-color: rgba(56, 189, 248, 0.25);
   color: #7dd3fc;
 }
 
-.mfilter-joined:hover {
-  background: rgba(56, 189, 248, 0.12);
+.filter-joined:hover {
+  background: rgba(56, 189, 248, 0.14);
   border-color: rgba(56, 189, 248, 0.4);
 }
 
-.mfilter-joined.active {
-  background: rgba(56, 189, 248, 0.15);
+.filter-joined.active {
+  background: rgba(56, 189, 248, 0.2);
   border-color: rgba(56, 189, 248, 0.5);
   color: #38bdf8;
-  box-shadow:
-    0 0 0 1px rgba(56, 189, 248, 0.2),
-    0 4px 16px rgba(56, 189, 248, 0.15);
+  box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.2), 0 4px 16px rgba(56, 189, 248, 0.15);
 }
 
-/* Filtro Disponibles */
-.mfilter-joinable {
+/* Filter Joinable */
+.filter-joinable {
   background: rgba(52, 211, 153, 0.08);
-  border-color: rgba(52, 211, 153, 0.3);
+  border-color: rgba(52, 211, 153, 0.25);
   color: #6ee7b7;
 }
 
-.mfilter-joinable:hover {
-  background: rgba(52, 211, 153, 0.12);
+.filter-joinable:hover {
+  background: rgba(52, 211, 153, 0.14);
   border-color: rgba(52, 211, 153, 0.4);
 }
 
-.mfilter-joinable.active {
-  background: rgba(52, 211, 153, 0.15);
+.filter-joinable.active {
+  background: rgba(52, 211, 153, 0.2);
   border-color: rgba(52, 211, 153, 0.5);
   color: #34d399;
-  box-shadow:
-    0 0 0 1px rgba(52, 211, 153, 0.2),
-    0 4px 16px rgba(52, 211, 153, 0.15);
+  box-shadow: 0 0 0 1px rgba(52, 211, 153, 0.2), 0 4px 16px rgba(52, 211, 153, 0.15);
 }
 
-/* Botón Limpiar filtros */
-.mfilter-clear {
+/* Filter Trainer */
+.filter-trainer {
+  background: rgba(251, 191, 36, 0.08);
+  border-color: rgba(251, 191, 36, 0.25);
+  color: #fbbf24;
+}
+
+.filter-trainer:hover {
+  background: rgba(251, 191, 36, 0.14);
+  border-color: rgba(251, 191, 36, 0.4);
+}
+
+.filter-trainer.active {
+  background: rgba(251, 191, 36, 0.2);
+  border-color: rgba(251, 191, 36, 0.5);
+  color: #fbbf24;
+  box-shadow: 0 0 0 1px rgba(251, 191, 36, 0.2), 0 4px 16px rgba(251, 191, 36, 0.15);
+}
+
+/* Clear */
+.filter-clear {
   margin-left: auto;
   background: rgba(239, 68, 68, 0.08);
-  border-color: rgba(239, 68, 68, 0.3);
+  border-color: rgba(239, 68, 68, 0.25);
   color: #f87171;
 }
 
-.mfilter-clear:hover {
+.filter-clear:hover {
   background: rgba(239, 68, 68, 0.15);
-  border-color: rgba(239, 68, 68, 0.5);
+  border-color: rgba(239, 68, 68, 0.45);
   color: #ef4444;
-  transform: translateY(-1px);
 }
 
-.sort-indicator {
-  font-weight: 900;
-  font-size: 0.875rem;
-  margin-left: 0.2rem;
-}
-
-.mfilter-icon {
+.chip-icon {
   font-size: 0.875rem;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 }
-.mfilter-label {
+
+.chip-text {
   letter-spacing: 0.3px;
   text-transform: uppercase;
   font-size: 0.7rem;
 }
 
-/* ── Barra de resultados ── */
+/* ── Results Bar ── */
 .results-bar {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  margin-bottom: 1.75rem;
+  margin-bottom: 1.5rem;
 }
 
 .results-line {
   flex: 1;
   height: 1px;
-  background: rgba(255, 255, 255, 0.06);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
 }
 
 .results-label {
-  font-size: 0.5625rem;
+  font-size: 0.625rem;
   text-transform: uppercase;
-  letter-spacing: 1.3px;
+  letter-spacing: 1.2px;
   color: #475569;
   font-weight: 700;
   white-space: nowrap;
 }
 
-/* ── Empty ── */
+/* ── Empty State ── */
 .empty-state {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
   padding: 5rem 2rem;
+  text-align: center;
 }
 
-.empty-emoji { font-size: 3rem; opacity: 0.3; }
-.empty-title { font-size: 0.9375rem; font-weight: 700; color: #94a3b8; margin: 0; text-align: center; }
-.empty-sub   { font-size: 0.75rem; color: #64748b; margin: 0; text-align: center; }
+.empty-emoji {
+  font-size: 4rem;
+  opacity: 0.4;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+  animation: empty-bounce 3s ease-in-out infinite;
+}
 
-/* ── Lista ── */
-.rooms-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1.75rem;
+@keyframes empty-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.empty-title {
+  font-size: 1.125rem;
+  font-weight: 800;
+  color: #94a3b8;
+  margin: 0;
+}
+
+.empty-sub {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin: 0;
+  max-width: 320px;
+  line-height: 1.6;
+}
+
+/* ── Grid ── */
+.rooms-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Transiciones del grid */
+.room-grid-move,
+.room-grid-enter-active,
+.room-grid-leave-active {
+  transition: all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.room-grid-enter-from,
+.room-grid-leave-to {
+  opacity: 0;
+  transform: translateY(30px) scale(0.95);
+}
+
+.room-grid-leave-active {
+  position: absolute;
 }
 
 /* ── Paginación ── */
@@ -799,34 +872,38 @@ function goToRoom(roomId: number) {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.375rem;
+  gap: 0.5rem;
   margin-top: 2.5rem;
 }
 
-.page-numbers { display: flex; gap: 0.3rem; }
+.page-numbers {
+  display: flex;
+  gap: 0.35rem;
+}
 
 .page-btn {
-  min-width: 34px;
-  height: 34px;
+  min-width: 38px;
+  height: 38px;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.3rem;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 9px;
-  font-size: 0.75rem;
+  border-radius: 10px;
+  font-size: 0.8125rem;
   font-weight: 700;
-  color: #64748b;
+  color: #94a3b8;
   cursor: pointer;
-  transition: all 0.2s;
-  font-family: 'Courier New', monospace;
+  transition: all 0.25s ease;
+  font-family: 'Inter', system-ui, sans-serif;
 }
 
 .page-btn:hover:not(:disabled):not(.ellipsis) {
   border-color: rgba(251, 191, 36, 0.5);
   color: #fbbf24;
-  background: rgba(251, 191, 36, 0.1);
+  background: rgba(251, 191, 36, 0.08);
+  transform: translateY(-1px);
 }
 
 .page-btn.active {
@@ -834,33 +911,42 @@ function goToRoom(roomId: number) {
   border-color: transparent;
   color: #0f172a;
   font-weight: 900;
-  box-shadow: 0 2px 12px rgba(251, 191, 36, 0.5);
+  box-shadow: 0 2px 16px rgba(251, 191, 36, 0.5);
   transform: scale(1.08);
 }
 
-.page-btn:disabled { opacity: 0.25; cursor: not-allowed; }
+.page-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
 
 .page-btn.ellipsis {
   border: none;
   background: transparent;
   color: #475569;
   cursor: default;
-  font-family: inherit;
 }
 
 .page-nav {
-  padding: 0 0.875rem;
+  padding: 0 1rem;
   min-width: auto;
-  font-family: inherit;
-  letter-spacing: 0.2px;
+  gap: 0.4rem;
 }
 
-.nav-label { font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.5px; }
+.nav-arrow {
+  font-size: 0.875rem;
+}
+
+.nav-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
 
 .pagination-info {
   text-align: center;
-  margin-top: 0.75rem;
-  font-size: 0.625rem;
+  margin-top: 1rem;
+  font-size: 0.6875rem;
   color: #475569;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -868,17 +954,67 @@ function goToRoom(roomId: number) {
 }
 
 /* ── Responsive ── */
-@media (max-width: 640px) {
-  .rooms-wrapper       { padding: 1.25rem 0.875rem 2rem; }
-  .controls-bar        { margin-bottom: 0.5rem; }
-  .search-box          { width: 100%; }
-  .all-filters         { gap: 0.5rem; padding: 0.5rem; }
-  .filter-section      { width: 100%; }
-  .filter-section-title { display: none; }
-  .mfilter-btn         { flex: 1; justify-content: center; font-size: 0.75rem; }
-  .mfilter-clear       { width: 100%; margin-left: 0; }
-  .rooms-list          { gap: 1.5rem; }
-  .nav-label           { display: none; }
-  .header-title        { font-size: 1.0625rem; }
+@media (max-width: 768px) {
+  .rooms-wrapper {
+    padding: 1.25rem 1rem 2rem;
+  }
+
+  .rooms-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .create-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .filters-bar {
+    gap: 0.5rem;
+    padding: 0.625rem;
+  }
+
+  .filter-group {
+    width: 100%;
+  }
+
+  .filter-group-label {
+    display: none;
+  }
+
+  .filter-chip {
+    flex: 1;
+    justify-content: center;
+    font-size: 0.75rem;
+  }
+
+  .filter-clear {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .rooms-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .page-nav .nav-label {
+    display: none;
+  }
+
+  .header-title {
+    font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .rooms-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .search-box {
+    max-width: 100%;
+  }
 }
 </style>

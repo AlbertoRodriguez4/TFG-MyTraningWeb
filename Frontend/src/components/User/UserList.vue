@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import defaultAvatar from '@/assets/imgs/usuario.png'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 interface EquipItem {
   name: string
@@ -37,7 +40,7 @@ const getEquipItem = (user: User) => {
       <div class="header-line"></div>
       <h3>
         <v-icon class="header-icon">mdi-account-star</v-icon>
-        Atletas Destacados
+        {{ $t('featured_athletes') }}
         <v-icon class="header-icon">mdi-account-star</v-icon>
       </h3>
       <div class="header-line"></div>
@@ -115,7 +118,7 @@ const getEquipItem = (user: User) => {
     <!-- Empty State -->
     <div class="empty-state" v-else>
       <v-icon size="60" color="rgba(255, 255, 255, 0.2)">mdi-account-group-outline</v-icon>
-      <p>No hay más atletas registrados</p>
+      <p>{{ $t('no_more_athletes') }}</p>
     </div>
   </div>
 </template>

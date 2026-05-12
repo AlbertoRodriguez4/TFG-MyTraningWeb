@@ -13,11 +13,13 @@ namespace AA2_CS.Controllers
     {
         private readonly SubscriptionService _subscriptionService;
         private readonly AuthService _authService;
+        private readonly IServiceProvider _serviceProvider;
 
-        public SubscriptionController(SubscriptionService subscriptionService, AuthService authService)
+        public SubscriptionController(SubscriptionService subscriptionService, AuthService authService, IServiceProvider serviceProvider)
         {
             _subscriptionService = subscriptionService;
             _authService = authService;
+            _serviceProvider = serviceProvider;
         }
 
         /// <summary>
@@ -160,6 +162,26 @@ namespace AA2_CS.Controllers
 
                 int userId = int.Parse(userIdString);
                 var subscriptionId = _subscriptionService.PurchaseSubscription(userId);
+                var subscription = _subscriptionService.GetById(subscriptionId);
+
+                // Enviar confirmación de compra de suscripción por email (fire-and-forget)
+                if (subscription != null)
+                {
+                    _ = System.Threading.Tasks.Task.Run(async () =>
+                    {
+                        try
+                        {
+                            using var scope = _serviceProvider.CreateScope();
+                            var notificationService = scope.ServiceProvider.GetRequiredService<NotificationService>();
+                            await notificationService.SendSubscriptionPurchasedNotificationIfNeeded(
+                                userId, subscription.startDate, subscription.endDate, subscription.monthlyPrice);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Error al enviar notificación de compra de suscripción: {ex.Message}");
+                        }
+                    });
+                }
 
                 return Ok(new {
                     id = subscriptionId,

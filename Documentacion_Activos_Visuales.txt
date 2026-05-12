@@ -1,0 +1,190 @@
+================================================================================
+                       DOCUMENTACION DE ACTIVOS VISUALES
+                    THE TRAINING HUB - MyTrainingWeb
+================================================================================
+
+Fecha de generacion: 12/05/2026
+Proyecto: TFG - The Training Hub
+Tecnologias: Vue 3 (Frontend) / .NET 8 (Backend)
+
+================================================================================
+                              1. IDENTIDAD DE MARCA
+================================================================================
+
+1.1 LOGO PRINCIPAL (Logo.png)
+--------------------------------------------------------------------------------
+Archivo:        Frontend/src/assets/imgs/Logo.png
+Uso:            Header, favicon, pantallas de autenticacion, footer
+Descripcion:
+   - Icono cuadrado con esquinas redondeadas en fondo blanco
+   - Mancuerna/azul estilizada en el centro como simbolo principal
+   - Tipografia "The Training Hub" en azul a la derecha del icono
+   - Fondo general de la aplicacion en tonalidad dorada/amarilla (#FFD700)
+   - Representa la identidad core de la marca: fitness + tecnologia + comunidad
+
+Significado:
+   La mancuerna simboliza el entrenamiento fisico, mientras que el nombre
+   "The Training Hub" refuerza el concepto de centro de entrenamiento digital.
+   El color dorado/amarillo asociado transmite energia, recompensa y motivacion.
+
+================================================================================
+                           2. RECURSOS DE INTERFACE
+================================================================================
+
+2.1 AVATAR POR DEFECTO (usuario.png)
+--------------------------------------------------------------------------------
+Archivo:        Frontend/src/assets/imgs/usuario.png
+Uso:            Perfil de usuario sin foto personalizada, lista de usuarios
+Descripcion:
+   - Icono vectorial en negro sobre fondo transparente
+   - Silueta generica de persona dentro de un circulo
+   - Estilo minimalista y plano (flat design)
+   - Se utiliza como fallback cuando el usuario no ha subido una imagen de perfil
+
+2.2 FONDO DE PANTALLA (gimansio-fondo.jpg)
+--------------------------------------------------------------------------------
+Archivo:        Frontend/src/assets/imgs/gimansio-fondo.jpg
+Uso:            Landing page, seccion Home, pantallas de carga
+Descripcion:
+   - Fotografia real de interior de gimnasio moderno
+   - Efecto blur/desenfoque aplicado para no distraer del contenido
+   - Se aprecian racks de pesas, balones medicinales y zona funcional
+   - Iluminacion LED industrial en techo
+   - Paleta oscura con toques de verde (zona de cesped artificial)
+
+Funcion:
+   Establece el contexto visual inmediato: un centro de entrenamiento
+   profesional. El desenfoque permite superponer texto blanco con
+   buen contraste.
+
+================================================================================
+                         3. RECURSOS PROMOCIONALES
+================================================================================
+
+3.1 IMAGEN DE PAREJA FITNESS (People.png)
+--------------------------------------------------------------------------------
+Archivo:        Frontend/src/assets/imgs/People.png
+Uso:            Seccion "Entrena Juntos" en Home, banner de comunidad
+Descripcion:
+   - Fotografia de alta calidad de una pareja joven atletica
+   - Hombre con camiseta de tirantes negra y mujer con top deportivo negro
+   - Ambos observan un smartphone (simula uso de la app)
+   - Fondo neutro gris claro que no compite con la imagen
+   - Composicion centrada, mirada dirigida al telefono
+
+Mensaje:
+   Representa el pilar SOCIAL de la plataforma: entrenar en pareja,
+   compartir progreso y mantenerse conectado a traves de la aplicacion.
+   Es el recurso principal de marketing para la funcion "Salas".
+
+3.2 PRODUCTO DE TIENDA (straps.jpg)
+--------------------------------------------------------------------------------
+Archivo:        Frontend/src/assets/imgs/straps.jpg
+Uso:            Catalogo de items de la tienda, recompensas visuales
+Descripcion:
+   - Producto: Straps de levantamiento (wrist straps)
+   - Marca visible: "RAW N' FIT"
+   - Color negro con logo rojo/blanco
+   - Presentacion en par (izquierda y derecha)
+   - Fondo blanco limpio (estilo e-commerce)
+
+Contexto:
+   Este tipo de imagen ilustra el sistema de TIENDA interna de la
+   plataforma. Los usuarios compran items con oro ganado por completar
+   tareas. Los items otorgan bonus de estadisticas (fuerza/resistencia)
+   y pueden equiparse en el perfil.
+
+================================================================================
+                         4. REDES SOCIALES
+================================================================================
+
+Carpeta: Frontend/src/assets/imgs/
+Formato: PNG con fondo transparente
+Estilo:  Iconos cuadrados de plataformas conocidas
+
+4.1 facebook.png
+   - Logo oficial de Meta/Facebook
+   - Uso: Footer, seccion "Siguenos", compartir logros
+
+4.2 instagram.png
+   - Logo oficial de Instagram
+   - Uso: Footer, enlaces a perfil oficial de la marca
+
+4.3 tik-tok.png
+   - Logo oficial de TikTok
+   - Uso: Footer, campanas de marketing joven
+
+4.4 twitter.png
+   - Logo oficial de X (anteriormente Twitter)
+   - Uso: Footer, compartir rutinas y progreso
+
+Nota:
+   Todos los iconos de redes sociales se utilizan en la seccion de
+   comunidad y footer para fomentar la conexion entre la plataforma
+   web y las redes sociales externas.
+
+================================================================================
+                         5. ARQUITECTURA VISUAL
+================================================================================
+
+La estructura de recursos graficos sigue una jerarquia clara:
+
+   [IDENTIDAD]
+      Logo.png              -> Marca principal
+      usuario.png           -> Identidad de usuario
+
+   [AMBIENTACION]
+      gimansio-fondo.jpg    -> Contexto fisico (gimnasio)
+
+   [MARKETING]
+      People.png            -> Social / Comunidad
+      straps.jpg            -> Gamificacion / Tienda
+
+   [SOCIAL PROOF]
+      facebook.png          -> Conexion externa
+      instagram.png         -> Conexion externa
+      tik-tok.png           -> Conexion externa
+      twitter.png           -> Conexion externa
+
+================================================================================
+                         6. REGLAS DE USO EN EL PROYECTO
+================================================================================
+
+6.1 Rutas de acceso
+   - Las imagenes se sirven desde:  src/assets/imgs/
+   - Se importan en componentes Vue como:  @/assets/imgs/nombre.png
+   - Ejemplo de uso en template: <img src="@/assets/imgs/Logo.png" />
+
+6.2 Optimizacion
+   - Logo y redes:   PNG con transparencia (iconos pequenos)
+   - Fotos:          JPG para fotografia real (mejor compresion)
+   - Iconos UI:      Se prefieren iconos de Material Design (mdi) sobre
+                     imagenes raster para escalado y tema oscuro
+
+6.3 Tematica coherente
+   Todos los recursos visuales mantienen la linea del fitness moderno:
+   - Colores predominantes: dorado (#FFD700), negro, azul indigo
+   - Estilo fotografico: deportivo, motivacional, juvenil
+   - Ausencia de elementos recreativos: el enfoque es 100% entrenamiento
+
+================================================================================
+                         7. RESUMEN DEL PROYECTO
+================================================================================
+
+The Training Hub es una plataforma web social-gamificada diseñada para
+aumentar la adherencia al entrenamiento en gimnasio mediante:
+
+   - Salas de entrenamiento (quedadas grupales)
+   - Sistema de retos y check-ins diarios
+   - Economia interna con oro, XP, niveles y atributos
+   - Calculadora de salud (IMC, calorias, macros)
+   - Coach AI integrado (premium)
+   - Tabla de clasificacion y comunidad
+
+Los activos visuales documentados en este archivo son la capa superficial
+que comunica al usuario la promesa del producto: un gimnasio digital donde
+la constancia se premia y el entrenamiento se vuelve social.
+
+================================================================================
+                              FIN DEL DOCUMENTO
+================================================================================

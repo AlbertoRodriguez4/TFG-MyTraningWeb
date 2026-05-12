@@ -16,6 +16,11 @@ public class AppDbContext : DbContext
     public DbSet<Model.Task> Tasks { get; set; }
     public DbSet<EmailVerification> EmailVerifications { get; set; }
     public DbSet<NotificationPreference> NotificationPreferences { get; set; }
+    public DbSet<Achievement> Achievements { get; set; }
+    public DbSet<UserAchievement> UserAchievements { get; set; }
+    public DbSet<BodyMetric> BodyMetrics { get; set; }
+    public DbSet<Exercise> Exercises { get; set; }
+    public DbSet<TaskExercise> TaskExercises { get; set; }
 
    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -88,6 +93,44 @@ public class AppDbContext : DbContext
             .HasOne(s => s.User)
             .WithMany()
             .HasForeignKey(s => s.userid)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // Achievements
+        modelBuilder.Entity<Achievement>().ToTable("achievements");
+        modelBuilder.Entity<UserAchievement>().ToTable("userachievements");
+        modelBuilder.Entity<UserAchievement>()
+            .HasOne(ua => ua.User)
+            .WithMany()
+            .HasForeignKey(ua => ua.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity<UserAchievement>()
+            .HasOne(ua => ua.Achievement)
+            .WithMany()
+            .HasForeignKey(ua => ua.AchievementId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // BodyMetrics
+        modelBuilder.Entity<BodyMetric>().ToTable("bodymetrics");
+        modelBuilder.Entity<BodyMetric>()
+            .HasOne(bm => bm.User)
+            .WithMany()
+            .HasForeignKey(bm => bm.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // Exercises
+        modelBuilder.Entity<Exercise>().ToTable("exercises");
+
+        // TaskExercises
+        modelBuilder.Entity<TaskExercise>().ToTable("taskexercises");
+        modelBuilder.Entity<TaskExercise>()
+            .HasOne(te => te.Task)
+            .WithMany()
+            .HasForeignKey(te => te.TaskId)
+            .OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity<TaskExercise>()
+            .HasOne(te => te.Exercise)
+            .WithMany()
+            .HasForeignKey(te => te.ExerciseId)
             .OnDelete(DeleteBehavior.Cascade);
 
         base.OnModelCreating(modelBuilder);

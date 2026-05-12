@@ -20,7 +20,7 @@
         ref="textareaRef"
         v-model="draft"
         class="input-box"
-        :placeholder="disabled ? 'CoachAI está respondiendo...' : 'Pregunta sobre tu entrenamiento...'"
+        :placeholder="disabled ? t('chat.placeholderAnswering') : t('chat.placeholderAsk')"
         :disabled="disabled"
         rows="1"
         @keydown.enter.exact.prevent="submit"
@@ -30,7 +30,7 @@
         class="send-btn"
         :disabled="!draft.trim() || disabled"
         @click="submit"
-        aria-label="Enviar"
+        :aria-label="t('chat.sendAria')"
       >
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
           <line x1="22" y1="2" x2="11" y2="13"/>
@@ -39,12 +39,15 @@
       </button>
     </div>
 
-    <p class="hint">Enter para enviar · Shift+Enter para nueva línea</p>
+    <p class="hint">{{ t('chat.hint') }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 /* ── Props ── */
 interface Props {
@@ -75,12 +78,12 @@ interface QuickPrompt {
   text: string
 }
 
-const quickPrompts: QuickPrompt[] = [
-  { icon: '💪', text: 'Crea una rutina de 3 días' },
-  { icon: '🥗', text: 'Dieta para ganar músculo'  },
-  { icon: '🏃', text: 'Plan de cardio semanal'     },
-  { icon: '😴', text: 'Consejos de recuperación'   },
-]
+const quickPrompts = computed<QuickPrompt[]>(() => [
+  { icon: '💪', text: t('chat.quickRoutine3Days') },
+  { icon: '🥗', text: t('chat.quickDietMuscle')  },
+  { icon: '🏃', text: t('chat.quickCardioPlan')     },
+  { icon: '😴', text: t('chat.quickRecoveryTips')   },
+])
 
 /* ── Methods ── */
 function autoResize(): void {

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import router from '@/router'
 import { useUserStore } from '@/stores/userStore'
 import type { User } from '@/components/Models/User'
@@ -13,6 +14,8 @@ const email = ref('')
 const password = ref('')
 const confirmPassword = ref('')
 const name = ref('')
+
+const { t } = useI18n()
 
 // Snackbar states
 const snackbar = ref(false)
@@ -40,11 +43,11 @@ const getStrengthColor = (strength: number) => {
 }
 
 const getStrengthLabel = (strength: number) => {
-  if (strength <= 1) return 'Muy débil'
-  if (strength <= 2) return 'Débil'
-  if (strength <= 3) return 'Media'
-  if (strength <= 4) return 'Fuerte'
-  return 'Muy fuerte'
+  if (strength <= 1) return t('strength_very_weak')
+  if (strength <= 2) return t('strength_weak')
+  if (strength <= 3) return t('strength_medium')
+  if (strength <= 4) return t('strength_strong')
+  return t('strength_very_strong')
 }
 
 const showSnackbar = (message: string, color: string = 'error') => {
@@ -65,8 +68,8 @@ const register = async () => {
 
   // Validación de campos vacíos
   if (!emailTrimmed || !passwordTrimmed || !confirmPasswordTrimmed || !nameTrimmed) {
-    errorMessage.value = 'Completa todos los campos.'
-    showSnackbar('Por favor, completa todos los campos.', 'error')
+    errorMessage.value = t('complete_all_fields')
+    showSnackbar(t('please_complete_all'), 'error')
     isLoading.value = false
     return
   }
@@ -74,22 +77,22 @@ const register = async () => {
   // Validaciones usando el composable
   if (!validateName(nameTrimmed)) {
     errorMessage.value = errors.name || ''
-    showSnackbar(errors.name || 'Nombre inválido', 'warning')
+    showSnackbar(errors.name || t('name_invalid'), 'warning')
     isLoading.value = false
     return
   }
 
   // Validación adicional de longitud máxima de nombre
   if (nameTrimmed.length > 50) {
-    errorMessage.value = 'Nombre muy largo (máx. 50 caracteres).'
-    showSnackbar('El nombre no puede exceder 50 caracteres.', 'warning')
+    errorMessage.value = t('name_too_long')
+    showSnackbar(t('name_max_chars'), 'warning')
     isLoading.value = false
     return
   }
 
   if (!validateEmail(emailTrimmed)) {
     errorMessage.value = errors.email || ''
-    showSnackbar(errors.email || 'Email inválido', 'warning')
+    showSnackbar(errors.email || t('invalid_email'), 'warning')
     isLoading.value = false
     return
   }
@@ -97,15 +100,15 @@ const register = async () => {
   updatePasswordStrength(passwordTrimmed)
   if (!isPasswordValid.value) {
     const missingRequirements = passwordStrength.value.feedback
-    errorMessage.value = `Contraseña débil. Falta: ${missingRequirements.join(', ')}`
-    showSnackbar(`Contraseña débil. Debe incluir: ${missingRequirements.join(', ')}`, 'warning')
+    errorMessage.value = `${t('weak_password')} ${missingRequirements.join(', ')}`
+    showSnackbar(`${t('weak_password_must')} ${missingRequirements.join(', ')}`, 'warning')
     isLoading.value = false
     return
   }
 
   if (!validateConfirmPassword(passwordTrimmed, confirmPasswordTrimmed)) {
     errorMessage.value = errors.confirmPassword || ''
-    showSnackbar(errors.confirmPassword || 'Las contraseñas no coinciden', 'error')
+    showSnackbar(errors.confirmPassword || t('passwords_no_match'), 'error')
     isLoading.value = false
     return
   }
@@ -133,16 +136,16 @@ const register = async () => {
     const result = await store.registerUser(user)
 
     if (!result.success) {
-      errorMessage.value = 'No se pudo crear el usuario. Puede que el correo ya esté registrado.'
-      showSnackbar('Error: El correo ya está registrado o no se pudo crear el usuario.', 'error')
+      errorMessage.value = t('user_not_created')
+      showSnackbar(t('email_registered'), 'error')
       isLoading.value = false
       return
     }
 
     const emailToVerify = result.email || emailTrimmed
     const successMessage = result.emailSent
-      ? 'Registro exitoso. Verifica tu email para continuar.'
-      : 'Registro exitoso, pero no se pudo enviar el email automáticamente. Puedes reenviar el código.'
+      ? t('register_success_verify')
+      : t('register_success_resend')
 
     showSnackbar(successMessage, result.emailSent ? 'success' : 'warning')
     setTimeout(() => {
@@ -150,8 +153,8 @@ const register = async () => {
     }, 1500)
   } catch (error) {
     console.error(error)
-    errorMessage.value = 'Error inesperado. Intenta más tarde.'
-    showSnackbar('Error inesperado del servidor. Intenta más tarde.', 'error')
+    errorMessage.value = t('unexpected_error')
+    showSnackbar(t('register_server_error'), 'error')
     isLoading.value = false
   }
 }
@@ -175,7 +178,7 @@ const register = async () => {
           </div>
         </div>
         <h1 class="hero-title">{{ $t('slogan') }}</h1>
-        <p class="hero-subtitle">SISTEMA DE ENTRENAMIENTO AVANZADO</p>
+        <p class="hero-subtitle">{{ $t('advanced_training_system') }}</p>
       </div>
 
       <!-- Contenedor Principal -->
@@ -186,10 +189,10 @@ const register = async () => {
             <div class="form-header">
               <div class="status-badge">
                 <span class="badge-dot"></span>
-                <span class="badge-text">NUEVO USUARIO</span>
+                <span class="badge-text">{{ $t('new_user') }}</span>
               </div>
               <h2 class="form-title">{{ $t('register_title') }}</h2>
-              <p class="form-subtitle">Inicializa tu perfil de entrenamiento</p>
+                <p class="form-subtitle">{{ $t('init_profile') }}</p>
             </div>
 
             <v-form @submit.prevent="register" class="register-form">
@@ -197,7 +200,7 @@ const register = async () => {
               <div class="inputs-grid">
                 <!-- Nombre -->
                 <div class="input-wrapper">
-                  <label class="input-label">USUARIO</label>
+                  <label class="input-label">{{ $t('username_label') }}</label>
                   <v-text-field v-model="name" :placeholder="$t('username_placeholder')" variant="solo-filled"
                     density="comfortable" color="purple-lighten-2" class="custom-input" hide-details="auto"
                     maxlength="50" counter></v-text-field>
@@ -205,7 +208,7 @@ const register = async () => {
 
                 <!-- Email -->
                 <div class="input-wrapper">
-                  <label class="input-label">EMAIL</label>
+                  <label class="input-label">{{ $t('email_label') }}</label>
                   <v-text-field v-model="email" type="email" :placeholder="$t('email_placeholder')"
                     variant="solo-filled" density="comfortable" color="purple-lighten-2" class="custom-input"
                     hide-details="auto"></v-text-field>
@@ -213,7 +216,7 @@ const register = async () => {
 
                 <!-- Contraseña -->
                 <div class="input-wrapper">
-                  <label class="input-label">CONTRASEÑA</label>
+                  <label class="input-label">{{ $t('password_label') }}</label>
                   <v-text-field v-model="password" type="password" :placeholder="$t('password_placeholder')"
                     variant="solo-filled" density="comfortable" color="purple-lighten-2" class="custom-input"
                     hide-details="auto" @input="updatePasswordStrength"></v-text-field>
@@ -230,14 +233,14 @@ const register = async () => {
                       {{ getStrengthLabel(passwordStrength.strength) }}
                     </div>
                     <div v-if="passwordStrength.feedback.length > 0" class="strength-feedback">
-                      <span class="feedback-text">Falta: {{ passwordStrength.feedback.join(', ') }}</span>
+                      <span class="feedback-text">{{ $t('password_strength_feedback') }} {{ passwordStrength.feedback.join(', ') }}</span>
                     </div>
                   </div>
                 </div>
 
                 <!-- Confirmar -->
                 <div class="input-wrapper">
-                  <label class="input-label">CONFIRMAR</label>
+                  <label class="input-label">{{ $t('confirm_label') }}</label>
                   <v-text-field v-model="confirmPassword" type="password"
                     :placeholder="$t('confirm_password_placeholder')" variant="solo-filled" density="comfortable"
                     color="purple-lighten-2" class="custom-input" hide-details="auto"></v-text-field>
@@ -246,7 +249,7 @@ const register = async () => {
 
               <!-- Stats Preview -->
               <div class="stats-section">
-                <div class="stats-label">ESTADÍSTICAS INICIALES</div>
+                <div class="stats-label">{{ $t('starting_stats') }}</div>
                 <div class="stats-grid">
                   <div class="stat-item">
                     <div class="stat-icon">💪</div>
@@ -285,14 +288,14 @@ const register = async () => {
                 </span>
                 <span v-else class="btn-loading">
                   <v-progress-circular indeterminate size="20" width="2" color="white"></v-progress-circular>
-                  <span>Iniciando sistema...</span>
+                  <span>{{ $t('starting_system') }}</span>
                 </span>
               </v-btn>
 
               <!-- Separator -->
               <div class="separator">
                 <div class="separator-line"></div>
-                <span class="separator-text">O</span>
+                <span class="separator-text">{{ $t('or_separator') }}</span>
                 <div class="separator-line"></div>
               </div>
 
@@ -311,20 +314,20 @@ const register = async () => {
         <div class="info-panel">
           <div class="info-card">
             <div class="info-icon">🎮</div>
-            <h3 class="info-title">Sistema de Niveles</h3>
-            <p class="info-desc">Completa entrenamientos y desbloquea salas exclusivas</p>
+            <h3 class="info-title">{{ $t('level_system') }}</h3>
+            <p class="info-desc">{{ $t('complete_workouts') }}</p>
           </div>
 
           <div class="info-card">
             <div class="info-icon">👥</div>
-            <h3 class="info-title">Entrena en Grupo</h3>
-            <p class="info-desc">Únete a salas con otros usuarios y motívense</p>
+            <h3 class="info-title">{{ $t('train_group') }}</h3>
+            <p class="info-desc">{{ $t('join_rooms') }}</p>
           </div>
 
           <div class="info-card">
             <div class="info-icon">🏆</div>
-            <h3 class="info-title">Retos y Recompensas</h3>
-            <p class="info-desc">Gana XP, oro y mejora tus atributos</p>
+            <h3 class="info-title">{{ $t('challenges_rewards') }}</h3>
+            <p class="info-desc">{{ $t('earn_xp_gold') }}</p>
           </div>
         </div>
       </div>
@@ -340,7 +343,7 @@ const register = async () => {
       </div>
       <template v-slot:actions>
         <v-btn variant="text" @click="snackbar = false" size="small">
-          Cerrar
+          {{ $t('close') }}
         </v-btn>
       </template>
     </v-snackbar>

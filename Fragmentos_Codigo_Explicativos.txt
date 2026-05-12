@@ -1,0 +1,464 @@
+================================================================================
+  FRAGMENTOS DE CODIGO EXPLICATIVOS
+  The Training Hub - Documentacion Tecnica
+================================================================================
+
+Este documento contiene los bloques de codigo clave que respaldan tecnicamente
+las integraciones de terceros descritas en la memoria del proyecto.
+
+
+================================================================================
+1. INTELIGENCIA ARTIFICIAL: COACH AI (GROQ API Y LLAMA 3.3 70B)
+================================================================================
+
+---
+ARCHIVO: Backend/Service/CoachAIService.cs
+---
+
+1.1 Construccion del payload con System Prompt e inyeccion de contexto
+------------------------------------------------------------------------------
+
+public async Task<string> GenerarRespuestaAsync(CoachAIChatRequest request, ...)
+{
+    var mensajes = new List<object>
+    {
+        new
+        {
+            role = "system",
+            content = ConstruirPromptSistema(request.ContextoUsuario)
+        }
+    };
+
+    foreach (var mensaje in request.Historial.Where(EsMensajeValido))
+    {
+        mensajes.Add(new
+        {
+            role = mensaje.Role.Trim().ToLowerInvariant(),
+            content = mensaje.Content.Trim()
+        });
+    }
+
+    var mensajeUsuario = request.Mensaje.Trim();
+    mensajes.Add(new { role = "user", content = mensajeUsuario });
+
+    var payload = new
+    {
+        model = _model,          // "llama-3.3-70b-versatile"
+        messages = mensajes,
+        max_tokens = 1000,
+        temperature = 0.7
+    };
+
+    using var requestMessage = new HttpRequestMessage(HttpMethod.Post, _apiUrl)
+    {
+        Content = JsonContent.Create(payload)
+    };
+    requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _apiKey);
+
+    using var response = await _httpClient.SendAsync(requestMessage, cancellationToken);
+    // ... procesamiento de la respuesta
+}
+
+
+1.2 System Prompt y restriccion de tematica
+------------------------------------------------------------------------------
+
+private static string ConstruirPromptSistema(string? contextoUsuario)
+{
+    var promptBase = """
+        Eres CoachAI, un entrenador personal y nutricionista virtual experto, amigable y motivador.
+        Respondes unicamente preguntas sobre actividad fisica, entrenamiento, nutricion deportiva, 
+        recuperacion muscular y bienestar fisico.
+        Si alguien pregunta algo fuera de estos temas, redirige amablemente al fitness.
+        Tono: energetico, motivador y cercano.
+        Formato: usa negritas para ideas clave, listas con "•" y respuestas concisas pero completas.
+        Responde siempre en espanol.
+        """;
+
+    if (string.IsNullOrWhiteSpace(contextoUsuario))
+        return promptBase;
+
+    return $"{promptBase}\n\n{contextoUsuario.Trim()}";
+}
+
+
+================================================================================
+2. GEOLOCALIZACION Y MAPAS (NOMINATIM, OVERPASS API Y LEAFLET)
+================================================================================
+
+---
+ARCHIVO: Backend/Repository/GeocodificacionRepository.cs
+---
+
+2.1 Geocodificacion con Nominatim
+------------------------------------------------------------------------------
+
+public async Task<CoordenadasDto?> ObtenerCoordenadasAsync(string direccion)
+{
+    var url = $"https://nominatim.openstreetmap.org/search?format=json&q={Uri.EscapeDataString(direccion)}";
+    
+    var response = await _http.GetAsync(url);
+    var json = await response.Content.ReadAsStringAsync();
+    
+    var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+    var result = JsonSerializer.Deserialize<List<NominatimResult>>(json, options);
+
+    if (result == null || result.Count == 0) return null;
+
+    return new CoordenadasDto
+    {
+        Lat = double.Parse(result[0].Lat, System.Globalization.CultureInfo.InvariantCulture),
+        Lon = double.Parse(result[0].Lon, System.Globalization.CultureInfo.InvariantCulture)
+    };
+}
+
+
+2.2 Consulta OverpassQL para establecimientos deportivos (radio 1 km)
+------------------------------------------------------------------------------
+
+public async Task<List<Establecimientos>> BuscarEstablecimientosAsync(
+    double lat, double lon, string tipo, int radio = 1000)
+{
+    string latStr = lat.ToString(System.Globalization.CultureInfo.InvariantCulture);
+    string lonStr = lon.ToString(System.Globalization.CultureInfo.InvariantCulture);
+
+    string query = $@"[out:json];
+    (
+      node[""leisure""=""{tipo}""](around:{radio},{latStr},{lonStr});
+      way[""leisure""=""{tipo}""](around:{radio},{latStr},{lonStr});
+      relation[""leisure""=""{tipo}""](around:{radio},{latStr},{lonStr});
+    );
+    out center;";
+
+    var url = "https://overpass-api.de/api/interpreter?data=" + Uri.EscapeDataString(query);
+
+    var response = await _http.GetAsync(url);
+    var json = await response.Content.ReadAsStringAsync();
+    var result = JsonSerializer.Deserialize<OverpassResult>(json, options);
+
+    // Procesamiento: eliminacion de duplicados y formateo de datos
+    var lista = new List<Establecimientos>();
+    var vistos = new HashSet<string>();
+
+    foreach (var el in result.Elements)
+    {
+        // ... extraccion de nombre, direccion, telefono, web, horarios, etc.
+        string claveUnica = $"{nombre.ToLowerInvariant()}|{Math.Round(elLat, 4)}|{Math.Round(elLon, 4)}";
+        if (!vistos.Add(claveUnica))
+            continue; // Evita duplicados
+
+        lista.Add(new Establecimientos { ... });
+    }
+    return lista;
+}
+
+
+---
+ARCHIVO: Frontend/src/views/dashboard/HomeView.vue (fragmentos clave)
+---
+
+2.3 Renderizado del mapa interactivo con Leaflet
+------------------------------------------------------------------------------
+
+import * as L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+
+function initMap() {
+  if (map.value) return;
+  const mapElement = document.getElementById('map');
+  if (!mapElement) return;
+
+  map.value = L.map('map').setView([41.6488, -0.8891], 13);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: 'OpenStreetMap contributors'
+  }).addTo(map.value as L.Map);
+
+  map.value.on('click', async (e: L.LeafletMouseEvent) => {
+    await searchGymsNearLocation(e.latlng.lat, e.latlng.lng);
+  });
+}
+
+
+2.4 Dibujado de marcadores personalizados sobre el mapa
+------------------------------------------------------------------------------
+
+const gymIcon = L.icon({
+  iconUrl: '.../marker-icon-2x-red.png',
+  shadowUrl: '.../marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
+
+async function searchGymsNearLocation(lat: number, lon: number) {
+  const gyms = await mapStore.getEstablecimientos(lat, lon, 'sports_centre');
+
+  gyms.forEach((gym: any) => {
+    const marker = L.marker([parseFloat(gym.lat), parseFloat(gym.lon)], { icon: gymIcon })
+      .addTo(map.value as L.Map)
+      .bindPopup(`<strong>${gym.nombre || 'Gimnasio'}</strong><br>${gym.direccion || ''}`);
+
+    marker.on('click', () => {
+      selectedGym.value = gym;
+    });
+  });
+}
+
+
+================================================================================
+3. GESTION MULTIMEDIA EN LA NUBE (CLOUDINARY)
+================================================================================
+
+---
+ARCHIVO: Frontend/src/components/ProfileSettings/ProfileHeader.vue
+---
+
+3.1 Subida directa de imagenes desde el Frontend via XHR
+------------------------------------------------------------------------------
+
+const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+
+const uploadToCloudinary = async () => {
+  if (!selectedFile.value) return;
+
+  uploading.value = true;
+  uploadProgress.value = 0;
+
+  try {
+    const formData = new FormData();
+    formData.append('file', selectedFile.value);
+    formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+
+    const xhr = new XMLHttpRequest();
+
+    // Seguimiento del progreso de subida
+    xhr.upload.addEventListener('progress', (event) => {
+      if (event.lengthComputable) {
+        uploadProgress.value = Math.round((event.loaded / event.total) * 100);
+      }
+    });
+
+    const uploadPromise = new Promise<string>((resolve, reject) => {
+      xhr.addEventListener('load', () => {
+        if (xhr.status === 200) {
+          const response = JSON.parse(xhr.responseText);
+          resolve(response.secure_url);
+        } else {
+          reject(new Error('Error en la subida'));
+        }
+      });
+
+      xhr.addEventListener('error', () => {
+        reject(new Error(t('connection_error')));
+      });
+
+      xhr.open(
+        'POST',
+        `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`
+      );
+      xhr.send(formData);
+    });
+
+    const cloudinaryUrl = await uploadPromise;
+
+    // Guardar la URL optimizada en el backend/estado local
+    if (store.loggedUser) {
+      await store.editUser(store.loggedUser.id, {
+        ...store.loggedUser,
+        avatarUrl: cloudinaryUrl,
+      });
+    }
+  } catch (error) {
+    logger.error('Error al subir imagen:', error);
+  } finally {
+    uploading.value = false;
+  }
+};
+
+
+================================================================================
+4. BASE DE DATOS DINAMICA DE EJERCICIOS (EXERCISEDB)
+================================================================================
+
+---
+ARCHIVO: Backend/Service/ExerciseDbClient.cs
+---
+
+4.1 Dictionary de mapeo de grupos musculares (Frontend -> ExerciseDB)
+------------------------------------------------------------------------------
+
+public static string? MapMuscleGroupToTarget(string muscleGroup)
+{
+    var mapping = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+    {
+        { "chest", "pectorals" },
+        { "back", "lats" },
+        { "shoulders", "delts" },
+        { "arms", "biceps" },
+        { "legs", "quadriceps" },
+        { "core", "abs" },
+        { "cardio", "cardiovascular system" }
+    };
+
+    return mapping.TryGetValue(muscleGroup, out var target) ? target : muscleGroup;
+}
+
+
+4.2 Peticion a RapidAPI con headers de autenticacion
+------------------------------------------------------------------------------
+
+private async Task<List<ExerciseDbResponse>> FetchExercisesAsync(string url)
+{
+    var apiKey = _configuration["ExerciseDbSettings:ApiKey"];
+    if (string.IsNullOrWhiteSpace(apiKey) || apiKey == "TU_API_KEY_AQUI")
+    {
+        _logger.LogWarning("ExerciseDB API Key no configurada.");
+        return new List<ExerciseDbResponse>();
+    }
+
+    var request = new HttpRequestMessage(HttpMethod.Get, url);
+    request.Headers.Add("x-rapidapi-key", apiKey);
+    request.Headers.Add("x-rapidapi-host", "exercisedb.p.rapidapi.com");
+
+    var response = await _httpClient.SendAsync(request);
+    if (!response.IsSuccessStatusCode)
+    {
+        var errorBody = await response.Content.ReadAsStringAsync();
+        _logger.LogError("ExerciseDB error {StatusCode}: {Body}", response.StatusCode, errorBody);
+        return new List<ExerciseDbResponse>();
+    }
+
+    var json = await response.Content.ReadAsStringAsync();
+    var exercises = JsonSerializer.Deserialize<List<ExerciseDbResponse>>(json, ...);
+    return exercises ?? new List<ExerciseDbResponse>();
+}
+
+
+---
+ARCHIVO: Backend/Service/ExerciseService.cs
+---
+
+4.3 Patron Fallback: API externa primero, base de datos local si falla
+------------------------------------------------------------------------------
+
+public async Task<List<Exercise>> GetAllAsync()
+{
+    var apiExercises = await _exerciseDbClient.GetAllExercisesAsync(50);
+    if (apiExercises.Count > 0)
+        return apiExercises.Select(MapToExercise).ToList();
+
+    // Fallback a base de datos si la API falla o no responde
+    return await _repository.GetAllAsync();
+}
+
+public async Task<List<Exercise>> GetByMuscleGroupAsync(string muscleGroup)
+{
+    var targetMuscle = ExerciseDbClient.MapMuscleGroupToTarget(muscleGroup) ?? muscleGroup;
+    var apiExercises = await _exerciseDbClient.GetExercisesByTargetAsync(targetMuscle);
+    if (apiExercises.Count > 0)
+        return apiExercises.Select(MapToExercise).ToList();
+
+    return await _repository.GetByMuscleGroupAsync(muscleGroup);
+}
+
+
+================================================================================
+5. SERVICIO DE NOTIFICACIONES Y SMTP (GMAIL)
+================================================================================
+
+---
+ARCHIVO: Backend/Service/EmailService.cs
+---
+
+5.1 Configuracion del cliente SMTP con SSL (puerto 587)
+------------------------------------------------------------------------------
+
+public EmailService(IConfiguration configuration)
+{
+    _smtpServer = configuration["EmailSettings:SmtpServer"] ?? throw new InvalidOperationException("Falta SmtpServer.");
+    _smtpPort = int.TryParse(configuration["EmailSettings:SmtpPort"], out var smtpPort) ? smtpPort : 587;
+    _smtpUser = configuration["EmailSettings:SmtpUser"] ?? throw new InvalidOperationException("Falta SmtpUser.");
+    _smtpPass = configuration["EmailSettings:SmtpPass"] ?? throw new InvalidOperationException("Falta SmtpPass.");
+    _fromEmail = configuration["EmailSettings:FromEmail"] ?? _smtpUser;
+    _fromName = configuration["EmailSettings:FromName"] ?? "The Training Hub";
+}
+
+public async Task<bool> SendVerificationEmail(string toEmail, string userName, string verificationCode)
+{
+    var message = new MailMessage();
+    message.From = new MailAddress(_fromEmail, _fromName);
+    message.To.Add(toEmail);
+    message.Subject = "Verifica tu cuenta - The Training Hub";
+    message.Body = "... plantilla HTML responsiva ...";
+    message.IsBodyHtml = true;
+    message.BodyEncoding = Encoding.UTF8;
+
+    using (var client = new SmtpClient(_smtpServer, _smtpPort))
+    {
+        client.Credentials = new NetworkCredential(_smtpUser, _smtpPass);
+        client.EnableSsl = true;
+        client.DeliveryMethod = SmtpDeliveryMethod.Network;
+        client.UseDefaultCredentials = false;
+
+        await client.SendMailAsync(message);
+    }
+    return true;
+}
+
+
+---
+ARCHIVO: Backend/Service/NotificationBackgroundService.cs
+---
+
+5.2 Servicio en segundo plano para notificaciones programadas
+------------------------------------------------------------------------------
+
+public class NotificationBackgroundService : Microsoft.Extensions.Hosting.BackgroundService
+{
+    private readonly IServiceProvider _serviceProvider;
+    private readonly ILogger<NotificationBackgroundService> _logger;
+
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        _logger.LogInformation("NotificationBackgroundService iniciado.");
+
+        while (!stoppingToken.IsCancellationRequested)
+        {
+            // Ejecutar todos los dias a las 08:00 UTC
+            var now = DateTime.UtcNow;
+            var nextRun = new DateTime(now.Year, now.Month, now.Day, 8, 0, 0, DateTimeKind.Utc);
+            if (nextRun <= now)
+                nextRun = nextRun.AddDays(1);
+
+            var delay = nextRun - now;
+            await Task.Delay(delay, stoppingToken);
+            if (stoppingToken.IsCancellationRequested) break;
+
+            using var scope = _serviceProvider.CreateScope();
+            var prefRepo = scope.ServiceProvider.GetRequiredService<NotificationPreferenceRepository>();
+            var notificationService = scope.ServiceProvider.GetRequiredService<NotificationService>();
+
+            // 1. Recordatorios de inactividad
+            var inactivePrefs = prefRepo.GetAllWithInactivityEnabled();
+            foreach (var pref in inactivePrefs)
+            {
+                await notificationService.SendInactivityReminderIfNeeded(pref.userid);
+            }
+
+            // 2. Avisos de suscripcion proxima a expirar
+            var subPrefs = prefRepo.GetAllWithSubscriptionExpiryEnabled();
+            foreach (var pref in subPrefs)
+            {
+                await notificationService.SendSubscriptionExpiryWarningIfNeeded(pref.userid);
+            }
+        }
+    }
+}
+
+
+================================================================================
+                              FIN DEL DOCUMENTO
+================================================================================

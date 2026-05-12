@@ -1,4 +1,5 @@
 import { ref, reactive } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 export interface PasswordStrength {
   strength: number
@@ -17,6 +18,7 @@ export interface ValidationErrors {
  * Centraliza la lógica de validación de email y contraseña
  */
 export function useAuthValidation() {
+  const { t } = useI18n()
   const errors = reactive<ValidationErrors>({})
   const passwordStrength = ref<PasswordStrength>({ strength: 0, feedback: [] })
   const isPasswordValid = ref(false)
@@ -30,13 +32,13 @@ export function useAuthValidation() {
     const isValid = emailRegex.test(email)
 
     if (!email) {
-      errors.email = 'El email es requerido'
+      errors.email = t('validation_email_required')
       isEmailValid.value = false
       return false
     }
 
     if (!isValid) {
-      errors.email = 'El email no es válido'
+      errors.email = t('validation_email_not_valid')
       isEmailValid.value = false
       return false
     }
@@ -52,11 +54,11 @@ export function useAuthValidation() {
    */
   const updatePasswordStrength = (password: string): void => {
     const strengthCriteria = [
-      { test: (p: string) => p.length >= 8, message: 'Al menos 8 caracteres' },
-      { test: (p: string) => /[A-Z]/.test(p), message: 'Una mayúscula' },
-      { test: (p: string) => /[a-z]/.test(p), message: 'Una minúscula' },
-      { test: (p: string) => /[0-9]/.test(p), message: 'Un número' },
-      { test: (p: string) => /[!@#$%^&*(),.?":{}|<>]/.test(p), message: 'Un carácter especial' }
+      { test: (p: string) => p.length >= 8, message: t('validation_min_8_chars') },
+      { test: (p: string) => /[A-Z]/.test(p), message: t('validation_one_uppercase') },
+      { test: (p: string) => /[a-z]/.test(p), message: t('validation_one_lowercase') },
+      { test: (p: string) => /[0-9]/.test(p), message: t('validation_one_number') },
+      { test: (p: string) => /[!@#$%^&*(),.?":{}|<>]/.test(p), message: t('validation_one_special') }
     ]
 
     const passedCriteria = strengthCriteria.filter(criteria => criteria.test(password))
@@ -72,31 +74,31 @@ export function useAuthValidation() {
    */
   const validatePassword = (password: string): boolean => {
     if (!password) {
-      errors.password = 'La contraseña es requerida'
+      errors.password = t('validation_password_required')
       isPasswordValid.value = false
       return false
     }
 
     if (password.length < 8) {
-      errors.password = 'La contraseña debe tener al menos 8 caracteres'
+      errors.password = t('validation_password_min_8')
       isPasswordValid.value = false
       return false
     }
 
     if (!/[A-Z]/.test(password)) {
-      errors.password = 'La contraseña debe incluir una mayúscula'
+      errors.password = t('validation_password_need_uppercase')
       isPasswordValid.value = false
       return false
     }
 
     if (!/[a-z]/.test(password)) {
-      errors.password = 'La contraseña debe incluir una minúscula'
+      errors.password = t('validation_password_need_lowercase')
       isPasswordValid.value = false
       return false
     }
 
     if (!/[0-9]/.test(password)) {
-      errors.password = 'La contraseña debe incluir un número'
+      errors.password = t('validation_password_need_number')
       isPasswordValid.value = false
       return false
     }
@@ -111,12 +113,12 @@ export function useAuthValidation() {
    */
   const validateConfirmPassword = (password: string, confirmPassword: string): boolean => {
     if (!confirmPassword) {
-      errors.confirmPassword = 'Debes confirmar la contraseña'
+      errors.confirmPassword = t('validation_confirm_required')
       return false
     }
 
     if (password !== confirmPassword) {
-      errors.confirmPassword = 'Las contraseñas no coinciden'
+      errors.confirmPassword = t('validation_passwords_match')
       return false
     }
 
@@ -129,12 +131,12 @@ export function useAuthValidation() {
    */
   const validateName = (name: string): boolean => {
     if (!name || name.trim().length === 0) {
-      errors.name = 'El nombre es requerido'
+      errors.name = t('validation_name_required')
       return false
     }
 
     if (name.trim().length < 2) {
-      errors.name = 'El nombre debe tener al menos 2 caracteres'
+      errors.name = t('validation_name_min_2')
       return false
     }
 

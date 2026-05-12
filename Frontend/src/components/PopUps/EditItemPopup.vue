@@ -1,17 +1,20 @@
 <script setup lang="ts">
-import { watch, reactive, ref } from 'vue'
+import { watch, reactive, ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import type { Item } from '@/components/Models/Item'
 import { useItemStore } from '@/stores/itemStore'
 import { logger } from '@/utils/logger'
 
+const { t } = useI18n()
+
 const store = useItemStore()
 
 const props = defineProps<{
-  item: Item
+  item?: Item | null
   visible: boolean
 }>()
 
-const emit = defineEmits(['close', 'edit', 'delete'])
+const emit = defineEmits(['close', 'save', 'delete'])
 
 const dialogVisible = ref(props.visible)
 watch(() => props.visible, val => dialogVisible.value = val)
@@ -27,11 +30,23 @@ const editedItem = reactive<Item>({
   name: '',
   type: 'Strength',
   bonus: 0,
-  price: 0
+  price: 0,
+  imageUrl: ''
 })
 
 watch(() => props.item, (newItem) => {
-  if (newItem) Object.assign(editedItem, { ...newItem })
+  if (newItem) {
+    Object.assign(editedItem, { ...newItem })
+  } else {
+    Object.assign(editedItem, {
+      id: 0,
+      name: '',
+      type: 'Strength',
+      bonus: 0,
+      price: 0,
+      imageUrl: ''
+    })
+  }
 }, { immediate: true })
 
 function closePopup() {
@@ -44,53 +59,153 @@ function showSnackbar(text: string, color: string = 'success') {
   snackbar.value = true
 }
 
-const handleEdit = async () => {
+const isEdit = computed(() => !!props.item)
+
+// Cloudinary config
+const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
+const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET
+const fileInput = ref<HTMLInputElement>()
+const previewImage = ref<string>('')
+const selectedFile = ref<File | null>(null)
+const uploadingImage = ref(false)
+const uploadProgress = ref(0)
+
+const triggerFileInput = () => {
+  fileInput.value?.click()
+}
+
+const handleFileSelect = (event: Event) => {
+  const target = event.target as HTMLInputElement
+  const files = target.files
+  if (!files || files.length === 0) return
+  const file = files[0]
+
+  if (!file.type.startsWith('image/')) {
+    errorMessage.value = t('select_valid_image')
+    return
+  }
+  if (file.size > 5 * 1024 * 1024) {
+    errorMessage.value = t('image_max_5mb')
+    return
+  }
+
+  selectedFile.value = file
+  const reader = new FileReader()
+  reader.onload = (e) => {
+    previewImage.value = e.target?.result as string
+  }
+  reader.readAsDataURL(file)
+}
+
+const uploadImage = async (): Promise<string | null> => {
+  if (!selectedFile.value) return null
+  uploadingImage.value = true
+  uploadProgress.value = 0
+
+  try {
+    const formData = new FormData()
+    formData.append('file', selectedFile.value)
+    formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET)
+
+    const xhr = new XMLHttpRequest()
+    xhr.upload.addEventListener('progress', (event) => {
+      if (event.lengthComputable) {
+        uploadProgress.value = Math.round((event.loaded / event.total) * 100)
+      }
+    })
+
+    const uploadPromise = new Promise<string>((resolve, reject) => {
+      xhr.addEventListener('load', () => {
+        if (xhr.status === 200) {
+          const response = JSON.parse(xhr.responseText)
+          resolve(response.secure_url)
+        } else {
+          reject(new Error('Error en la subida'))
+        }
+      })
+      xhr.addEventListener('error', () => reject(new Error(t('connection_error'))))
+      xhr.open('POST', `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`)
+      xhr.send(formData)
+    })
+
+    const url = await uploadPromise
+    return url
+  } catch (error) {
+    logger.error('Error al subir imagen:', error)
+    return null
+  } finally {
+    uploadingImage.value = false
+    uploadProgress.value = 0
+  }
+}
+
+const handleSave = async () => {
   errorMessage.value = ''
 
   if (!editedItem.name || editedItem.name.trim().length < 3) {
-    errorMessage.value = 'El nombre debe tener al menos 3 caracteres.'
+    errorMessage.value = t('name_min_3_chars')
     return
   }
 
   const validTypes = ['Strength', 'Endurance']
   if (!validTypes.includes(editedItem.type)) {
-    errorMessage.value = 'El tipo seleccionado no es válido.'
+    errorMessage.value = t('invalid_item_type')
     return
   }
 
   if (editedItem.bonus < 0 || editedItem.price < 0) {
-    errorMessage.value = 'Bono y precio no pueden ser negativos.'
+    errorMessage.value = t('bonus_price_no_negative')
     return
   }
 
   try {
-    const updatedItem = {
+    let imageUrl = editedItem.imageUrl || ''
+    if (selectedFile.value) {
+      const uploaded = await uploadImage()
+      if (uploaded) imageUrl = uploaded
+      else {
+        errorMessage.value = t('image_upload_error')
+        return
+      }
+    }
+
+    const payload = {
       ...editedItem,
-      name: editedItem.name.trim()
+      name: editedItem.name.trim(),
+      imageUrl
     }
-    const result = await store.editItem(updatedItem.id, updatedItem)
-    if (result != null) {
-      showSnackbar('Ítem editado correctamente', 'success')
-      emit('edit')
-      closePopup()
+
+    if (isEdit.value && props.item) {
+      await store.editItem(props.item.id, payload)
+      showSnackbar(t('item_edited_success'), 'success')
     } else {
-      errorMessage.value = "Hubo un problema al editar el ítem."
+      const created = await store.createItem(payload)
+      if (!created) {
+        errorMessage.value = t('item_create_error')
+        return
+      }
+      showSnackbar(t('item_created_success'), 'success')
     }
+    emit('save')
+    closePopup()
+    selectedFile.value = null
+    previewImage.value = ''
   } catch (error: any) {
     const message = error?.data?.message
-    errorMessage.value = message || "Hubo un problema al editar el ítem."
-    logger.error("Error al editar el ítem:", error)
+    errorMessage.value = message || (isEdit.value ? t('item_edit_error') : t('item_create_error'))
+    logger.error('Error guardando ítem:', error)
   }
 }
 
 const handleDelete = async () => {
-  const result = await store.deleteItem(editedItem.id)
+  if (!props.item) return
+  const result = await store.deleteItem(props.item.id)
   if (result !== null) {
-    showSnackbar('Ítem eliminado correctamente', 'success')
+    showSnackbar(t('item_deleted_success'), 'success')
     emit('delete')
     closePopup()
   } else {
-    showSnackbar('Hubo un problema al eliminar el ítem', 'error')
+    showSnackbar(t('item_delete_error'), 'error')
   }
 }
 </script>
@@ -102,7 +217,7 @@ const handleDelete = async () => {
       <div class="item-header">
         <div class="header-content">
           <v-icon class="header-icon">mdi-shopping</v-icon>
-          <h2 class="header-title">Editar Ítem</h2>
+          <h2 class="header-title">{{ isEdit ? $t('edit_item') : $t('create_item') }}</h2>
         </div>
         <v-btn 
           icon 
@@ -129,7 +244,7 @@ const handleDelete = async () => {
         <div class="form-group">
           <label class="field-label">
             <v-icon size="small" class="label-icon">mdi-dumbbell</v-icon>
-            Nombre del Ítem
+            {{ $t('item_name') }}
           </label>
           <v-text-field
             v-model="editedItem.name"
@@ -140,9 +255,32 @@ const handleDelete = async () => {
           />
         </div>
 
+        <!-- Imagen del ítem -->
+        <div class="form-group">
+          <label class="field-label">
+            <v-icon size="small" class="label-icon">mdi-image</v-icon>
+            {{ $t('item_image') }}
+          </label>
+          <div class="image-upload-row">
+            <input ref="fileInput" type="file" accept="image/*" style="display: none" @change="handleFileSelect" />
+            <v-btn variant="outlined" color="primary" size="small" @click="triggerFileInput" :loading="uploadingImage">
+              <v-icon left>mdi-camera</v-icon>
+              {{ selectedFile ? $t('change_image') : $t('select_image') }}
+            </v-btn>
+            <span v-if="selectedFile" class="file-name">{{ selectedFile.name }}</span>
+          </div>
+          <div v-if="uploadProgress > 0 && uploadingImage" class="upload-progress-bar">
+            <v-progress-linear :model-value="uploadProgress" color="primary" height="6" rounded />
+          </div>
+          <div class="image-preview-wrapper mt-2">
+            <img v-if="previewImage" :src="previewImage" class="image-preview" alt="Preview" />
+            <img v-else-if="editedItem.imageUrl" :src="editedItem.imageUrl" class="image-preview" alt="Current" />
+          </div>
+        </div>
+
         <!-- Selector de tipo con botones -->
         <div class="form-group">
-          <label class="field-label">Tipo de Bonus</label>
+          <label class="field-label">{{ $t('bonus_type') }}</label>
           <div class="type-selector">
             <button
               type="button"
@@ -150,7 +288,7 @@ const handleDelete = async () => {
               @click="editedItem.type = 'Strength'"
             >
               <v-icon size="large" class="type-icon">mdi-lightning-bolt</v-icon>
-              <span class="type-name">Fuerza</span>
+              <span class="type-name">{{ $t('fuerza') }}</span>
             </button>
             <button
               type="button"
@@ -158,7 +296,7 @@ const handleDelete = async () => {
               @click="editedItem.type = 'Endurance'"
             >
               <v-icon size="large" class="type-icon">mdi-heart-pulse</v-icon>
-              <span class="type-name">Resistencia</span>
+              <span class="type-name">{{ $t('resistencia') }}</span>
             </button>
           </div>
         </div>
@@ -168,7 +306,7 @@ const handleDelete = async () => {
           <div class="stat-card bonus-card">
             <div class="stat-header">
               <v-icon class="stat-icon">mdi-trending-up</v-icon>
-              <span class="stat-label">Bonus</span>
+              <span class="stat-label">{{ $t('bonus_label') }}</span>
             </div>
             <div class="stat-input-wrapper">
               <input
@@ -184,7 +322,7 @@ const handleDelete = async () => {
           <div class="stat-card price-card">
             <div class="stat-header">
               <v-icon class="stat-icon">mdi-currency-usd</v-icon>
-              <span class="stat-label">Precio</span>
+              <span class="stat-label">{{ $t('price') }}</span>
             </div>
             <div class="stat-input-wrapper">
               <input
@@ -200,16 +338,17 @@ const handleDelete = async () => {
 
         <!-- Vista previa -->
         <div class="preview-card">
-          <div class="preview-label">Vista Previa</div>
+          <div class="preview-label">{{ $t('preview') }}</div>
           <div class="preview-content">
             <div class="preview-icon-wrapper" :class="editedItem.type === 'Strength' ? 'strength-preview' : 'endurance-preview'">
-              <v-icon size="large">
+              <img v-if="previewImage || editedItem.imageUrl" :src="previewImage || editedItem.imageUrl" class="preview-image" alt="Item" />
+              <v-icon v-else size="large">
                 {{ editedItem.type === 'Strength' ? 'mdi-lightning-bolt' : 'mdi-heart-pulse' }}
               </v-icon>
             </div>
             <div class="preview-info">
-              <div class="preview-name">{{ editedItem.name || 'Nombre del ítem' }}</div>
-              <div class="preview-stats">+{{ editedItem.bonus }} {{ editedItem.type === 'Strength' ? 'Fuerza' : 'Resistencia' }}</div>
+              <div class="preview-name">{{ editedItem.name || $t('item_name_placeholder') }}</div>
+              <div class="preview-stats">+{{ editedItem.bonus }} {{ editedItem.type === 'Strength' ? $t('fuerza') : $t('resistencia') }}</div>
             </div>
             <div class="preview-price">
               <v-icon size="small">mdi-coin</v-icon>
@@ -222,13 +361,14 @@ const handleDelete = async () => {
       <!-- Footer con acciones -->
       <v-card-actions class="item-actions">
         <v-btn
+          v-if="isEdit"
           color="error"
           variant="outlined"
           @click="handleDelete"
           class="action-btn delete-btn"
         >
           <v-icon left>mdi-delete</v-icon>
-          Eliminar
+          {{ $t('delete') }}
         </v-btn>
         <v-spacer />
         <v-btn
@@ -237,16 +377,16 @@ const handleDelete = async () => {
           @click="closePopup"
           class="action-btn cancel-btn"
         >
-          Cancelar
+          {{ $t('cancelar') }}
         </v-btn>
         <v-btn
           color="primary"
           variant="elevated"
-          @click="handleEdit"
+          @click="handleSave"
           class="action-btn save-btn"
         >
           <v-icon left>mdi-content-save</v-icon>
-          Guardar
+          {{ isEdit ? $t('save') : $t('create') }}
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -576,6 +716,13 @@ const handleDelete = async () => {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  overflow: hidden;
+}
+
+.preview-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .strength-preview {
@@ -674,6 +821,40 @@ const handleDelete = async () => {
 
 .item-content::-webkit-scrollbar-thumb:hover {
   background: rgba(148, 163, 184, 0.5);
+}
+
+/* Image upload */
+.image-upload-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.file-name {
+  color: #94a3b8;
+  font-size: 0.85rem;
+}
+
+.upload-progress-bar {
+  margin-top: 0.5rem;
+}
+
+.image-preview-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(30, 41, 59, 0.5);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.image-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 /* Animaciones */

@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { API_BASE_URL, getAuthHeaders } from '@/config/api'
 import { logger } from '@/utils/logger'
 
@@ -15,6 +16,7 @@ export interface NotificationPreferences {
 }
 
 export const useNotificationPreferencesStore = defineStore('notificationPreferences', () => {
+  const { t } = useI18n()
   const preferences = ref<NotificationPreferences>({
     userId: 0,
     inactivityEnabled: true,
@@ -48,7 +50,7 @@ export const useNotificationPreferencesStore = defineStore('notificationPreferen
       preferences.value = data
     } catch (err) {
       logger.error('Error fetching notification preferences:', err)
-      error.value = 'No se pudieron cargar las preferencias de notificación'
+      error.value = t('notification_load_error')
     } finally {
       isLoading.value = false
     }
@@ -78,7 +80,7 @@ export const useNotificationPreferencesStore = defineStore('notificationPreferen
       return true
     } catch (err) {
       logger.error('Error saving notification preferences:', err)
-      error.value = 'No se pudieron guardar las preferencias de notificación'
+      error.value = t('notification_save_error')
       return false
     } finally {
       isLoading.value = false
@@ -108,7 +110,7 @@ export const useNotificationPreferencesStore = defineStore('notificationPreferen
       return true
     } catch (err) {
       logger.error('Error resetting notification preferences:', err)
-      error.value = 'No se pudieron resetear las preferencias de notificación'
+      error.value = t('notification_reset_error')
       return false
     } finally {
       isLoading.value = false

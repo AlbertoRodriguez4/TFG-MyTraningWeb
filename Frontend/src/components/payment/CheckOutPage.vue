@@ -3,6 +3,9 @@ import CreditCardForm from '@/components/payment/CreditCardForm.vue'
 import PaymentSummary from '@/components/payment/PaymentSummary.vue'
 import PaymentSnackbar from '@/components/payment/PaymentSnackbar.vue'
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const snackbarRef = ref<InstanceType<typeof PaymentSnackbar>>()
 
@@ -40,10 +43,10 @@ const handlePaymentSuccess = () => {
         <!-- Sección de título -->
         <div class="hero-title-section">
           <h1 class="hero-title">
-            <span class="title-top">ASEGURA</span>
-            <span class="title-main">TU ACCESO</span>
+            <span class="title-top">{{ $t('secure_access_top') }}</span>
+            <span class="title-main">{{ $t('your_access') }}</span>
           </h1>
-          <p class="hero-subtitle">Completa tu compra de forma segura y comienza tu transformación</p>
+          <p class="hero-subtitle">{{ $t('checkout_subtitle') }}</p>
         </div>
 
         <!-- Divisor -->
@@ -60,8 +63,8 @@ const handlePaymentSuccess = () => {
               <v-icon size="32" color="#22c55e">mdi-ssl</v-icon>
             </div>
             <div class="security-content">
-              <div class="security-title">SSL Encriptado</div>
-              <div class="security-text">256-bit protegido</div>
+              <div class="security-title">{{ $t('ssl_encrypted') }}</div>
+              <div class="security-text">{{ $t('256_bit_protected') }}</div>
             </div>
           </div>
 
@@ -70,8 +73,8 @@ const handlePaymentSuccess = () => {
               <v-icon size="32" color="#3b82f6">mdi-credit-card-check</v-icon>
             </div>
             <div class="security-content">
-              <div class="security-title">Pago Verificado</div>
-              <div class="security-text">Procesador confiable</div>
+              <div class="security-title">{{ $t('verified_payment') }}</div>
+              <div class="security-text">{{ $t('trusted_processor') }}</div>
             </div>
           </div>
 
@@ -80,8 +83,8 @@ const handlePaymentSuccess = () => {
               <v-icon size="32" color="#a855f7">mdi-lightning-bolt</v-icon>
             </div>
             <div class="security-content">
-              <div class="security-title">Acceso al Instante</div>
-              <div class="security-text">Actívate inmediatamente</div>
+              <div class="security-title">{{ $t('instant_access_title') }}</div>
+              <div class="security-text">{{ $t('activate_immediately') }}</div>
             </div>
           </div>
         </div>
@@ -106,30 +109,30 @@ const handlePaymentSuccess = () => {
           <div class="badge-icon">
             <v-icon size="36" color="#22c55e">mdi-shield-check</v-icon>
           </div>
-          <div class="badge-text">
-            <div class="badge-title">Garantía de Reembolso</div>
-            <div class="badge-subtitle">30 días sin preguntas</div>
-          </div>
+            <div class="badge-text">
+              <div class="badge-title">{{ $t('refund_guarantee') }}</div>
+              <div class="badge-subtitle">{{ $t('30_days_no_questions') }}</div>
+            </div>
         </div>
 
         <div class="trust-badge badge-2">
           <div class="badge-icon">
             <v-icon size="36" color="#3b82f6">mdi-account-check</v-icon>
           </div>
-          <div class="badge-text">
-            <div class="badge-title">Soporte 24/7</div>
-            <div class="badge-subtitle">Asistencia premium</div>
-          </div>
+            <div class="badge-text">
+              <div class="badge-title">{{ $t('support_24_7') }}</div>
+              <div class="badge-subtitle">{{ $t('premium_assistance') }}</div>
+            </div>
         </div>
 
         <div class="trust-badge badge-3">
           <div class="badge-icon">
             <v-icon size="36" color="#a855f7">mdi-cog-outline</v-icon>
           </div>
-          <div class="badge-text">
-            <div class="badge-title">Cancela Cuando Quieras</div>
-            <div class="badge-subtitle">Sin permanencia mínima</div>
-          </div>
+            <div class="badge-text">
+              <div class="badge-title">{{ $t('cancel_anytime_title') }}</div>
+              <div class="badge-subtitle">{{ $t('no_minimum_commitment') }}</div>
+            </div>
         </div>
       </div>
     </v-container>

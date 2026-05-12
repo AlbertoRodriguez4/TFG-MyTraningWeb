@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { useUserStore } from '@/stores/userStore';
 import { computed, reactive, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n'
 import type { User } from '../Models/User';
 import { logger } from '@/utils/logger';
 
 const store = useUserStore();
 const loggedUser = computed(() => store.loggedUser);
+const { t } = useI18n()
 
 const props = defineProps<{
   user: User;
@@ -40,9 +42,26 @@ const editedUser = reactive<User>({
   avatarUrl: ''
 });
 
+const availableRoles = ['userNormal', 'userStaff', 'userMaster'];
+
 watch(() => props.user, (newUser) => {
   if (newUser) {
-    Object.assign(editedUser, { ...newUser });
+    editedUser.id = newUser.id;
+    editedUser.name = newUser.name;
+    editedUser.email = newUser.email;
+    editedUser.passwordhash = newUser.passwordhash;
+    editedUser.level = newUser.level;
+    editedUser.strength = newUser.strength;
+    editedUser.endurance = newUser.endurance;
+    editedUser.consistencyStreak = newUser.consistencyStreak;
+    editedUser.gold = newUser.gold;
+    editedUser.role = newUser.role;
+    editedUser.experience = newUser.experience;
+    editedUser.xpRequired = newUser.xpRequired;
+    editedUser.xpRemaining = newUser.xpRemaining;
+    editedUser.equippedStrengthItemId = newUser.equippedStrengthItemId;
+    editedUser.equippedEnduranceItemId = newUser.equippedEnduranceItemId;
+    editedUser.avatarUrl = newUser.avatarUrl;
   }
 }, { immediate: true });
 
@@ -58,12 +77,12 @@ const handleEdit = async () => {
   errorMessage.value = '';
 
   if (!editedUser.name || editedUser.name.trim().length < 3) {
-    errorMessage.value = 'El nombre debe tener al menos 3 caracteres.';
+    errorMessage.value = t('name_min_3_chars');
     return;
   }
 
   if (!editedUser.email || !emailRegex.test(editedUser.email.trim())) {
-    errorMessage.value = 'Introduce un correo electrónico válido.';
+    errorMessage.value = t('enter_valid_email');
     return;
   }
 
@@ -73,7 +92,7 @@ const handleEdit = async () => {
     editedUser.endurance < 0 ||
     editedUser.gold < 0
   ) {
-    errorMessage.value = 'Los valores numéricos no pueden ser negativos.';
+    errorMessage.value = t('no_negative_values');
     return;
   }
 
@@ -88,7 +107,7 @@ const handleEdit = async () => {
       endurance: editedUser.endurance,
       gold: editedUser.gold,
       consistencyStreak: editedUser.consistencyStreak,
-      role: loggedUser.value?.role || 'userNormal',
+      role: editedUser.role,
       experience: editedUser.experience,
       xpRequired: editedUser.xpRequired,
       xpRemaining: editedUser.xpRemaining,
@@ -100,14 +119,14 @@ const handleEdit = async () => {
     const result = await store.editUser(updatedUser.id, updatedUser);
 
     if (result != null) {
-      showSnackbar("Usuario editado correctamente", 'success')
+      showSnackbar(t('user_edited_success'), 'success')
       emit('close');
     } else {
-      errorMessage.value = "Hubo un problema al editar el usuario.";
+      errorMessage.value = t('user_edit_error');
     }
   } catch (error: any) {
     const message = error?.data?.message;
-    errorMessage.value = message || "Error inesperado al editar el usuario.";
+    errorMessage.value = message || t('user_edit_error');
     logger.error("Error al editar el usuario:", error);
   }
 };
@@ -118,10 +137,10 @@ const handleDelete = async () => {
   const result = await store.DeleteUser(userId);
 
   if (result != null) {
-    showSnackbar("Usuario eliminado correctamente", 'success')
+    showSnackbar(t('user_deleted_success'), 'success')
     emit('close');
   } else {
-    showSnackbar("Hubo un problema al eliminar el usuario", 'error')
+    showSnackbar(t('user_delete_error'), 'error')
   }
 };
 
@@ -142,7 +161,7 @@ watch(internalVisible, (val) => {
       <div class="user-header">
         <div class="header-content">
           <v-icon class="header-icon">mdi-account-circle</v-icon>
-          <h2 class="header-title">Editar Perfil de Usuario</h2>
+          <h2 class="header-title">{{ $t('edit_user_profile') }}</h2>
         </div>
         <v-btn icon class="close-button" @click="emit('close')" size="small">
           <v-icon>mdi-close</v-icon>
@@ -159,14 +178,14 @@ watch(internalVisible, (val) => {
         <div class="section">
           <div class="section-header">
             <v-icon class="section-icon">mdi-account</v-icon>
-            <h3 class="section-title">Información Básica</h3>
+            <h3 class="section-title">{{ $t('basic_info') }}</h3>
           </div>
 
           <v-row>
             <v-col cols="12" md="6">
               <label class="field-label">
                 <v-icon size="small" class="label-icon">mdi-account</v-icon>
-                Nombre
+                {{ $t('name_label') }}
               </label>
               <v-text-field v-model="editedUser.name" variant="outlined" density="comfortable" hide-details
                 class="custom-input" />
@@ -175,16 +194,42 @@ watch(internalVisible, (val) => {
             <v-col cols="12" md="6">
               <label class="field-label">
                 <v-icon size="small" class="label-icon">mdi-email</v-icon>
-                Correo Electrónico
+                {{ $t('email') }}
               </label>
               <v-text-field v-model="editedUser.email" type="email" variant="outlined" density="comfortable"
                 hide-details class="custom-input" />
             </v-col>
 
+            <v-col cols="12" md="6">
+              <label class="field-label">
+                <v-icon size="small" class="label-icon">mdi-shield-account</v-icon>
+                {{ $t('role') }}
+              </label>
+              <v-btn-toggle
+                v-model="editedUser.role"
+                mandatory
+                density="comfortable"
+                class="role-toggle"
+              >
+                <v-btn value="userNormal" class="role-btn" :class="{ active: editedUser.role === 'userNormal' }">
+                  <v-icon size="small" class="mr-1">mdi-account</v-icon>
+                  Normal
+                </v-btn>
+                <v-btn value="userStaff" class="role-btn" :class="{ active: editedUser.role === 'userStaff' }">
+                  <v-icon size="small" class="mr-1">mdi-account-tie</v-icon>
+                  Staff
+                </v-btn>
+                <v-btn value="userMaster" class="role-btn" :class="{ active: editedUser.role === 'userMaster' }">
+                  <v-icon size="small" class="mr-1">mdi-crown</v-icon>
+                  Master
+                </v-btn>
+              </v-btn-toggle>
+            </v-col>
+
             <v-col cols="12">
               <label class="field-label">
                 <v-icon size="small" class="label-icon">mdi-lock</v-icon>
-                Contraseña
+                {{ $t('password') }}
               </label>
               <v-text-field v-model="editedUser.passwordhash" type="password" variant="outlined" density="comfortable"
                 hide-details placeholder="••••••••" class="custom-input" />
@@ -196,7 +241,7 @@ watch(internalVisible, (val) => {
         <div class="section">
           <div class="section-header">
             <v-icon class="section-icon">mdi-trophy</v-icon>
-            <h3 class="section-title">Estadísticas del Jugador</h3>
+            <h3 class="section-title">{{ $t('player_stats') }}</h3>
           </div>
 
           <v-row>
@@ -204,7 +249,7 @@ watch(internalVisible, (val) => {
               <div class="stat-card level-card">
                 <div class="stat-header">
                   <v-icon class="stat-icon">mdi-trending-up</v-icon>
-                  <span class="stat-label">Nivel</span>
+                  <span class="stat-label">{{ $t('level_label') }}</span>
                 </div>
                 <input v-model.number="editedUser.level" type="number" min="0" class="stat-input" />
               </div>
@@ -214,7 +259,7 @@ watch(internalVisible, (val) => {
               <div class="stat-card strength-card">
                 <div class="stat-header">
                   <v-icon class="stat-icon">mdi-lightning-bolt</v-icon>
-                  <span class="stat-label">Fuerza</span>
+                  <span class="stat-label">{{ $t('fuerza') }}</span>
                 </div>
                 <input v-model.number="editedUser.strength" type="number" min="0" class="stat-input" />
               </div>
@@ -224,7 +269,7 @@ watch(internalVisible, (val) => {
               <div class="stat-card endurance-card">
                 <div class="stat-header">
                   <v-icon class="stat-icon">mdi-heart-pulse</v-icon>
-                  <span class="stat-label">Resistencia</span>
+                  <span class="stat-label">{{ $t('resistencia') }}</span>
                 </div>
                 <input v-model.number="editedUser.endurance" type="number" min="0" class="stat-input" />
               </div>
@@ -234,7 +279,7 @@ watch(internalVisible, (val) => {
               <div class="stat-card gold-card">
                 <div class="stat-header">
                   <v-icon class="stat-icon">mdi-coin</v-icon>
-                  <span class="stat-label">Oro</span>
+                  <span class="stat-label">{{ $t('oro') }}</span>
                 </div>
                 <input v-model.number="editedUser.gold" type="number" min="0" class="stat-input" />
               </div>
@@ -248,8 +293,8 @@ watch(internalVisible, (val) => {
             <div class="streak-header">
               <v-icon class="streak-icon">mdi-fire</v-icon>
               <div class="streak-info">
-                <span class="streak-label">Racha de Consistencia</span>
-                <span class="streak-description">Días consecutivos entrenando</span>
+                <span class="streak-label">{{ $t('consistency_streak_label') }}</span>
+                <span class="streak-description">{{ $t('consecutive_training_days') }}</span>
               </div>
             </div>
             <input v-model.number="editedUser.consistencyStreak" type="number" min="0" class="streak-input" />
@@ -260,23 +305,28 @@ watch(internalVisible, (val) => {
         <div class="summary-card">
           <div class="summary-header">
             <v-icon size="small">mdi-information</v-icon>
-            <span>Resumen del Perfil</span>
+            <span>{{ $t('profile_summary') }}</span>
           </div>
           <div class="summary-content">
             <div class="summary-item">
               <v-icon size="small" class="summary-item-icon">mdi-account</v-icon>
-              <span class="summary-item-label">Usuario:</span>
-              <span class="summary-item-value">{{ editedUser.name || 'Sin nombre' }}</span>
+              <span class="summary-item-label">{{ $t('user_label_summary') }}</span>
+              <span class="summary-item-value">{{ editedUser.name || $t('no_name') }}</span>
+            </div>
+            <div class="summary-item">
+              <v-icon size="small" class="summary-item-icon">mdi-shield-account</v-icon>
+              <span class="summary-item-label">{{ $t('role') }}:</span>
+              <span class="summary-item-value">{{ editedUser.role }}</span>
             </div>
             <div class="summary-item">
               <v-icon size="small" class="summary-item-icon">mdi-trending-up</v-icon>
-              <span class="summary-item-label">Nivel:</span>
+              <span class="summary-item-label">{{ $t('level_label') }}:</span>
               <span class="summary-item-value">{{ editedUser.level }}</span>
             </div>
             <div class="summary-item">
               <v-icon size="small" class="summary-item-icon">mdi-fire</v-icon>
-              <span class="summary-item-label">Racha:</span>
-              <span class="summary-item-value">{{ editedUser.consistencyStreak }} días</span>
+              <span class="summary-item-label">{{ $t('streak_label_summary') }}</span>
+              <span class="summary-item-value">{{ editedUser.consistencyStreak }} {{ $t('days_count') }}</span>
             </div>
           </div>
         </div>
@@ -286,15 +336,15 @@ watch(internalVisible, (val) => {
       <v-card-actions class="user-actions">
         <v-btn color="error" variant="outlined" @click="handleDelete" class="action-btn delete-btn">
           <v-icon left>mdi-delete</v-icon>
-          Eliminar
+          {{ $t('delete_label') }}
         </v-btn>
         <v-spacer />
         <v-btn color="grey" variant="outlined" @click="emit('close')" class="action-btn cancel-btn">
-          Cancelar
+          {{ $t('cancelar') }}
         </v-btn>
         <v-btn color="primary" variant="elevated" @click="handleEdit" class="action-btn save-btn">
           <v-icon left>mdi-content-save</v-icon>
-          Guardar Cambios
+          {{ $t('save_changes') }}
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -648,6 +698,28 @@ watch(internalVisible, (val) => {
 .summary-item-value {
   color: white;
   font-weight: 600;
+}
+
+.role-toggle {
+  background: rgba(30, 41, 59, 0.5) !important;
+  border: 1px solid rgba(148, 163, 184, 0.2) !important;
+  border-radius: 10px !important;
+  width: 100%;
+}
+
+.role-toggle :deep(.v-btn) {
+  flex: 1;
+  color: #94a3b8 !important;
+  text-transform: none;
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.3px;
+}
+
+.role-toggle :deep(.v-btn--active) {
+  background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%) !important;
+  color: white !important;
+  box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3) !important;
 }
 
 /* Actions */

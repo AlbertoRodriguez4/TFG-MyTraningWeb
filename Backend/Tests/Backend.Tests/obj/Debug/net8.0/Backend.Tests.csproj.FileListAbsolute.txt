@@ -191,3 +191,13 @@ C:\Users\alber\Desktop\TFG como lo borre me suicido\Backend\Tests\Backend.Tests\
 C:\Users\alber\Desktop\TFG como lo borre me suicido\TFG MyTraningWeb\Backend\Tests\Backend.Tests\obj\Debug\net8.0\Backend.Tests.dll
 C:\Users\alber\Desktop\TFG como lo borre me suicido\TFG MyTraningWeb\Backend\Tests\Backend.Tests\obj\Debug\net8.0\refint\Backend.Tests.dll
 C:\Users\alber\Desktop\TFG como lo borre me suicido\TFG MyTraningWeb\Backend\Tests\Backend.Tests\obj\Debug\net8.0\Backend.Tests.pdb
+C:\Users\altf4\Desktop\TFG NUEVO\TFG-MyTraningWeb\Backend\Tests\Backend.Tests\bin\Debug\net8.0\CoverletSourceRootsMapping_Backend.Tests
+C:\Users\altf4\Desktop\TFG NUEVO\TFG-MyTraningWeb\Backend\Tests\Backend.Tests\obj\Debug\net8.0\Backend.Tests.csproj.AssemblyReference.cache
+C:\Users\altf4\Desktop\TFG NUEVO\TFG-MyTraningWeb\Backend\Tests\Backend.Tests\obj\Debug\net8.0\Backend.Tests.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\altf4\Desktop\TFG NUEVO\TFG-MyTraningWeb\Backend\Tests\Backend.Tests\obj\Debug\net8.0\Backend.Tests.AssemblyInfoInputs.cache
+C:\Users\altf4\Desktop\TFG NUEVO\TFG-MyTraningWeb\Backend\Tests\Backend.Tests\obj\Debug\net8.0\Backend.Tests.AssemblyInfo.cs
+C:\Users\altf4\Desktop\TFG NUEVO\TFG-MyTraningWeb\Backend\Tests\Backend.Tests\obj\Debug\net8.0\Backend.Tests.csproj.CoreCompileInputs.cache
+C:\Users\altf4\Desktop\TFG NUEVO\TFG-MyTraningWeb\Backend\Tests\Backend.Tests\obj\Debug\net8.0\Backend.Tests.sourcelink.json
+C:\Users\altf4\Desktop\TFG NUEVO\TFG-MyTraningWeb\Backend\Tests\Backend.Tests\obj\Debug\net8.0\Backend.Tests.dll
+C:\Users\altf4\Desktop\TFG NUEVO\TFG-MyTraningWeb\Backend\Tests\Backend.Tests\obj\Debug\net8.0\refint\Backend.Tests.dll
+C:\Users\altf4\Desktop\TFG NUEVO\TFG-MyTraningWeb\Backend\Tests\Backend.Tests\obj\Debug\net8.0\Backend.Tests.pdb

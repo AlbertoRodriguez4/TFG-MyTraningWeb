@@ -11,11 +11,11 @@
           <v-icon size="140" color="amber">mdi-trophy-variant</v-icon>
         </div>
         <h2 class="text-h2 font-weight-black purple--text mb-2">
-          ¡NIVEL {{ userLevel }}!
+          {{ $t('levelUp.newLevel', { level: userLevel }) }}
         </h2>
-        <p class="text-h5 mb-2">¡Felicitaciones!</p>
-        <p class="text-body-1 grey--text mb-6">
-          Has alcanzado un nuevo nivel. Sigue entrenando para desbloquear más recompensas.
+          <p class="text-h5 mb-2">{{ $t('levelUp.congrats') }}</p>
+          <p class="text-body-1 grey--text mb-6">
+          {{ $t('levelUp.description') }}
         </p>
         <v-btn
           x-large
@@ -26,7 +26,7 @@
           @click="$emit('input', false)"
         >
           <v-icon left>mdi-rocket-launch</v-icon>
-          ¡Continuar!
+          {{ $t('levelUp.continue') }}
         </v-btn>
       </v-card-text>
     </v-card>

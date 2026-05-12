@@ -2,7 +2,10 @@
 import { useUserStore } from '@/stores/userStore'
 import { usePurchaseStore } from '@/stores/PurchaseStore'
 import { ref, watchEffect, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { logger } from '@/utils/logger'
+
+const { t } = useI18n()
 
 const store = useUserStore()
 const purchaseStore = usePurchaseStore()
@@ -51,21 +54,21 @@ const handleBuy = async () => {
     const purchase = await purchaseStore.addPurchase(userId, props.item.id, props.item.price)
 
     if (purchase && purchase.id) {
-      showSnackbar("Compra realizada correctamente", 'success')
+      showSnackbar(t('purchase_success'), 'success')
       await store.refreshLoggedUser()
       dialogVisible.value = false
     } else {
-      throw new Error("Respuesta inválida del servidor")
+      throw new Error(t('invalid_server_response'))
     }
   } catch (error: any) {
     const message = error?.data?.message
     if (message?.includes("no tiene suficiente oro")) {
-      showSnackbar("No tienes suficiente oro para realizar esta compra", 'error')
+      showSnackbar(t('not_enough_gold'), 'error')
     } else if (message) {
       showSnackbar(message, 'error')
     } else {
       logger.error("Error al realizar la compra:", error)
-      showSnackbar("Hubo un problema al realizar la compra", 'error')
+      showSnackbar(t('purchase_error'), 'error')
     }
     dialogVisible.value = false
   }
@@ -85,17 +88,17 @@ const handleBuy = async () => {
         <!-- Si tienes imagen, reemplaza src -->
         <v-img
           src="/path/to/item-image.jpg"
-          alt="Imagen del ítem"
+          :alt="$t('item_image_alt')"
           height="200"
           contain
           class="mb-4"
         />
 
         <div v-if="item.type === 'Strength'" class="text-subtitle-2">
-          Bonus: +{{ item.bonus }} {{ $t('fuerza') }}
+          {{ $t('bonus') }}: +{{ item.bonus }} {{ $t('fuerza') }}
         </div>
         <div v-else-if="item.type === 'Endurance'" class="text-subtitle-2">
-          Bonus: +{{ item.bonus }} {{ $t('resistencia') }}
+          {{ $t('bonus') }}: +{{ item.bonus }} {{ $t('resistencia') }}
         </div>
       </v-card-text>
 

@@ -1,0 +1,306 @@
+================================================================================
+  ESQUEMA DEL STACK TECNOLOGICO
+  The Training Hub - Documentacion Tecnica
+================================================================================
+
+Este documento describe de forma esquematica la arquitectura tecnologica, las
+capas de software y el flujo de datos que conforman "The Training Hub".
+
+
+================================================================================
+1. ARQUITECTURA GENERAL (VISTA DE ALTO NIVEL)
+================================================================================
+
++------------------+        HTTP/JSON (CORS)         +------------------+
+|   CLIENTE WEB    |  <----------------------------->  |   SERVIDOR API   |
+|   (Vue 3 + TS)   |      http://localhost:5173       |   (.NET 8 / C#)  |
+|                  |      -> http://127.0.0.1:6873    |                  |
++------------------+                                 +------------------+
+         |                                                    |
+         |   Cloudinary (imagenes)                            |   PostgreSQL
+         |   Nominatim (geocodificacion)                      |   (Datos locales)
+         |   Overpass API (mapas)                             |
+         |   Groq API (IA)                                    |   RapidAPI
+         |   Gmail SMTP (email)                               |   (ExerciseDB)
+         v                                                    v
++------------------+                                 +------------------+
+|  APIs EXTERNAS   |                                 |   BASE DE DATOS  |
+|  (Terceros)      |                                 |   (PostgreSQL)   |
++------------------+                                 +------------------+
+
+
+================================================================================
+2. BACKEND: .NET 8 (API RESTful)
+================================================================================
+
+2.1 Stack Base
+------------------------------------------------------------------------------
+- Framework:        .NET 8.0 (LTS)
+- Tipo de proyecto: ASP.NET Core Web API
+- Lenguaje:         C# 12 (Nullable enabled, ImplicitUsings)
+- Runtime:          Kestrel (puerto 6873)
+- Formato de datos: JSON (System.Text.Json)
+- Documentacion:    Swagger / OpenAPI (Swashbuckle.AspNetCore 6.6.2)
+
+
+2.2 Capas de Arquitectura
+------------------------------------------------------------------------------
+
+   +----------------------------------------------------------+
+   |  CAPA DE PRESENTACION  (Controllers / API Endpoints)     |
+   |  Ej: CoachAIController, AuthController, MapController    |
+   +----------------------------------------------------------+
+                              |
+                              v
+   +----------------------------------------------------------+
+   |  CAPA DE NEGOCIO       (Services / Logica de aplicacion) |
+   |  Ej: CoachAIService, ExerciseService, EmailService       |
+   +----------------------------------------------------------+
+                              |
+                              v
+   +----------------------------------------------------------+
+   |  CAPA DE ACCESO A DATOS (Repositories / EF Core)         |
+   |  Ej: UserRepository, ExerciseRepository                  |
+   +----------------------------------------------------------+
+                              |
+                              v
+   +----------------------------------------------------------+
+   |  CAPA DE PERSISTENCIA   (PostgreSQL via Npgsql + EF)     |
+   +----------------------------------------------------------+
+
+
+2.3 Dependencias Principales (NuGet)
+------------------------------------------------------------------------------
+| Paquete                                  | Version | Funcion                |
+|------------------------------------------|---------|------------------------|
+| Microsoft.EntityFrameworkCore            | 9.0.7   | ORM principal          |
+| Npgsql.EntityFrameworkCore.PostgreSQL    | 9.0.4   | Driver PostgreSQL      |
+| Microsoft.AspNetCore.Authentication.JwtBearer | 8.0.4 | Auth JWT          |
+| System.IdentityModel.Tokens.Jwt          | 8.8.0   | Generacion de tokens   |
+| BCrypt.Net-Next                          | 4.0.3   | Hash de contrasenas    |
+| Swashbuckle.AspNetCore                   | 6.6.2   | Documentacion Swagger  |
+| Microsoft.AspNetCore.OpenApi             | 8.0.11  | Soporte OpenAPI nativo |
+
+
+2.4 Seguridad y Autenticacion
+------------------------------------------------------------------------------
+- Autenticacion:    JWT Bearer Tokens (asimetrico con clave simetrica)
+- Claims:           Issuer, Audience, Role, NameIdentifier
+- Proteccion:       ValidateLifetime, ValidateIssuerSigningKey
+- Passwords:        Hasheadas con BCrypt (sal automatica)
+- CORS:             Politica restringida al origen del frontend
+
+
+2.5 Servicios en Segundo Plano (Background Services)
+------------------------------------------------------------------------------
+- NotificationBackgroundService: Hilo cron que se ejecuta diariamente a las
+  08:00 UTC para comprobar inactividad de usuarios y suscripciones proximas
+  a expirar, enviando emails automaticos.
+
+
+================================================================================
+3. FRONTEND: VUE 3 (SPA)
+================================================================================
+
+3.1 Stack Base
+------------------------------------------------------------------------------
+- Framework:        Vue.js 3.5.13
+- API de Vue:       Composition API (script setup)
+- Lenguaje:         TypeScript 5.8
+- Bundler / Dev:    Vite 6.2.3
+- Tipado:           vue-tsc (type-checking en build)
+
+
+3.2 Dependencias Principales
+------------------------------------------------------------------------------
+| Paquete              | Version | Funcion                               |
+|----------------------|---------|---------------------------------------|
+| vue                  | 3.5.13  | Framework reactivo                    |
+| vue-router           | 4.5.0   | Enrutamiento SPA                      |
+| pinia                | 3.0.1   | Gestion de estado global              |
+| vue-i18n             | 11.1.3  | Internacionalizacion (es/en/fr)       |
+| vuetify              | 3.10.5  | Libreria de componentes UI (Material) |
+| leaflet              | 1.9.4   | Mapas interactivos                    |
+| chart.js             | 4.5.1   | Graficos y estadisticas               |
+| jwt-decode           | 4.0.0   | Decodificacion de tokens JWT          |
+| @mdi/font            | 7.4.47  | Iconografia Material Design           |
+| sass                 | 1.88.0  | Preprocesador CSS                     |
+
+
+3.3 Estructura de Carpetas del Frontend
+------------------------------------------------------------------------------
+ src/
+ |-- Views/           # Paginas completas (HomeView, ChatView, ProfileView)
+ |-- Components/      # Componentes reutilizables (ChatSidebar, PopUps...)
+ |-- Stores/          # Pinia Stores (userStore, mapStore...)
+ |-- JWT/             # Logica de autenticacion (tokens, interceptores)
+ |-- i18n/            # Ficheros de traduccion (es.json, en.json, fr.json)
+ |-- Styles/          # Hojas de estilo globales y temas
+ |-- Router/          # Configuracion de rutas
+ |-- Assets/          # Imagenes, fuentes, recursos estaticos
+
+
+3.4 Flujo de Estado (Pinia)
+------------------------------------------------------------------------------
+   +------------------+     Actions      +------------------+
+   |   Componente     |  ------------->  |   Pinia Store    |
+   |   (Vue Template) |                  |   (Estado global)|
+   +------------------+                  +------------------+
+          ^                                      |
+          |          Reactividad                 |
+          |  <-----------------------------------+
+          |        (computed / refs)
+          v
+   +------------------+
+   |   UI actualizada |
+   +------------------+
+
+
+================================================================================
+4. BASE DE DATOS: POSTGRESQL
+================================================================================
+
+4.1 Motor y Acceso
+------------------------------------------------------------------------------
+- Motor:            PostgreSQL
+- Acceso:           Entity Framework Core 9 (Code First)
+- Driver .NET:      Npgsql 9.0.3
+- Migraciones:      Gestionadas via EF Migrations (aplicadas automaticamente
+                    al iniciar el backend con db.Database.Migrate())
+
+
+4.2 Esquema Relacional (Entidades principales)
+------------------------------------------------------------------------------
+   [Users] 1----* [Rooms] (propietario)
+   [Users] 1----* [UserRooms] *----1 [Rooms] (participacion)
+   [Users] 1----* [Tasks]
+   [Users] 1----* [BodyMetrics]
+   [Users] 1----* [Purchases] *----1 [Items]
+   [Users] 1----1 [Subscriptions]
+   [Users] 1----* [Achievements]
+   [Rooms] 1----* [ChatMessages]
+   [Exercises] *----* [Tasks] (via TaskExercise)
+
+
+================================================================================
+5. APIs DE TERCEROS (INTEGRACIONES EXTERNAS)
+================================================================================
+
+5.1 Mapa de Integraciones
+------------------------------------------------------------------------------
+   +------------------+    HTTP    +---------------------------+
+   |   Backend (.NET) |  ------->  |   Groq API (LLaMA 3.3 70B)|  IA
+   |                  |            |   https://api.groq.com    |
+   +------------------+            +---------------------------+
+   |                  |    HTTP    +---------------------------+
+   |                  |  ------->  |   Nominatim (OpenStreetMap)| Geocodificacion
+   |                  |            |   nominatim.openstreetmap |
+   +------------------+            +---------------------------+
+   |                  |    HTTP    +---------------------------+
+   |                  |  ------->  |   Overpass API            |  Mapas/POI
+   |                  |            |   overpass-api.de         |
+   +------------------+            +---------------------------+
+   |                  |    HTTP    +---------------------------+
+   |                  |  ------->  |   ExerciseDB (RapidAPI)   |  Ejercicios
+   |                  |            |   exercisedb.p.rapidapi   |
+   +------------------+            +---------------------------+
+   |                  |    SMTP    +---------------------------+
+   |                  |  ------->  |   Gmail (SMTP)            |  Emails
+   |                  |            |   smtp.gmail.com:587      |
+   +------------------+            +---------------------------+
+   |                  |    HTTPS   +---------------------------+
+   |  Frontend (Vue)  |  ------->  |   Cloudinary              |  Imagenes
+   |                  |    (XHR)   |   api.cloudinary.com      |
+   +------------------+            +---------------------------+
+
+
+================================================================================
+6. FLUJO DE UNA PETICION TIPICA (EJEMPLO: LOGIN + DATOS)
+================================================================================
+
+   USUARIO
+      |
+      v
+   +---------------------------+
+   | 1. Introduce credenciales |
+   |    (Frontend Vue 3)       |
+   +---------------------------+
+      |
+      | POST /api/auth/login
+      | {email, password}
+      v
+   +---------------------------+
+   | 2. AuthController recibe  |
+   |    la peticion (C#)       |
+   +---------------------------+
+      |
+      v
+   +---------------------------+
+   | 3. AuthService valida     |
+   |    contra UserRepository  |
+   |    (BCrypt.Verify)        |
+   +---------------------------+
+      |
+      v
+   +---------------------------+
+   | 4. Genera JWT (JwtBearer) |
+   |    con claims de rol/id   |
+   +---------------------------+
+      |
+      | Respuesta: {token, user}
+      v
+   +---------------------------+
+   | 5. Frontend guarda token  |
+   |    en Pinia / localStorage|
+   +---------------------------+
+      |
+      | GET /api/users/me
+      | Authorization: Bearer <token>
+      v
+   +---------------------------+
+   | 6. Middleware JWT valida  |
+   |    firma, issuer y exp.   |
+   +---------------------------+
+      |
+      v
+   +---------------------------+
+   | 7. Controller autorizado  |
+   |    devuelve datos del user|
+   +---------------------------+
+      |
+      v
+   +---------------------------+
+   | 8. UI renderiza dashboard |
+   |    (Vue + Vuetify)        |
+   +---------------------------+
+
+
+================================================================================
+7. RESUMEN DE VERSIONES Y HERRAMIENTAS
+================================================================================
+
+| Componente          | Tecnologia / Version                  |
+|---------------------|---------------------------------------|
+| Backend Runtime     | .NET 8.0 (LTS)                        |
+| Backend Lenguaje    | C# 12                                 |
+| ORM                 | Entity Framework Core 9.0.7           |
+| Base de Datos       | PostgreSQL (via Npgsql 9.0.3)         |
+| Auth Backend        | JWT Bearer (Microsoft + System.IdentityModel)
+| Hash de passwords   | BCrypt.Net-Next 4.0.3                 |
+| Documentacion API   | Swagger / OpenAPI 6.6.2               |
+| Frontend Framework  | Vue.js 3.5.13                         |
+| Frontend Lenguaje   | TypeScript 5.8                        |
+| Bundler             | Vite 6.2.3                            |
+| Estado Global       | Pinia 3.0.1                           |
+| Router              | Vue Router 4.5.0                      |
+| UI Components       | Vuetify 3.10.5                        |
+| i18n                | Vue I18n 11.1.3 (es, en, fr)          |
+| Mapas               | Leaflet 1.9.4                         |
+| Graficos            | Chart.js 4.5.1                        |
+| Estilos             | Sass 1.88.0 + CSS Scoped              |
+| Control de versiones| Git                                   |
+
+
+================================================================================
+                              FIN DEL DOCUMENTO
+================================================================================

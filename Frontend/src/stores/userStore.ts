@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
+import { useI18n } from 'vue-i18n'
 import { decodeToken } from "../JWT/JWTDecode";
 import type { User } from "@/components/Models/User";
 import type { PurchasedItem } from "@/components/Models/PurchasedItem";
@@ -10,6 +11,7 @@ export const purchasedItems = ref<PurchasedItem[]>([]);
 const BASE_URL = API_BASE_URL;
 
 export const useUserStore = defineStore('user', () => {
+  const { t } = useI18n()
   const user = ref<User[]>([]);
   const loggedUser = ref<User | null>(null);
 
@@ -34,10 +36,40 @@ export const useUserStore = defineStore('user', () => {
         endurance: d.endurance,
         gold: d.gold,
         experience: d.experience,
-        avatarUrl: d.avatarUrl
+        avatarUrl: d.avatarUrl,
+        role: d.role
       }));
     } catch (error) {
       logger.error("Error fetching users:", error);
+    }
+  }
+
+  async function fetchCommunityUsers() {
+    try {
+      const response = await fetch(`${BASE_URL}/api/User/community`, {
+        method: "GET",
+        mode: "cors",
+        headers: getAuthHeaders()
+      });
+
+      if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+
+      const data = await response.json();
+      user.value = data.map((d: any) => ({
+        id: d.id,
+        name: d.name,
+        email: '',
+        passwordhash: '',
+        level: d.level,
+        strength: d.strength,
+        endurance: d.endurance,
+        gold: 0,
+        experience: 0,
+        avatarUrl: d.avatarUrl,
+        role: 'user'
+      }));
+    } catch (error) {
+      logger.error("Error fetching community users:", error);
     }
   }
 
@@ -222,7 +254,7 @@ export const useUserStore = defineStore('user', () => {
         return {
           success: false,
           requiresEmailVerification: true,
-          message: data?.message || 'Debes verificar tu email antes de iniciar sesión.'
+          message: data?.message || t('must_verify_email')
         };
       }
 
@@ -258,7 +290,7 @@ export const useUserStore = defineStore('user', () => {
       return { success: true };
     } catch (error) {
       logger.error("Login failed:", error);
-      return { success: false, message: 'Error inesperado al iniciar sesión.' };
+      return { success: false, message: t('unexpected_error') };
     }
   }
 
@@ -337,6 +369,30 @@ export const useUserStore = defineStore('user', () => {
     } catch (error) {
       logger.error('Error en getTopThreeUsers:', error);
       return [];
+    }
+  }
+
+  async function getCommunityStats() {
+    try {
+      const response = await fetch(`${BASE_URL}/api/User/community-stats`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+
+      if (!response.ok) throw new Error('Error obteniendo estadísticas de comunidad');
+
+      const data = await response.json();
+      return {
+        totalUsers: data.totalUsers || 0,
+        activeToday: data.activeToday || 0,
+        totalCheckIns: data.totalCheckIns || 0
+      };
+    } catch (error) {
+      logger.error('Error en getCommunityStats:', error);
+      return { totalUsers: 0, activeToday: 0, totalCheckIns: 0 };
     }
   }
 
@@ -548,11 +604,13 @@ export const useUserStore = defineStore('user', () => {
   return {
     user,
     fetchUser,
+    fetchCommunityUsers,
     userById,
     loginUser,
     loggedUser,
     searchByName,
     getTopThreeUsers,
+    getCommunityStats,
     getItems,
     purchasedItems,
     refreshLoggedUser,

@@ -20,7 +20,7 @@
         :days-of-week="daysOfWeek"
         :days-in-month="daysInMonth" 
         :starting-day-of-week="startingDayOfWeek"
-        :routines="routineStore.routines.map(r => ({ ...r, createdat: r.createdat ?? r.createdat }))"
+        :routines="routineStore.routines"
         :completed-routines="completedRoutines" 
         :user-x-p="userXP" 
         :xp-progress="xpProgress" 
@@ -34,7 +34,8 @@
       <!-- Create Routine Dialog -->
       <CreateRoutineDialog 
         v-model="showCreateModal" 
-        :selected-day="selectedDay" 
+        :selected-day="selectedDay"
+        :selected-date="selectedDate"
         :month-name="monthName"
         :user-id="userStore.loggedUser?.id || 0" 
         @create="handleCreateRoutine" 
@@ -60,7 +61,7 @@
         {{ snackbar.message }}
         <template v-slot:actions>
           <v-btn text @click="snackbar.show = false">
-            Cerrar
+            {{ $t('close') }}
           </v-btn>
         </template>
       </v-snackbar>
@@ -70,6 +71,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount, reactive } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useRoutineStore } from '@/stores/RoutineStore';
 import { useUserStore } from '@/stores/userStore';
 import type { Routines } from '@/components/Models/Routines';
@@ -85,10 +87,21 @@ import SuccessSnackbar from '../../components/Calendar/SuccessSnackbar.vue';
 // Stores
 const routineStore = useRoutineStore();
 const userStore = useUserStore();
+const { t } = useI18n();
 
 // Estado del calendario
 const currentDate = ref(new Date());
 const selectedDay = ref<number | null>(null);
+
+// Fecha completa del día seleccionado para la creación de rutinas
+const selectedDate = computed(() => {
+  if (!selectedDay.value) return null;
+  return new Date(
+    currentDate.value.getFullYear(),
+    currentDate.value.getMonth(),
+    selectedDay.value
+  );
+});
 
 // Estado de modales y notificaciones
 const showCreateModal = ref(false);
@@ -110,10 +123,10 @@ const snackbar = reactive({
 let countdownInterval: number | null = null;
 
 // Configuración estática
-const daysOfWeek: string[] = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+const daysOfWeek: string[] = [t('sunday'), t('monday'), t('tuesday'), t('wednesday'), t('thursday'), t('friday'), t('saturday')];
 const monthNames: string[] = [
-  'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-  'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+  t('january'), t('february'), t('march'), t('april'), t('may'), t('june'),
+  t('july'), t('august'), t('september'), t('october'), t('november'), t('december')
 ];
 
 // Computed Properties - Obteniendo datos del loggedUser
@@ -241,6 +254,23 @@ const getRoutineForDay = (day: number): Routines | null => {
 };
 
 /**
+ * Verifica si una fecha (año/mes/día) es anterior a hoy
+ */
+const isPastDate = (day: number): boolean => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const clickedDate = new Date(
+    currentDate.value.getFullYear(),
+    currentDate.value.getMonth(),
+    day
+  );
+  clickedDate.setHours(0, 0, 0, 0);
+
+  return clickedDate.getTime() < today.getTime();
+};
+
+/**
  * Maneja el click en un día del calendario
  */
 const handleDayClick = (day: number): void => {
@@ -250,8 +280,13 @@ const handleDayClick = (day: number): void => {
     // Si hay rutina, mostrar el modal de detalle
     selectedRoutine.value = routine;
     showDetailModal.value = true;
+  } else if (isPastDate(day)) {
+    // No permitir crear rutinas en fechas pasadas
+    snackbar.message = t('calendar.cannotCreatePast');
+    snackbar.color = 'warning';
+    snackbar.show = true;
   } else {
-    // Si no hay rutina, abrir modal de crear
+    // Si no hay rutina y no es fecha pasada, abrir modal de crear
     selectedDay.value = day;
     showCreateModal.value = true;
   }
@@ -261,6 +296,7 @@ const handleDayClick = (day: number): void => {
  * Abre el modal de crear rutina con el día actual
  */
 const openCreateModal = (): void => {
+  currentDate.value = new Date();
   selectedDay.value = new Date().getDate();
   showCreateModal.value = true;
 };
@@ -276,7 +312,7 @@ const handleCreateRoutine = async (routine: Routines): Promise<void> => {
 
     closeModal();
 
-    snackbar.message = '🎉 ¡Rutina creada exitosamente!';
+    snackbar.message = t('routine_created_success');
     snackbar.color = 'success';
     snackbar.show = true;
 
@@ -286,7 +322,7 @@ const handleCreateRoutine = async (routine: Routines): Promise<void> => {
 
   } catch (error) {
     logger.error('❌ Error al crear la rutina:', error);
-    snackbar.message = '❌ Error al crear la rutina. Intenta de nuevo.';
+    snackbar.message = t('error_creating_routine');
     snackbar.color = 'error';
     snackbar.show = true;
   }
@@ -306,7 +342,7 @@ const handleCompleteFromDetail = async (routineId: number): Promise<void> => {
 
     if (routine.iscompleted) {
       logger.warn('⚠️ La rutina ya está completada');
-      snackbar.message = '⚠️ Esta rutina ya está completada';
+      snackbar.message = t('routine_already_completed');
       snackbar.color = 'warning';
       snackbar.show = true;
       return;
@@ -353,7 +389,7 @@ const handleCompleteFromDetail = async (routineId: number): Promise<void> => {
     // Mostrar notificaciones
     showCompleted.value = true;
 
-    snackbar.message = `✅ ¡Rutina completada! +${routine.reward} XP, +50 monedas`;
+    snackbar.message = t('routine_completed_reward', { reward: routine.reward });
     snackbar.color = 'success';
     snackbar.show = true;
 
@@ -365,7 +401,7 @@ const handleCompleteFromDetail = async (routineId: number): Promise<void> => {
 
   } catch (error) {
     logger.error('❌ Error al completar rutina:', error);
-    snackbar.message = '❌ Error al completar la rutina. Intenta de nuevo.';
+    snackbar.message = t('error_completing_routine');
     snackbar.color = 'error';
     snackbar.show = true;
   }
@@ -418,7 +454,7 @@ const loadUserData = async (): Promise<void> => {
     }
   } catch (error) {
     logger.error('❌ Error cargando datos:', error);
-    snackbar.message = 'Error al cargar los datos';
+    snackbar.message = t('error_loading_data');
     snackbar.color = 'error';
     snackbar.show = true;
   }

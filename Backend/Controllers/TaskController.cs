@@ -4,205 +4,145 @@ using AA2_CS.Model;
 using AA2_CS.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
+using AA2_CS.Extensions;
+
 [Route("api/[controller]")]
 [ApiController]
 [Authorize]
 public class TaskController : ControllerBase
 {
     private readonly TasksService _tasksService;
+    private readonly ILogger<TaskController> _logger;
 
-    public TaskController(TasksService tasksService)
+    public TaskController(TasksService tasksService, ILogger<TaskController> logger)
     {
         _tasksService = tasksService;
+        _logger = logger;
     }
 
     [HttpPost]
     public IActionResult AddTask([FromBody] Task task)
     {
-        try
+        var userId = User.GetUserId();
+        if (!userId.HasValue)
         {
-            if (!TryGetCurrentUserId(out var userId))
-            {
-                return Unauthorized("Token inválido.");
-            }
+            return Unauthorized("Token inválido.");
+        }
 
-            task.userId = userId;
-            var result = _tasksService.Add(task);
-            return result > 0 ? Ok(task) : BadRequest("Failed to add task");
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, $"Internal server error: {ex.Message}");
-        }
+        task.userId = userId.Value;
+        var result = _tasksService.Add(task);
+        return result > 0 ? Ok(task) : BadRequest("Failed to add task");
     }
+
     [HttpPut("{id}")]
     public IActionResult UpdateTask(int id, [FromBody] Task updatedTask)
     {
-        try
+        if (id != updatedTask.id)
         {
-            if (id != updatedTask.id)
-            {
-                return BadRequest("Task ID mismatch.");
-            }
-
-            var existingTask = _tasksService.FindById(id);
-            if (existingTask == null)
-            {
-                return NotFound($"Task with ID {id} not found");
-            }
-
-            if (!CanAccessUserResource(existingTask.userId))
-            {
-                return Forbid();
-            }
-
-            var result = _tasksService.Update(updatedTask);
-            if (result == 0)
-            {
-                return NotFound($"Task with ID {updatedTask.id} not found");
-            }
-            return Ok(result);
+            return BadRequest("Task ID mismatch.");
         }
-        catch (Exception ex)
+
+        var existingTask = _tasksService.FindById(id);
+        if (existingTask == null)
         {
-            return StatusCode(500, $"Internal server error: {ex.Message}");
+            return NotFound($"Task with ID {id} not found");
         }
+
+        if (!User.IsSelfOrAdmin(existingTask.userId))
+        {
+            return Forbid();
+        }
+
+        var result = _tasksService.Update(updatedTask);
+        if (result == 0)
+        {
+            return NotFound($"Task with ID {updatedTask.id} not found");
+        }
+        return Ok(result);
     }
+
     [HttpGet]
     public IActionResult GetAllTasks()
     {
-        if (!IsAdmin())
+        if (!User.IsAdmin())
         {
             return Forbid();
         }
 
-        try
-        {
-            var tasks = _tasksService.FindAll();
-            return Ok(tasks);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, $"Internal server error: {ex.Message}");
-        }
+        var tasks = _tasksService.FindAll();
+        return Ok(tasks);
     }
+
     [HttpGet("user/{userId}")]
     public IActionResult GetTasksByUserId(int userId)
     {
-        if (!CanAccessUserResource(userId))
+        if (!User.IsSelfOrAdmin(userId))
         {
             return Forbid();
         }
 
-        try
-        {
-            var tasks = _tasksService.FindByUserId(userId);
-            return Ok(tasks);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, $"Internal server error: {ex.Message}");
-        }
+        var tasks = _tasksService.FindByUserId(userId);
+        return Ok(tasks);
     }
+
     [HttpGet("{id}")]
     public IActionResult GetTaskById(int id)
     {
-        try
+        var task = _tasksService.FindById(id);
+        if (task == null)
         {
-            var task = _tasksService.FindById(id);
-            if (task == null)
-            {
-                return NotFound($"Task with ID {id} not found");
-            }
-
-            if (!CanAccessUserResource(task.userId))
-            {
-                return Forbid();
-            }
-
-            return Ok(task);
+            return NotFound($"Task with ID {id} not found");
         }
-        catch (Exception ex)
+
+        if (!User.IsSelfOrAdmin(task.userId))
         {
-            return StatusCode(500, $"Internal server error: {ex.Message}");
+            return Forbid();
         }
+
+        return Ok(task);
     }
+
     [HttpDelete("{id}")]
     public IActionResult DeleteTask(int id)
     {
-        try
+        var task = _tasksService.FindById(id);
+        if (task == null)
         {
-            var task = _tasksService.FindById(id);
-            if (task == null)
-            {
-                return NotFound($"Task with ID {id} not found");
-            }
-
-            if (!CanAccessUserResource(task.userId))
-            {
-                return Forbid();
-            }
-
-            var result = _tasksService.Delete(task);
-            return result > 0 ? Ok($"Task with ID {id} deleted successfully") : BadRequest("Failed to delete task");
+            return NotFound($"Task with ID {id} not found");
         }
-        catch (Exception ex)
+
+        if (!User.IsSelfOrAdmin(task.userId))
         {
-            return StatusCode(500, $"Internal server error: {ex.Message}");
+            return Forbid();
         }
+
+        var result = _tasksService.Delete(task);
+        return result > 0 ? Ok($"Task with ID {id} deleted successfully") : BadRequest("Failed to delete task");
     }
+
     [HttpPost("complete/{taskId}")]
-    public IActionResult CompleteTask(int taskId)
+    public async Task<IActionResult> CompleteTask(int taskId)
     {
-        try
+        var task = _tasksService.FindById(taskId);
+        if (task == null)
         {
-            var task = _tasksService.FindById(taskId);
-            if (task == null)
-            {
-                return NotFound("Task not found");
-            }
-
-            if (!CanAccessUserResource(task.userId))
-            {
-                return Forbid();
-            }
-
-            var result = _tasksService.CompleteTask(taskId);
-            if (result == "Task not found")
-            {
-                return NotFound(result);
-            }
-            else if (result == "Task is already completed")
-            {
-                return BadRequest(result);
-            }
-            return Ok(result);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, $"Internal server error: {ex.Message}");
-        }
-    }
-
-    private bool TryGetCurrentUserId(out int userId)
-    {
-        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        return int.TryParse(userIdClaim, out userId);
-    }
-
-    private bool IsAdmin()
-    {
-        return User.FindFirst(ClaimTypes.Role)?.Value == Roles.userMaster;
-    }
-
-    private bool CanAccessUserResource(int userId)
-    {
-        if (!TryGetCurrentUserId(out var currentUserId))
-        {
-            return false;
+            return NotFound("Task not found");
         }
 
-        return currentUserId == userId || IsAdmin();
+        if (!User.IsSelfOrAdmin(task.userId))
+        {
+            return Forbid();
+        }
+
+        var result = await _tasksService.CompleteTask(taskId);
+        if (result == "Task not found")
+        {
+            return NotFound(result);
+        }
+        else if (result == "Task is already completed")
+        {
+            return BadRequest(result);
+        }
+        return Ok(result);
     }
 }

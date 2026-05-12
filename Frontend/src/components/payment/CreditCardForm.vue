@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useSubscriptionStore } from '@/stores/SubscriptionStore'
 import { logger } from '@/utils/logger'
+
+const { t } = useI18n()
 
 interface ValidationState {
   cardNumber: boolean
@@ -88,7 +91,7 @@ const validateForm = (): boolean => {
   }
 
   if (!isValid) {
-    errorMessage.value = 'Por favor, completa todos los campos correctamente'
+    errorMessage.value = t('fill_all_fields_correctly')
   }
 
   return isValid
@@ -118,12 +121,12 @@ const handleSubmit = async () => {
         router.push('/profile?tab=subscription&subscribed=true')
       }, 2500)
     } else {
-      errorMessage.value = result.error || 'Error al procesar el pago'
+      errorMessage.value = result.error || t('subscription_purchase_error')
       showSuccess.value = false
     }
   } catch (err) {
     logger.error('Payment error:', err)
-    errorMessage.value = 'Error de conexión. Inténtalo de nuevo.'
+    errorMessage.value = t('connection_error_retry')
     showSuccess.value = false
   } finally {
     isProcessing.value = false
@@ -135,8 +138,8 @@ const handleSubmit = async () => {
   <div class="card-form" :class="{ 'form-success': showSuccess }">
     <!-- Encabezado del formulario -->
     <div class="form-header">
-      <h2 class="form-title">Información de pago</h2>
-      <p class="form-subtitle">Tus datos están protegidos con encriptación SSL</p>
+      <h2 class="form-title">{{ $t('payment_info') }}</h2>
+      <p class="form-subtitle">{{ $t('data_protected_ssl') }}</p>
     </div>
 
     <!-- Vista previa de tarjeta -->
@@ -147,7 +150,7 @@ const handleSubmit = async () => {
       </div>
       <div class="card-number-display">{{ cardNumber || '•••• •••• •••• ••••' }}</div>
       <div class="card-footer">
-        <div class="card-holder">{{ (cardHolder || 'NOMBRE DEL TITULAR').toUpperCase() }}</div>
+        <div class="card-holder">{{ (cardHolder || $t('card_holder').toUpperCase()).toUpperCase() }}</div>
         <div class="card-expiry">{{ expiryDate || 'MM/YY' }}</div>
       </div>
     </div>
@@ -156,7 +159,7 @@ const handleSubmit = async () => {
     <v-form @submit.prevent="handleSubmit" class="payment-form">
       <!-- Número de tarjeta -->
       <div class="form-group">
-        <label class="form-label">Número de tarjeta</label>
+        <label class="form-label">{{ $t('card_number') }}</label>
         <div class="input-wrapper">
           <v-text-field
             v-model="cardNumber"
@@ -173,17 +176,17 @@ const handleSubmit = async () => {
           </div>
         </div>
         <div v-if="validationErrors.cardNumber" class="error-text">
-          Ingresa un número de tarjeta válido (16 dígitos)
+          {{ $t('card_number_invalid') }}
         </div>
       </div>
 
       <!-- Nombre del titular -->
       <div class="form-group">
-        <label class="form-label">Nombre del titular</label>
+        <label class="form-label">{{ $t('card_holder') }}</label>
         <div class="input-wrapper">
           <v-text-field
             v-model="cardHolder"
-            placeholder="Como aparece en la tarjeta"
+            :placeholder="$t('card_holder_placeholder')"
             maxlength="50"
             variant="outlined"
             density="comfortable"
@@ -195,14 +198,14 @@ const handleSubmit = async () => {
           </div>
         </div>
         <div v-if="validationErrors.cardHolder" class="error-text">
-          El nombre debe tener al menos 3 caracteres
+          {{ $t('card_holder_min_chars') }}
         </div>
       </div>
 
       <!-- Vencimiento y CVV -->
       <div class="form-row">
         <div class="form-group">
-          <label class="form-label">Vencimiento</label>
+          <label class="form-label">{{ $t('expiry_date') }}</label>
           <div class="input-wrapper">
             <v-text-field
               v-model="expiryDate"
@@ -219,12 +222,12 @@ const handleSubmit = async () => {
             </div>
           </div>
           <div v-if="validationErrors.expiryDate" class="error-text">
-            Ingresa una fecha válida (MM/YY)
+            {{ $t('expiry_date_invalid') }}
           </div>
         </div>
 
         <div class="form-group">
-          <label class="form-label">CVV</label>
+          <label class="form-label">{{ $t('cvv') }}</label>
           <div class="input-wrapper">
             <v-text-field
               v-model="cvv"
@@ -238,7 +241,7 @@ const handleSubmit = async () => {
               @update:model-value="(val) => cvv = val.replace(/\D/g, '')"
             />
             <div class="card-icons">
-              <v-tooltip text="3 o 4 dígitos en la parte trasera">
+              <v-tooltip :text="$t('cvv_tooltip')">
                 <template #activator="{ props }">
                   <v-icon v-bind="props" size="20" color="#4f46e5">mdi-lock</v-icon>
                 </template>
@@ -246,7 +249,7 @@ const handleSubmit = async () => {
             </div>
           </div>
           <div v-if="validationErrors.cvv" class="error-text">
-            CVV inválido (3 o 4 dígitos)
+            {{ $t('cvv_invalid') }}
           </div>
         </div>
       </div>
@@ -284,13 +287,13 @@ const handleSubmit = async () => {
         size="large"
         class="submit-btn"
       >
-        <span v-if="!isProcessing">Confirmar pago €10,00</span>
-        <span v-else>Procesando pago...</span>
+        <span v-if="!isProcessing">{{ $t('confirm_payment') }} €10,00</span>
+        <span v-else>{{ $t('processing_payment') }}</span>
       </v-btn>
 
       <!-- Pie de página -->
       <p class="form-footer">
-        Al confirmar aceptas los términos de servicio. Tu pago está protegido.
+        {{ $t('terms_acceptance') }}
       </p>
     </v-form>
   </div>

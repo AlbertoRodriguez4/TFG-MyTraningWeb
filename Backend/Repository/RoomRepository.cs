@@ -13,11 +13,12 @@ namespace AA2_CS.Repository
             _context = context;
         }
 
-        public int CreateRoomWithUser(Room entity, int userId)
+        public int CreateRoomWithUser(Room entity, int userId, string? userRole)
         {
             var user = _context.Users.Find(userId);
             if (user == null)
                 throw new Exception($"No se encontró el usuario con ID {userId}");
+            entity.creatorRole = userRole;
             _context.Rooms.Add(entity);
             _context.SaveChanges();
 
@@ -36,7 +37,7 @@ namespace AA2_CS.Repository
 
         public List<Room> FindAll()
         {
-            return _context.Rooms.ToList();
+            return _context.Rooms.AsNoTracking().ToList();
         }
 
         public int Update(Room entity)
@@ -48,7 +49,7 @@ namespace AA2_CS.Repository
                 room.minlevel = entity.minlevel;
                 room.minstats = entity.minstats;
                 room.minconsistency = entity.minconsistency;
-                
+                room.creatorRole = entity.creatorRole;
 
                 room.description = entity.description;
                 room.date = entity.date; 
@@ -78,15 +79,16 @@ namespace AA2_CS.Repository
                     join u in _context.Users on ur.userid equals u.id
                     join r in _context.Rooms on ur.roomid equals r.id
                     // <--- IMPORTANTE: Añadir description y date al group by
-                    group new { User = u, Room = r } by new { 
-                        r.id, 
-                        r.name, 
-                        r.minlevel, 
-                        r.minstats, 
-                        r.minconsistency, 
-                        r.description, 
+                    group new { User = u, Room = r } by new {
+                        r.id,
+                        r.name,
+                        r.minlevel,
+                        r.minstats,
+                        r.minconsistency,
+                        r.description,
                         r.date,
-                        r.localization     
+                        r.localization,
+                        r.creatorRole
                     } into roomGroup
                     select new UserRoomDTO
                     {
@@ -97,9 +99,10 @@ namespace AA2_CS.Repository
                             minlevel = roomGroup.Key.minlevel,
                             minstats = roomGroup.Key.minstats,
                             minconsistency = roomGroup.Key.minconsistency,
-                            description = roomGroup.Key.description, 
+                            description = roomGroup.Key.description,
                             date = roomGroup.Key.date,
-                            localization = roomGroup.Key.localization             
+                            localization = roomGroup.Key.localization,
+                            creatorRole = roomGroup.Key.creatorRole
                         },
                         users = roomGroup.Select(g => new UserDTO
                         {
@@ -115,6 +118,7 @@ namespace AA2_CS.Repository
         public List<Room> FindByCharacteristic(string name)
         {
             return _context.Rooms
+                .AsNoTracking()
                 .Where(r => r.name.ToLower().Contains(name.ToLower()))
                 .ToList();
         }
@@ -126,22 +130,22 @@ namespace AA2_CS.Repository
 
         public List<Room> SortByLevelAsc()
         {
-            return _context.Rooms.OrderBy(r => r.minlevel).ToList();
+            return _context.Rooms.AsNoTracking().OrderBy(r => r.minlevel).ToList();
         }
 
         public List<Room> SortByLevelDesc()
         {
-            return _context.Rooms.OrderByDescending(r => r.minlevel).ToList();
+            return _context.Rooms.AsNoTracking().OrderByDescending(r => r.minlevel).ToList();
         }
 
         public List<Room> SortByStatsAsc()
         {
-            return _context.Rooms.OrderBy(r => r.minstats).ToList();
+            return _context.Rooms.AsNoTracking().OrderBy(r => r.minstats).ToList();
         }
 
         public List<Room> SortByStatsDesc()
         {
-            return _context.Rooms.OrderByDescending(r => r.minstats).ToList();
+            return _context.Rooms.AsNoTracking().OrderByDescending(r => r.minstats).ToList();
         }
     }
 }

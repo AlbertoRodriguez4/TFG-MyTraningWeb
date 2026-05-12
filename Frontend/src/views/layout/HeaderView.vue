@@ -11,7 +11,7 @@ const router = useRouter()
 
 const isLogged = computed(() => !!store.loggedUser?.email)
 const hasActiveSubscription = computed(() => subscriptionStore.hasActiveSubscription)
-const { locale } = useI18n()
+const { locale, t } = useI18n()
 
 onMounted(async () => {
   if (isLogged.value) {
@@ -43,14 +43,14 @@ const handleNavClick = () => {
   mobileMenuOpen.value = false
 }
 
-const languages = [
-  { code: 'en', label: 'English 🇬🇧' },
-  { code: 'es', label: 'Español 🇪🇸' },
-  { code: 'fr', label: 'Français 🇫🇷' }
-]
+const languages = computed(() => [
+  { code: 'en', label: t('english') + ' 🇬🇧' },
+  { code: 'es', label: t('spanish_language') + ' 🇪🇸' },
+  { code: 'fr', label: t('français') + ' 🇫🇷' }
+])
 
 const currentLanguage = computed(() => {
-  return languages.find(l => l.code === locale.value)?.label || 'Language'
+  return languages.value.find(l => l.code === locale.value)?.label || 'Language'
 })
 </script>
 
@@ -71,18 +71,21 @@ const currentLanguage = computed(() => {
 
         <!-- Desktop Navigation -->
         <nav class="nav-desktop">
-          <RouterLink to="/" class="nav-btn">🏠 Home</RouterLink>
-          <RouterLink to="/room" class="nav-btn" :class="{ disabled: !isLogged }">🚪 Rooms</RouterLink>
-          <RouterLink to="/plan" class="nav-btn" :class="{ disabled: !isLogged }">📋 Plans</RouterLink>
-          <RouterLink to="/rutina" class="nav-btn" :class="{ disabled: !isLogged }">📅 Routines</RouterLink>
-          <RouterLink to="/purchase" class="nav-btn" :class="{ disabled: !isLogged }">🛒 Shop</RouterLink>
+          <RouterLink to="/" class="nav-btn">🏠 {{ $t('home') }}</RouterLink>
+          <RouterLink to="/room" class="nav-btn" :class="{ disabled: !isLogged }">🚪 {{ $t('rooms') }}</RouterLink>
+          <RouterLink to="/plan" class="nav-btn" :class="{ disabled: !isLogged }">📋 {{ $t('plans') }}</RouterLink>
+          <RouterLink to="/rutina" class="nav-btn" :class="{ disabled: !isLogged }">📅 {{ $t('routines') }}</RouterLink>
+          <RouterLink to="/purchase" class="nav-btn" :class="{ disabled: !isLogged }">🛒 {{ $t('shop_header') }}</RouterLink>
+          <RouterLink to="/achievements" class="nav-btn" :class="{ disabled: !isLogged }">🏆 {{ $t('achievements_title') }}</RouterLink>
+          <RouterLink to="/exercises" class="nav-btn" :class="{ disabled: !isLogged }">💪 {{ $t('exercises_title') }}</RouterLink>
+          <RouterLink to="/body-metrics" class="nav-btn" :class="{ disabled: !isLogged }">📊 {{ $t('body_metrics_title') }}</RouterLink>
 
           <!-- Premium Features -->
           <RouterLink v-if="isLogged && hasActiveSubscription" to="/CoachAi" class="nav-btn premium-btn">
-            🤖 CoachAI
+            🤖 {{ $t('coach_ai') }}
           </RouterLink>
           <RouterLink v-if="isLogged && hasActiveSubscription" to="/calculator" class="nav-btn premium-btn">
-            🧮 Calculadora
+            🧮 {{ $t('calculator') }}
           </RouterLink>
         </nav>
 
@@ -140,18 +143,18 @@ const currentLanguage = computed(() => {
           <div v-if="hasActiveSubscription" class="premium-card premium-active">
             <span class="premium-icon">✅</span>
             <div>
-              <p class="premium-title">Premium Activo</p>
-              <p class="premium-desc">CoachAI y Calculadora desbloqueados</p>
+              <p class="premium-title">{{ $t('premium_active') }}</p>
+              <p class="premium-desc">{{ $t('premium_unlocked_desc') }}</p>
             </div>
           </div>
           <div v-else class="premium-card">
             <span class="premium-icon">⭐</span>
             <div>
-              <p class="premium-title">Unlock Premium</p>
-              <p class="premium-desc">CoachAI, Calculadora y más</p>
+              <p class="premium-title">{{ $t('premium_unlock') }}</p>
+              <p class="premium-desc">{{ $t('premium_desc') }}</p>
             </div>
             <RouterLink to="/plan" class="premium-cta-btn" @click="userDropdownOpen = false">
-              Ver planes →
+              {{ $t('see_plans') }}
             </RouterLink>
           </div>
 
@@ -159,25 +162,36 @@ const currentLanguage = computed(() => {
           <div class="dropdown-divider"></div>
 
           <RouterLink to="/profile" class="dropdown-item" @click="userDropdownOpen = false">
-            ⚙️ Profile Settings
+            ⚙️ {{ $t('profile_settings') }}
+          </RouterLink>
+          <RouterLink to="/achievements" class="dropdown-item" @click="userDropdownOpen = false">
+            🏆 {{ $t('achievements_title') }}
+          </RouterLink>
+          <RouterLink to="/exercises" class="dropdown-item" @click="userDropdownOpen = false">
+            💪 {{ $t('exercises_title') }}
+          </RouterLink>
+          <RouterLink to="/body-metrics" class="dropdown-item" @click="userDropdownOpen = false">
+            📊 {{ $t('body_metrics_title') }}
           </RouterLink>
 
           <div class="dropdown-item language-selector">
             <span>🌍</span>
-            <select v-model="locale" @change="handleNavClick">
-              <option v-for="lang in languages" :key="lang.code" :value="lang.code">
-                {{ lang.label }}
-              </option>
-            </select>
+            <div class="lang-select-wrapper">
+              <select v-model="locale" @change="handleNavClick">
+                <option v-for="lang in languages" :key="lang.code" :value="lang.code">
+                  {{ lang.label }}
+                </option>
+              </select>
+            </div>
           </div>
 
           <RouterLink to="/user" class="dropdown-item" @click="userDropdownOpen = false">
-            👥 Community
+            👥 {{ $t('community') }}
           </RouterLink>
 
           <!-- Logout Button -->
           <button class="logout-btn" @click="handleLogout">
-            ⚡ Logout
+            ⚡ {{ $t('logout') }}
           </button>
         </div>
       </div>
@@ -195,56 +209,64 @@ const currentLanguage = computed(() => {
       </div>
 
       <!-- Navigation Links -->
-      <RouterLink to="/" class="mobile-nav-item" @click="handleNavClick">🏠 Home</RouterLink>
-      <RouterLink to="/room" class="mobile-nav-item" :class="{ disabled: !isLogged }" @click="handleNavClick">🚪 Rooms
+      <RouterLink to="/" class="mobile-nav-item" @click="handleNavClick">🏠 {{ $t('home') }}</RouterLink>
+      <RouterLink to="/room" class="mobile-nav-item" :class="{ disabled: !isLogged }" @click="handleNavClick">🚪 {{ $t('rooms') }}
       </RouterLink>
-      <RouterLink to="/plan" class="mobile-nav-item" :class="{ disabled: !isLogged }" @click="handleNavClick">📋 Plans
+      <RouterLink to="/plan" class="mobile-nav-item" :class="{ disabled: !isLogged }" @click="handleNavClick">📋 {{ $t('plans') }}
       </RouterLink>
       <RouterLink to="/rutina" class="mobile-nav-item" :class="{ disabled: !isLogged }" @click="handleNavClick">📅
-        Routines</RouterLink>
+        {{ $t('routines') }}</RouterLink>
       <RouterLink to="/purchase" class="mobile-nav-item" :class="{ disabled: !isLogged }" @click="handleNavClick">🛒
-        Shop</RouterLink>
+        {{ $t('shop_header') }}</RouterLink>
+      <RouterLink to="/achievements" class="mobile-nav-item" :class="{ disabled: !isLogged }" @click="handleNavClick">🏆
+        {{ $t('achievements_title') }}</RouterLink>
+      <RouterLink to="/exercises" class="mobile-nav-item" :class="{ disabled: !isLogged }" @click="handleNavClick">💪
+        {{ $t('exercises_title') }}</RouterLink>
+      <RouterLink to="/body-metrics" class="mobile-nav-item" :class="{ disabled: !isLogged }" @click="handleNavClick">📊
+        {{ $t('body_metrics_title') }}</RouterLink>
 
       <!-- Premium Features (Mobile) -->
       <template v-if="isLogged && hasActiveSubscription">
-        <RouterLink to="/CoachAi" class="mobile-nav-item premium-item" @click="handleNavClick">🤖 CoachAI</RouterLink>
-        <RouterLink to="/calculator" class="mobile-nav-item premium-item" @click="handleNavClick">🧮 Calculadora
+        <RouterLink to="/CoachAi" class="mobile-nav-item premium-item" @click="handleNavClick">🤖 {{ $t('coach_ai') }}</RouterLink>
+        <RouterLink to="/calculator" class="mobile-nav-item premium-item" @click="handleNavClick">🧮 {{ $t('calculator') }}
         </RouterLink>
       </template>
 
       <div class="mobile-divider"></div>
 
       <RouterLink to="/profile" class="mobile-nav-item" :class="{ disabled: !isLogged }" @click="handleNavClick">⚙️
-        Settings</RouterLink>
+        {{ $t('profile_settings') }}</RouterLink>
       <RouterLink to="/user" class="mobile-nav-item" :class="{ disabled: !isLogged }" @click="handleNavClick">👥
-        Community</RouterLink>
+        {{ $t('community') }}</RouterLink>
 
       <!-- Language Selector (Mobile) -->
       <div class="mobile-language">
-        <span>🌍 Language</span>
-        <select v-model="locale" @change="handleNavClick">
-          <option v-for="lang in languages" :key="lang.code" :value="lang.code">
-            {{ lang.label }}
-          </option>
-        </select>
+        <span>🌍 {{ $t('language') || 'Language' }}</span>
+        <div class="lang-select-wrapper">
+          <select v-model="locale" @change="handleNavClick">
+            <option v-for="lang in languages" :key="lang.code" :value="lang.code">
+              {{ lang.label }}
+            </option>
+          </select>
+        </div>
       </div>
 
       <!-- Premium Status Card (Mobile) -->
       <div v-if="hasActiveSubscription" class="mobile-premium-card premium-active">
         <span class="mpc-icon">✅</span>
-        <p>Premium Activo</p>
-        <p class="mpc-desc">CoachAI y Calculadora desbloqueados</p>
+        <p>{{ $t('premium_active') }}</p>
+        <p class="mpc-desc">{{ $t('premium_unlocked_desc') }}</p>
       </div>
       <div v-else class="mobile-premium-card">
         <span class="mpc-icon">⭐</span>
-        <p>Desbloquea CoachAI y Calculadora</p>
+        <p>{{ $t('premium_desc') }}</p>
         <RouterLink to="/plan" class="premium-cta-btn" @click="handleNavClick">
-          Ver planes →
+          {{ $t('see_plans') }}
         </RouterLink>
       </div>
 
       <!-- Logout (Mobile) -->
-      <button class="mobile-logout-btn" @click="handleLogout">⚡ Logout</button>
+      <button class="mobile-logout-btn" @click="handleLogout">⚡ {{ $t('logout') }}</button>
          
     </nav>
 
@@ -697,19 +719,47 @@ const currentLanguage = computed(() => {
   justify-content: space-between;
 }
 
-.language-selector select {
-  background: rgba(35, 35, 35, 0.85);
-  border: 1px solid rgba(255, 204, 0, 0.28);
-  color: #fff;
-  padding: 0.3rem 0.5rem;
-  border-radius: 6px;
-  font-size: 0.8rem;
-  cursor: pointer;
-  appearance: none;
+.lang-select-wrapper {
+  position: relative;
 }
 
-.language-selector select:hover {
-  border-color: rgba(255, 204, 0, 0.6);
+.lang-select-wrapper::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 0.5rem;
+  width: 0;
+  height: 0;
+  margin-top: -2px;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 4px solid #ffcc00;
+  pointer-events: none;
+}
+
+.language-selector select {
+  background: rgba(30, 30, 30, 0.95);
+  border: 1px solid rgba(255, 204, 0, 0.4);
+  color: #ffffff;
+  padding: 0.35rem 1.6rem 0.35rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  appearance: none;
+  min-width: 120px;
+}
+
+.language-selector select:hover,
+.language-selector select:focus {
+  border-color: rgba(255, 204, 0, 0.7);
+  background: rgba(40, 40, 40, 0.95);
+  outline: none;
+}
+
+.language-selector select option {
+  background: #1a1a1a;
+  color: #ffffff;
 }
 
 /* Logout Button */
@@ -812,17 +862,37 @@ const currentLanguage = computed(() => {
   align-items: center;
   justify-content: space-between;
   font-size: 1rem;
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.mobile-language .lang-select-wrapper::after {
+  right: 0.6rem;
+  border-top: 5px solid #ffcc00;
 }
 
 .mobile-language select {
-  background: rgba(35, 35, 35, 0.85);
-  border: 1px solid rgba(255, 204, 0, 0.28);
-  color: #fff;
-  padding: 0.4rem 0.6rem;
+  background: rgba(30, 30, 30, 0.95);
+  border: 1px solid rgba(255, 204, 0, 0.4);
+  color: #ffffff;
+  padding: 0.45rem 1.8rem 0.45rem 0.7rem;
   border-radius: 6px;
   font-size: 0.9rem;
+  font-weight: 600;
   cursor: pointer;
+  appearance: none;
+  min-width: 130px;
+}
+
+.mobile-language select:hover,
+.mobile-language select:focus {
+  border-color: rgba(255, 204, 0, 0.7);
+  background: rgba(40, 40, 40, 0.95);
+  outline: none;
+}
+
+.mobile-language select option {
+  background: #1a1a1a;
+  color: #ffffff;
 }
 
 .mobile-premium-card {

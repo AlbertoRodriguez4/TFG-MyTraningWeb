@@ -6,8 +6,8 @@
         <div class="header-content">
           <v-icon large color="white" class="mr-3">mdi-chart-timeline-variant</v-icon>
           <div>
-            <h2 class="stats-title">Estadísticas de Entrenamiento</h2>
-            <p class="stats-subtitle">Resumen de tu progreso por mes</p>
+            <h2 class="stats-title">{{ t('routineStats.title') }}</h2>
+            <p class="stats-subtitle">{{ t('routineStats.subtitle') }}</p>
           </div>
         </div>
         <v-btn icon dark @click="closeDialog">
@@ -21,22 +21,22 @@
           <div class="summary-card">
             <v-icon color="purple" size="40">mdi-dumbbell</v-icon>
             <div class="summary-value">{{ totalRoutines }}</div>
-            <div class="summary-label">Rutinas Totales</div>
+            <div class="summary-label">{{ t('routineStats.totalRoutines') }}</div>
           </div>
           <div class="summary-card">
             <v-icon color="success" size="40">mdi-check-circle</v-icon>
             <div class="summary-value">{{ completedRoutines }}</div>
-            <div class="summary-label">Completadas</div>
+            <div class="summary-label">{{ t('common.completed') }}</div>
           </div>
           <div class="summary-card">
             <v-icon color="warning" size="40">mdi-clock-outline</v-icon>
             <div class="summary-value">{{ pendingRoutines }}</div>
-            <div class="summary-label">Pendientes</div>
+            <div class="summary-label">{{ t('common.pending') }}</div>
           </div>
           <div class="summary-card">
             <v-icon color="info" size="40">mdi-percent</v-icon>
             <div class="summary-value">{{ completionRate }}%</div>
-            <div class="summary-label">Tasa de Éxito</div>
+            <div class="summary-label">{{ t('routineStats.successRate') }}</div>
           </div>
         </div>
 
@@ -44,15 +44,15 @@
         <div class="monthly-stats">
           <h3 class="section-title">
             <v-icon color="purple" class="mr-2">mdi-calendar-month</v-icon>
-            Estadísticas Mensuales
+            {{ t('routineStats.monthlyStats') }}
           </h3>
 
           <!-- Si no hay datos -->
           <v-alert v-if="monthlyData.length === 0" type="info" outlined class="mt-4">
             <div class="text-center">
               <v-icon large color="info" class="mb-2">mdi-information</v-icon>
-              <p class="text-h6 mb-0">No hay rutinas registradas aún</p>
-              <p class="text-body-2">Empieza a crear rutinas para ver tus estadísticas</p>
+              <p class="text-h6 mb-0">{{ t('routineStats.noRoutinesTitle') }}</p>
+              <p class="text-body-2">{{ t('routineStats.noRoutinesHint') }}</p>
             </div>
           </v-alert>
 
@@ -73,21 +73,21 @@
                 <div class="stat-row">
                   <span class="stat-label">
                     <v-icon small color="success">mdi-check</v-icon>
-                    Completadas
+                    {{ t('common.completed') }}
                   </span>
                   <span class="stat-value success--text">{{ month.completed }}</span>
                 </div>
                 <div class="stat-row">
                   <span class="stat-label">
                     <v-icon small color="warning">mdi-clock</v-icon>
-                    Pendientes
+                    {{ t('common.pending') }}
                   </span>
                   <span class="stat-value warning--text">{{ month.pending }}</span>
                 </div>
                 <div class="stat-row">
                   <span class="stat-label">
                     <v-icon small color="purple">mdi-sigma</v-icon>
-                    Total
+                    {{ t('common.total') }}
                   </span>
                   <span class="stat-value purple--text">{{ month.total }}</span>
                 </div>
@@ -101,7 +101,7 @@
                     :style="{ width: `${month.completionRate}%` }"
                   ></div>
                 </div>
-                <span class="progress-label">{{ month.completionRate }}% completado</span>
+                <span class="progress-label">{{ month.completionRate }}{{ t('routineStats.percentCompleted') }}</span>
               </div>
 
               <!-- Badge de XP ganado -->
@@ -118,7 +118,7 @@
       <v-card-actions class="stats-footer">
         <v-spacer></v-spacer>
         <v-btn color="purple" text large @click="closeDialog">
-          Cerrar
+          {{ t('common.close') }}
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -134,6 +134,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useRoutineStore } from '@/stores/RoutineStore';
 import type { Routines } from '@/components/Models/Routines';
 import MonthDetailDialog from './MonthDetailDialog.vue';
@@ -160,6 +161,7 @@ const emit = defineEmits<{
   'update:modelValue': [value: boolean];
 }>();
 
+const { t } = useI18n();
 const routineStore = useRoutineStore();
 const showMonthDetail = ref(false);
 const selectedMonth = ref<MonthlyStats | null>(null);
@@ -169,10 +171,10 @@ const showDialog = computed({
   set: (value) => emit('update:modelValue', value)
 });
 
-const monthNames = [
-  'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-  'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
-];
+const monthNames = computed(() => [
+  t('january'), t('february'), t('march'), t('april'), t('may'), t('june'),
+  t('july'), t('august'), t('september'), t('october'), t('november'), t('december')
+]);
 
 /**
  * Total de rutinas creadas
@@ -218,7 +220,7 @@ const monthlyData = computed((): MonthlyStats[] => {
     if (!grouped.has(key)) {
       grouped.set(key, {
         key,
-        name: monthNames[month],
+        name: monthNames.value[month],
         year,
         month,
         total: 0,

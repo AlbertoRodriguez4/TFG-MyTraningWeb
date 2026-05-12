@@ -8,7 +8,7 @@
           <div>
             <h2 class="detail-title">{{ monthData.name }} {{ monthData.year }}</h2>
             <p class="detail-subtitle">
-              {{ monthData.total }} rutinas · {{ monthData.completed }} completadas
+              {{ t('monthDetail.summary', { total: monthData.total, completed: monthData.completed }) }}
             </p>
           </div>
         </div>
@@ -23,17 +23,17 @@
           <div class="mini-stat success">
             <v-icon color="success">mdi-check-circle</v-icon>
             <div class="mini-stat-value">{{ monthData.completed }}</div>
-            <div class="mini-stat-label">Completadas</div>
+            <div class="mini-stat-label">{{ t('common.completed') }}</div>
           </div>
           <div class="mini-stat warning">
             <v-icon color="warning">mdi-clock-outline</v-icon>
             <div class="mini-stat-value">{{ monthData.pending }}</div>
-            <div class="mini-stat-label">Pendientes</div>
+            <div class="mini-stat-label">{{ t('common.pending') }}</div>
           </div>
           <div class="mini-stat info">
             <v-icon color="amber">mdi-star</v-icon>
             <div class="mini-stat-value">{{ monthData.totalXP }}</div>
-            <div class="mini-stat-label">XP Total</div>
+            <div class="mini-stat-label">{{ t('common.totalXP') }}</div>
           </div>
         </div>
 
@@ -41,7 +41,7 @@
         <div class="routines-list">
           <h3 class="list-title">
             <v-icon color="purple" class="mr-2">mdi-dumbbell</v-icon>
-            Rutinas del mes
+            {{ t('monthDetail.monthRoutines') }}
           </h3>
 
           <div v-for="routine in sortedRoutines" :key="routine.id" class="routine-item"
@@ -83,7 +83,7 @@
       <v-card-actions class="detail-footer">
         <v-spacer></v-spacer>
         <v-btn color="purple" text large @click="closeDialog">
-          Cerrar
+          {{ t('common.close') }}
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -92,7 +92,10 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import type { Routines } from '@/components/Models/Routines';
+
+const { t, locale } = useI18n();
 
 interface MonthlyStats {
   key: string;
@@ -146,8 +149,7 @@ const formatDay = (dateString: string): string => {
  */
 const formatWeekday = (dateString: string): string => {
   const date = new Date(dateString);
-  const weekdays = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
-  return weekdays[date.getDay()];
+  return date.toLocaleDateString(locale.value, { weekday: 'short' });
 };
 
 /**
@@ -155,24 +157,20 @@ const formatWeekday = (dateString: string): string => {
  */
 const formatFullDate = (dateString: string): string => {
   const date = new Date(dateString);
-  const months = [
-    'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
-    'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'
-  ];
-  return `${date.getDate()} ${months[date.getMonth()]}`;
+  return date.toLocaleDateString(locale.value, { day: 'numeric', month: 'short' });
 };
 
 /**
  * Obtiene el texto de la dificultad
  */
 const getDifficultyText = (difficulty: number): string => {
-  const difficulties: Record<number, string> = {
-    1: 'Fácil',
-    2: 'Moderada',
-    3: 'Difícil',
-    4: 'Extrema'
+  const map: Record<number, string> = {
+    1: t('difficulty.easy'),
+    2: t('difficulty.medium'),
+    3: t('difficulty.hard'),
+    4: t('difficulty.extreme')
   };
-  return difficulties[difficulty] || 'Desconocida';
+  return map[difficulty] || t('difficulty.medium');
 };
 
 /**

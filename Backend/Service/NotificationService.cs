@@ -94,5 +94,19 @@ namespace AA2_CS.Service
 
             await _emailService.SendSubscriptionExpiryEmail(user.email, user.name, subscription.endDate, daysLeft);
         }
+
+        /// <summary>
+        /// Envía una confirmación de compra de suscripción premium si el usuario lo tiene habilitado.
+        /// </summary>
+        public async System.Threading.Tasks.Task SendSubscriptionPurchasedNotificationIfNeeded(int userId, DateTime startDate, DateTime endDate, decimal price)
+        {
+            var pref = await _prefRepo.GetOrCreateAsync(userId);
+            if (!pref.subscriptionExpiryEnabled) return;
+
+            var user = _userRepo.FindById(userId);
+            if (user == null || string.IsNullOrEmpty(user.email)) return;
+
+            await _emailService.SendSubscriptionPurchasedEmail(user.email, user.name, startDate, endDate, price);
+        }
     }
 }

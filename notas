@@ -1,15 +1,7 @@
-API: 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
-
-$env:ANTHROPIC_AUTH_TOKEN="efc8d5882a4bf9d11839d6b3789b63766bdcd8ca1d652319eef3249f2dc591d9"
-
-$env:ANTHROPIC_API_KEY="sk-or-TU_CLAVE_REAL_AQUI"
-
-
-
-
-
-$env:ANTHROPIC_API_KEY="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"
-
-$env:ANTHROPIC_BASE_URL="https://openrouter.ai/api/v1"
-
-$env:ANTHROPIC_DEFAULT_SONNET_MODEL="google/gemini-2.5-flash"
+Ver version admin y entrenador
+ADMIN: 
+Para crear objetos adjuntar imagenes
+Poder crear logros
+ENTRENADOR: 
+Editar salas 
+Crear salas especiales

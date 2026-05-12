@@ -87,6 +87,14 @@
           {{ store.error }}
         </v-alert>
 
+        <!-- Snackbar de éxito -->
+        <v-snackbar v-model="showSuccessSnackbar" :timeout="3000" color="success" location="top">
+          {{ successMessage }}
+          <template #actions>
+            <v-btn variant="text" size="small" @click="showSuccessSnackbar = false">{{ $t('close') }}</v-btn>
+          </template>
+        </v-snackbar>
+
         <div class="form-actions">
           <v-btn
             color="#ffcc00"
@@ -116,11 +124,15 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useNotificationPreferencesStore } from '@/stores/NotificationPreferencesStore'
 import { logger } from '@/utils/logger'
 
+const { t } = useI18n()
 const store = useNotificationPreferencesStore()
+const showSuccessSnackbar = ref(false)
+const successMessage = ref('')
 
 onMounted(() => {
   store.fetchPreferences()
@@ -129,6 +141,8 @@ onMounted(() => {
 const handleSave = async () => {
   const success = await store.savePreferences()
   if (success) {
+    successMessage.value = t('preferences_saved')
+    showSuccessSnackbar.value = true
     logger.log('Preferencias guardadas correctamente')
   }
 }
@@ -136,6 +150,8 @@ const handleSave = async () => {
 const handleReset = async () => {
   const success = await store.resetDefaults()
   if (success) {
+    successMessage.value = t('preferences_reset')
+    showSuccessSnackbar.value = true
     logger.log('Preferencias restablecidas a valores por defecto')
   }
 }

@@ -16,7 +16,7 @@
             dark
             class="today-chip"
           >
-            HOY
+            {{ $t('common.today') }}
           </v-chip>
         </div>
 
@@ -36,11 +36,11 @@
             
             <!-- Indicador cuando está pendiente -->
             <div v-if="!routine.iscompleted" class="pending-indicator">
-              <v-chip small color="orange" dark>
+                <v-chip small color="orange" dark>
                 <v-icon small left>mdi-clock-outline</v-icon>
-                Pendiente
+                {{ $t('common.pending') }}
               </v-chip>
-              <p class="click-hint">Click para completar</p>
+              <p class="click-hint">{{ $t('calendar.clickToComplete') }}</p>
             </div>
 
             <!-- Badge cuando está completada -->
@@ -55,7 +55,7 @@
             <div class="add-workout-icon">
               <v-icon size="40" color="grey lighten-1">mdi-plus</v-icon>
             </div>
-            <p class="add-workout-text">Añadir rutina</p>
+            <p class="add-workout-text">{{ $t('calendar.addRoutine') }}</p>
           </div>
         </div>
       </div>

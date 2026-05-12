@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useUserStore } from '@/stores/userStore'
 import { useRoomStore } from '@/stores/RoomStore'
 import { useUserRoomStore } from '@/stores/UsersRoomStore'
 import defaultAvatar from '@/assets/imgs/usuario.png'
 import { logger } from '@/utils/logger'
 
+const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
@@ -110,7 +112,7 @@ const getStatusColor = (status: string) => {
 
 const getStatusText = (status: string) => {
   switch (status) {
-    case 'online': return 'En línea'
+    case 'online': return t('room_online')
     case 'training': return 'Entrenando'
     case 'offline': return 'Desconectado'
     default: return 'Desconocido'
@@ -197,13 +199,13 @@ const goBack = () => {
     <div class="view-header">
       <button @click="goBack" class="back-btn">
         <span class="back-icon">←</span>
-        <span>Volver a salas</span>
+        <span>{{ $t('volver_salas') }}</span>
       </button>
     </div>
 
     <div v-if="isLoading || userRoomStore.loading" class="loading-container">
       <div class="loading-spinner"></div>
-      <p>Cargando sala...</p>
+      <p>{{ $t('cargando_sala') }}</p>
     </div>
 
     <div v-else class="room-view-container">
@@ -229,16 +231,16 @@ const goBack = () => {
         <div class="room-description-box">
           <div class="description-box-header">
             <span class="description-box-icon">📝</span>
-            <span class="description-box-title">Descripción</span>
+            <span class="description-box-title">{{ $t('description') }}</span>
           </div>
-          <p class="description-box-text">{{ roomData.description || 'Sin descripción disponible' }}</p>
+          <p class="description-box-text">{{ roomData.description || $t('room_no_description') }}</p>
         </div>
 
         <!-- Fecha -->
         <div class="room-date-box">
           <span class="date-box-icon">📅</span>
           <div class="date-box-content">
-            <span class="date-box-label">El evento es el día </span>
+            <span class="date-box-label">{{ $t('room_event_day') }}</span>
             <span class="date-box-value">{{ roomData.date }}</span>
           </div>
         </div>
@@ -247,8 +249,8 @@ const goBack = () => {
         <div class="room-localization-box">
           <span class="localization-box-icon">📍</span>
           <div class="localization-box-content">
-            <span class="localization-box-label">Localización: </span>
-            <span class="localization-box-value">{{ roomData.localization || 'No especificada' }}</span>
+            <span class="localization-box-label">{{ $t('room_localization') }}</span>
+            <span class="localization-box-value">{{ roomData.localization || $t('not_specified') }}</span>
           </div>
         </div>
 
@@ -256,21 +258,21 @@ const goBack = () => {
           <div class="requirement-card">
             <div class="req-card-icon">📊</div>
             <div class="req-card-content">
-              <span class="req-card-label">Nivel Mínimo</span>
+              <span class="req-card-label">{{ $t('room_min_level') }}</span>
               <span class="req-card-value">{{ roomData.minlevel }}</span>
             </div>
           </div>
           <div class="requirement-card">
             <div class="req-card-icon">💪</div>
             <div class="req-card-content">
-              <span class="req-card-label">Stats Mínimas</span>
+              <span class="req-card-label">{{ $t('min_stats_req') }}</span>
               <span class="req-card-value">{{ roomData.minstats }}</span>
             </div>
           </div>
           <div class="requirement-card">
             <div class="req-card-icon">🎯</div>
             <div class="req-card-content">
-              <span class="req-card-label">Consistencia</span>
+              <span class="req-card-label">{{ $t('min_consistency_req') }}</span>
               <span class="req-card-value">{{ roomData.minconsistency }}%</span>
             </div>
           </div>
@@ -280,18 +282,18 @@ const goBack = () => {
         <div class="join-section">
           <div v-if="!canJoinRoom && !isJoined" class="requirements-warning">
             <span class="warning-icon">⚠️</span>
-            <span>No cumples los requisitos mínimos para unirte a esta sala</span>
+            <span>{{ $t('no_cumples_requisitos') }}</span>
           </div>
 
           <button v-if="!isJoined" @click="openJoinPopup" class="main-join-btn" :disabled="!canJoinRoom"
             :class="{ disabled: !canJoinRoom }">
             <span class="btn-icon">🚀</span>
-            <span>Unirse a la Sala</span>
+            <span>{{ $t('unirse_sala') }}</span>
           </button>
 
           <button v-else @click.prevent="openLeaveConfirmDialog" class="leave-btn" type="button">
             <span class="btn-icon">🚪</span>
-            <span>Salir de la Sala</span>
+            <span>{{ $t('salir_sala_btn') }}</span>
           </button>
         </div>
       </div>
@@ -301,14 +303,14 @@ const goBack = () => {
         <div class="users-header">
           <h2 class="users-title">
             <span class="users-icon">👥</span>
-            <span>Usuarios en la sala</span>
+            <span>{{ $t('usuarios_sala') }}</span>
           </h2>
           <div class="users-count-badge">{{ userRoomStore.memberCount }}</div>
         </div>
 
         <div v-if="roomUsers.length === 0" class="empty-users">
           <div class="empty-icon">👤</div>
-          <p>No hay usuarios en esta sala todavía</p>
+          <p>{{ $t('no_usuarios') }}</p>
         </div>
 
         <div v-else class="users-grid">
@@ -332,7 +334,7 @@ const goBack = () => {
 
             <div class="user-stats-row">
               <div class="user-stat">
-                <span class="stat-label">Nivel</span>
+                <span class="stat-label">{{ $t('level_label') }}</span>
                 <span class="stat-value">{{ user.level }}</span>
               </div>
               <div class="user-stat">
@@ -343,25 +345,25 @@ const goBack = () => {
 
             <div class="user-stats-row">
               <div class="user-stat">
-                <span class="stat-label">💪 Fuerza</span>
+                <span class="stat-label">💪 {{ $t('strength_label') }}</span>
                 <span class="stat-value">{{ user.strength }}</span>
               </div>
               <div class="user-stat">
-                <span class="stat-label">🏃 Resistencia</span>
+                <span class="stat-label">🏃 {{ $t('endurance_label') }}</span>
                 <span class="stat-value">{{ user.endurance }}</span>
               </div>
             </div>
 
             <div class="user-consistency">
-              <span class="consistency-label">🎯 Racha de consistencia</span>
-              <span class="consistency-value">{{ user.consistency }} días</span>
+              <span class="consistency-label">🎯 {{ $t('consistency_streak_label') }}</span>
+              <span class="consistency-value">{{ user.consistency }} {{ $t('days_count') }}</span>
             </div>
 
             <!-- Equipped Items Section -->
             <div v-if="user.equippedStrengthItem || user.equippedEnduranceItem" class="user-equipment">
               <div class="equipment-header">
                 <span class="equipment-icon">⚔️</span>
-                <span class="equipment-title">Equipamiento</span>
+                <span class="equipment-title">{{ $t('equipamiento') }}</span>
               </div>
               <div class="equipment-items">
                 <div v-if="user.equippedStrengthItem" class="equipment-item item-strength">
@@ -392,29 +394,29 @@ const goBack = () => {
           <div class="popup-icon-container">
             <div class="popup-icon">⚠️</div>
           </div>
-          <h2 class="popup-title">Código de Conducta</h2>
+          <h2 class="popup-title">{{ $t('codigo_conducta') }}</h2>
           <div class="popup-body">
             <p class="popup-text">
-              Al unirte a esta sala de entrenamiento, aceptas cumplir con las siguientes normas:
+              {{ $t('codigo_conducta_text') }}
             </p>
             <ul class="rules-list">
-              <li>🤝 Respetar a todos los miembros de la sala</li>
-              <li>💬 Mantener un lenguaje apropiado y constructivo</li>
-              <li>🎯 Enfocarte en el entrenamiento y la mejora</li>
-              <li>🚫 No hacer spam ni contenido inapropiado</li>
-              <li>⚖️ Aceptar las consecuencias por incumplimiento</li>
+              <li>🤝 {{ $t('respetar') }}</li>
+              <li>💬 {{ $t('lenguaje') }}</li>
+              <li>🎯 {{ $t('enfocarte') }}</li>
+              <li>🚫 {{ $t('no_spam') }}</li>
+              <li>⚖️ {{ $t('aceptar_consecuencias') }}</li>
             </ul>
             <p class="popup-warning">
-              El incumplimiento de estas normas puede resultar en la expulsión de la sala o sanciones adicionales.
+              {{ $t('advertencia_conducta') }}
             </p>
           </div>
           <div class="popup-actions">
             <button @click="closeJoinPopup" class="popup-btn cancel-btn">
-              <span>Cancelar</span>
+              <span>{{ $t('cancelar') }}</span>
             </button>
             <button @click="confirmJoinRoom" class="popup-btn confirm-btn" :disabled="userRoomStore.loading">
-              <span v-if="!userRoomStore.loading">Acepto y me uno</span>
-              <span v-else>Uniéndose...</span>
+              <span v-if="!userRoomStore.loading">{{ $t('acepto_unirme') }}</span>
+              <span v-else>{{ $t('joining') }}</span>
             </button>
           </div>
         </div>
@@ -428,21 +430,21 @@ const goBack = () => {
           <div class="popup-icon-container">
             <div class="popup-icon">❓</div>
           </div>
-          <h2 class="popup-title">¿Salir de la sala?</h2>
+          <h2 class="popup-title">{{ $t('salir_sala') }}</h2>
           <div class="popup-body">
             <p class="popup-text">
-              ¿Estás seguro de que quieres salir de <strong>{{ roomData.name }}</strong>?
+              {{ $t('salir_sala_text') }} <strong>{{ roomData.name }}</strong>?
             </p>
             <p class="popup-text-secondary">
-              Podrás volver a unirte en cualquier momento si cumples con los requisitos.
+              {{ $t('volver_unir') }}
             </p>
           </div>
           <div class="popup-actions">
             <button @click="closeLeaveConfirmDialog" class="popup-btn cancel-btn">
-              <span>Cancelar</span>
+              <span>{{ $t('cancelar') }}</span>
             </button>
             <button @click="leaveRoom" class="popup-btn danger-btn" :disabled="userRoomStore.loading">
-              <span v-if="!userRoomStore.loading">Sí, salir</span>
+              <span v-if="!userRoomStore.loading">{{ $t('yes_leave') }}</span>
               <span v-else>Saliendo...</span>
             </button>
           </div>

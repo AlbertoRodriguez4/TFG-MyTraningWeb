@@ -15,6 +15,10 @@
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
+
 defineProps<{
   modelValue: string
 }>()
@@ -24,8 +28,8 @@ defineEmits<{
 }>()
 
 const menuItems = [
-  { id: 'personal', label: 'Información Personal', icon: 'mdi-account-circle' },
-  { id: 'security', label: 'Seguridad y Contraseña', icon: 'mdi-shield-lock' },
+  { id: 'personal', label: t('personal_info'), icon: 'mdi-account-circle' },
+  { id: 'security', label: t('security_password'), icon: 'mdi-shield-lock' },
   { id: 'notifications', label: 'Notificaciones', icon: 'mdi-bell' },
 ]
 </script>

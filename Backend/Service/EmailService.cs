@@ -400,5 +400,96 @@ namespace AA2_CS.Service
                 return false;
             }
         }
+
+        public async Task<bool> SendSubscriptionPurchasedEmail(string toEmail, string userName, DateTime startDate, DateTime endDate, decimal price)
+        {
+            try
+            {
+                var message = new MailMessage();
+                message.From = new MailAddress(_fromEmail, _fromName);
+                message.To.Add(toEmail);
+                message.Subject = "Bienvenido a Premium - The Training Hub";
+                message.Body = $@"
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='UTF-8'>
+    <style>
+        body {{ font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 20px; }}
+        .container {{ max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }}
+        .header {{ background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); color: #000; padding: 30px; text-align: center; }}
+        .header h1 {{ margin: 0; font-size: 28px; }}
+        .content {{ padding: 40px 30px; }}
+        .greeting {{ font-size: 18px; color: #333; margin-bottom: 20px; }}
+        .message {{ font-size: 16px; color: #666; line-height: 1.6; margin-bottom: 20px; }}
+        .success {{ background-color: #d4edda; border-left: 4px solid #28a745; padding: 15px; margin: 20px 0; font-size: 14px; color: #155724; }}
+        .details {{ background-color: #f8f9fa; border-radius: 8px; padding: 20px; margin: 20px 0; }}
+        .detail-row {{ display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #e9ecef; }}
+        .detail-row:last-child {{ border-bottom: none; font-weight: bold; font-size: 18px; }}
+        .detail-label {{ color: #666; }}
+        .detail-value {{ color: #333; }}
+        .footer {{ background-color: #f8f9fa; padding: 20px; text-align: center; font-size: 14px; color: #6c757d; }}
+    </style>
+</head>
+<body>
+    <div class='container'>
+        <div class='header'>
+            <h1>🏋️ The Training Hub</h1>
+            <p style='margin: 10px 0 0 0; opacity: 0.9;'>Suscripción Premium Activada</p>
+        </div>
+        <div class='content'>
+            <p class='greeting'>¡Enhorabuena, {userName}!</p>
+            <p class='message'>
+                Tu suscripción a <strong>The Training Hub Premium</strong> ha sido activada correctamente.
+                Ahora tienes acceso completo a todas las funciones exclusivas de la plataforma.
+            </p>
+            <div class='success'>
+                <strong>✅ Todo listo:</strong> Empieza a disfrutar del Coach AI y la calculadora de calorías desde ya mismo.
+            </div>
+            <div class='details'>
+                <div class='detail-row'>
+                    <span class='detail-label'>Plan:</span>
+                    <span class='detail-value'>Premium</span>
+                </div>
+                <div class='detail-row'>
+                    <span class='detail-label'>Precio:</span>
+                    <span class='detail-value'>{price:F2} €/mes</span>
+                </div>
+                <div class='detail-row'>
+                    <span class='detail-label'>Fecha de inicio:</span>
+                    <span class='detail-value'>{startDate:dd/MM/yyyy}</span>
+                </div>
+                <div class='detail-row'>
+                    <span class='detail-label'>Próxima renovación:</span>
+                    <span class='detail-value'>{endDate:dd/MM/yyyy}</span>
+                </div>
+            </div>
+        </div>
+        <div class='footer'>
+            <p>&copy; 2026 The Training Hub. Todos los derechos reservados.</p>
+        </div>
+    </div>
+</body>
+</html>";
+                message.IsBodyHtml = true;
+                message.BodyEncoding = Encoding.UTF8;
+
+                using (var client = new SmtpClient(_smtpServer, _smtpPort))
+                {
+                    client.Credentials = new NetworkCredential(_smtpUser, _smtpPass);
+                    client.EnableSsl = true;
+                    client.DeliveryMethod = SmtpDeliveryMethod.Network;
+                    client.UseDefaultCredentials = false;
+                    await client.SendMailAsync(message);
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al enviar email de compra de suscripción: {ex.Message}");
+                return false;
+            }
+        }
     }
 }

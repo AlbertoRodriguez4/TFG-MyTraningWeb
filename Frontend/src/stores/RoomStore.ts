@@ -29,7 +29,8 @@ export const useRoomStore = defineStore('room', () => {
                 minconsistency: d.minconsistency,
                 description: d.description,
                 date: d.date,
-                localization: d.localization
+                localization: d.localization,
+                creatorRole: d.creatorRole
             }));
             totalRooms.value = room.value.length;
         } catch (error) {
@@ -57,7 +58,8 @@ export const useRoomStore = defineStore('room', () => {
                 minconsistency: d.minconsistency ?? d.room?.minconsistency,
                 description: d.description ?? d.room?.description ?? '',
                 date: d.date ?? d.room?.date ?? '',
-                localization: d.localization ?? d.room?.localization ?? ''
+                localization: d.localization ?? d.room?.localization ?? '',
+                creatorRole: d.creatorRole ?? d.room?.creatorRole
             }));
         } catch (error) {
             logger.error("Error fetching sorted rooms:", error);
@@ -66,7 +68,8 @@ export const useRoomStore = defineStore('room', () => {
 
     async function createRoom(
         newRoom: { name: string; minlevel: number; minstats: number; minconsistency: number, description: string, date: string },
-        userid: number
+        userid: number,
+        creatorRole?: string
     ) {
         try {
             const response = await fetch(`${API_BASE_URL}/api/Room`, {
@@ -88,7 +91,8 @@ export const useRoomStore = defineStore('room', () => {
             const createdRoom: Room = {
                 id: data.roomId ?? data.id ?? data,
                 ...newRoom,
-                localization: ''
+                localization: '',
+                creatorRole: creatorRole
             };
 
             room.value.push(createdRoom);

@@ -1,0 +1,780 @@
+ANEXO: SISTEMA DE ESTILOS Y DISEÑO VISUAL
+THE TRAINING HUB
+=============================================================
+
+CONTENIDO
+---------
+1. Introduccion y Filosofia de Diseno
+2. Stack Tecnologico de Estilos
+3. Sistema de Temas (Dark / Light / Auto)
+4. Paleta de Colores Completa
+5. Tipografia
+6. Layout y Arquitectura Visual
+7. Componentes UI y Estilos Especificos
+8. Animaciones y Transiciones
+9. Efectos Visuales Avanzados
+10. Diseno Responsive y Breakpoints
+11. Iconografia y Assets
+12. Convenciones y Organizacion de Estilos
+
+
+=============================================================
+1. INTRODUCCION Y FILOSOFIA DE DISENO
+=============================================================
+
+The Training Hub es una plataforma web social-gamificada orientada al fitness. Su identidad visual busca transmitir energia, motivacion y una experiencia inmersiva similar a la de un videojuego o dashboard deportivo profesional.
+
+Principios fundamentales:
+- Dark Mode Dominante: La interfaz base es oscura (#1a1a1a), evocando interfaces de gaming y dashboards deportivos nocturnos.
+- Acento Energetico: El amarillo/dorado (#ffcc00) actua como color principal de acento, simbolizando energia, recompensas, monedas y niveles.
+- Gamificacion Visual: Uso de rarezas (common, rare, epic, legendary), barras de progreso, stats, badges y sistemas de niveles.
+- Glassmorphism y Efectos Modernos: Uso extensivo de backdrop-filter, gradientes, glows y transparencias.
+- Modularidad Visual: Cada modulo puede tener su propia paleta cuando la experiencia lo requiere (ej. Chat con tonos calidos).
+
+
+=============================================================
+2. STACK TECNOLOGICO DE ESTILOS
+=============================================================
+
+Frameworks y Librerias:
+- Vuetify 3 (^3.10.5): Framework de componentes Material Design para Vue 3.
+- Vue 3 Composition API: Arquitectura de componentes.
+- Sass (^1.88.0): Preprocesador CSS disponible en el proyecto.
+- CSS Nativo: Estilos personalizados con variables CSS (custom properties).
+- Material Design Icons (@mdi/font ^7.4.47): Iconografia vectorial.
+
+Herramientas de Desarrollo:
+- Vite (^6.2.3): Build tool y dev server.
+- Prettier (3.5.3): Formateo de codigo.
+- TypeScript (~5.8.0): Tipado estatico.
+
+No se utiliza:
+- Tailwind CSS (aunque la nomenclatura de colores en algunos componentes recuerda a Tailwind, se implementa con CSS puro).
+- Bootstrap.
+- CSS-in-JS (styled-components, emotion, etc.).
+
+
+=============================================================
+3. SISTEMA DE TEMAS (DARK / LIGHT / AUTO)
+=============================================================
+
+El sistema de temas esta centralizado en:
+- Archivo de estado: Frontend/src/stores/useTheme.ts (Pinia Store)
+- Archivo de variables: Frontend/src/styles/global.css
+
+3.1 Modos Disponibles
+----------------------
+- Dark (Oscuro): Modo por defecto. Fondo #1a1a1a, texto blanco.
+- Light (Claro): Fondo #ffffff, texto oscuro.
+- Auto: Detecta la preferencia del sistema operativo mediante matchMedia('(prefers-color-scheme: dark)').
+
+3.2 Persistencia
+----------------
+El tema seleccionado se almacena en localStorage bajo la clave 'app-theme' y se reaplica al recargar la pagina.
+
+3.3 Mecanismo de Aplicacion
+---------------------------
+El store modifica el elemento <html> del DOM:
+- Anade/elimina clases CSS: .dark / .light
+- Establece atributo data-theme: data-theme="dark" o data-theme="light"
+- Escucha cambios del sistema cuando currentTheme === 'auto'
+
+3.4 Variables CSS por Tema
+--------------------------
+Definidas en global.css:
+
+Tema Oscuro (default):
+  --bg-primary:     #1a1a1a
+  --bg-secondary:   #242424
+  --bg-tertiary:    #2d2d2d
+  --text-primary:   #ffffff
+  --text-secondary: rgba(255, 255, 255, 0.8)
+  --text-muted:     rgba(255, 255, 255, 0.6)
+  --border-color:   rgba(255, 255, 255, 0.1)
+  --accent-color:   #ffcc00
+  --accent-hover:   #ffd633
+  --card-bg:        rgba(20, 20, 20, 0.5)
+
+Tema Claro:
+  --bg-primary:     #ffffff
+  --bg-secondary:   #f5f5f5
+  --bg-tertiary:    #eeeeee
+  --text-primary:   #1a1a1a
+  --text-secondary: rgba(0, 0, 0, 0.8)
+  --text-muted:     rgba(0, 0, 0, 0.6)
+  --border-color:   rgba(0, 0, 0, 0.1)
+  --accent-color:   #ffcc00
+  --accent-hover:   #e6b800
+  --card-bg:        rgba(255, 255, 255, 0.95)
+
+3.5 Integracion con Vuetify
+---------------------------
+Se sobreescriben estilos base de Vuetify para sincronizarlos con el tema personalizado:
+  .v-application { background-color: var(--bg-primary) !important; }
+  .v-card { background-color: var(--card-bg) !important; }
+
+
+=============================================================
+4. PALETA DE COLORES COMPLETA
+=============================================================
+
+4.1 Colores Base del Proyecto
+-----------------------------
+Negro/Oscuro:
+  #000000, #0a0a1a, #0f0c29, #0f172a, #1a1a1a, #1a1a2e, #1c1917, #242424,
+  #2d2d2d, #302b63
+
+Grises (Escala Slate inspirada en Tailwind):
+  #475569, #64748b, #78716c, #94a3b8, #a8a29e, #cbd5e1, #e2e8f0, #f0ebe3,
+  #f5f5f5, #f8fafc, #faf8f5, #eeeeee
+
+Blanco:
+  #ffffff con opacidades variables (0.05, 0.1, 0.5, 0.6, 0.78, 0.8, 0.95)
+
+4.2 Color de Acento Principal
+-----------------------------
+Amarillo/Dorado (Energia, Recompensas, Nivel):
+  #ffcc00 (principal)
+  #ffd633 (hover en tema oscuro)
+  #e6b800 (hover en tema claro)
+  #fbbf24 (variante brillante)
+  #f59e0b (variante naranja-dorada)
+  #ffc107 (footer)
+  #FFD700 (oro puro)
+
+4.3 Colores Semanticos y de Estado
+----------------------------------
+Azul/Cian (Info, Agua, Progreso):
+  #00D2FF, #38bdf8, #3b82f6, #7dd3fc, #667eea
+
+Verde/Esmeralda (Exito, Activo, Salud):
+  #22c55e, #34d399, #4ADE80, #6ee7b7, #86efac
+
+Purpura/Violeta (Admin, Rareza Epica, Premium):
+  #764ba2, #8B5CF6, #A855F7, #a78bfa, #c4b5fd, #e9d5ff, #f3e8ff
+
+Rojo/Naranja (Error, Peligro, Advertencia, Fuego):
+  #dc2626, #e85d26, #ef4444, #f87171, #f97316, #fca5a5, #ff4444, #fe2c55
+
+Rosa/Magenta (Rareza, Femenino, Estetica):
+  #E1306C, #f472b6, #ec4899
+
+4.4 Sistema de Rareza / Dificultad
+----------------------------------
+Aplicado a Salas, Ejercicios y Logros:
+
+  Common (Comun):
+    Color:    #94a3b8
+    RGB:      148,163,184
+    Gradiente: linear-gradient(135deg, rgba(148,163,184,0.2), rgba(71,85,105,0.1))
+    Glow:     rgba(148,163,184,0.3)
+
+  Rare (Raro):
+    Color:    #38bdf8
+    RGB:      56,189,248
+    Gradiente: linear-gradient(135deg, rgba(56,189,248,0.2), rgba(14,165,233,0.1))
+    Glow:     rgba(56,189,248,0.4)
+
+  Epic (Epico):
+    Color:    #f472b6
+    RGB:      244,114,182
+    Gradiente: linear-gradient(135deg, rgba(244,114,182,0.2), rgba(236,72,153,0.1))
+    Glow:     rgba(244,114,182,0.4)
+
+  Legendary (Legendario):
+    Color:    #fbbf24
+    RGB:      251,191,36
+    Gradiente: linear-gradient(135deg, rgba(251,191,36,0.25), rgba(245,158,11,0.1))
+    Glow:     rgba(251,191,36,0.5)
+
+Mapeo por nivel (Salas):
+  Nivel < 15   -> Common
+  Nivel 15-29  -> Rare
+  Nivel 30-49  -> Epic
+  Nivel >= 50  -> Legendary
+
+Iconos de rareza:
+  Common     -> 🎯
+  Rare       -> 💎
+  Epic       -> ⭐
+  Legendary  -> 🐉
+
+4.5 Paleta por Modulos
+----------------------
+a) Header:
+   - Fondo: linear-gradient(180deg, rgba(0,0,0,0.97), rgba(10,10,10,0.93))
+   - Borde inferior: rgba(255, 204, 0, 0.3)
+   - Sombra: 0 4px 30px rgba(0, 0, 0, 0.8)
+   - Backdrop-filter: blur(12px)
+
+b) Footer:
+   - Fondo: linear-gradient(135deg, #0f0c29, #302b63, #24243e)
+   - Acento: #ffc107
+   - Tipografia: 'Patrick Hand', cursive
+   - Efectos: Particulas flotantes, ondas SVG animadas
+
+c) Chat (ChatView.vue):
+   - Fondo general: #f0ebe3
+   - Superficie: #ffffff
+   - Sidebar: #1c1917
+   - Borde: #e8e2da
+   - Texto: #1c1917
+   - Muted: #78716c
+   - Faint: #a8a29e
+   - Acento: #e85d26
+   - Acento secundario: #f97316
+   - Fuente: 'DM Sans', 'Segoe UI', system-ui, sans-serif
+
+d) Login / Autenticacion:
+   - Fondo: linear-gradient(135deg, #0a0a1a, #1a0a2e, #0f0a1a)
+   - Orbes decorativos: rgba(139, 92, 246, 0.15) y rgba(34, 211, 238, 0.15)
+   - Grid decorativo: lineas violetas transparentes
+   - Gradientes de texto: linear-gradient(135deg, #a78bfa, #22d3ee)
+
+e) Panel de Admin:
+   - Roles por color de borde:
+     * Cian (#00D2FF): Moderadores/Entrenadores
+     * Purpura (#A855F7): Administradores
+     * Verde (#4ADE80): Usuarios activos/premium
+   - Corona dorada (#FFD700) para usuarios de elite
+
+f) Dashboard Principal (HomeLoggedView):
+   - Fondo: #0a0e27 a #16213e
+   - Orbes: #fbbf24, #f59e0b
+   - Efectos: backdrop-filter, glassmorphism
+
+
+=============================================================
+5. TIPOGRAFIA
+=============================================================
+
+5.1 Fuentes Utilizadas
+----------------------
+El proyecto emplea una tipografia modular segun el contexto visual:
+
+Fuente Principal (UI General):
+  - Familia: Inter, system-ui, sans-serif
+  - Uso: Componentes generales, tarjetas, listados, RoomRender, RoomList, HomeView.
+
+Fuente de Display / Titulos (HomeView):
+  - Familia: 'Space Grotesk', sans-serif
+  - Pesos: 400, 500, 600, 700, 800, 900
+  - Importacion: Google Fonts via CSS @import
+  - Uso: Titulos de seccion, heroes, banners, metricas del dashboard.
+
+Fuente del Chat:
+  - Familia: 'DM Sans', 'Segoe UI', system-ui, sans-serif
+  - Pesos: 300, 400, 500, 600, 700
+  - Importacion: Google Fonts via CSS @import
+  - Uso: ChatView, burbujas de mensaje, sidebar.
+
+Fuente del Coach AI:
+  - Familia: 'Syne', sans-serif (headers), 'Bebas Neue', sans-serif (inputs)
+  - Uso: ChatHeader, ChatFeed, ChatSidebar, ChatInput, ChatComposer.
+
+Fuente del Footer:
+  - Familia: 'Patrick Hand', cursive
+  - Uso: Todo el contenido del FooterView.
+
+Fuente Monoespaciada (Codigo/Stats):
+  - Familia: 'Courier New', monospace
+  - Uso: Contadores numericos, stats de sala, nivel, IDs, formularios de tarjeta de credito.
+
+Fuentes de Respaldo:
+  - Segoe UI, system-ui, sans-serif (Windows)
+  - Helvetica, Arial, sans-serif (generico)
+
+5.2 Jerarquia Tipografica
+-------------------------
+Titulos de Pagina (Hero):  2.0rem - 2.5rem, weight 700-900
+Titulos de Seccion:        1.5rem - 1.8rem, weight 700
+Subtitulos:                1.1rem - 1.3rem, weight 600
+Texto de Cuerpo:           0.9rem - 1.0rem, weight 400-500
+Texto Pequeno/Etiquetas:   0.7rem - 0.85rem, weight 600
+Texto Muy Pequeno:         0.6rem - 0.75rem, weight 400-600
+
+5.3 Importacion de Fuentes
+--------------------------
+Las fuentes externas se importan via @import en los componentes que las utilizan:
+
+HomeView.vue:
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap');
+
+ChatView.vue:
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap');
+
+Nota: Las fuentes 'Patrick Hand', 'Bebas Neue' y 'Syne' se cargan implicitamente cuando se usan; se asume que el navegador las obtiene de su cache o fallback.
+
+
+=============================================================
+6. LAYOUT Y ARQUITECTURA VISUAL
+=============================================================
+
+6.1 Estructura General (App.vue)
+--------------------------------
+La aplicacion sigue una estructura de tres zonas principales:
+
+  <v-app class="app-root">
+    <HeaderView />      <-- Cabecera sticky
+    <v-main class="main-wrapper">
+      <RouterView />    <-- Contenido dinamico
+    </v-main>
+    <FooterView />      <-- Pie de pagina
+  </v-app>
+
+Reglas globales en App.vue:
+  - Reset de margen/padding y box-sizing: border-box
+  - html, body: width/height 100%, overflow-x hidden, scrollbar oculto
+  - v-application y v-application__wrap: background transparent, min-height 100vh
+  - v-main: padding 0 (eliminado el padding-top automatico de Vuetify)
+  - main-wrapper: min-height calc(100vh - 80px)
+
+6.2 Header (HeaderView.vue)
+---------------------------
+- Posicion: sticky, top: 0, z-index: 1000
+- Altura base: 68px (min-height)
+- Ancho maximo: 1920px (centrado)
+- Fondo: gradiente oscuro con backdrop-filter: blur(12px)
+- Borde inferior: 2px solid rgba(255, 204, 0, 0.3)
+- Logo: badge cuadrado (42x42px) con gradiente #ffcc00 a #ff9900
+- Navegacion desktop: botones con hover en acento amarillo
+- Navegacion mobile: menu hamburguesa transformable a X (animacion CSS)
+- Dropdown de usuario: ancho 300px, fondo rgba(5,5,5,0.99), borde dorado
+
+6.3 Footer (FooterView.vue)
+---------------------------
+- Posicion: relative, margin-top: 5rem
+- Fondo: gradiente purpura/azul oscuro (#0f0c29 -> #302b63 -> #24243e)
+- Efectos: particulas flotantes animadas (15 particulas), ondas SVG animadas
+- Grid: 4 columnas en desktop (1.5fr 1fr 1fr 1.2fr)
+- Separador decorativo con icono 💪 y lineas gradiente
+- Bottom: 3 columnas (copyright, badges, legal links)
+
+6.4 Contenedor de Vistas
+------------------------
+Las vistas internas manejan sus propios contenedores con:
+  - max-width: 1200px - 1400px
+  - padding: 2rem - 3rem
+  - Centrado con margin: 0 auto
+
+
+=============================================================
+7. COMPONENTES UI Y ESTILOS ESPECIFICOS
+=============================================================
+
+7.1 Vuetify
+-----------
+Componentes de Vuetify utilizados (solo estilos relevantes):
+- v-app, v-main, v-card, v-btn, v-snackbar, v-progress-circular
+- Dialogs y overlays (fullscreen en mobile para popups)
+- v-form para validaciones
+
+Sobrescrituras importantes:
+  .v-application, .v-application__wrap { background: transparent !important; }
+  .v-main { padding: 0 !important; }
+  .v-card { background-color: var(--card-bg) !important; }
+
+7.2 Tarjetas (Cards)
+--------------------
+Estilo general de tarjetas en el proyecto:
+  - Border-radius: 16px - 24px
+  - Background: var(--card-bg) o gradientes oscuros con transparencia
+  - Backdrop-filter: blur(10px) - blur(20px)
+  - Border: 1px solid rgba(255,255,255,0.05) o color de rareza
+  - Box-shadow: multiples capas para profundidad
+  - Hover: elevacion con sombra aumentada y/o brillo de borde
+
+Ejemplo tipico (RoomCard):
+  background: linear-gradient(145deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.9));
+  border-radius: 20px;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05);
+
+7.3 Botones
+-----------
+Tipos de botones:
+- Primario: gradiente dorado (#ffcc00 -> #ff9900), texto negro, sombra dorada
+- Secundario: fondo transparente, borde dorado, texto dorado
+- Peligro: gradiente rojo (#ff4444 -> #cc0000), texto blanco
+- Premium: gradiente purpura (#a855f7 -> #6366f1), texto blanco
+- Accion: fondo del color de rareza, texto del mismo color (mas brillante)
+
+Estados:
+  - Hover: transform translateY(-1px o -2px), sombra intensificada
+  - Active: scale ligeramente reducido
+  - Disabled: opacity 0.25-0.28, pointer-events none
+
+7.4 Formularios y Inputs
+------------------------
+- Fondo: rgba(30,30,30,0.95) o transparente con borde
+- Borde: 1px solid rgba(255,204,0,0.3) o color semantico
+- Border-radius: 6px - 12px
+- Focus: border-color intensificado, outline none
+- Placeholder: color muted
+- Iconos internos para password toggle, busqueda, etc.
+
+7.5 Badges y Etiquetas
+----------------------
+- Dificultad: color de fondo segun rareza, border-radius 4px-8px, texto en mayusculas
+- Stats: fondo rgba(255,204,0,0.05), borde dorado tenue, texto centrado
+- Logros: iconos emoji + texto descriptivo
+
+7.6 Snackbars / Notificaciones
+------------------------------
+- Posicion: top (generalmente)
+- Border-radius: pill (completamente redondeado)
+- Colores: success (verde), warning (amarillo), error (rojo)
+- Contenido: icono + texto + boton cerrar
+
+
+=============================================================
+8. ANIMACIONES Y TRANSICIONES
+=============================================================
+
+El proyecto hace un uso intensivo de animaciones CSS para crear una experiencia dinamica y gamificada.
+
+8.1 Transiciones de Vue
+-----------------------
+- fade: opacity 0.2s ease (usada en dropdowns y overlays)
+- Transiciones nativas de Vuetify para dialogs y menus
+
+8.2 Keyframes CSS Principales
+-----------------------------
+A continuacion se listan las animaciones documentadas en el codigo:
+
+Entrada y Salida:
+  fadeIn / fade-in:       Opacidad 0 -> 1
+  fadeInUp / fade-in-up:  Opacidad + translateY desde abajo
+  slideUp / slide-in-up:  Deslizamiento vertical con entrada
+  slideIn / slide-in-left: Deslizamiento horizontal
+  slideDown:              Caida desde arriba
+  card-entrance:          Entrada escalonada de tarjetas
+  pageEnter / ambient-float: Entrada suave de pagina
+
+Efectos de Pulso y Brillo:
+  pulse / fab-pulse:         Escalado ritmico de elementos
+  pulse-icon:                Pulso de iconos
+  pulse-ring / pulse-ring-strong: Anillos expansivos
+  glow-pulse / glowPulse:    Pulso de resplandor
+  badge-pulse:               Pulso de badges
+  massive-pulse:             Pulso intenso
+  lightning-pulse:           Efecto electrico
+  lock-pulse:                Pulso de candado
+  heartbeat:                 Latido (corazon)
+  blink:                     Parpadeo de cursor
+
+Movimiento y Flotacion:
+  float-orb:                 Movimiento orbital flotante
+  float-particle:            Particulas ascendentes
+  icon-float / iconBounce:   Salto/flotacion de iconos
+  trainer-glow:              Brillo pulsante de entrenadores
+  empty-bounce:              Rebote para estados vacios
+  screen-shine-move:         Brillo deslizante sobre pantalla
+  phone-float:               Flotacion de dispositivo
+  header-float:              Flotacion de cabecera
+  metric-float:              Flotacion de metricas
+  fire-flicker:              Parpadeo de fuego
+  fire-particle-rise:        Ascenso de particulas de fuego
+
+Transformaciones y Rotacion:
+  spin:                      Rotacion continua (loading)
+  coin-spin:                 Rotacion de moneda
+  rotate-ring / ring-rotate: Rotacion de anillos
+  rotateGradient:            Rotacion de gradiente
+  badge-glow-rotate:         Rotacion de brillo
+  crown-bounce:              Rebote de corona
+
+Progreso y Carga:
+  progress-fill:             Llenado de barra de progreso
+  progress-shimmer:          Efecto brillante en progreso
+  circle-progress / circle-progress-draw: Progreso circular
+  grid-move:                 Movimiento de grid decorativo
+  checkPop:                  Efecto pop de check
+  successPop:                Pop de exito
+
+Decorativas del Footer:
+  float-up:                  Ascenso de particulas
+  waveMove1 / waveMove2:     Movimiento de ondas SVG
+  ringPulse:                 Pulso de anillo del logo
+
+Otras:
+  shake:                     Vibracion para errores
+  wave:                      Efecto ondulante
+  shimmer:                   Brillo deslizante
+  trophyFloat:               Flotacion de trofeo
+  crown-ring-expand:         Expansion de anillo de corona
+  crown-pulse:               Pulso de corona
+  gradient-shift:            Desplazamiento de gradiente
+  sdot:                      Punto de estado pulsante
+  stat-entrance:             Entrada de estadisticas
+  item-fade-in:              Aparicion de items
+  avatar-pulse:              Pulso de avatar
+  titleFloat:                Flotacion de titulo
+  headerPulse:               Pulso de cabecera
+  sparkle-twinkle:           Destello
+  live-pulse:                Pulso de estado "en vivo"
+
+8.3 Duraciones y Timing Functions
+---------------------------------
+- Rapido (interacciones): 0.2s - 0.3s, ease
+- Medio (transiciones):   0.4s - 0.5s, ease
+- Lento (decorativas):    0.8s - 1.0s, ease-out
+- Continuas:              2s - 12s, ease-in-out, infinite
+
+
+=============================================================
+9. EFECTOS VISUALES AVANZADOS
+=============================================================
+
+9.1 Glassmorphism (Efecto Cristal)
+----------------------------------
+Uso extensivo de backdrop-filter para crear capas de cristal:
+  backdrop-filter: blur(10px) - blur(20px)
+  background: rgba(15, 23, 42, 0.9) o similar con transparencia
+
+Aplicaciones:
+  - Tarjetas de estadisticas
+  - Modales y popups
+  - Panel de informacion en login
+  - Header (blur ligero)
+  - Stats badges del footer
+
+9.2 Gradientes
+--------------
+Tipos de gradientes utilizados:
+- Lineales (135deg, 90deg, 180deg): Fondos de pagina, botones, tarjetas
+- Radiales: Orbes decorativos, glows de logo, anillos
+- Conicos: No documentados
+
+Gradientes frecuentes:
+  linear-gradient(135deg, #ffcc00, #ff9900)           /* Acento dorado */
+  linear-gradient(135deg, #a855f7, #6366f1)           /* Premium purpura */
+  linear-gradient(135deg, #0f0c29, #302b63, #24243e) /* Footer */
+  linear-gradient(135deg, #0a0a1a, #1a0a2e)          /* Login */
+  linear-gradient(180deg, rgba(0,0,0,0.97), rgba(10,10,10,0.93)) /* Header */
+
+9.3 Glows y Sombras
+-------------------
+Sombras de caja (box-shadow) multi-capa:
+  /* Ejemplo tipico de elevacion */
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+
+  /* Ejemplo de glow de rareza */
+  box-shadow:
+    0 0 24px rgba(251, 191, 36, 0.15),
+    inset 0 0 16px rgba(251, 191, 36, 0.08);
+
+Sombras de texto:
+  text-shadow: 0 2px 10px rgba(255, 204, 0, 0.5);
+
+9.4 Elementos Decorativos
+-------------------------
+- Orbes flotantes: Circulos con blur(80px) y animacion pulse
+- Grid lines: Lineas de 1px con transparencia violeta sobre fondo oscuro
+- Particulas: Elementos absolutos con animacion float-up
+- Ondas SVG: Paths con animacion de morphing (cambio de atributo 'd')
+- Lineas divisoras gradiente: De transparente a color y de vuelta
+
+9.5 Efectos de Texto
+--------------------
+- Texto con gradiente: -webkit-background-clip: text, -webkit-text-fill-color: transparent
+- Texto neon: text-shadow con color brillante
+- Texto con brillo: drop-shadow en SVG o filter
+
+
+=============================================================
+10. DISENO RESPONSIVE Y BREAKPOINTS
+=============================================================
+
+10.1 Breakpoints Utilizados
+---------------------------
+El proyecto utiliza breakpoints CSS personalizados (no los de Vuetify exclusivamente):
+
+  1920px:   max-width del header-container
+  1400px:   max-width de algunos contenedores de vista
+  1200px:   Ocultar tagline del header, reducir padding
+  1024px:   Reducir fuentes y gaps en header
+  900px:    Cambio a navegacion mobile (hamburguesa)
+  768px:    Reorganizacion de grids a 1 columna (footer)
+  480px:    Ajustes de padding, ocultar brand-text
+  360px:    Ajustes finos para moviles muy pequenos
+
+10.2 Estrategia Mobile-First / Desktop-First
+--------------------------------------------
+El proyecto sigue una estrategia hibrida:
+- Desktop-first para layouts complejos (grids de 4 columnas que se reducen)
+- Mobile-first para componentes especificos
+
+10.3 Adaptaciones Clave
+-----------------------
+Header:
+  - Desktop: Navegacion horizontal con botones
+  - <900px: Menu hamburguesa con panel lateral deslizante
+  - <1200px: Se oculta el tagline "Training Platform"
+
+Footer:
+  - Desktop: Grid 4 columnas
+  - <1200px: Grid 3 columnas, comunidad ocupa ancho completo
+  - <768px: Grid 1 columna, social grid 2 columnas
+
+Vistas de Salas:
+  - Grid de tarjetas adaptable
+  - Stats dashboard: wrap en filas
+
+Chat:
+  - Layout de sidebar + contenido en desktop
+  - Sidebar colapsable en mobile
+
+10.4 Scrollbar
+--------------
+El scroll global esta ocultado intencionalmente:
+  scrollbar-width: none; /* Firefox */
+  body::-webkit-scrollbar { display: none; } /* Chrome/Safari */
+
+Esto crea una interfaz mas limpia, aunque algunos contenedores internos pueden tener scroll propio.
+
+
+=============================================================
+11. ICONOGRAFIA Y ASSETS
+=============================================================
+
+11.1 Material Design Icons (MDI)
+--------------------------------
+Libreria principal de iconografia vectorial.
+Uso: Iconos de navegacion, botones de accion, estados, formularios.
+Implementacion: Clases CSS .mdi-*, integrado con Vuetify.
+
+11.2 Emojis
+-----------
+Uso extensivo de emojis Unicode como iconografia complementaria:
+- Navegacion: 🏠 🚪 📋 📅 🛒 🏆 💪 📊
+- Stats: ⚡ 🪙 👥
+- Estados: ✅ ⭐ 🔒
+- Decorativos: 💪 🎮 👋
+
+Ventajas: No requieren carga de red, son escalables, aportan personalidad gamificada.
+
+11.3 Imagenes y Assets
+----------------------
+- Logo: /src/assets/imgs/Logo.png (usado en favicon, header, footer)
+- Redes sociales: twitter.png, facebook.png, instagram.png, tik-tok.png
+- Mapas: Iconos personalizados de Leaflet (marcadores azul/rojo)
+- Tienda: Imagenes de productos alojadas en Cloudinary
+
+11.4 Iconos de Mapa (Leaflet)
+-----------------------------
+Iconos personalizados para el mapa de gimnasios:
+- Usuario: marcador azul (marker-icon-2x-blue.png)
+- Gimnasio: marcador rojo (marker-icon-2x-red.png)
+
+
+=============================================================
+12. CONVENCIONES Y ORGANIZACION DE ESTILOS
+=============================================================
+
+12.1 Estructura de Carpetas
+-----------------------------
+Frontend/src/
+  styles/
+    global.css          <-- Variables CSS y reglas globales
+  views/
+    layout/
+      HeaderView.vue    <-- Estilos del header (scoped)
+      FooterView.vue    <-- Estilos del footer (scoped)
+    auth/               <-- Login, Register, VerifyEmail
+    dashboard/          <-- Home, HomeLogged, User
+    features/           <-- Exercises, Achievements, Purchase, etc.
+    rooms/              <-- RoomView, JoinRoom, Chat
+    plans/              <-- PlanView, Payment
+    profile/            <-- ProfileSettings
+  components/
+    Cards/              <-- RoomCard
+    Renders/            <-- RoomRender, ItemRender, PlanRender
+    PopUps/             <-- EditUserPopup, EditItemPopup, RoomPopup, etc.
+    Panels/             <-- AdminPanel, InventoryPanel, UserStatsPanel
+    Calendar/           <-- Dialogos y componentes de calendario
+    CoachAI/            <-- ChatSidebar, ChatFeed, ChatHeader, etc.
+    payment/            <-- CreditCardForm, CheckOutPage, etc.
+    Lists/              <-- RoomList, UserList
+    User/               <-- PodiumUser, UserViewHeader, CommunityStats
+    ProfileSettings/    <-- ProfileHeader, ProfileForm, etc.
+    CalculadorCalorias/ <-- BMI, Calories calculators
+
+12.2 Scoped vs Global
+---------------------
+- La mayoria de estilos de componentes son <style scoped>
+- App.vue tiene una mezcla: estilos globales (para reset y Vuetify) + scoped (para layout)
+- global.css contiene unicamente variables y sobrescrituras esenciales
+
+12.3 Unidades de Medida
+-----------------------
+- rem: Principalmente para texto, padding, margin, gaps (accesibilidad)
+- px: Usado para bordes, tamaños fijos de iconos, imagenes, blur
+- % y vh/vw: Para layouts de pantalla completa
+- ch: Ocasionalmente para anchos de texto monoespaciado
+
+12.4 Nomenclatura de Clases
+---------------------------
+- BEM-like sin ser estricto: .block-element--modifier
+- Ejemplos: .nav-desktop, .mobile-nav-item, .premium-btn, .user-dropdown-trigger
+- Uso de guiones para separar palabras
+- Prefijos contextuales: .dash-*, .mobile-*, .footer-*
+
+12.5 Variables CSS Locales
+--------------------------
+Algunos componentes definen variables CSS propias para animaciones dinamicas:
+  /* En RoomView.vue */
+  style="--stat-color: #fbbf24; --stat-rgb: 251,191,36;"
+
+  /* En RoomCard.vue */
+  style="--diff-color: rgba(...);"
+
+Esto permite animaciones y glows personalizados por instancia.
+
+12.6 Colores Hardcodeados
+-------------------------
+A pesar del sistema de variables CSS, muchos componentes usan colores hex/rgba directamente. Esto se debe a:
+- Necesidad de transparencias complejas que no se representan bien en variables simples
+- Estilos de rareza que requieren RGB separado para box-shadows dinamicos
+- Modulos con paleta propia (Chat, Footer) que desacoplan del tema global
+
+12.7 Recomendaciones para Mantenimiento
+----------------------------------------
+- Consolidar colores hardcodeados en variables CSS cuando sea posible
+- Documentar nuevas animaciones @keyframes en este anexo
+- Mantener consistencia en border-radius (sistema sugerido: 6px, 8px, 12px, 16px, 20px, 24px)
+- Utilizar siempre el color de acento #ffcc00 para acciones primarias
+- Respetar la codificacion de rarezas definida (common/rare/epic/legendary)
+
+
+=============================================================
+APENDICE: RESUMEN DE COLORES POR COMPONENTE
+=============================================================
+
+Componente / Vista              | Paleta Destacada
+--------------------------------|------------------------------------------
+App.vue                         | Transparente, hereda tema global
+HeaderView.vue                  | Negro gradiente + amarillo #ffcc00
+FooterView.vue                  | Purpura/azul oscuro + amarillo #ffc107
+LoginView.vue                   | Negro purpura + gradientes violeta/cian
+HomeView.vue                    | Blanco/gris + Space Grotesk
+HomeLoggedView.vue              | Azul oscuro #0a0e27 + orbes dorados
+RoomView.vue                    | Azul muy oscuro + stats de colores vivos
+RoomCard.vue                    | Slate oscuro + color de rareza
+RoomRender.vue                  | Inter + slate + dorado
+ChatView.vue                    | Papel calido #f0ebe3 + naranja #e85d26
+JoinRoomView.vue                | Oscuro + glows de rareza
+AdminPanel.vue                  | Neon por roles (cian, purpura, verde)
+EditUserPopup.vue               | Purpura #a855f7 + grises
+EditItemPopup.vue               | Azul #3b82f6 + rojo/verde para estados
+CoachAI components              | Negro + Syne/Bebas Neue
+Calendar components             | Colores vivos por dificultad
+Payment components              | Purpura + verde exito
+ProfileSettings                 | Gris oscuro + acentos suaves
+
+
+=============================================================
+FIN DEL ANEXO
+=============================================================

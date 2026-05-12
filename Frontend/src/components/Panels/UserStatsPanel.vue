@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useUserStore } from '@/stores/userStore'
 import defaultAvatar from '@/assets/imgs/usuario.png'
+
+const { t } = useI18n()
 
 interface User {
   id: number;
@@ -39,16 +42,19 @@ const iconMap: Record<StatKey, string> = {
 }
 
 const labelMap: Record<StatKey, string> = {
-  strength: 'Fuerza',
-  endurance: 'Resistencia',
-  gold: 'Oro',
+  strength: t('strength_label'),
+  endurance: t('endurance_label'),
+  gold: t('gold_label'),
+}
+
+const maxValues: Record<StatKey, number> = {
+  strength: 100000,
+  endurance: 100000,
+  gold: 1000000,
 }
 
 const calculateProgress = (stat: StatKey, value: number): number => {
-  // El progreso se calcula dinámicamente basado en el valor actual
-  // Usando un multiplicador para que siempre haya espacio de mejora
-  const multiplier = 1.5
-  const maxValue = Math.max(value * multiplier, 1)
+  const maxValue = maxValues[stat]
   const percentage = (value / maxValue) * 100
   return Math.min(percentage, 100)
 }
@@ -95,7 +101,7 @@ const formatNumber = (value: number): string => {
           <h3 class="user-name">{{ loggedUser.name }}</h3>
           <div class="streak-badge">
             <span class="streak-icon">🔥</span>
-            <span class="streak-text">{{ loggedUser.consistencyStreak }} días</span>
+            <span class="streak-text">{{ loggedUser.consistencyStreak }} {{ $t('days_count') }}</span>
           </div>
         </div>
 
@@ -103,7 +109,7 @@ const formatNumber = (value: number): string => {
         <div class="xp-container">
           <div class="xp-header">
             <span class="xp-icon">✨</span>
-            <span class="xp-label">Experiencia</span>
+            <span class="xp-label">{{ $t('experiencia') }}</span>
           </div>
           <div class="xp-progress-wrapper">
             <div class="xp-progress-bar">
@@ -128,7 +134,7 @@ const formatNumber = (value: number): string => {
       <div class="stats-card">
         <h2 class="stats-title">
           <span class="title-icon">📊</span>
-          Estadísticas
+          {{ $t('statistics') }}
         </h2>
         <div class="stats-grid">
           <div v-for="stat in statList" :key="stat" class="stat-item">
@@ -149,6 +155,7 @@ const formatNumber = (value: number): string => {
                 <span class="stat-value" :style="{ color: colorMap[stat] }">
                   {{ formatNumber(loggedUser[stat]) }}
                 </span>
+                <span class="stat-max">/ {{ formatNumber(maxValues[stat]) }}</span>
               </div>
             </div>
             <div class="stat-percentage">

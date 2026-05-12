@@ -2,7 +2,7 @@
   <v-card class="settings-card" elevation="0" border>
     <v-card-title class="card-title">
       <v-icon>mdi-account-circle</v-icon>
-      Información Personal
+      {{ $t('personal_info') }}
     </v-card-title>
 
     <v-divider class="card-divider" />
@@ -18,7 +18,7 @@
 
         <!-- Email -->
         <div class="form-group">
-          <label class="form-label">Correo Electrónico</label>
+          <label class="form-label">{{ $t('email_label') }}</label>
           <v-text-field v-model="formData.email" placeholder="tu@email.com" type="email" variant="outlined"
             density="comfortable" class="form-input" disabled hint="Contacta con soporte para cambiar tu correo" />
         </div>
@@ -43,7 +43,7 @@
           </div>
           <div class="info-group">
             <label class="form-label">Racha de Consistencia</label>
-            <p class="info-value">{{ store.loggedUser?.consistencyStreak || 0 }} días</p>
+            <p class="info-value">{{ store.loggedUser?.consistencyStreak || 0 }} {{ $t('days_count') }}</p>
           </div>
         </div>
 
@@ -78,9 +78,11 @@
 
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useUserStore } from '@/stores/userStore'
 import { logger } from '@/utils/logger'
 
+const { t } = useI18n()
 const store = useUserStore()
 const form = ref()
 const saving = ref(false)
@@ -110,7 +112,7 @@ const showSnackbar = (message: string, type: 'success' | 'error') => {
 
 const rules = {
   required: (value: string) => !!value || 'Este campo es requerido',
-  minLength: (value: string) => value?.length >= 2 || 'Mínimo 2 caracteres',
+  minLength: (value: string) => value?.length >= 2 || t('min_2_chars'),
 }
 
 const saveChanges = async () => {
@@ -126,7 +128,7 @@ const saveChanges = async () => {
       showSnackbar('¡Perfil actualizado exitosamente!', 'success')
     } catch (error) {
       logger.error('Error al guardar:', error)
-      showSnackbar('Error al guardar los cambios. Inténtalo de nuevo.', 'error')
+      showSnackbar(t('error_saving'), 'error')
     } finally {
       saving.value = false
     }

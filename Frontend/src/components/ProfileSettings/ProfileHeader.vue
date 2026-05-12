@@ -20,7 +20,7 @@
             <p class="user-email">{{ userEmail }}</p>
             <div class="user-badge">
               <v-icon size="small">mdi-star</v-icon>
-              <span>Level {{ userLevel }} • Racha: {{ consistencyStreak }} días</span>
+              <span>Level {{ userLevel }} • {{ $t('racha_consistencia') }}: {{ consistencyStreak }} {{ $t('days_count') }}</span>
             </div>
           </div>
         </div>
@@ -108,8 +108,10 @@
 <script setup lang="ts">
 import { useUserStore } from '@/stores/userStore'
 import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { logger } from '@/utils/logger'
 
+const { t } = useI18n()
 const store = useUserStore()
 
 // Cloudinary Configuration
@@ -169,13 +171,13 @@ const handleFileSelect = (event: Event) => {
 
   // Validate file type
   if (!file.type.startsWith('image/')) {
-    showErrorNotification('Por favor selecciona una imagen válida')
+    showErrorNotification(t('select_valid_image'))
     return
   }
 
   // Validate file size (max 5MB)
   if (file.size > 5 * 1024 * 1024) {
-    showErrorNotification('La imagen no puede pesar más de 5MB')
+    showErrorNotification(t('image_max_5mb'))
     return
   }
 
@@ -223,7 +225,7 @@ const uploadToCloudinary = async () => {
       })
 
       xhr.addEventListener('error', () => {
-        reject(new Error('Error de conexión'))
+        reject(new Error(t('connection_error')))
       })
 
       xhr.open(

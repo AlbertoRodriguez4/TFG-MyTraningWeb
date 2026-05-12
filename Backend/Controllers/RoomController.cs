@@ -12,11 +12,13 @@ namespace AA2_CS.Controllers
     {
         private readonly RoomService _roomService;
         private readonly NotificationService _notificationService;
+        private readonly IServiceProvider _serviceProvider;
 
-        public RoomController(RoomService roomService, NotificationService notificationService)
+        public RoomController(RoomService roomService, NotificationService notificationService, IServiceProvider serviceProvider)
         {
             _roomService = roomService;
             _notificationService = notificationService;
+            _serviceProvider = serviceProvider;
         }
 
         [HttpPost]
@@ -26,6 +28,7 @@ namespace AA2_CS.Controllers
             try
             {
                 var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                var userRoleClaim = User.FindFirst(ClaimTypes.Role)?.Value;
                 if (!int.TryParse(userIdClaim, out var currentUserId))
                 {
                     return Unauthorized("Token inválido.");
@@ -33,15 +36,19 @@ namespace AA2_CS.Controllers
 
                 request.userid = currentUserId;
                 // request.room ya trae description y date automáticamente del JSON
-                var roomId = _roomService.CreateRoomWithUser(request.room, request.userid);
+                var roomId = _roomService.CreateRoomWithUser(request.room, request.userid, userRoleClaim);
 
-                // Enviar notificación de creación de sala (fire-and-forget)
+                // Enviar notificación de creación de sala (fire-and-forget con scope propio)
+                var capturedUserId = request.userid;
+                var capturedRoomName = request.room.name;
                 _ = System.Threading.Tasks.Task.Run(async () =>
                 {
                     try
                     {
-                        await _notificationService.SendRoomActivityNotificationIfNeeded(
-                            request.userid, request.room.name, "created");
+                        using var scope = _serviceProvider.CreateScope();
+                        var notificationService = scope.ServiceProvider.GetRequiredService<NotificationService>();
+                        await notificationService.SendRoomActivityNotificationIfNeeded(
+                            capturedUserId, capturedRoomName, "created");
                     }
                     catch (Exception ex)
                     {

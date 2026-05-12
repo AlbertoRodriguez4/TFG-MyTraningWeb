@@ -21,7 +21,7 @@
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                 </svg>
-                <span>Chat</span>
+                <span>{{ $t('chat.navChat') }}</span>
             </a>
             <a class="nav-item" href="#">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -29,25 +29,25 @@
                     <path
                         d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z" />
                 </svg>
-                <span>Rutinas</span>
+                <span>{{ $t('chat.navRoutines') }}</span>
             </a>
             <a class="nav-item" href="#">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
                 </svg>
-                <span>Progreso</span>
+                <span>{{ $t('chat.navProgress') }}</span>
             </a>
             <a class="nav-item" href="#">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="12" cy="12" r="3" />
                     <path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14" />
                 </svg>
-                <span>Nutrición</span>
+                <span>{{ $t('chat.navNutrition') }}</span>
             </a>
         </nav>
 
         <div class="stats-section">
-            <p class="stats-label">Estadísticas del día</p>
+            <p class="stats-label">{{ $t('chat.dailyStats') }}</p>
             <div class="stat-card">
                 <div class="stat-top">
                     <span class="stat-icon">🔥</span>
@@ -69,7 +69,7 @@
             <div class="stat-card">
                 <div class="stat-top">
                     <span class="stat-icon">👟</span>
-                    <span class="stat-value">6,240 <span class="stat-unit">pasos</span></span>
+                    <span class="stat-value">6,240 <span class="stat-unit">{{ $t('chat.steps') }}</span></span>
                 </div>
                 <div class="stat-bar-wrap">
                     <div class="stat-bar violet" style="width: 62%" />
@@ -81,10 +81,10 @@
             <div class="user-chip">
                 <div class="user-avatar">A</div>
                 <div class="user-info">
-                    <span class="user-name">Atleta</span>
-                    <span class="user-plan">Plan Gratis</span>
+                    <span class="user-name">{{ $t('chat.athlete') }}</span>
+                    <span class="user-plan">{{ $t('chat.freePlan') }}</span>
                 </div>
-                <div class="upgrade-dot" title="Upgrade disponible" />
+                <div class="upgrade-dot" :title="$t('chat.upgradeAvailable')" />
             </div>
         </div>
     </aside>

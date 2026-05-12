@@ -10,6 +10,7 @@ namespace AA2_CS.Model
         public string description { get; set; } = string.Empty;
         public string date { get; set; } = string.Empty;
         public string localization { get; set; } = string.Empty;
+        public string? creatorRole { get; set; }
 
         public Room() { }
 

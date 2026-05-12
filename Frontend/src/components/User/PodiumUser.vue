@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import defaultAvatar from '@/assets/imgs/usuario.png'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 interface EquipItem {
   name: string
@@ -33,7 +36,7 @@ const positionConfig = {
     ringClass: 'gold',
     cardClass: 'gold',
     pedestalClass: 'gold',
-    badgeText: 'CAMPEÓN',
+    badgeText: t('champion'),
     width: 280,
     padding: '2rem 1.5rem',
     glowColor: 'rgba(255, 215, 0, 0.4)'

@@ -9,4 +9,5 @@ export interface Room {
     description: string;
     date: string;
     localization?: string;
+    creatorRole?: string;
 }

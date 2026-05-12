@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const isVisible = ref(false)
 const isLoading = ref(true)
@@ -53,15 +56,15 @@ defineExpose({ show, hide })
 
             <!-- Contenido del mensaje -->
             <div class="message-content">
-              <h3 class="message-title">¡Pago completado!</h3>
+              <h3 class="message-title">{{ $t('payment_completed') }}</h3>
               <p class="message-description">
-                Tu suscripción ha sido activada correctamente. Redirigiendo a tu perfil...
+                {{ $t('subscription_activated_redirect') }}
               </p>
             </div>
           </div>
 
           <!-- Botón de cierre -->
-          <button class="close-btn" @click="hide" aria-label="Cerrar">
+          <button class="close-btn" @click="hide" :aria-label="$t('close')">
             <v-icon size="24">mdi-close</v-icon>
           </button>
         </div>

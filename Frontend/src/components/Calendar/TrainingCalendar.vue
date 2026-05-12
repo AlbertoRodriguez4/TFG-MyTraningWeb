@@ -84,15 +84,25 @@ export default {
       routineName: '',
       routineExercises: '',
       xpToNextLevel: 4000,
-      daysOfWeek: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
-      monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
-                   'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
       routines: {
         
       }
     };
   },
   computed: {
+    monthNames() {
+      return [
+        this.$t('january'), this.$t('february'), this.$t('march'), this.$t('april'),
+        this.$t('may'), this.$t('june'), this.$t('july'), this.$t('august'),
+        this.$t('september'), this.$t('october'), this.$t('november'), this.$t('december')
+      ];
+    },
+    daysOfWeek() {
+      return [
+        this.$t('sunday'), this.$t('monday'), this.$t('tuesday'), this.$t('wednesday'),
+        this.$t('thursday'), this.$t('friday'), this.$t('saturday')
+      ];
+    },
     monthName() {
       return this.monthNames[this.currentDate.getMonth()];
     },

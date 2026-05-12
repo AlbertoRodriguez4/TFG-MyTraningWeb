@@ -111,7 +111,7 @@ namespace AA2_CS.Repository
 
         public List<User> FindAll()
         {
-            return _context.Users.ToList();
+            return _context.Users.AsNoTracking().ToList();
         }
 
         public User FindById(int id)
@@ -125,6 +125,7 @@ namespace AA2_CS.Repository
         public List<User> FindByCharacteristic(string name)
         {
             return _context.Users
+                .AsNoTracking()
                 .Where(u => EF.Functions.ILike(u.name, $"{name}%"))
                 .ToList();
         }
@@ -164,6 +165,7 @@ namespace AA2_CS.Repository
         public List<User> GetTopThreeUsers()
         {
             return _context.Users
+                .AsNoTracking()
                 .Include(u => u.EquippedStrengthItem)
                 .Include(u => u.EquippedEnduranceItem)
                 .OrderByDescending(u => u.level)

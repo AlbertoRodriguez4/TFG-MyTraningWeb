@@ -8,10 +8,9 @@
           <path d="M12 2L14 9H21L15.5 13.5L17.5 21L12 16.5L6.5 21L8.5 13.5L3 9H10L12 2Z" fill="currentColor"/>
         </svg>
       </div>
-      <h2 class="welcome-h">Hola, soy CoachAI</h2>
+      <h2 class="welcome-h">{{ t('chat.welcomeTitle') }}</h2>
       <p class="welcome-p">
-        Tu entrenador personal potenciado por IA.<br>
-        Pregúntame sobre rutinas, nutrición, recuperación y fitness.
+        {{ t('chat.welcomeDesc') }}
       </p>
       <div class="chip-row">
         <button
@@ -36,8 +35,11 @@
 </template>
 
 <script setup>
-import { ref, watch, nextTick } from 'vue'
+import { ref, watch, nextTick, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import ChatBubble from './ChatBubble.vue'
+
+const { t } = useI18n()
 
 const props = defineProps({
   messages: { type: Array, required: true }
@@ -47,12 +49,12 @@ defineEmits(['send'])
 
 const feedEl = ref(null)
 
-const chips = [
-  '💪 Rutina de fuerza',
-  '🥗 Plan nutricional',
-  '😴 Recuperación muscular',
-  '🎯 Perder peso',
-]
+const chips = computed(() => [
+  t('chat.chipStrengthRoutine'),
+  t('chat.chipNutritionPlan'),
+  t('chat.chipRecovery'),
+  t('chat.chipLoseWeight'),
+])
 
 // Auto-scroll to bottom whenever messages change
 watch(

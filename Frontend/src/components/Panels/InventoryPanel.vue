@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { useUserStore } from '@/stores/userStore'
 import { computed, onMounted, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const store = useUserStore()
 const loggedUser = computed(() => store.loggedUser)
@@ -120,8 +123,8 @@ const handleImageError = (event: Event) => {
 
     <div v-if="totalItems === 0" class="empty-inventory">
       <div class="empty-icon">📦</div>
-      <p class="empty-text">{{ $t('inventario_vacio') || 'Tu inventario está vacío' }}</p>
-      <p class="empty-subtext">{{ $t('compra_items') || '¡Completa retos para conseguir items!' }}</p>
+      <p class="empty-text">{{ $t('inventario_vacio') }}</p>
+      <p class="empty-subtext">{{ $t('compra_items') }}</p>
     </div>
 
     <div v-else class="inventory-sections">
@@ -129,12 +132,12 @@ const handleImageError = (event: Event) => {
       <div class="section-container">
         <div class="section-header strength-header">
           <div class="section-icon">💪</div>
-          <h3 class="section-title">{{ $t('items_fuerza') || 'Items de Fuerza' }}</h3>
+          <h3 class="section-title">{{ $t('items_fuerza') }}</h3>
           <span class="section-count">{{ strengthItems.length }}</span>
         </div>
 
         <div v-if="strengthItems.length === 0" class="empty-section">
-          <p>{{ $t('no_items_fuerza') || 'No tienes items de fuerza' }}</p>
+          <p>{{ $t('no_items_fuerza') }}</p>
         </div>
 
         <v-row v-else justify="start" class="items-grid">
@@ -158,7 +161,7 @@ const handleImageError = (event: Event) => {
             >
               <!-- Badge de equipado -->
               <div v-if="isItemEquipped(item.itemId, item.itemType)" class="equipped-badge">
-                <span>⚔️ Equipado</span>
+                <span>⚔️ {{ $t('equipped_label') }}</span>
               </div>
 
               <!-- Bonus -->
@@ -189,10 +192,10 @@ const handleImageError = (event: Event) => {
               <!-- Botón de acción -->
               <div class="equip-action">
                 <span v-if="isItemEquipped(item.itemId, item.itemType)" class="action-text unequip">
-                  Desequipar
+                  {{ $t('unequip_label') }}
                 </span>
                 <span v-else class="action-text equip">
-                  Equipar
+                  {{ $t('equip_label') }}
                 </span>
               </div>
             </div>
@@ -204,12 +207,12 @@ const handleImageError = (event: Event) => {
       <div class="section-container">
         <div class="section-header endurance-header">
           <div class="section-icon">🏃</div>
-          <h3 class="section-title">{{ $t('items_resistencia') || 'Items de Resistencia' }}</h3>
+          <h3 class="section-title">{{ $t('items_resistencia') }}</h3>
           <span class="section-count">{{ enduranceItems.length }}</span>
         </div>
 
         <div v-if="enduranceItems.length === 0" class="empty-section">
-          <p>{{ $t('no_items_resistencia') || 'No tienes items de resistencia' }}</p>
+          <p>{{ $t('no_items_resistencia') }}</p>
         </div>
 
         <v-row v-else justify="start" class="items-grid">
@@ -233,7 +236,7 @@ const handleImageError = (event: Event) => {
             >
               <!-- Badge de equipado -->
               <div v-if="isItemEquipped(item.itemId, item.itemType)" class="equipped-badge">
-                <span>⚔️ Equipado</span>
+                <span>⚔️ {{ $t('equipped_label') }}</span>
               </div>
 
               <!-- Bonus -->
@@ -264,10 +267,10 @@ const handleImageError = (event: Event) => {
               <!-- Botón de acción -->
               <div class="equip-action">
                 <span v-if="isItemEquipped(item.itemId, item.itemType)" class="action-text unequip">
-                  Desequipar
+                  {{ $t('unequip_label') }}
                 </span>
                 <span v-else class="action-text equip">
-                  Equipar
+                  {{ $t('equip_label') }}
                 </span>
               </div>
             </div>

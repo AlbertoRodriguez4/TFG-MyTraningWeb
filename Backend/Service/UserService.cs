@@ -176,5 +176,29 @@ namespace AA2_CS.Service
         {
             return await _repository.ChangePassword(userId, currentPassword, newPassword);
         }
+
+        /// <summary>
+        /// Calcula las estadísticas totales y experiencia de un usuario para incluir en el JWT.
+        /// </summary>
+        public (int totalStrength, int totalEndurance, int xpRequiredForNextLevel, int xpRemaining) GetUserTokenStats(User user)
+        {
+            var purchases = _purchaseRepository.FindByUserId(user.id);
+
+            int bonusStrength = purchases
+                .Where(p => p.ItemType != null && p.ItemType.Equals("Strength", StringComparison.OrdinalIgnoreCase))
+                .Sum(p => p.ItemBonus);
+
+            int bonusEndurance = purchases
+                .Where(p => p.ItemType != null && p.ItemType.Equals("Endurance", StringComparison.OrdinalIgnoreCase))
+                .Sum(p => p.ItemBonus);
+
+            int totalStrength = user.strength + bonusStrength;
+            int totalEndurance = user.endurance + bonusEndurance;
+
+            int xpRequiredForNextLevel = GetXpRequiredForNextLevel(user.level);
+            int xpRemaining = Math.Max(0, xpRequiredForNextLevel - user.experience);
+
+            return (totalStrength, totalEndurance, xpRequiredForNextLevel, xpRemaining);
+        }
     }
 }
