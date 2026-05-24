@@ -57,7 +57,10 @@ public class JWTConfigurerTests
             })
             .Build();
 
-        var jwtConfigurer = new JWTConfigurer(config, context);
+        var userRepository = new AA2_CS.Repository.UserRepository(context);
+        var purchaseRepository = new AA2_CS.Repository.PurchaseRepository(context);
+        var userService = new AA2_CS.Service.UserService(userRepository, purchaseRepository);
+        var jwtConfigurer = new JWTConfigurer(config, userService);
 
         var token = jwtConfigurer.GenerateToken(user);
         var jwt = new JwtSecurityTokenHandler().ReadJwtToken(token);

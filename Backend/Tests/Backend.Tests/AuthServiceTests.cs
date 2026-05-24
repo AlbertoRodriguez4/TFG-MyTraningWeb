@@ -15,7 +15,7 @@ public class AuthServiceTests
     [Fact]
     public void HasAccessToResource_CuandoEsPropietario_DevuelveTrue()
     {
-        var service = new AuthService(null!, null!, null!, null!);
+        var service = new AuthService(null!, null!, null!, null!, null!);
         var principal = BuildPrincipal(userId: 5, role: Roles.userNormal);
 
         var canAccess = service.HasAccessToResource(5, principal);
@@ -26,7 +26,7 @@ public class AuthServiceTests
     [Fact]
     public void HasAccessToResource_CuandoEsAdmin_DevuelveTrue()
     {
-        var service = new AuthService(null!, null!, null!, null!);
+        var service = new AuthService(null!, null!, null!, null!, null!);
         var principal = BuildPrincipal(userId: 2, role: Roles.userMaster);
 
         var canAccess = service.HasAccessToResource(9, principal);
@@ -37,7 +37,7 @@ public class AuthServiceTests
     [Fact]
     public void HasAccessToResource_CuandoNoEsPropietarioNiAdmin_DevuelveFalse()
     {
-        var service = new AuthService(null!, null!, null!, null!);
+        var service = new AuthService(null!, null!, null!, null!, null!);
         var principal = BuildPrincipal(userId: 2, role: Roles.userNormal);
 
         var canAccess = service.HasAccessToResource(9, principal);
@@ -63,8 +63,8 @@ public class AuthServiceTests
             })
             .Build();
 
-        var jwtConfigurer = new JWTConfigurer(config, context);
-        var authService = new AuthService(userService, jwtConfigurer, null!, verificationRepository);
+        var jwtConfigurer = new JWTConfigurer(config, userService);
+        var authService = new AuthService(userService, jwtConfigurer, null!, verificationRepository, new NotificationPreferenceRepository(context));
 
         userRepository.Register(new User
         {
@@ -97,12 +97,13 @@ public class AuthServiceTests
             })
             .Build();
 
-        var jwtConfigurer = new JWTConfigurer(config, context);
+        var jwtConfigurer = new JWTConfigurer(config, userService);
         var authService = new AuthService(
             userService,
             jwtConfigurer,
             null!,
-            new EmailVerificationRepository(context));
+            new EmailVerificationRepository(context),
+            new NotificationPreferenceRepository(context));
 
         var token = authService.Login("noexiste@test.com", "123456");
 

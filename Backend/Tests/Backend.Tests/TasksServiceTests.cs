@@ -8,18 +8,18 @@ namespace Backend.Tests;
 public class TasksServiceTests
 {
     [Fact]
-    public void CompleteTask_SiNoExiste_DevuelveTaskNotFound()
+    public async System.Threading.Tasks.Task CompleteTask_SiNoExiste_DevuelveTaskNotFound()
     {
         using var context = TestDbContextFactory.CreateContext();
         var service = CrearService(context);
 
-        var result = service.CompleteTask(999);
+        var result = await service.CompleteTask(999);
 
         Assert.Equal("Task not found", result);
     }
 
     [Fact]
-    public void CompleteTask_SiYaEstaCompletada_DevuelveMensaje()
+    public async System.Threading.Tasks.Task CompleteTask_SiYaEstaCompletada_DevuelveMensaje()
     {
         using var context = TestDbContextFactory.CreateContext();
         var user = TestDbContextFactory.CrearUsuarioBasico("task1@test.com");
@@ -40,13 +40,13 @@ public class TasksServiceTests
         context.SaveChanges();
 
         var service = CrearService(context);
-        var result = service.CompleteTask(task.id);
+        var result = await service.CompleteTask(task.id);
 
         Assert.Equal("Task is already completed", result);
     }
 
     [Fact]
-    public void CompleteTask_SiUsuarioNoExiste_DevuelveUserNotFound()
+    public async System.Threading.Tasks.Task CompleteTask_SiUsuarioNoExiste_DevuelveUserNotFound()
     {
         using var context = TestDbContextFactory.CreateContext();
         var task = new ModelTask
@@ -64,13 +64,13 @@ public class TasksServiceTests
         context.SaveChanges();
 
         var service = CrearService(context);
-        var result = service.CompleteTask(task.id);
+        var result = await service.CompleteTask(task.id);
 
         Assert.Equal("User not found", result);
     }
 
     [Fact]
-    public void CompleteTask_Strength_AplicaRecompensasYOroYXp()
+    public async System.Threading.Tasks.Task CompleteTask_Strength_AplicaRecompensasYOroYXp()
     {
         using var context = TestDbContextFactory.CreateContext();
         var user = TestDbContextFactory.CrearUsuarioBasico("task2@test.com");
@@ -95,7 +95,7 @@ public class TasksServiceTests
         context.SaveChanges();
 
         var service = CrearService(context);
-        var result = service.CompleteTask(task.id);
+        var result = await service.CompleteTask(task.id);
 
         var updatedUser = context.Users.First(u => u.id == user.id);
         var updatedTask = context.Tasks.First(t => t.id == task.id);
@@ -108,7 +108,7 @@ public class TasksServiceTests
     }
 
     [Fact]
-    public void CompleteTask_ConTareaPreviaConsecutiva_IncrementaRacha()
+    public async System.Threading.Tasks.Task CompleteTask_ConTareaPreviaConsecutiva_IncrementaRacha()
     {
         using var context = TestDbContextFactory.CreateContext();
         var user = TestDbContextFactory.CrearUsuarioBasico("task3@test.com");
@@ -143,7 +143,7 @@ public class TasksServiceTests
         context.SaveChanges();
 
         var service = CrearService(context);
-        service.CompleteTask(taskActual.id);
+        await service.CompleteTask(taskActual.id);
 
         var updated = context.Users.First(u => u.id == user.id);
         Assert.Equal(2, updated.consistencystreak);
@@ -155,6 +155,8 @@ public class TasksServiceTests
         var userRepository = new UserRepository(context);
         var purchaseRepository = new PurchaseRepository(context);
         var userService = new UserService(userRepository, purchaseRepository);
-        return new TasksService(tasksRepository, userRepository, userService);
+        var achievementRepository = new AchievementRepository(context);
+        var achievementService = new AchievementService(achievementRepository, userService);
+        return new TasksService(tasksRepository, userRepository, userService, achievementService);
     }
 }

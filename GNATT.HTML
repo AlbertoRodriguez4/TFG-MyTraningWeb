@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Diagrama de Gantt - The Training Hub</title>
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #ffffff;
+            font-family: 'Segoe UI', sans-serif;
+            padding: 30px;
+        }
+        .gantt-chart {
+            background: #242424;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.05);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .header-months {
+            display: grid;
+            grid-template-columns: 250px repeat(5, 1fr);
+            border-bottom: 2px solid rgba(255,255,255,0.1);
+            padding-bottom: 10px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .month-title { text-transform: uppercase; font-size: 13px; letter-spacing: 1px;}
+        .task-row {
+            display: grid;
+            grid-template-columns: 250px repeat(5, 1fr);
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .task-name { font-size: 14px; font-weight: 500; }
+        .bar-container { grid-column: 2 / span 5; display: grid; grid-template-columns: repeat(5, 1fr); position: relative; }
+        .bar {
+            height: 18px;
+            border-radius: 9px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+        /* Colores dinámicos basados en tu acento #ffcc00 */
+        .color-1 { background: linear-gradient(90deg, #ffcc00, #ffaa00); }
+        .color-2 { background: linear-gradient(90deg, #ffd633, #ffcc00); }
+        .color-3 { background: linear-gradient(90deg, #4ADE80, #22c55e); }
+        .color-4 { background: linear-gradient(90deg, #00D2FF, #00a2ff); }
+        .color-5 { background: linear-gradient(90deg, #A855F7, #7c3aed); }
+    </style>
+</head>
+<body>
+
+<div class="gantt-chart">
+    <div class="header-months">
+        <div style="text-align: left;">Fase del Proyecto</div>
+        <div class="month-title">Ene</div>
+        <div class="month-title">Feb</div>
+        <div class="month-title">Mar</div>
+        <div class="month-title">Abr</div>
+        <div class="month-title">May</div>
+    </div>
+
+    <div class="task-row">
+        <div class="task-name">1. Requisitos e Investigación</div>
+        <div class="bar-container">
+            <div class="bar color-1" style="grid-column: 1 / span 1;"></div>
+        </div>
+    </div>
+
+    <div class="task-row">
+        <div class="task-name">2. Arquitectura y Modelado BD</div>
+        <div class="bar-container">
+            <div class="bar color-2" style="grid-column: 1 / span 2;"></div>
+        </div>
+    </div>
+
+    <div class="task-row">
+        <div class="task-name">3. Desarrollo Backend (API REST)</div>
+        <div class="bar-container">
+            <div class="bar color-3" style="grid-column: 2 / span 2;"></div>
+        </div>
+    </div>
+
+    <div class="task-row">
+        <div class="task-name">4. Desarrollo Frontend (Vue 3)</div>
+        <div class="bar-container">
+            <div class="bar color-4" style="grid-column: 3 / span 2;"></div>
+        </div>
+    </div>
+
+    <div class="task-row">
+        <div class="task-name">5. Control de Calidad y Pruebas</div>
+        <div class="bar-container">
+            <div class="bar color-1" style="grid-column: 4 / span 2;"></div>
+        </div>
+    </div>
+
+    <div class="task-row">
+        <div class="task-name">6. Despliegue Cloud (AWS/K8s)</div>
+        <div class="bar-container">
+            <div class="bar color-5" style="grid-column: 5 / span 1;"></div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

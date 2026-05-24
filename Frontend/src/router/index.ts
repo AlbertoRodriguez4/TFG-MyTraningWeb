@@ -137,21 +137,30 @@ const router = createRouter({
   scrollBehavior(to, from, savedPosition) {
     return new Promise((resolve) => {
       setTimeout(() => {
-        // Scroll en window
-        window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
-        
-        // Scroll en el body por si acaso
+        // Scroll global (window / document)
+        window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
         document.documentElement.scrollTop = 0
         document.body.scrollTop = 0
-        
-        // También en el v-main de Vuetify
-        const mainElement = document.querySelector('.v-main')
-        if (mainElement) {
-          mainElement.scrollTop = 0
-        }
-        
+
+        // Contenedores comunes de Vuetify y layouts con scroll
+        const selectors = ['.v-main', '.v-main__wrap', '.v-layout', '.v-container']
+        selectors.forEach((selector) => {
+          const el = document.querySelector(selector)
+          if (el) {
+            el.scrollTop = 0
+          }
+        })
+
+        // También resetea scroll en cualquier elemento con overflow scroll/auto
+        document.querySelectorAll('[style*="overflow"]').forEach((el) => {
+          const style = window.getComputedStyle(el)
+          if (style.overflowY === 'scroll' || style.overflowY === 'auto') {
+            ;(el as HTMLElement).scrollTop = 0
+          }
+        })
+
         resolve({ top: 0, left: 0 })
-      }, 100) // Delay de 100ms para asegurar que el DOM esté renderizado
+      }, 200) // Delay de 200ms para asegurar que el DOM esté renderizado tras la transición de ruta
     })
   }
 })

@@ -25,7 +25,7 @@ public class RoomRepositoryTests
             localization = "Madrid"
         };
 
-        var roomId = repo.CreateRoomWithUser(room, user.id);
+        var roomId = repo.CreateRoomWithUser(room, user.id, "user");
 
         Assert.True(roomId > 0);
         Assert.Single(context.Rooms);
