@@ -63,7 +63,7 @@ const currentLanguage = computed(() => {
 
         <!-- Logo -->
         <RouterLink to="/" class="logo-section">
-          <div class="logo-badge">💪</div>
+          <div class="logo-badge"><v-icon>mdi-arm-flex</v-icon></div>
           <div class="brand">
             <span class="brand-name">TheTrainingHub</span>
             <span class="brand-tagline">Training Platform</span>
@@ -72,21 +72,21 @@ const currentLanguage = computed(() => {
 
         <!-- Desktop Navigation -->
         <nav class="nav-desktop">
-          <RouterLink to="/" class="nav-btn">🏠 {{ $t('home') }}</RouterLink>
-          <RouterLink to="/room" class="nav-btn" :class="{ disabled: !isLogged }">🚪 {{ $t('rooms') }}</RouterLink>
-          <RouterLink to="/plan" class="nav-btn" :class="{ disabled: !isLogged }">📋 {{ $t('plans') }}</RouterLink>
-          <RouterLink to="/rutina" class="nav-btn" :class="{ disabled: !isLogged }">📅 {{ $t('routines') }}</RouterLink>
-          <RouterLink to="/purchase" class="nav-btn" :class="{ disabled: !isLogged }">🛒 {{ $t('shop_header') }}</RouterLink>
-          <RouterLink to="/achievements" class="nav-btn" :class="{ disabled: !isLogged }">🏆 {{ $t('achievements_title') }}</RouterLink>
-          <RouterLink to="/exercises" class="nav-btn" :class="{ disabled: !isLogged }">💪 {{ $t('exercises_title') }}</RouterLink>
-          <RouterLink to="/body-metrics" class="nav-btn" :class="{ disabled: !isLogged }">📊 {{ $t('body_metrics_title') }}</RouterLink>
+          <RouterLink to="/" class="nav-btn"><v-icon>mdi-home</v-icon> {{ $t('home') }}</RouterLink>
+          <RouterLink to="/room" class="nav-btn" :class="{ disabled: !isLogged }"><v-icon>mdi-door</v-icon> {{ $t('rooms') }}</RouterLink>
+          <RouterLink to="/plan" class="nav-btn" :class="{ disabled: !isLogged }"><v-icon>mdi-clipboard-text</v-icon> {{ $t('plans') }}</RouterLink>
+          <RouterLink to="/rutina" class="nav-btn" :class="{ disabled: !isLogged }"><v-icon>mdi-calendar</v-icon> {{ $t('routines') }}</RouterLink>
+          <RouterLink to="/purchase" class="nav-btn" :class="{ disabled: !isLogged }"><v-icon>mdi-cart</v-icon> {{ $t('shop_header') }}</RouterLink>
+          <RouterLink to="/achievements" class="nav-btn" :class="{ disabled: !isLogged }"><v-icon>mdi-trophy</v-icon> {{ $t('achievements_title') }}</RouterLink>
+          <RouterLink to="/exercises" class="nav-btn" :class="{ disabled: !isLogged }"><v-icon>mdi-arm-flex</v-icon> {{ $t('exercises_title') }}</RouterLink>
+          <RouterLink to="/body-metrics" class="nav-btn" :class="{ disabled: !isLogged }"><v-icon>mdi-chart-bar</v-icon> {{ $t('body_metrics_title') }}</RouterLink>
 
           <!-- Premium Features -->
           <RouterLink v-if="isLogged && hasActiveSubscription" to="/CoachAi" class="nav-btn premium-btn">
-            🤖 {{ $t('coach_ai') }}
+            <v-icon>mdi-robot-outline</v-icon> {{ $t('coach_ai') }}
           </RouterLink>
           <RouterLink v-if="isLogged && hasActiveSubscription" to="/calculator" class="nav-btn premium-btn">
-            🧮 {{ $t('calculator') }}
+            <v-icon>mdi-calculator</v-icon> {{ $t('calculator') }}
           </RouterLink>
         </nav>
 
@@ -98,7 +98,7 @@ const currentLanguage = computed(() => {
             <div class="user-avatar">
               {{ store.loggedUser?.email?.charAt(0).toUpperCase() }}
             </div>
-            <span class="strength-badge">⚡ {{ store.loggedUser?.strength || 0 }}</span>
+            <span class="strength-badge"><v-icon>mdi-lightning-bolt</v-icon> {{ store.loggedUser?.strength || 0 }}</span>
             <span class="dropdown-arrow" :class="{ open: userDropdownOpen }">▼</span>
           </div>
 
@@ -132,24 +132,24 @@ const currentLanguage = computed(() => {
           <div class="stats-grid">
             <div class="stat-card">
               <span class="stat-label">{{ $t('header.strength') }}</span>
-              <span class="stat-value">⚡ {{ store.loggedUser?.strength || 0 }}</span>
+              <span class="stat-value"><v-icon>mdi-lightning-bolt</v-icon> {{ store.loggedUser?.strength || 0 }}</span>
             </div>
             <div class="stat-card">
               <span class="stat-label">{{ $t('header.gold') }}</span>
-              <span class="stat-value">🪙 {{ store.loggedUser?.gold || 0 }}</span>
+              <span class="stat-value"><v-icon>mdi-coin</v-icon> {{ store.loggedUser?.gold || 0 }}</span>
             </div>
           </div>
 
           <!-- Premium Status Card -->
           <div v-if="hasActiveSubscription" class="premium-card premium-active">
-            <span class="premium-icon">✅</span>
+            <span class="premium-icon"><v-icon>mdi-check-circle</v-icon></span>
             <div>
               <p class="premium-title">{{ $t('premium_active') }}</p>
               <p class="premium-desc">{{ $t('premium_unlocked_desc') }}</p>
             </div>
           </div>
           <div v-else class="premium-card">
-            <span class="premium-icon">⭐</span>
+            <span class="premium-icon"><v-icon>mdi-star</v-icon></span>
             <div>
               <p class="premium-title">{{ $t('premium_unlock') }}</p>
               <p class="premium-desc">{{ $t('premium_desc') }}</p>
@@ -163,20 +163,20 @@ const currentLanguage = computed(() => {
           <div class="dropdown-divider"></div>
 
           <RouterLink to="/profile" class="dropdown-item" @click="userDropdownOpen = false">
-            ⚙️ {{ $t('profile_settings') }}
+            <v-icon>mdi-cog</v-icon> {{ $t('profile_settings') }}
           </RouterLink>
           <RouterLink to="/achievements" class="dropdown-item" @click="userDropdownOpen = false">
-            🏆 {{ $t('achievements_title') }}
+            <v-icon>mdi-trophy</v-icon> {{ $t('achievements_title') }}
           </RouterLink>
           <RouterLink to="/exercises" class="dropdown-item" @click="userDropdownOpen = false">
-            💪 {{ $t('exercises_title') }}
+            <v-icon>mdi-arm-flex</v-icon> {{ $t('exercises_title') }}
           </RouterLink>
           <RouterLink to="/body-metrics" class="dropdown-item" @click="userDropdownOpen = false">
-            📊 {{ $t('body_metrics_title') }}
+            <v-icon>mdi-chart-bar</v-icon> {{ $t('body_metrics_title') }}
           </RouterLink>
 
           <div class="dropdown-item language-selector">
-            <span>🌍</span>
+            <span><v-icon>mdi-earth</v-icon></span>
             <div class="lang-select-wrapper">
               <select v-model="locale" @change="handleNavClick">
                 <option v-for="lang in languages" :key="lang.code" :value="lang.code">
@@ -187,12 +187,12 @@ const currentLanguage = computed(() => {
           </div>
 
           <RouterLink to="/user" class="dropdown-item" @click="userDropdownOpen = false">
-            👥 {{ $t('community') }}
+            <v-icon>mdi-account-group</v-icon> {{ $t('community') }}
           </RouterLink>
 
           <!-- Logout Button -->
           <button class="logout-btn" @click="handleLogout">
-            ⚡ {{ $t('logout') }}
+            <v-icon>mdi-lightning-bolt</v-icon> {{ $t('logout') }}
           </button>
         </div>
       </div>
@@ -205,44 +205,44 @@ const currentLanguage = computed(() => {
       <div v-if="isLogged && store.loggedUser" class="mobile-user-summary">
         <div>
           <p class="mobile-level">LV {{ store.loggedUser.level || 1 }}</p>
-          <p class="mobile-stats">⚡ {{ store.loggedUser.strength || 0 }} • 🪙 {{ store.loggedUser.gold || 0 }}</p>
+          <p class="mobile-stats"><v-icon>mdi-lightning-bolt</v-icon> {{ store.loggedUser.strength || 0 }} • <v-icon>mdi-coin</v-icon> {{ store.loggedUser.gold || 0 }}</p>
         </div>
       </div>
 
       <!-- Navigation Links -->
-      <RouterLink to="/" class="mobile-nav-item" @click="handleNavClick">🏠 {{ $t('home') }}</RouterLink>
-      <RouterLink to="/room" class="mobile-nav-item" :class="{ disabled: !isLogged }" @click="handleNavClick">🚪 {{ $t('rooms') }}
+      <RouterLink to="/" class="mobile-nav-item" @click="handleNavClick"><v-icon>mdi-home</v-icon> {{ $t('home') }}</RouterLink>
+      <RouterLink to="/room" class="mobile-nav-item" :class="{ disabled: !isLogged }" @click="handleNavClick"><v-icon>mdi-door</v-icon> {{ $t('rooms') }}
       </RouterLink>
-      <RouterLink to="/plan" class="mobile-nav-item" :class="{ disabled: !isLogged }" @click="handleNavClick">📋 {{ $t('plans') }}
+      <RouterLink to="/plan" class="mobile-nav-item" :class="{ disabled: !isLogged }" @click="handleNavClick"><v-icon>mdi-clipboard-text</v-icon> {{ $t('plans') }}
       </RouterLink>
-      <RouterLink to="/rutina" class="mobile-nav-item" :class="{ disabled: !isLogged }" @click="handleNavClick">📅
+      <RouterLink to="/rutina" class="mobile-nav-item" :class="{ disabled: !isLogged }" @click="handleNavClick"><v-icon>mdi-calendar</v-icon>
         {{ $t('routines') }}</RouterLink>
-      <RouterLink to="/purchase" class="mobile-nav-item" :class="{ disabled: !isLogged }" @click="handleNavClick">🛒
+      <RouterLink to="/purchase" class="mobile-nav-item" :class="{ disabled: !isLogged }" @click="handleNavClick"><v-icon>mdi-cart</v-icon>
         {{ $t('shop_header') }}</RouterLink>
-      <RouterLink to="/achievements" class="mobile-nav-item" :class="{ disabled: !isLogged }" @click="handleNavClick">🏆
+      <RouterLink to="/achievements" class="mobile-nav-item" :class="{ disabled: !isLogged }" @click="handleNavClick"><v-icon>mdi-trophy</v-icon>
         {{ $t('achievements_title') }}</RouterLink>
-      <RouterLink to="/exercises" class="mobile-nav-item" :class="{ disabled: !isLogged }" @click="handleNavClick">💪
+      <RouterLink to="/exercises" class="mobile-nav-item" :class="{ disabled: !isLogged }" @click="handleNavClick"><v-icon>mdi-arm-flex</v-icon>
         {{ $t('exercises_title') }}</RouterLink>
-      <RouterLink to="/body-metrics" class="mobile-nav-item" :class="{ disabled: !isLogged }" @click="handleNavClick">📊
+      <RouterLink to="/body-metrics" class="mobile-nav-item" :class="{ disabled: !isLogged }" @click="handleNavClick"><v-icon>mdi-chart-bar</v-icon>
         {{ $t('body_metrics_title') }}</RouterLink>
 
       <!-- Premium Features (Mobile) -->
       <template v-if="isLogged && hasActiveSubscription">
-        <RouterLink to="/CoachAi" class="mobile-nav-item premium-item" @click="handleNavClick">🤖 {{ $t('coach_ai') }}</RouterLink>
-        <RouterLink to="/calculator" class="mobile-nav-item premium-item" @click="handleNavClick">🧮 {{ $t('calculator') }}
+        <RouterLink to="/CoachAi" class="mobile-nav-item premium-item" @click="handleNavClick"><v-icon>mdi-robot-outline</v-icon> {{ $t('coach_ai') }}</RouterLink>
+        <RouterLink to="/calculator" class="mobile-nav-item premium-item" @click="handleNavClick"><v-icon>mdi-calculator</v-icon> {{ $t('calculator') }}
         </RouterLink>
       </template>
 
       <div class="mobile-divider"></div>
 
-      <RouterLink to="/profile" class="mobile-nav-item" :class="{ disabled: !isLogged }" @click="handleNavClick">⚙️
+      <RouterLink to="/profile" class="mobile-nav-item" :class="{ disabled: !isLogged }" @click="handleNavClick"><v-icon>mdi-cog</v-icon>
         {{ $t('profile_settings') }}</RouterLink>
-      <RouterLink to="/user" class="mobile-nav-item" :class="{ disabled: !isLogged }" @click="handleNavClick">👥
+      <RouterLink to="/user" class="mobile-nav-item" :class="{ disabled: !isLogged }" @click="handleNavClick"><v-icon>mdi-account-group</v-icon>
         {{ $t('community') }}</RouterLink>
 
       <!-- Language Selector (Mobile) -->
       <div class="mobile-language">
-        <span>🌍 {{ $t('language') || 'Language' }}</span>
+        <span><v-icon>mdi-earth</v-icon> {{ $t('language') || 'Language' }}</span>
         <div class="lang-select-wrapper">
           <select v-model="locale" @change="handleNavClick">
             <option v-for="lang in languages" :key="lang.code" :value="lang.code">
@@ -254,12 +254,12 @@ const currentLanguage = computed(() => {
 
       <!-- Premium Status Card (Mobile) -->
       <div v-if="hasActiveSubscription" class="mobile-premium-card premium-active">
-        <span class="mpc-icon">✅</span>
+        <span class="mpc-icon"><v-icon>mdi-check-circle</v-icon></span>
         <p>{{ $t('premium_active') }}</p>
         <p class="mpc-desc">{{ $t('premium_unlocked_desc') }}</p>
       </div>
       <div v-else class="mobile-premium-card">
-        <span class="mpc-icon">⭐</span>
+        <span class="mpc-icon"><v-icon>mdi-star</v-icon></span>
         <p>{{ $t('premium_desc') }}</p>
         <RouterLink to="/plan" class="premium-cta-btn" @click="handleNavClick">
           {{ $t('see_plans') }}
@@ -267,7 +267,7 @@ const currentLanguage = computed(() => {
       </div>
 
       <!-- Logout (Mobile) -->
-      <button class="mobile-logout-btn" @click="handleLogout">⚡ {{ $t('logout') }}</button>
+      <button class="mobile-logout-btn" @click="handleLogout"><v-icon>mdi-lightning-bolt</v-icon> {{ $t('logout') }}</button>
          
     </nav>
 
