@@ -37,7 +37,7 @@
               <img src="@/assets/imgs/Logo.png" alt="Logo" class="footer-logo" />
             </div>
             <h3 class="brand-name">The Training Hub</h3>
-            <p class="brand-tagline">🎮 {{ $t('level_up_fitness') }}</p>
+            <p class="brand-tagline"><v-icon>mdi-controller-classic</v-icon> {{ $t('level_up_fitness') }}</p>
             <p class="brand-description">
               {{ $t('footer_platform_desc') }}
             </p>
@@ -46,21 +46,21 @@
           <!-- Stats badge -->
           <div class="stats-badge">
             <div class="stat-item">
-              <span class="stat-icon">👥</span>
+              <span class="stat-icon"><v-icon>mdi-account-group</v-icon></span>
               <div class="stat-info">
                 <span class="stat-value">10K+</span>
                 <span class="stat-label">{{ $t('users') }}</span>
               </div>
             </div>
             <div class="stat-item">
-              <span class="stat-icon">🏆</span>
+              <span class="stat-icon"><v-icon>mdi-trophy</v-icon></span>
               <div class="stat-info">
                 <span class="stat-value">50K+</span>
                 <span class="stat-label">{{ $t('challenges') }}</span>
               </div>
             </div>
             <div class="stat-item">
-              <span class="stat-icon">⚡</span>
+              <span class="stat-icon"><v-icon>mdi-lightning-bolt</v-icon></span>
               <div class="stat-info">
                 <span class="stat-value">100K+</span>
                 <span class="stat-label">{{ $t('check_ins') }}</span>
@@ -72,28 +72,28 @@
         <!-- Columna 2: Quick Links -->
         <div class="footer-column links-column">
           <h4 class="column-title">
-            <span class="title-icon">🔗</span>
+            <span class="title-icon"><v-icon>mdi-link</v-icon></span>
             {{ $t('footer_quick_links') }}
           </h4>
           <ul class="footer-links">
             <li><a href="#" class="footer-link">
-              <span class="link-icon">🏠</span>
+              <span class="link-icon"><v-icon>mdi-home</v-icon></span>
               <span class="link-text">{{ $t('home_link') }}</span>
             </a></li>
             <li><a href="#" class="footer-link">
-              <span class="link-icon">🎯</span>
+              <span class="link-icon"><v-icon>mdi-target</v-icon></span>
               <span class="link-text">{{ $t('challenges_link') }}</span>
             </a></li>
             <li><a href="#" class="footer-link">
-              <span class="link-icon">👥</span>
+              <span class="link-icon"><v-icon>mdi-account-group</v-icon></span>
               <span class="link-text">{{ $t('rooms_link') }}</span>
             </a></li>
             <li><a href="#" class="footer-link">
-              <span class="link-icon">📊</span>
+              <span class="link-icon"><v-icon>mdi-chart-bar</v-icon></span>
               <span class="link-text">{{ $t('statistics') }}</span>
             </a></li>
             <li><a href="#" class="footer-link">
-              <span class="link-icon">🏅</span>
+              <span class="link-icon"><v-icon>mdi-medal</v-icon></span>
               <span class="link-text">{{ $t('achievements') }}</span>
             </a></li>
           </ul>
@@ -102,28 +102,28 @@
         <!-- Columna 3: Recursos -->
         <div class="footer-column resources-column">
           <h4 class="column-title">
-            <span class="title-icon">📚</span>
+            <span class="title-icon"><v-icon>mdi-book-open-page-variant</v-icon></span>
             {{ $t('resources') }}
           </h4>
           <ul class="footer-links">
             <li><a href="#" class="footer-link">
-              <span class="link-icon">❓</span>
+              <span class="link-icon"><v-icon>mdi-help-circle</v-icon></span>
               <span class="link-text">{{ $t('help_center') }}</span>
             </a></li>
             <li><a href="#" class="footer-link">
-              <span class="link-icon">📖</span>
+              <span class="link-icon"><v-icon>mdi-book-open</v-icon></span>
               <span class="link-text">{{ $t('footer_user_guide') }}</span>
             </a></li>
             <li><a href="#" class="footer-link">
-              <span class="link-icon">💡</span>
+              <span class="link-icon"><v-icon>mdi-lightbulb</v-icon></span>
               <span class="link-text">{{ $t('training_tips') }}</span>
             </a></li>
             <li><a href="#" class="footer-link">
-              <span class="link-icon">🎓</span>
+              <span class="link-icon"><v-icon>mdi-school</v-icon></span>
               <span class="link-text">{{ $t('tutorials') }}</span>
             </a></li>
             <li><a href="#" class="footer-link">
-              <span class="link-icon">📰</span>
+              <span class="link-icon"><v-icon>mdi-newspaper</v-icon></span>
               <span class="link-text">{{ $t('blog') }}</span>
             </a></li>
           </ul>
@@ -132,7 +132,7 @@
         <!-- Columna 4: Comunidad -->
         <div class="footer-column community-column">
           <h4 class="column-title">
-            <span class="title-icon">🌟</span>
+            <span class="title-icon"><v-icon>mdi-star</v-icon></span>
             {{ $t('community') }}
           </h4>
           
@@ -163,7 +163,7 @@
 
           <!-- Newsletter -->
           <div class="newsletter-box">
-            <div class="newsletter-icon">📧</div>
+            <div class="newsletter-icon"><v-icon>mdi-email</v-icon></div>
             <p class="newsletter-text">{{ $t('newsletter_text') }}</p>
             <button class="newsletter-btn">{{ $t('subscribe') }}</button>
           </div>
@@ -173,7 +173,7 @@
       <!-- Separador decorativo -->
       <div class="footer-divider">
         <div class="divider-line"></div>
-        <div class="divider-icon">💪</div>
+        <div class="divider-icon"><v-icon>mdi-arm-flex</v-icon></div>
         <div class="divider-line"></div>
       </div>
 
@@ -182,18 +182,18 @@
         <div class="bottom-left">
           <p class="copyright">{{ $t('footer.copyright') }}</p>
           <p class="made-with">
-            {{ $t('made_with') }} <span class="heart">❤️</span> {{ $t('by_fitness_enthusiasts') }}
+            {{ $t('made_with') }} <span class="heart"><v-icon>mdi-heart</v-icon></span> {{ $t('by_fitness_enthusiasts') }}
           </p>
         </div>
 
         <div class="bottom-center">
           <div class="badge-container">
             <div class="achievement-badge">
-              <span class="badge-emoji">🎮</span>
+              <span class="badge-emoji"><v-icon>mdi-controller-classic</v-icon></span>
               <span class="badge-text">{{ $t('gamified_platform') }}</span>
             </div>
             <div class="achievement-badge">
-              <span class="badge-emoji">🔒</span>
+              <span class="badge-emoji"><v-icon>mdi-lock</v-icon></span>
               <span class="badge-text">{{ $t('secure_safe') }}</span>
             </div>
           </div>

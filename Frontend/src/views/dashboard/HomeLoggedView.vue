@@ -39,7 +39,7 @@ function scrollToTop() {
         <div class="welcome-banner" v-if="loggedUser">
           <div class="banner-glow"></div>
           <div class="banner-content">
-            <div class="welcome-icon">💪</div>
+            <div class="welcome-icon"><v-icon>mdi-arm-flex</v-icon></div>
             <div class="welcome-text">
               <h1 class="welcome-title">{{ $t('bienvenido') }}, <span class="username">{{
                 loggedUser.name }}</span></h1>

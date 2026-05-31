@@ -98,7 +98,7 @@ async function calculateStats() {
         <div class="welcome-banner">
           <div class="banner-glow"></div>
           <div class="banner-content">
-            <div class="welcome-icon">🏛️</div>
+            <div class="welcome-icon"><v-icon>mdi-bank</v-icon></div>
             <div class="welcome-text">
               <h1 class="welcome-title">{{ $t('training_rooms') }}</h1>
               <p class="welcome-subtitle">{{ $t('room_subtitle') }}</p>
@@ -118,7 +118,7 @@ async function calculateStats() {
             <div class="dash-stat" style="--stat-color: #fbbf24; --stat-rgb: 251,191,36;">
               <div class="dash-stat-glow"></div>
               <div class="dash-stat-content">
-                <div class="dash-stat-icon">🏟️</div>
+                <div class="dash-stat-icon"><v-icon>mdi-stadium</v-icon></div>
                 <div class="dash-stat-info">
                   <span class="dash-stat-value">{{ totalRoomsCount || 0 }}</span>
                   <span class="dash-stat-label">{{ $t('total_rooms') }}</span>
@@ -133,7 +133,7 @@ async function calculateStats() {
             <div class="dash-stat" style="--stat-color: #38bdf8; --stat-rgb: 56,189,248;">
               <div class="dash-stat-glow"></div>
               <div class="dash-stat-content">
-                <div class="dash-stat-icon">✅</div>
+                <div class="dash-stat-icon"><v-icon>mdi-check-circle</v-icon></div>
                 <div class="dash-stat-info">
                   <span class="dash-stat-value">{{ joinedRoomsCount || 0 }}</span>
                   <span class="dash-stat-label">{{ $t('my_rooms') }}</span>
@@ -151,7 +151,7 @@ async function calculateStats() {
             <div class="dash-stat" style="--stat-color: #34d399; --stat-rgb: 52,211,153;">
               <div class="dash-stat-glow"></div>
               <div class="dash-stat-content">
-                <div class="dash-stat-icon">👥</div>
+                <div class="dash-stat-icon"><v-icon>mdi-account-group</v-icon></div>
                 <div class="dash-stat-info">
                   <span class="dash-stat-value">{{ totalMembers || 0 }}</span>
                   <span class="dash-stat-label">{{ $t('trainers') }}</span>
@@ -166,7 +166,7 @@ async function calculateStats() {
             <div class="dash-stat" style="--stat-color: #a78bfa; --stat-rgb: 167,139,250;">
               <div class="dash-stat-glow"></div>
               <div class="dash-stat-content">
-                <div class="dash-stat-icon">📈</div>
+                <div class="dash-stat-icon"><v-icon>mdi-trending-up</v-icon></div>
                 <div class="dash-stat-info">
                   <span class="dash-stat-value">{{ averageLevel || 0 }}</span>
                   <span class="dash-stat-label">{{ $t('average_level') }}</span>

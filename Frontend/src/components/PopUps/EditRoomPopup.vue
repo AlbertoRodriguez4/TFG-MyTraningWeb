@@ -108,12 +108,12 @@ const handleEdit = async () => {
         <!-- Header con icono -->
         <div class="popup-header">
           <div class="header-icon-wrapper">
-            <div class="header-icon">✏️</div>
+            <div class="header-icon"><v-icon>mdi-pencil</v-icon></div>
             <div class="icon-glow"></div>
           </div>
           <h2 class="popup-title">Editar Sala</h2>
           <button @click="closePopup" class="close-btn" type="button">
-            <span>✕</span>
+            <span><v-icon>mdi-close</v-icon></span>
           </button>
         </div>
 
@@ -123,7 +123,7 @@ const handleEdit = async () => {
             <!-- Campo Nombre -->
             <div class="form-group">
               <label class="form-label">
-                <span class="label-icon">🏷️</span>
+                <span class="label-icon"><v-icon>mdi-tag</v-icon></span>
                 <span>Nombre de la sala</span>
               </label>
               <input
@@ -138,7 +138,7 @@ const handleEdit = async () => {
             <!-- Campo Nivel Mínimo -->
             <div class="form-group">
               <label class="form-label">
-                <span class="label-icon">📊</span>
+                <span class="label-icon"><v-icon>mdi-chart-bar</v-icon></span>
                 <span>Nivel mínimo</span>
               </label>
               <input
@@ -154,7 +154,7 @@ const handleEdit = async () => {
             <!-- Campo Stats Mínimas -->
             <div class="form-group">
               <label class="form-label">
-                <span class="label-icon">💪</span>
+                <span class="label-icon"><v-icon>mdi-arm-flex</v-icon></span>
                 <span>Stats mínimas</span>
               </label>
               <input
@@ -170,7 +170,7 @@ const handleEdit = async () => {
             <!-- Campo Consistencia Mínima -->
             <div class="form-group">
               <label class="form-label">
-                <span class="label-icon">🎯</span>
+                <span class="label-icon"><v-icon>mdi-target</v-icon></span>
                 <span>Consistencia mínima (%)</span>
               </label>
               <input
@@ -189,11 +189,11 @@ const handleEdit = async () => {
         <!-- Footer con botones -->
         <div class="popup-footer">
           <button @click="closePopup" class="btn btn-cancel" type="button">
-            <span class="btn-icon">✕</span>
+            <span class="btn-icon"><v-icon>mdi-close</v-icon></span>
             <span>Cancelar</span>
           </button>
           <button @click="handleEdit" class="btn btn-save" type="button">
-            <span class="btn-icon">💾</span>
+            <span class="btn-icon"><v-icon>mdi-content-save</v-icon></span>
             <span>Guardar Cambios</span>
           </button>
         </div>
@@ -205,7 +205,7 @@ const handleEdit = async () => {
   <Transition name="snackbar">
     <div v-if="snackbar" :class="['snackbar', `snackbar-${snackbarType}`]">
       <span class="snackbar-icon">
-        {{ snackbarType === 'success' ? '✓' : '✕' }}
+        <v-icon>{{ snackbarType === 'success' ? 'mdi-check-circle' : 'mdi-alert-circle' }}</v-icon>
       </span>
       <span class="snackbar-text">{{ snackbarText }}</span>
     </div>

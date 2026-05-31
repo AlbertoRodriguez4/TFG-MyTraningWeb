@@ -28,21 +28,21 @@
         <!-- Stats Section -->
         <div class="stats-section">
           <div class="stat-item">
-            <span class="stat-icon">⚡</span>
+            <span class="stat-icon"><v-icon>mdi-lightning-bolt</v-icon></span>
             <div class="stat-content">
               <p class="stat-label">{{ $t('strength_label') }}</p>
               <p class="stat-value">{{ userStrength }}</p>
             </div>
           </div>
           <div class="stat-item">
-            <span class="stat-icon">💨</span>
+            <span class="stat-icon"><v-icon>mdi-weather-windy</v-icon></span>
             <div class="stat-content">
               <p class="stat-label">{{ $t('endurance_label') }}</p>
               <p class="stat-value">{{ userEndurance }}</p>
             </div>
           </div>
           <div class="stat-item">
-            <span class="stat-icon">🪙</span>
+            <span class="stat-icon"><v-icon>mdi-coin</v-icon></span>
             <div class="stat-content">
               <p class="stat-label">{{ $t('gold_label') }}</p>
               <p class="stat-value">{{ userGold }}</p>

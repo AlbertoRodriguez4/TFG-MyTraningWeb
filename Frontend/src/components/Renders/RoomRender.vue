@@ -243,7 +243,7 @@ function goToRoom(roomId: number) {
     <div class="rooms-header">
       <div class="header-left">
         <div class="header-icon">
-          <span>🏛️</span>
+          <span><v-icon>mdi-bank</v-icon></span>
         </div>
         <div class="header-text">
           <h2 class="header-title">{{ $t('training_rooms') }}</h2>
@@ -269,9 +269,9 @@ function goToRoom(roomId: number) {
     <div class="controls-section">
       <!-- Search -->
       <div class="search-box">
-        <span class="search-icon">🔍</span>
+        <span class="search-icon"><v-icon>mdi-magnify</v-icon></span>
         <input v-model="searchTerm" type="text" :placeholder="$t('search_room')" class="search-input" />
-        <span v-if="searchTerm" class="search-clear" @click="searchTerm = ''">✕</span>
+        <span v-if="searchTerm" class="search-clear" @click="searchTerm = ''"><v-icon>mdi-close</v-icon></span>
       </div>
 
       <!-- Filters Bar -->
@@ -279,14 +279,14 @@ function goToRoom(roomId: number) {
         <div class="filter-group">
           <span class="filter-group-label">{{ $t('sort_by') }}</span>
           <button class="filter-chip sort-chip" :class="{ active: sortField === 'level' }" @click="toggleSort('level')">
-            <span class="chip-icon">📊</span>
+            <span class="chip-icon"><v-icon>mdi-chart-bar</v-icon></span>
             <span class="chip-text">{{ $t('level_label') }}</span>
             <span v-if="sortField === 'level'" class="sort-arrow">
               {{ sortDirection === 'asc' ? '↑' : '↓' }}
             </span>
           </button>
           <button class="filter-chip sort-chip" :class="{ active: sortField === 'stats' }" @click="toggleSort('stats')">
-            <span class="chip-icon">💪</span>
+            <span class="chip-icon"><v-icon>mdi-arm-flex</v-icon></span>
             <span class="chip-text">{{ $t('stats_label') }}</span>
             <span v-if="sortField === 'stats'" class="sort-arrow">
               {{ sortDirection === 'asc' ? '↑' : '↓' }}
@@ -298,23 +298,23 @@ function goToRoom(roomId: number) {
           <span class="filter-group-label">{{ $t('filter_by') }}</span>
           <button class="filter-chip filter-joined" :class="{ active: activeFilter === 'joined' }"
             @click="toggleFilter('joined')">
-            <span class="chip-icon">✅</span>
+            <span class="chip-icon"><v-icon>mdi-check-circle</v-icon></span>
             <span class="chip-text">{{ $t('joined_rooms') }}</span>
           </button>
           <button class="filter-chip filter-joinable" :class="{ active: activeFilter === 'joinable' }"
             @click="toggleFilter('joinable')">
-            <span class="chip-icon">🚀</span>
+            <span class="chip-icon"><v-icon>mdi-rocket</v-icon></span>
             <span class="chip-text">{{ $t('available_rooms') }}</span>
           </button>
           <button class="filter-chip filter-trainer" :class="{ active: activeFilter === 'trainer' }"
             @click="toggleFilter('trainer')">
-            <span class="chip-icon">🏅</span>
+            <span class="chip-icon"><v-icon>mdi-medal</v-icon></span>
             <span class="chip-text">{{ $t('trainer_rooms') }}</span>
           </button>
         </div>
 
         <button class="filter-chip filter-clear" @click="clearAllFilters">
-          <span class="chip-icon">🧹</span>
+          <span class="chip-icon"><v-icon>mdi-broom</v-icon></span>
           <span class="chip-text">{{ $t('clear_filters') }}</span>
         </button>
       </div>
@@ -332,8 +332,7 @@ function goToRoom(roomId: number) {
     <!-- Empty State -->
     <div v-if="filteredRooms.length === 0" class="empty-state">
       <div class="empty-emoji">
-        {{ activeFilter === 'joined' ? '🔒' : activeFilter === 'joinable' ? '🚧' : activeFilter === 'trainer' ? '🏅' :
-        '🏋️‍♂️' }}
+        <v-icon>{{ activeFilter === 'joined' ? 'mdi-lock' : activeFilter === 'joinable' ? 'mdi-boom-gate' : activeFilter === 'trainer' ? 'mdi-medal' : 'mdi-weight-lifter' }}</v-icon>
       </div>
       <p class="empty-title">
         {{

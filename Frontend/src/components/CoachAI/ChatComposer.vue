@@ -9,7 +9,7 @@
         :key="q.text"
         @click="$emit('send', q.text)"
       >
-        <span class="quick-icon">{{ q.icon }}</span>
+        <span class="quick-icon"><v-icon>{{ q.icon }}</v-icon></span>
         {{ q.text }}
       </button>
     </div>
@@ -75,10 +75,10 @@ const textareaRef = ref<HTMLTextAreaElement | null>(null)
 
 // Mensakes rápidos predefinidos para que el usuario pueda hacer clic y enviar sin escribir (solo se muestran antes del primer mensaje)
 const quickPrompts = computed<QuickPrompt[]>(() => [
-  { icon: '💪', text: t('chat.quickRoutine3Days') },
-  { icon: '🥗', text: t('chat.quickDietMuscle')  },
-  { icon: '🏃', text: t('chat.quickCardioPlan')     },
-  { icon: '😴', text: t('chat.quickRecoveryTips')   },
+  { icon: 'mdi-arm-flex', text: t('chat.quickRoutine3Days') },
+  { icon: 'mdi-food-apple', text: t('chat.quickDietMuscle')  },
+  { icon: 'mdi-run', text: t('chat.quickCardioPlan')     },
+  { icon: 'mdi-sleep', text: t('chat.quickRecoveryTips')   },
 ])
 
 // Función para autoajustar la altura del textarea según el contenido, con un máximo de 140px para evitar que crezca demasiado

@@ -158,7 +158,7 @@ async function handleLogin() {
                     <template #append-inner>
                       <v-btn @click="togglePasswordVisibility" icon size="small" variant="text"
                         class="password-toggle-btn">
-                        <span class="toggle-icon">{{ showPassword ? '👁️' : '👁️‍🗨️' }}</span>
+                        <span class="toggle-icon"><v-icon>{{ showPassword ? 'mdi-eye' : 'mdi-eye-off' }}</v-icon></span>
                       </v-btn>
                     </template>
                   </v-text-field>
@@ -170,7 +170,7 @@ async function handleLogin() {
                 <button type="button" class="remember-toggle" :class="{ checked: rememberMe }"
                   @click="rememberMe = !rememberMe" :aria-checked="rememberMe" role="checkbox">
                   <span class="remember-box">
-                    <span v-if="rememberMe" class="remember-check">✓</span>
+                    <span v-if="rememberMe" class="remember-check"><v-icon>mdi-check</v-icon></span>
                   </span>
                   <span class="remember-label">{{ $t('remember_email') }}</span>
                 </button>
@@ -186,18 +186,18 @@ async function handleLogin() {
               <!-- Quick Info -->
               <div class="quick-info">
                 <div class="info-item">
-                  <span class="info-icon">⚡</span>
+                  <span class="info-icon"><v-icon>mdi-lightning-bolt</v-icon></span>
                   <span class="info-text">{{ $t('instant_stats_access') }}</span>
                 </div>
                 <div class="info-item">
-                  <span class="info-icon">🎯</span>
+                  <span class="info-icon"><v-icon>mdi-target</v-icon></span>
                   <span class="info-text">{{ $t('resume_workouts') }}</span>
                 </div>
               </div>
 
               <!-- Error -->
               <div v-if="errorMessage" class="error-alert">
-                <span class="error-icon">⚠️</span>
+                <span class="error-icon"><v-icon>mdi-alert</v-icon></span>
                 <span class="error-text">{{ errorMessage }}</span>
               </div>
 
@@ -205,7 +205,7 @@ async function handleLogin() {
               <v-btn type="submit" size="x-large" class="submit-btn" :loading="isLoading" :disabled="isLoading" block>
                 <span v-if="!isLoading" class="btn-text">
                   <span>{{ $t('login_button') }}</span>
-                  <span class="btn-arrow">→</span>
+                  <span class="btn-arrow"><v-icon>mdi-arrow-right</v-icon></span>
                 </span>
                 <span v-else class="btn-loading">
                   <v-progress-circular indeterminate size="20" width="2" color="white" />
@@ -234,25 +234,25 @@ async function handleLogin() {
         <!-- Info Panel -->
         <div class="info-panel">
           <div class="welcome-card">
-            <div class="welcome-icon">👋</div>
+            <div class="welcome-icon"><v-icon>mdi-hand-wave</v-icon></div>
             <h3 class="welcome-title">{{ $t('welcome_back') }}</h3>
             <p class="welcome-desc">{{ $t('continue_journey') }}</p>
           </div>
 
           <div class="info-card">
-            <div class="info-icon">🎮</div>
+            <div class="info-icon"><v-icon>mdi-controller-classic</v-icon></div>
             <h3 class="info-title">{{ $t('gamified_system') }}</h3>
             <p class="info-desc">{{ $t('gain_xp') }}</p>
           </div>
 
           <div class="info-card">
-            <div class="info-icon">👥</div>
+            <div class="info-icon"><v-icon>mdi-account-group</v-icon></div>
             <h3 class="info-title">{{ $t('train_group') }}</h3>
             <p class="info-desc">{{ $t('join_rooms') }}</p>
           </div>
 
           <div class="info-card">
-            <div class="info-icon">🏆</div>
+            <div class="info-icon"><v-icon>mdi-trophy</v-icon></div>
             <h3 class="info-title">{{ $t('epic_challenges') }}</h3>
             <p class="info-desc">{{ $t('daily_challenges') }}</p>
           </div>
@@ -261,15 +261,15 @@ async function handleLogin() {
             <div class="progress-label">{{ $t('progression_system') }}</div>
             <div class="progress-items">
               <div class="progress-item">
-                <span class="progress-icon">⚡</span>
+                <span class="progress-icon"><v-icon>mdi-lightning-bolt</v-icon></span>
                 <span class="progress-name">{{ $t('levels') }}</span>
               </div>
               <div class="progress-item">
-                <span class="progress-icon">🪙</span>
+                <span class="progress-icon"><v-icon>mdi-coin</v-icon></span>
                 <span class="progress-name">{{ $t('coins') }}</span>
               </div>
               <div class="progress-item">
-                <span class="progress-icon">💪</span>
+                <span class="progress-icon"><v-icon>mdi-arm-flex</v-icon></span>
                 <span class="progress-name">{{ $t('attributes') }}</span>
               </div>
             </div>
@@ -282,12 +282,12 @@ async function handleLogin() {
     <v-snackbar v-model="snackbar" :color="snackbarColor" :timeout="4000" location="top" rounded="pill">
       <div class="snackbar-content">
         <span class="snackbar-icon">
-          {{ snackbarColor === 'success' ? '✓' : snackbarColor === 'warning' ? '⚠' : '✕' }}
+          <v-icon>{{ snackbarColor === 'success' ? 'mdi-check-circle' : 'mdi-alert-circle' }}</v-icon>
         </span>
         <span>{{ snackbarMessage }}</span>
       </div>
       <template #actions>
-        <v-btn variant="text" @click="snackbar = false" size="small">{{ $t('close') }}</v-btn>
+        <v-btn variant="text" @click="snackbar = false" icon="mdi-close" size="small"></v-btn>
       </template>
     </v-snackbar>
   </div>

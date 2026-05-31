@@ -43,9 +43,9 @@
 
       <!-- Subtitle -->
       <p class="subtitle">
-        <span class="subtitle-icon">✨</span>
+        <span class="subtitle-icon"><v-icon>mdi-star-four-points</v-icon></span>
         {{ $t('Los atletas legendarios de TheTrainingHub') }}
-        <span class="subtitle-icon">✨</span>
+        <span class="subtitle-icon"><v-icon>mdi-star-four-points</v-icon></span>
       </p>
 
       <!-- Decorative Divider -->

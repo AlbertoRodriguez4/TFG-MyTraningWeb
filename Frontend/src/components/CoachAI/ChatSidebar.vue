@@ -26,7 +26,7 @@
       <div class="stats-block">
         <p class="stats-title">{{ t('common.today') }}</p>
         <div class="stat-row" v-for="s in stats" :key="s.label">
-          <span class="stat-emoji">{{ s.emoji }}</span>
+          <span class="stat-emoji"><v-icon>{{ s.emoji }}</v-icon></span>
           <div class="stat-info">
             <div class="stat-meta">
               <span class="stat-label">{{ s.label }}</span>
@@ -81,28 +81,28 @@ const stats = computed<Stat[]>(() => {
     // Retornar las estadísticas formateadas para la sidebar
   return [
     {
-      emoji: '⚡',
+      emoji: 'mdi-lightning-bolt',
       label: t('common.level'),
       value: `${user.level}`,
       pct: xpProgress,
       color: 'fill-violet'
     },
     {
-      emoji: '🔥',
+      emoji: 'mdi-fire',
       label: t('common.streak'),
       value: `${user.consistencyStreak || 0} ${t('common.days')}`,
       pct: Math.min((user.consistencyStreak || 0) * 10, 100),
       color: 'fill-orange'
     },
     {
-      emoji: '✅',
+      emoji: 'mdi-check-circle',
       label: t('common.routines'),
       value: `${completedRoutines}`,
       pct: routineStore.routines.length ? Math.round((completedRoutines / routineStore.routines.length) * 100) : 0,
       color: 'fill-blue'
     },
     {
-      emoji: '🎯',
+      emoji: 'mdi-target',
       label: t('common.nextLevel'),
       value: `${user.xpRemaining || 0} XP`,
       pct: 100 - xpProgress,

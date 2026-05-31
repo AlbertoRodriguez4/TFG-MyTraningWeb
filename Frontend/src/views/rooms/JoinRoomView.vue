@@ -95,10 +95,10 @@ const getRoomDifficulty = (level: number) => {
 }
 
 const getRoomIcon = (level: number) => {
-  if (level >= 50) return '🐉'
-  if (level >= 30) return '⭐'
-  if (level >= 15) return '💎'
-  return '🎯'
+  if (level >= 50) return 'mdi-dragon'
+  if (level >= 30) return 'mdi-star'
+  if (level >= 15) return 'mdi-diamond-stone'
+  return 'mdi-target'
 }
 
 const getStatusColor = (status: string) => {
@@ -199,7 +199,7 @@ const goBack = () => {
     <!-- Header con botón volver -->
     <div class="view-header">
       <button @click="goBack" class="back-btn">
-        <span class="back-icon">←</span>
+        <span class="back-icon"><v-icon>mdi-arrow-left</v-icon></span>
         <span>{{ $t('volver_salas') }}</span>
       </button>
     </div>
@@ -216,7 +216,7 @@ const goBack = () => {
 
         <div class="room-info-header">
           <div class="room-main-avatar">
-            <div class="main-avatar-icon">{{ getRoomIcon(roomData.minlevel) }}</div>
+            <div class="main-avatar-icon"><v-icon>{{ getRoomIcon(roomData.minlevel) }}</v-icon></div>
             <div class="main-avatar-ring"></div>
           </div>
 
@@ -231,7 +231,7 @@ const goBack = () => {
         <!-- Descripción de la Sala -->
         <div class="room-description-box">
           <div class="description-box-header">
-            <span class="description-box-icon">📝</span>
+            <span class="description-box-icon"><v-icon>mdi-pencil</v-icon></span>
             <span class="description-box-title">{{ $t('description') }}</span>
           </div>
           <p class="description-box-text">{{ roomData.description || $t('room_no_description') }}</p>
@@ -239,7 +239,7 @@ const goBack = () => {
 
         <!-- Fecha -->
         <div class="room-date-box">
-          <span class="date-box-icon">📅</span>
+          <span class="date-box-icon"><v-icon>mdi-calendar</v-icon></span>
           <div class="date-box-content">
             <span class="date-box-label">{{ $t('room_event_day') }}</span>
             <span class="date-box-value">{{ roomData.date }}</span>
@@ -248,7 +248,7 @@ const goBack = () => {
 
         <!-- Localización -->
         <div class="room-localization-box">
-          <span class="localization-box-icon">📍</span>
+          <span class="localization-box-icon"><v-icon>mdi-map-marker</v-icon></span>
           <div class="localization-box-content">
             <span class="localization-box-label">{{ $t('room_localization') }}</span>
             <span class="localization-box-value">{{ roomData.localization || $t('not_specified') }}</span>
@@ -257,21 +257,21 @@ const goBack = () => {
 
         <div class="room-requirements-grid">
           <div class="requirement-card">
-            <div class="req-card-icon">📊</div>
+            <div class="req-card-icon"><v-icon>mdi-chart-bar</v-icon></div>
             <div class="req-card-content">
               <span class="req-card-label">{{ $t('room_min_level') }}</span>
               <span class="req-card-value">{{ roomData.minlevel }}</span>
             </div>
           </div>
           <div class="requirement-card">
-            <div class="req-card-icon">💪</div>
+            <div class="req-card-icon"><v-icon>mdi-arm-flex</v-icon></div>
             <div class="req-card-content">
               <span class="req-card-label">{{ $t('min_stats_req') }}</span>
               <span class="req-card-value">{{ roomData.minstats }}</span>
             </div>
           </div>
           <div class="requirement-card">
-            <div class="req-card-icon">🎯</div>
+            <div class="req-card-icon"><v-icon>mdi-target</v-icon></div>
             <div class="req-card-content">
               <span class="req-card-label">{{ $t('min_consistency_req') }}</span>
               <span class="req-card-value">{{ roomData.minconsistency }}%</span>
@@ -282,18 +282,18 @@ const goBack = () => {
         <!-- Botón de unirse/salir -->
         <div class="join-section">
           <div v-if="!canJoinRoom && !isJoined" class="requirements-warning">
-            <span class="warning-icon">⚠️</span>
+            <span class="warning-icon"><v-icon>mdi-alert</v-icon></span>
             <span>{{ $t('no_cumples_requisitos') }}</span>
           </div>
 
           <button v-if="!isJoined" @click="openJoinPopup" class="main-join-btn" :disabled="!canJoinRoom"
             :class="{ disabled: !canJoinRoom }">
-            <span class="btn-icon">🚀</span>
+            <span class="btn-icon"><v-icon>mdi-rocket</v-icon></span>
             <span>{{ $t('unirse_sala') }}</span>
           </button>
 
           <button v-else @click.prevent="openLeaveConfirmDialog" class="leave-btn" type="button">
-            <span class="btn-icon">🚪</span>
+            <span class="btn-icon"><v-icon>mdi-door</v-icon></span>
             <span>{{ $t('salir_sala_btn') }}</span>
           </button>
         </div>
@@ -303,7 +303,7 @@ const goBack = () => {
       <div class="users-section">
         <div class="users-header">
           <h2 class="users-title">
-            <span class="users-icon">👥</span>
+            <span class="users-icon"><v-icon>mdi-account-group</v-icon></span>
             <span>{{ $t('usuarios_sala') }}</span>
           </h2>
           <div class="users-count-badge">{{ userRoomStore.memberCount }}</div>
@@ -346,36 +346,36 @@ const goBack = () => {
 
             <div class="user-stats-row">
               <div class="user-stat">
-                <span class="stat-label">💪 {{ $t('strength_label') }}</span>
+                <span class="stat-label"><v-icon>mdi-arm-flex</v-icon> {{ $t('strength_label') }}</span>
                 <span class="stat-value">{{ user.strength }}</span>
               </div>
               <div class="user-stat">
-                <span class="stat-label">🏃 {{ $t('endurance_label') }}</span>
+                <span class="stat-label"><v-icon>mdi-run</v-icon> {{ $t('endurance_label') }}</span>
                 <span class="stat-value">{{ user.endurance }}</span>
               </div>
             </div>
 
             <div class="user-consistency">
-              <span class="consistency-label">🎯 {{ $t('consistency_streak_label') }}</span>
+              <span class="consistency-label"><v-icon>mdi-target</v-icon> {{ $t('consistency_streak_label') }}</span>
               <span class="consistency-value">{{ user.consistency }} {{ $t('days_count') }}</span>
             </div>
 
             <!-- Equipped Items Section -->
             <div v-if="user.equippedStrengthItem || user.equippedEnduranceItem" class="user-equipment">
               <div class="equipment-header">
-                <span class="equipment-icon">⚔️</span>
+                <span class="equipment-icon"><v-icon>mdi-sword-cross</v-icon></span>
                 <span class="equipment-title">{{ $t('equipamiento') }}</span>
               </div>
               <div class="equipment-items">
                 <div v-if="user.equippedStrengthItem" class="equipment-item item-strength">
-                  <div class="item-icon">💪</div>
+                  <div class="item-icon"><v-icon>mdi-arm-flex</v-icon></div>
                   <div class="item-info">
                     <span class="item-name">{{ user.equippedStrengthItem.name }}</span>
                     <span class="item-bonus">+{{ user.equippedStrengthItem.bonus }} {{ $t('strength_label') }}</span>
                   </div>
                 </div>
                 <div v-if="user.equippedEnduranceItem" class="equipment-item item-endurance">
-                  <div class="item-icon">🏃</div>
+                  <div class="item-icon"><v-icon>mdi-run</v-icon></div>
                   <div class="item-info">
                     <span class="item-name">{{ user.equippedEnduranceItem.name }}</span>
                     <span class="item-bonus">+{{ user.equippedEnduranceItem.bonus }} {{ $t('endurance_label') }}</span>
@@ -393,7 +393,7 @@ const goBack = () => {
       <div v-if="showJoinPopup" class="popup-overlay" @click="closeJoinPopup">
         <div class="popup-content" @click.stop>
           <div class="popup-icon-container">
-            <div class="popup-icon">⚠️</div>
+            <div class="popup-icon"><v-icon>mdi-alert</v-icon></div>
           </div>
           <h2 class="popup-title">{{ $t('codigo_conducta') }}</h2>
           <div class="popup-body">
@@ -401,11 +401,11 @@ const goBack = () => {
               {{ $t('codigo_conducta_text') }}
             </p>
             <ul class="rules-list">
-              <li>🤝 {{ $t('respetar') }}</li>
-              <li>💬 {{ $t('lenguaje') }}</li>
-              <li>🎯 {{ $t('enfocarte') }}</li>
-              <li>🚫 {{ $t('no_spam') }}</li>
-              <li>⚖️ {{ $t('aceptar_consecuencias') }}</li>
+              <li><v-icon>mdi-handshake</v-icon> {{ $t('respetar') }}</li>
+              <li><v-icon>mdi-message</v-icon> {{ $t('lenguaje') }}</li>
+              <li><v-icon>mdi-target</v-icon> {{ $t('enfocarte') }}</li>
+              <li><v-icon>mdi-cancel</v-icon> {{ $t('no_spam') }}</li>
+              <li><v-icon>mdi-scale-balance</v-icon> {{ $t('aceptar_consecuencias') }}</li>
             </ul>
             <p class="popup-warning">
               {{ $t('advertencia_conducta') }}
@@ -429,7 +429,7 @@ const goBack = () => {
       <div v-if="showLeaveConfirmDialog" class="popup-overlay" @click="closeLeaveConfirmDialog">
         <div class="popup-content confirm-leave-dialog" @click.stop>
           <div class="popup-icon-container">
-            <div class="popup-icon">❓</div>
+            <div class="popup-icon"><v-icon>mdi-help-circle</v-icon></div>
           </div>
           <h2 class="popup-title">{{ $t('salir_sala') }}</h2>
           <div class="popup-body">

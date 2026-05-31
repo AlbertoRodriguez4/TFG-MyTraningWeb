@@ -61,10 +61,10 @@ const getRoomDifficulty = (level: number) => {
 }
 // Función para determinar el icono de la sala según el nivel mínimo requerido
 const getRoomIcon = (level: number) => {
-  if (level >= 50) return '🐉'
-  if (level >= 30) return '⭐'
-  if (level >= 15) return '💎'
-  return '🎯'
+  if (level >= 50) return 'mdi-dragon'
+  if (level >= 30) return 'mdi-star'
+  if (level >= 15) return 'mdi-diamond-stone'
+  return 'mdi-target'
 }
 
 const diff = getRoomDifficulty(props.room.minlevel)
@@ -81,7 +81,7 @@ const isTrainer = props.creatorRole === 'userStaff'// Marcar como sala de entren
       <!-- Header con gradiente -->
       <div class="card-header" :style="{ background: diffConfig.gradient }">
         <div class="header-left">
-          <div class="room-icon">{{ getRoomIcon(room.minlevel) }}</div>
+          <div class="room-icon"><v-icon>{{ getRoomIcon(room.minlevel) }}</v-icon></div>
           <div class="header-info">
             <div class="room-name-row">
               <span class="room-id">#{{ room.id.toString().padStart(3, '0') }}</span>
@@ -93,7 +93,7 @@ const isTrainer = props.creatorRole === 'userStaff'// Marcar como sala de entren
                 {{ $t(diffConfig.labelKey) }}
               </span>
               <span v-if="isTrainer" class="trainer-badge">
-                <span class="trainer-icon">🏅</span>
+                <span class="trainer-icon"><v-icon>mdi-medal</v-icon></span>
                 {{ $t('trainer_room') }}
               </span>
             </div>
@@ -111,35 +111,35 @@ const isTrainer = props.creatorRole === 'userStaff'// Marcar como sala de entren
       <!-- Stats Grid -->
       <div class="stats-grid">
         <div class="stat-item">
-          <div class="stat-icon">📊</div>
+          <div class="stat-icon"><v-icon>mdi-chart-bar</v-icon></div>
           <div class="stat-info">
             <span class="stat-label-card">{{ $t('level_label') }}</span>
             <span class="stat-value-card" :style="{ color: diffConfig.color }">{{ room.minlevel }}</span>
           </div>
         </div>
         <div class="stat-item">
-          <div class="stat-icon">💪</div>
+          <div class="stat-icon"><v-icon>mdi-arm-flex</v-icon></div>
           <div class="stat-info">
             <span class="stat-label-card">{{ $t('stats_label') }}</span>
             <span class="stat-value-card" :style="{ color: diffConfig.color }">{{ room.minstats }}</span>
           </div>
         </div>
         <div class="stat-item">
-          <div class="stat-icon">🔥</div>
+          <div class="stat-icon"><v-icon>mdi-fire</v-icon></div>
           <div class="stat-info">
             <span class="stat-label-card">{{ $t('consistency_short') }}</span>
             <span class="stat-value-card" :style="{ color: diffConfig.color }">{{ room.minconsistency }}%</span>
           </div>
         </div>
         <div v-if="room.localization" class="stat-item">
-          <div class="stat-icon">📍</div>
+          <div class="stat-icon"><v-icon>mdi-map-marker</v-icon></div>
           <div class="stat-info">
             <span class="stat-label-card">{{ $t('localization') }}</span>
             <span class="stat-value-card muted">{{ room.localization }}</span>
           </div>
         </div>
         <div v-if="room.date" class="stat-item">
-          <div class="stat-icon">📅</div>
+          <div class="stat-icon"><v-icon>mdi-calendar</v-icon></div>
           <div class="stat-info">
             <span class="stat-label-card">{{ $t('date') }}</span>
             <span class="stat-value-card muted">{{ room.date }}</span>
@@ -168,7 +168,7 @@ const isTrainer = props.creatorRole === 'userStaff'// Marcar como sala de entren
       <!-- Acciones -->
       <div class="card-actions">
         <button v-if="isStaff" class="action-btn edit-btn" @click="emit('edit', room)">
-          <span class="btn-icon">✏️</span>
+          <span class="btn-icon"><v-icon>mdi-pencil</v-icon></span>
           <span>{{ $t('edit_label') }}</span>
         </button>
         <button class="action-btn view-btn" @click="emit('view', room.id)" :style="{ background: diffConfig.gradient, borderColor: diffConfig.color + '50', color: diffConfig.color }">

@@ -253,22 +253,22 @@ const register = async () => {
                 <div class="stats-label">{{ $t('starting_stats') }}</div>
                 <div class="stats-grid">
                   <div class="stat-item">
-                    <div class="stat-icon">💪</div>
+                    <div class="stat-icon"><v-icon>mdi-arm-flex</v-icon></div>
                     <div class="stat-value">0</div>
                     <div class="stat-name">STR</div>
                   </div>
                   <div class="stat-item">
-                    <div class="stat-icon">⚡</div>
+                    <div class="stat-icon"><v-icon>mdi-lightning-bolt</v-icon></div>
                     <div class="stat-value">0</div>
                     <div class="stat-name">END</div>
                   </div>
                   <div class="stat-item">
-                    <div class="stat-icon">🔥</div>
+                    <div class="stat-icon"><v-icon>mdi-fire</v-icon></div>
                     <div class="stat-value">0</div>
                     <div class="stat-name">STK</div>
                   </div>
                   <div class="stat-item">
-                    <div class="stat-icon">🪙</div>
+                    <div class="stat-icon"><v-icon>mdi-coin</v-icon></div>
                     <div class="stat-value">100</div>
                     <div class="stat-name">GOLD</div>
                   </div>
@@ -277,7 +277,7 @@ const register = async () => {
 
               <!-- Error Alert -->
               <div v-if="errorMessage" class="error-alert">
-                <span class="error-icon">⚠️</span>
+                <span class="error-icon"><v-icon>mdi-alert</v-icon></span>
                 <span class="error-text">{{ errorMessage }}</span>
               </div>
 
@@ -285,7 +285,7 @@ const register = async () => {
               <v-btn type="submit" size="x-large" class="submit-btn" :loading="isLoading" :disabled="isLoading" block>
                 <span v-if="!isLoading" class="btn-text">
                   <span>{{ $t('register_button') }}</span>
-                  <span class="btn-arrow">→</span>
+                  <span class="btn-arrow"><v-icon>mdi-arrow-right</v-icon></span>
                 </span>
                 <span v-else class="btn-loading">
                   <v-progress-circular indeterminate size="20" width="2" color="white"></v-progress-circular>
@@ -314,19 +314,19 @@ const register = async () => {
         <!-- Info Panel -->
         <div class="info-panel">
           <div class="info-card">
-            <div class="info-icon">🎮</div>
+            <div class="info-icon"><v-icon>mdi-controller-classic</v-icon></div>
             <h3 class="info-title">{{ $t('level_system') }}</h3>
             <p class="info-desc">{{ $t('complete_workouts') }}</p>
           </div>
 
           <div class="info-card">
-            <div class="info-icon">👥</div>
+            <div class="info-icon"><v-icon>mdi-account-group</v-icon></div>
             <h3 class="info-title">{{ $t('train_group') }}</h3>
             <p class="info-desc">{{ $t('join_rooms') }}</p>
           </div>
 
           <div class="info-card">
-            <div class="info-icon">🏆</div>
+            <div class="info-icon"><v-icon>mdi-trophy</v-icon></div>
             <h3 class="info-title">{{ $t('challenges_rewards') }}</h3>
             <p class="info-desc">{{ $t('earn_xp_gold') }}</p>
           </div>
@@ -338,14 +338,12 @@ const register = async () => {
     <v-snackbar v-model="snackbar" :color="snackbarColor" :timeout="4000" location="top" rounded="pill">
       <div class="snackbar-content">
         <span class="snackbar-icon">
-          {{ snackbarColor === 'success' ? '✓' : snackbarColor === 'warning' ? '⚠' : '✕' }}
+          <v-icon>{{ snackbarColor === 'success' ? 'mdi-check-circle' : 'mdi-alert-circle' }}</v-icon>
         </span>
         <span>{{ snackbarMessage }}</span>
       </div>
       <template v-slot:actions>
-        <v-btn variant="text" @click="snackbar = false" size="small">
-          {{ $t('close') }}
-        </v-btn>
+        <v-btn variant="text" @click="snackbar = false" icon="mdi-close" size="small"></v-btn>
       </template>
     </v-snackbar>
   </div>

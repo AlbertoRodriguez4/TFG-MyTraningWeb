@@ -141,7 +141,7 @@ const handleSubmit = async () => {
     <div class="card-preview">
       <div class="card-top">
         <div class="card-chip"></div>
-        <div class="card-logo">💳</div>
+        <div class="card-logo"><v-icon>mdi-credit-card</v-icon></div>
       </div>
       <div class="card-number-display">{{ cardNumber || '•••• •••• •••• ••••' }}</div>
       <div class="card-footer">

@@ -74,15 +74,15 @@ const getItemRarity = (bonus: number) => {
 // Función para obtener un icono representativo del tipo de item (fuerza o resistencia), se puede expandir para más tipos si es necesario (para futuras actualizaciones en tal caso)
 const getItemIcon = (type: string) => {
   const icons: Record<string, string> = {
-    'fuerza': '💪',
-    'strength': '💪',
-    'resistencia': '🏃',
-    'endurance': '🏃',
-    'velocidad': '⚡',
-    'defensa': '🛡️',
-    'agilidad': '🦅',
-    'poder': '⭐',
-    'default': '🎁'
+    'fuerza': 'mdi-arm-flex',
+    'strength': 'mdi-arm-flex',
+    'resistencia': 'mdi-run',
+    'endurance': 'mdi-run',
+    'velocidad': 'mdi-lightning-bolt',
+    'defensa': 'mdi-shield',
+    'agilidad': 'mdi-bird',
+    'poder': 'mdi-star',
+    'default': 'mdi-gift'
   }
   return icons[type.toLowerCase()] || icons.default
 }
@@ -114,7 +114,7 @@ const handleImageError = (event: Event) => {
     <div class="inventory-header">
       <div class="header-decoration"></div>
       <h2 class="inventory-title">
-        <span class="title-icon">🎒</span>
+        <span class="title-icon"><v-icon>mdi-bag-personal</v-icon></span>
         {{ $t('inventario') }}
         <span class="item-count">{{ totalItems }}</span>
       </h2>
@@ -161,7 +161,7 @@ const handleImageError = (event: Event) => {
             >
               <!-- Badge de equipado -->
               <div v-if="isItemEquipped(item.itemId, item.itemType)" class="equipped-badge">
-                <span>⚔️ {{ $t('equipped_label') }}</span>
+                <span><v-icon>mdi-sword-cross</v-icon> {{ $t('equipped_label') }}</span>
               </div>
 
               <!-- Bonus -->
@@ -179,7 +179,7 @@ const handleImageError = (event: Event) => {
                   @error="handleImageError"
                 />
                 <div class="item-icon item-icon-fallback" style="display: none;">
-                  {{ getItemIcon(item.itemType) }}
+                  <v-icon>{{ getItemIcon(item.itemType) }}</v-icon>
                 </div>
               </div>
 
@@ -236,7 +236,7 @@ const handleImageError = (event: Event) => {
             >
               <!-- Badge de equipado -->
               <div v-if="isItemEquipped(item.itemId, item.itemType)" class="equipped-badge">
-                <span>⚔️ {{ $t('equipped_label') }}</span>
+                <span><v-icon>mdi-sword-cross</v-icon> {{ $t('equipped_label') }}</span>
               </div>
 
               <!-- Bonus -->
@@ -254,7 +254,7 @@ const handleImageError = (event: Event) => {
                   @error="handleImageError"
                 />
                 <div class="item-icon item-icon-fallback" style="display: none;">
-                  {{ getItemIcon(item.itemType) }}
+                  <v-icon>{{ getItemIcon(item.itemType) }}</v-icon>
                 </div>
               </div>
 

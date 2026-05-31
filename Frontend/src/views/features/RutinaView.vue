@@ -58,11 +58,12 @@
 
       <!-- Snackbar para notificaciones -->
       <v-snackbar v-model="snackbar.show" :color="snackbar.color" :timeout="3000" top>
-        {{ snackbar.message }}
+        <div class="d-flex align-center">
+          <v-icon class="mr-3">{{ snackbar.color === 'success' ? 'mdi-check-circle' : 'mdi-alert-circle' }}</v-icon>
+          <span>{{ snackbar.message }}</span>
+        </div>
         <template v-slot:actions>
-          <v-btn text @click="snackbar.show = false">
-            {{ $t('close') }}
-          </v-btn>
+          <v-btn variant="text" @click="snackbar.show = false" icon="mdi-close"></v-btn>
         </template>
       </v-snackbar>
     </v-main>

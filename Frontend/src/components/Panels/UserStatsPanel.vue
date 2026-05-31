@@ -20,9 +20,9 @@ const colorMap: Record<StatKey, string> = {
 }
 
 const iconMap: Record<StatKey, string> = {
-  strength: '💪',
-  endurance: '🏃',
-  gold: '🪙',
+  strength: 'mdi-arm-flex',
+  endurance: 'mdi-run',
+  gold: 'mdi-coin',
 }
 
 const labelMap: Record<StatKey, string> = {
@@ -77,14 +77,14 @@ const formatNumber = (value: number): string => {
             />
           </div>
           <div class="level-badge">
-            <span class="level-icon">⚡</span>
+            <span class="level-icon"><v-icon>mdi-lightning-bolt</v-icon></span>
             <span class="level-text">LVL {{ loggedUser.level }}</span>
           </div>
         </div>
         <div class="user-info">
           <h3 class="user-name">{{ loggedUser.name }}</h3>
           <div class="streak-badge">
-            <span class="streak-icon">🔥</span>
+            <span class="streak-icon"><v-icon>mdi-fire</v-icon></span>
             <span class="streak-text">{{ loggedUser.consistencyStreak }} {{ $t('days_count') }}</span>
           </div>
         </div>
@@ -92,7 +92,7 @@ const formatNumber = (value: number): string => {
         <!-- Barra de Experiencia -->
         <div class="xp-container">
           <div class="xp-header">
-            <span class="xp-icon">✨</span>
+            <span class="xp-icon"><v-icon>mdi-star-four-points</v-icon></span>
             <span class="xp-label">{{ $t('experiencia') }}</span>
           </div>
           <div class="xp-progress-wrapper">
@@ -108,7 +108,7 @@ const formatNumber = (value: number): string => {
             </div>
           </div>
           <div class="xp-remaining">
-            <span class="xp-remaining-icon">🎯</span>
+            <span class="xp-remaining-icon"><v-icon>mdi-target</v-icon></span>
             <span>{{ formatNumber(loggedUser.xpRemaining ?? 0) }} XP para nivel {{ Number(loggedUser.level) + 1 }}</span>
           </div>
         </div>
@@ -117,13 +117,13 @@ const formatNumber = (value: number): string => {
       <!-- Card de Estadísticas -->
       <div class="stats-card">
         <h2 class="stats-title">
-          <span class="title-icon">📊</span>
+          <span class="title-icon"><v-icon>mdi-chart-bar</v-icon></span>
           {{ $t('statistics') }}
         </h2>
         <div class="stats-grid">
           <div v-for="stat in statList" :key="stat" class="stat-item">
             <div class="stat-header">
-              <span class="stat-icon">{{ iconMap[stat] }}</span>
+              <span class="stat-icon"><v-icon>{{ iconMap[stat] }}</v-icon></span>
               <span class="stat-label">{{ labelMap[stat] }}</span>
             </div>
             <div class="progress-container">

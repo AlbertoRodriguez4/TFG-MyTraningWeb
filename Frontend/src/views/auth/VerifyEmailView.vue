@@ -189,7 +189,7 @@ onBeforeUnmount(() => {
       <!-- Main Content -->
       <div class="verify-card">
         <div class="verify-header">
-          <div class="verify-icon">📧</div>
+          <div class="verify-icon"><v-icon>mdi-email</v-icon></div>
           <h2 class="verify-title">{{ $t('verify_your_email') }}</h2>
           <p class="verify-subtitle">
             {{ $t('sent_6_digit') }}
@@ -199,13 +199,13 @@ onBeforeUnmount(() => {
 
         <!-- Success Message -->
         <div v-if="successMessage" class="success-alert">
-          <span class="success-icon">✓</span>
+          <span class="success-icon"><v-icon>mdi-check</v-icon></span>
           <span class="success-text">{{ successMessage }}</span>
         </div>
 
         <!-- Error Alert -->
         <div v-if="errorMessage" class="error-alert">
-          <span class="error-icon">⚠️</span>
+          <span class="error-icon"><v-icon>mdi-alert</v-icon></span>
           <span class="error-text">{{ errorMessage }}</span>
         </div>
 
@@ -238,7 +238,7 @@ onBeforeUnmount(() => {
         >
           <span v-if="!isLoading" class="btn-text">
             <span>{{ $t('verify_email_btn') }}</span>
-            <span class="btn-arrow">→</span>
+            <span class="btn-arrow"><v-icon>mdi-arrow-right</v-icon></span>
           </span>
           <span v-else class="btn-loading">
             <v-progress-circular indeterminate size="20" width="2" color="white"></v-progress-circular>
@@ -286,13 +286,13 @@ onBeforeUnmount(() => {
       <!-- Info Cards -->
       <div class="info-grid">
         <div class="info-card">
-          <div class="info-icon">⏱️</div>
+          <div class="info-icon"><v-icon>mdi-timer</v-icon></div>
           <h3 class="info-title">{{ $t('expires_15min') }}</h3>
           <p class="info-desc">{{ $t('code_valid_15') }}</p>
         </div>
 
         <div class="info-card">
-          <div class="info-icon">🔒</div>
+          <div class="info-icon"><v-icon>mdi-lock</v-icon></div>
           <h3 class="info-title">{{ $t('secure') }}</h3>
           <p class="info-desc">{{ $t('info_protected') }}</p>
         </div>
@@ -303,14 +303,12 @@ onBeforeUnmount(() => {
     <v-snackbar v-model="snackbar" :color="snackbarColor" :timeout="4000" location="top" rounded="pill">
       <div class="snackbar-content">
         <span class="snackbar-icon">
-          {{ snackbarColor === 'success' ? '✓' : snackbarColor === 'warning' ? '⚠' : '✕' }}
+          <v-icon>{{ snackbarColor === 'success' ? 'mdi-check-circle' : 'mdi-alert-circle' }}</v-icon>
         </span>
         <span>{{ snackbarMessage }}</span>
       </div>
       <template v-slot:actions>
-        <v-btn variant="text" @click="snackbar = false" size="small">
-          {{ $t('close') }}
-        </v-btn>
+        <v-btn variant="text" @click="snackbar = false" icon="mdi-close" size="small"></v-btn>
       </template>
     </v-snackbar>
   </div>
