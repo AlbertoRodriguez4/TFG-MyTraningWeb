@@ -11,7 +11,7 @@ on:
       - 'Backend/**'
 
 env:
-  EKS_CLUSTER_NAME: mi-cluster
+  EKS_CLUSTER_NAME: TheTrainingHubCluster
   AWS_REGION: us-east-1
 
 jobs:
