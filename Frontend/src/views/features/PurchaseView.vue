@@ -164,7 +164,7 @@ watchEffect(() => {
 
 .shop-subtitle {
   font-size: clamp(0.8rem, 1.5vw, 0.95rem);
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--text-secondary);
   margin: 0;
   font-weight: 400;
   line-height: 1.4;
@@ -212,7 +212,7 @@ watchEffect(() => {
 
 .gold-label {
   font-size: clamp(0.65rem, 1vw, 0.75rem);
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: clamp(0.5px, 0.1vw, 1px);
   font-weight: 600;

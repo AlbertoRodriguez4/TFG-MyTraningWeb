@@ -203,7 +203,7 @@ async function calculateStats() {
   position: relative;
   min-height: 100vh;
   width: 100%;
-  background: linear-gradient(135deg, #0a0e27 0%, #1a1a2e 50%, #16213e 100%);
+  background: var(--bg-primary);
   overflow-x: hidden;
   overflow-y: auto;
 }
@@ -336,7 +336,7 @@ async function calculateStats() {
 .welcome-title {
   font-size: clamp(1.75rem, 4vw, 2.5rem);
   font-weight: 800;
-  color: #ffffff;
+  color: var(--text-primary);
   margin: 0;
   line-height: 1.2;
   text-shadow: 0 2px 20px rgba(251, 191, 36, 0.4);
@@ -352,7 +352,7 @@ async function calculateStats() {
 
 .welcome-subtitle {
   font-size: 1.125rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-secondary);
   margin: 0.5rem 0 0 0;
   font-weight: 500;
 }
@@ -471,7 +471,7 @@ async function calculateStats() {
 .dash-stat-value {
   font-size: 1.75rem;
   font-weight: 900;
-  color: #ffffff;
+  color: var(--text-primary);
   line-height: 1;
   font-family: 'Courier New', monospace;
   text-shadow: 0 2px 10px rgba(var(--stat-rgb), 0.4);
@@ -486,7 +486,7 @@ async function calculateStats() {
 .dash-stat-label {
   font-size: 0.6875rem;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.8px;
 }

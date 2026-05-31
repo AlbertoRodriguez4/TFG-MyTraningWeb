@@ -666,7 +666,7 @@ const closeAchievementPopup = () => {
 .title-top {
   font-size: 1.2rem;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-muted);
   letter-spacing: 8px;
   text-transform: uppercase;
 }
@@ -848,7 +848,7 @@ const closeAchievementPopup = () => {
 .stat-mega-value {
   font-size: 3.5rem;
   font-weight: 900;
-  color: white;
+  color: var(--text-primary);
   line-height: 1;
   margin-bottom: 0.5rem;
   text-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
@@ -857,7 +857,7 @@ const closeAchievementPopup = () => {
 .stat-mega-label {
   font-size: 0.85rem;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--text-muted);
   letter-spacing: 2px;
   text-transform: uppercase;
 }
@@ -961,14 +961,14 @@ const closeAchievementPopup = () => {
 .panel-title {
   font-size: 1.5rem;
   font-weight: 900;
-  color: white;
+  color: var(--text-primary);
   letter-spacing: 1px;
   margin: 0 0 0.25rem;
 }
 
 .panel-subtitle {
   font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-muted);
   margin: 0;
 }
 
@@ -994,7 +994,7 @@ const closeAchievementPopup = () => {
 .counter-number {
   font-size: 1.5rem;
   font-weight: 900;
-  color: white;
+  color: var(--text-primary);
 }
 
 /* Panel Body */
@@ -1054,7 +1054,7 @@ const closeAchievementPopup = () => {
 }
 
 :deep(.search-input .v-field__input) {
-  color: white !important;
+  color: var(--text-primary) !important;
   font-size: 1rem !important;
 }
 
@@ -1208,7 +1208,7 @@ const closeAchievementPopup = () => {
 .entity-name {
   font-size: 1.1rem;
   font-weight: 800;
-  color: white;
+  color: var(--text-primary);
   margin-bottom: 0.25rem;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1220,7 +1220,7 @@ const closeAchievementPopup = () => {
   align-items: center;
   gap: 0.5rem;
   font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-muted);
 }
 
 .entity-meta span {
@@ -1274,7 +1274,7 @@ const closeAchievementPopup = () => {
 }
 
 .empty-state p {
-  color: rgba(255, 255, 255, 0.3);
+  color: var(--text-muted);
   font-size: 1.1rem;
   font-weight: 600;
   margin-top: 1rem;

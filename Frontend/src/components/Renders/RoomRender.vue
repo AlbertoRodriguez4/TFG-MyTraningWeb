@@ -399,7 +399,7 @@ function goToRoom(roomId: number) {
   margin: 0 auto;
   padding: 2rem 1.5rem 3rem;
   font-family: 'Inter', system-ui, sans-serif;
-  color: #e2e8f0;
+  color: var(--text-primary);
 }
 
 /* ── Header ── */
@@ -447,7 +447,7 @@ function goToRoom(roomId: number) {
 .header-title {
   font-size: 1.5rem;
   font-weight: 900;
-  color: #f8fafc;
+  color: var(--text-primary);
   margin: 0 0 0.2rem;
   letter-spacing: -0.5px;
 }
@@ -457,7 +457,7 @@ function goToRoom(roomId: number) {
   align-items: center;
   gap: 0.4rem;
   font-size: 0.75rem;
-  color: #64748b;
+  color: var(--text-muted);
   margin: 0;
   text-transform: uppercase;
   letter-spacing: 0.8px;
@@ -580,13 +580,13 @@ function goToRoom(roomId: number) {
   outline: none;
   background: transparent;
   font-size: 0.9375rem;
-  color: #e2e8f0;
+  color: var(--text-primary);
   min-width: 0;
   font-family: inherit;
 }
 
 .search-input::placeholder {
-  color: #475569;
+  color: var(--text-muted);
 }
 
 .search-clear {
@@ -627,7 +627,7 @@ function goToRoom(roomId: number) {
   font-size: 0.6875rem;
   text-transform: uppercase;
   letter-spacing: 0.8px;
-  color: #475569;
+  color: var(--text-muted);
   font-weight: 700;
   margin-right: 0.25rem;
 }
@@ -781,7 +781,7 @@ function goToRoom(roomId: number) {
   font-size: 0.625rem;
   text-transform: uppercase;
   letter-spacing: 1.2px;
-  color: #475569;
+  color: var(--text-muted);
   font-weight: 700;
   white-space: nowrap;
 }
@@ -818,13 +818,13 @@ function goToRoom(roomId: number) {
 .empty-title {
   font-size: 1.125rem;
   font-weight: 800;
-  color: #94a3b8;
+  color: var(--text-secondary);
   margin: 0;
 }
 
 .empty-sub {
   font-size: 0.875rem;
-  color: #64748b;
+  color: var(--text-muted);
   margin: 0;
   max-width: 320px;
   line-height: 1.6;
@@ -880,7 +880,7 @@ function goToRoom(roomId: number) {
   border-radius: 10px;
   font-size: 0.8125rem;
   font-weight: 700;
-  color: #94a3b8;
+  color: var(--text-secondary);
   cursor: pointer;
   transition: all 0.25s ease;
   font-family: 'Inter', system-ui, sans-serif;
@@ -934,7 +934,7 @@ function goToRoom(roomId: number) {
   text-align: center;
   margin-top: 1rem;
   font-size: 0.6875rem;
-  color: #475569;
+  color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 1px;
   font-weight: 700;

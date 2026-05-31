@@ -313,14 +313,14 @@ body,
 }
 
 body {
-  background: #f0ebe3;
+  background: var(--bg-primary);
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
 }
 
-:root {
+.chat-shell {
   --c-bg: #faf8f5;
   --c-surface: #ffffff;
   --c-sidebar: #1c1917;
@@ -377,7 +377,7 @@ body {
 }
 
 .loading-text {
-  color: rgba(0, 0, 0, 0.7);
+  color: var(--text-secondary);
   font-size: 1.1rem;
 }
 
@@ -545,7 +545,7 @@ body {
 
 /* Health Data Banner */
 .health-data-banner {
-  background: linear-gradient(135deg, #1c1917 0%, #2d2a26 100%);
+  background: var(--bg-tertiary);
   border-top: 1px solid rgba(255, 215, 0, 0.2);
   padding: 12px 20px;
 }

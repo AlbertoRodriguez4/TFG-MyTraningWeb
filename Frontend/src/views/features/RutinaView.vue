@@ -403,7 +403,7 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .workout-hub {
-  background: #0a0a1a;
+  background: var(--bg-primary);
   min-height: 100vh;
   width: 100%;
 }

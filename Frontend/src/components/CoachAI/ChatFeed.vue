@@ -77,12 +77,12 @@ watch(
   display: flex;
   flex-direction: column;
   gap: 14px;
-  background: #faf8f5;
+  background: var(--bg-secondary);
 }
 
 .feed::-webkit-scrollbar       { width: 4px; }
 .feed::-webkit-scrollbar-track { background: transparent; }
-.feed::-webkit-scrollbar-thumb { background: #e0d9d0; border-radius: 99px; }
+.feed::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 99px; }
 
 /* Welcome */
 .welcome {

@@ -91,8 +91,8 @@ const handlePaymentSuccess = () => {
 .checkout {
   width: 100%;
   min-height: 100vh;
-  background: linear-gradient(135deg, #ffffff 0%, #f8f9fb 100%);
-  color: #1a1a1a;
+  background: var(--bg-primary);
+  color: var(--text-primary);
   position: relative;
   overflow: hidden;
 }
@@ -182,7 +182,7 @@ const handlePaymentSuccess = () => {
   display: inline-block;
   background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
   border: 1px solid rgba(99, 102, 241, 0.3);
-  color: #4f46e5;
+  color: var(--accent-color);
   padding: 0.5rem 1.2rem;
   border-radius: 50px;
   font-size: 0.85rem;
@@ -197,8 +197,8 @@ const handlePaymentSuccess = () => {
   font-weight: 800;
   margin: 0 0 1rem;
   letter-spacing: -0.8px;
-  color: #1a1a1a;
-  background: linear-gradient(135deg, #1a1a1a, #4f46e5);
+  color: var(--text-primary);
+  background: linear-gradient(135deg, var(--text-primary), #4f46e5);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -206,7 +206,7 @@ const handlePaymentSuccess = () => {
 
 .page-subtitle {
   font-size: 1.1rem;
-  color: rgba(0, 0, 0, 0.8);
+  color: var(--text-secondary);
   margin: 0;
   font-weight: 400;
   line-height: 1.7;
@@ -265,7 +265,7 @@ const handlePaymentSuccess = () => {
   justify-content: center;
   gap: 2rem;
   padding: 3.5rem 2rem;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.7), rgba(248, 249, 251, 0.7));
+  background: var(--card-bg);
   border: 1px solid rgba(99, 102, 241, 0.1);
   border-radius: 20px;
   backdrop-filter: blur(20px);
@@ -322,14 +322,14 @@ const handlePaymentSuccess = () => {
 .trust-title {
   font-size: 0.95rem;
   font-weight: 700;
-  color: #1a1a1a;
+  color: var(--text-primary);
   margin-bottom: 0.3rem;
   letter-spacing: -0.3px;
 }
 
 .trust-desc {
   font-size: 0.8rem;
-  color: rgba(0, 0, 0, 0.6);
+  color: var(--text-muted);
   line-height: 1.5;
 }
 

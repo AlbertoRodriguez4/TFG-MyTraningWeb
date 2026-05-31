@@ -232,7 +232,7 @@ function handleCreateRoutine(): void {
 .hero-subtitle {
   opacity: 0.9;
   max-width: 600px;
-  color: #94a3b8;
+  color: var(--text-muted);
   text-shadow: none;
   animation: fadeInUp 0.8s ease-out 0.2s both;
 }
@@ -279,7 +279,7 @@ function handleCreateRoutine(): void {
 .rest-dialog {
   border-radius: 16px;
   overflow: hidden;
-  background-color: #1e293b;
+  background-color: var(--card-bg);
 }
 
 .rest-dialog-title {
@@ -293,16 +293,16 @@ function handleCreateRoutine(): void {
 .rest-dialog-text {
   padding: 32px 24px;
   text-align: center;
-  color: #f8fafc;
+  color: var(--text-primary);
 }
 
 .rest-dialog-text p {
   line-height: 1.6;
-  color: #f8fafc;
+  color: var(--text-primary);
 }
 
 .rest-dialog-text .text-h6 {
-  color: #ffffff;
+  color: var(--text-primary);
   font-weight: 700;
 }
 
@@ -371,7 +371,7 @@ function handleCreateRoutine(): void {
 
   .rest-dialog-text .text-h6 {
     font-size: 1rem !important;
-    color: #ffffff;
+    color: var(--text-primary);
   }
 
   .rest-dialog-text .text-body-1 {

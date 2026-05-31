@@ -38,7 +38,7 @@ const activeTab = ref('personal')
 <style scoped>
 .profile-settings {
   min-height: 100vh;
-  background: linear-gradient(135deg, rgba(0, 0, 0, 0.98) 0%, rgba(15, 15, 15, 0.95) 100%);
+  background: var(--bg-primary);
 }
 
 .settings-container {

@@ -106,7 +106,7 @@ function scrollToTop() {
   position: relative;
   min-height: 100vh;
   width: 100%;
-  background: linear-gradient(135deg, #0a0e27 0%, #1a1a2e 50%, #16213e 100%);
+  background: var(--bg-primary);
   overflow-x: hidden;
   overflow-y: auto;
 }
@@ -310,7 +310,7 @@ function scrollToTop() {
 .welcome-title {
   font-size: clamp(1.75rem, 4vw, 2.5rem);
   font-weight: 800;
-  color: #ffffff;
+  color: var(--text-primary);
   margin: 0;
   line-height: 1.2;
   text-shadow: 0 2px 20px rgba(13, 110, 253, 0.5);
@@ -326,7 +326,7 @@ function scrollToTop() {
 
 .welcome-subtitle {
   font-size: 1.125rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-secondary);
   margin: 0.5rem 0 0 0;
   font-weight: 500;
 }
@@ -397,7 +397,7 @@ function scrollToTop() {
 .section-title {
   font-size: clamp(1.5rem, 3vw, 2rem);
   font-weight: 800;
-  color: #ffffff;
+  color: var(--text-primary);
   margin: 0;
   text-shadow: 0 2px 10px rgba(13, 110, 253, 0.3);
 }

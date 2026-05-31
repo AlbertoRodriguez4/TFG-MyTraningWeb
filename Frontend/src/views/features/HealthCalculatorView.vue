@@ -212,7 +212,7 @@ const loadAllResults = () => {
 <style scoped>
 .health-calc-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, rgba(0, 0, 0, 0.98) 0%, rgba(15, 15, 15, 0.95) 100%);
+  background: var(--bg-primary);
   position: relative;
   overflow: hidden;
   padding: 2rem 0;
@@ -283,7 +283,7 @@ const loadAllResults = () => {
 }
 
 .loading-text {
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-secondary);
   font-size: 1.1rem;
 }
 
@@ -331,7 +331,7 @@ const loadAllResults = () => {
 }
 
 .lock-description {
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-secondary);
   font-size: 1rem;
   margin: 0 0 2rem;
   line-height: 1.6;
@@ -352,7 +352,7 @@ const loadAllResults = () => {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--text-primary);
   font-size: 0.95rem;
 }
 
@@ -370,12 +370,12 @@ const loadAllResults = () => {
 
 .price-tag small {
   font-size: 1rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-muted);
   letter-spacing: normal;
 }
 
 .price-desc {
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-muted);
   font-size: 0.9rem;
   margin: 0.5rem 0 0;
 }
@@ -390,7 +390,7 @@ const loadAllResults = () => {
 }
 
 .later-btn {
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-muted);
   text-transform: none;
 }
 
@@ -419,7 +419,7 @@ const loadAllResults = () => {
 }
 
 .main-subtitle {
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-secondary);
   font-size: 1.1rem;
   margin: 0;
 }

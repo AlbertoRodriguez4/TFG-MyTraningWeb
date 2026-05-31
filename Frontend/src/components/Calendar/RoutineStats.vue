@@ -331,14 +331,14 @@ const closeDialog = (): void => {
 .summary-value {
   font-size: 2.5rem;
   font-weight: 800;
-  color: #ffffff;
+  color: var(--text-primary);
   margin: 0.5rem 0;
   text-shadow: 0 0 20px rgba(167, 139, 250, 0.4);
 }
 
 .summary-label {
   font-size: 0.95rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-muted);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -347,7 +347,7 @@ const closeDialog = (): void => {
 .section-title {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--text-primary);
   margin-bottom: 1.5rem;
   display: flex;
   align-items: center;
@@ -393,7 +393,7 @@ const closeDialog = (): void => {
 
 .month-year {
   font-size: 1rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-muted);
   font-weight: 600;
 }
 
@@ -406,7 +406,7 @@ const closeDialog = (): void => {
   justify-content: space-between;
   align-items: center;
   padding: 0.5rem 0;
-  color: white;
+  color: var(--text-primary);
 }
 
 .stat-label {
@@ -414,7 +414,7 @@ const closeDialog = (): void => {
   align-items: center;
   gap: 0.5rem;
   font-size: 0.95rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-muted);
 }
 
 .stat-value {
@@ -443,7 +443,7 @@ const closeDialog = (): void => {
 
 .progress-label {
   font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-muted);
   font-weight: 600;
 }
 
@@ -453,7 +453,7 @@ const closeDialog = (): void => {
   gap: 0.5rem;
   background: linear-gradient(135deg, rgba(251, 191, 36, 0.3) 0%, rgba(245, 158, 11, 0.2) 100%);
   border: 2px solid rgba(251, 191, 36, 0.4);
-  color: white;
+  color: var(--text-primary);
   padding: 0.5rem 1rem;
   border-radius: 20px;
   font-weight: 700;

@@ -119,7 +119,7 @@ onMounted(async () => {
 <style scoped>
 .user-view {
   min-height: 100vh;
-  background: linear-gradient(180deg, #0a0e1a 0%, #0f1419 50%, #0a0e1a 100%);
+  background: var(--bg-primary);
   position: relative;
   padding: 2rem 0 4rem;
   overflow-x: hidden;
