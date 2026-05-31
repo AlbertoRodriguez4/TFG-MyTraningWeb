@@ -1,6 +1,6 @@
 <template>
   <div class="calc-section calories-section">
-    <div class="section-icon">🔥</div>
+    <v-icon class="section-icon" color="orange">mdi-fire</v-icon>
     <h2 class="section-title">{{ $t('calories_needed') }}</h2>
 
     <div class="input-group">
@@ -144,9 +144,9 @@ const activityOptions = computed(() => [ // Definir opciones de actividad
 ])
 
 const goalOptions = computed(() => [ // Definir opciones de objetivos con iconos
-  { value: 'loss', label: t('loss'), icon: '📉' },
-  { value: 'maintenance', label: t('maintenance'), icon: '⚖️' },
-  { value: 'gain', label: t('gain_label'), icon: '📈' },
+  { value: 'loss', label: t('loss'), icon: 'mdi-trending-down' },
+  { value: 'maintenance', label: t('maintenance'), icon: 'mdi-scale-balance' },
+  { value: 'gain', label: t('gain_label'), icon: 'mdi-trending-up' },
 ])
 
 // Calcular las calorías en base a los parámetos ingresados y el peso/altura del BMI

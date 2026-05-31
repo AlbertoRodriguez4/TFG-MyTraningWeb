@@ -122,7 +122,7 @@ const handleImageError = (event: Event) => {
     </div>
 
     <div v-if="totalItems === 0" class="empty-inventory">
-      <div class="empty-icon">📦</div>
+      <v-icon class="empty-icon" color="grey">mdi-package-variant</v-icon>
       <p class="empty-text">{{ $t('inventario_vacio') }}</p>
       <p class="empty-subtext">{{ $t('compra_items') }}</p>
     </div>
@@ -131,7 +131,7 @@ const handleImageError = (event: Event) => {
       <!-- Sección de Fuerza -->
       <div class="section-container">
         <div class="section-header strength-header">
-          <div class="section-icon">💪</div>
+          <v-icon class="section-icon" color="amber">mdi-arm-flex</v-icon>
           <h3 class="section-title">{{ $t('items_fuerza') }}</h3>
           <span class="section-count">{{ strengthItems.length }}</span>
         </div>
@@ -206,7 +206,7 @@ const handleImageError = (event: Event) => {
       <!-- Sección de Resistencia -->
       <div class="section-container">
         <div class="section-header endurance-header">
-          <div class="section-icon">🏃</div>
+          <v-icon class="section-icon" color="blue">mdi-run</v-icon>
           <h3 class="section-title">{{ $t('items_resistencia') }}</h3>
           <span class="section-count">{{ enduranceItems.length }}</span>
         </div>

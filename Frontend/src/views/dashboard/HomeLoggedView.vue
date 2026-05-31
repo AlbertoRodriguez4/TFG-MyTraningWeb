@@ -56,7 +56,7 @@ function scrollToTop() {
         <!-- Stats Section -->
         <section class="panel-section" v-if="loggedUser?.role !== 'userMaster'">
           <div class="section-header">
-            <div class="section-icon">📊</div>
+            <v-icon class="section-icon" color="primary">mdi-chart-bar</v-icon>
             <h2 class="section-title">{{ $t('estadisticas') }}</h2>
             <div class="section-line"></div>
           </div>
@@ -68,7 +68,7 @@ function scrollToTop() {
         <!-- Inventory Section -->
         <section class="panel-section" v-if="loggedUser?.role !== 'userMaster'">
           <div class="section-header">
-            <div class="section-icon">🎒</div>
+            <v-icon class="section-icon" color="purple">mdi-bag-personal</v-icon>
             <h2 class="section-title">{{ $t('inventario') }}</h2>
             <div class="section-line"></div>
           </div>
@@ -80,7 +80,7 @@ function scrollToTop() {
         <!-- Admin Section -->
         <section class="panel-section admin-section" v-if="loggedUser?.role === 'userMaster'">
           <div class="section-header">
-            <div class="section-icon admin-icon">⚙️</div>
+            <v-icon class="section-icon admin-icon" color="grey">mdi-cog</v-icon>
             <h2 class="section-title admin-title">{{ $t('panel_admin') }}</h2>
             <div class="section-line admin-line"></div>
           </div>

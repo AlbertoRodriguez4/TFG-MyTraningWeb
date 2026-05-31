@@ -1,6 +1,6 @@
 <template>
   <div class="calc-section bmi-section">
-    <div class="section-icon">📊</div>
+    <v-icon class="section-icon" color="primary">mdi-chart-bar</v-icon>
     <h2 class="section-title">Índice de Masa Corporal</h2>
 
     <div class="input-group">

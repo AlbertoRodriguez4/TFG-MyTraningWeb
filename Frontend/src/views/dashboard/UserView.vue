@@ -65,9 +65,9 @@ onMounted(async () => {
       <!-- Podium Section -->
       <div class="podium-section">
         <div class="section-title">
-          <span class="section-icon">🏆</span>
+          <v-icon class="section-icon" color="amber">mdi-trophy</v-icon>
           <h2>{{ $t('home_hall_of_fame') }}</h2>
-          <span class="section-icon">🏆</span>
+          <v-icon class="section-icon" color="amber">mdi-trophy</v-icon>
         </div>
 
         <div class="podium-wrapper">

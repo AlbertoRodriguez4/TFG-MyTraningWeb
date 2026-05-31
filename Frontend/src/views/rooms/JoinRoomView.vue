@@ -310,7 +310,7 @@ const goBack = () => {
         </div>
 
         <div v-if="roomUsers.length === 0" class="empty-users">
-          <div class="empty-icon">👤</div>
+          <v-icon class="empty-icon" color="grey">mdi-account-outline</v-icon>
           <p>{{ $t('no_usuarios') }}</p>
         </div>
 
