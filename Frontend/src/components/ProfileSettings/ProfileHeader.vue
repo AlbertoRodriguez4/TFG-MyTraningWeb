@@ -20,7 +20,7 @@
             <p class="user-email">{{ userEmail }}</p>
             <div class="user-badge">
               <v-icon size="small">mdi-star</v-icon>
-              <span>Level {{ userLevel }} • {{ $t('racha_consistencia') }}: {{ consistencyStreak }} {{ $t('days_count') }}</span>
+              <span>{{ $t('header.level') }} {{ userLevel }} • {{ $t('racha_consistencia') }}: {{ consistencyStreak }} {{ $t('days_count') }}</span>
             </div>
           </div>
         </div>
@@ -30,21 +30,21 @@
           <div class="stat-item">
             <span class="stat-icon">⚡</span>
             <div class="stat-content">
-              <p class="stat-label">Fuerza</p>
+              <p class="stat-label">{{ $t('strength_label') }}</p>
               <p class="stat-value">{{ userStrength }}</p>
             </div>
           </div>
           <div class="stat-item">
             <span class="stat-icon">💨</span>
             <div class="stat-content">
-              <p class="stat-label">Resistencia</p>
+              <p class="stat-label">{{ $t('endurance_label') }}</p>
               <p class="stat-value">{{ userEndurance }}</p>
             </div>
           </div>
           <div class="stat-item">
             <span class="stat-icon">🪙</span>
             <div class="stat-content">
-              <p class="stat-label">Oro</p>
+              <p class="stat-label">{{ $t('gold_label') }}</p>
               <p class="stat-value">{{ userGold }}</p>
             </div>
           </div>
@@ -53,7 +53,7 @@
         <!-- XP Progress -->
         <div class="xp-progress">
           <div class="xp-header">
-            <span class="xp-label">Experiencia</span>
+            <span class="xp-label">{{ $t('experiencia') }}</span>
             <span class="xp-text">{{ userExperience }} / {{ xpRequired }}</span>
           </div>
           <v-progress-linear :model-value="xpPercentage" color="#ffcc00" height="6" rounded />
@@ -81,23 +81,23 @@
             <v-icon size="64" color="rgba(255, 255, 255, 0.5)">
               mdi-image
             </v-icon>
-            <p>Selecciona una imagen</p>
+            <p>{{ $t('profile.selectImage') }}</p>
           </div>
 
           <div class="upload-progress" v-if="uploading">
             <v-progress-linear :model-value="uploadProgress" color="#ffcc00" height="4" />
-            <p class="progress-text">Subiendo... {{ uploadProgress }}%</p>
+            <p class="progress-text">{{ $t('profile.uploading') }} {{ uploadProgress }}%</p>
           </div>
         </v-card-text>
 
         <v-card-actions class="dialog-actions">
           <v-spacer />
           <v-btn variant="text" @click="closePreviewDialog" :disabled="uploading">
-            Cancelar
+            {{ $t('common.cancel') }}
           </v-btn>
           <v-btn color="#ffcc00" text-color="#000" variant="flat" @click="uploadToCloudinary" :loading="uploading">
             <v-icon start>mdi-upload</v-icon>
-            Subir
+            {{ $t('save') }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -114,7 +114,7 @@ import { logger } from '@/utils/logger'
 const { t } = useI18n()
 const store = useUserStore()
 
-// Cloudinary Configuration
+// Constantes de Cloudinary
 const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
 const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET
 
@@ -126,7 +126,7 @@ const uploading = ref(false)
 const uploadProgress = ref(0)
 const showPreviewDialog = ref(false)
 
-// Notification
+// Notificaciones
 const showNotification = ref(false)
 const notificationMessage = ref('')
 const notificationType = ref<'success' | 'error'>('success')
@@ -147,7 +147,7 @@ const xpPercentage = computed(() => {
   const required = xpRequired.value
   return (current / required) * 100
 })
-
+// Generar iniciales del usuario para el avatar
 const userInitials = computed(() => {
   return (store.loggedUser?.name || 'U')
     .split(' ')
@@ -156,11 +156,11 @@ const userInitials = computed(() => {
     .toUpperCase()
 })
 
-// Methods
+// Método para activar el input de archivo
 const triggerFileInput = () => {
   fileInput.value?.click()
 }
-
+// Manejar selección de archivo
 const handleFileSelect = (event: Event) => {
   const target = event.target as HTMLInputElement
   const files = target.files
@@ -169,15 +169,15 @@ const handleFileSelect = (event: Event) => {
 
   const file = files[0]
 
-  // Validate file type
+  // Validar tipo de archivo
   if (!file.type.startsWith('image/')) {
     showErrorNotification(t('select_valid_image'))
     return
   }
 
-  // Validate file size (max 5MB)
-  if (file.size > 5 * 1024 * 1024) {
-    showErrorNotification(t('image_max_5mb'))
+  // Validar tamaño del archivo (máximo 15MB)
+  if (file.size > 15 * 1024 * 1024) { // La formula es 15MB en bytes, es decir, 15 * 1024KB * 1024B
+    showErrorNotification(t('image_max_15mb'))
     return
   }
 

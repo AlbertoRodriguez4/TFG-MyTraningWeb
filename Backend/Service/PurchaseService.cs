@@ -1,7 +1,6 @@
-using AA2_CS.Model;
+using AA2_CS.Model.Entities;
+using AA2_CS.Model.DTOs;
 using AA2_CS.Repository;
-// Asegúrate de importar el namespace de tus DTOs si está separado
-// using AA2_CS.DTOs; 
 
 namespace AA2_CS.Service
 {
@@ -44,12 +43,7 @@ namespace AA2_CS.Service
             return _repository.Update(entity);
         }
 
-        // --- MÉTODOS ELIMINADOS/MODIFICADOS ---
-
-        // 1. ELIMINADO: FindByUser(email, password) ya no existe por seguridad.
-
-        // 2. MODIFICADO: Ahora devuelve PurchaseDTO para que el frontend reciba 
-        // los datos completos (Nombre del ítem, Precio, etc.)
+   
         public List<PurchaseDTO> FindByUserId(int userId)
         {
             return _repository.FindByUserId(userId);

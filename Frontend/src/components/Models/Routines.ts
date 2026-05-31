@@ -9,3 +9,19 @@ export interface Routines {
     userId: number;
     trainingfocus: string;
 }
+
+export interface DifficultyLevel {
+    value: number;
+    label: string;
+    icon: string;
+    color: string;
+    xpBonus: number;
+}
+
+export interface TrainingType {
+    value: string;
+    label: string;
+    icon: string;
+    color: string;
+    description: string;
+}

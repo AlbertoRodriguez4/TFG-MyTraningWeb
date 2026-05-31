@@ -1,5 +1,6 @@
 using AA2_CS.Database;
-using AA2_CS.Model;
+using AA2_CS.Model.Entities;
+using AA2_CS.Model.DTOs;
 using Microsoft.EntityFrameworkCore;
 
 namespace AA2_CS.Repository
@@ -12,20 +13,15 @@ namespace AA2_CS.Repository
         {
             _context = context;
         }
-
-        /// <summary>
-        /// Añade una nueva suscripción (simulación de pago de 10€)
-        /// </summary>
         public int Add(Subscription subscription)
         {
+            // Valida que el usuario existe antes de crear la suscripcion. Se agrega la logica para guardar la fecha de inicio y fin en formato UTC, y se simula el proceso de pago (en producción aquí iría la integración con una pasarela de pago).
             var user = _context.Users.FirstOrDefault(u => u.id == subscription.userid);
 
             if (user == null)
                 throw new ArgumentException("User not found.");
 
-            // Simulación de pago - no se descuenta oro del juego
-            // En producción aquí iría la integración con pasarela de pago (Stripe, PayPal, etc.)
-
+            // Simulación de pago 
             subscription.startDate = subscription.startDate.ToUniversalTime();
             subscription.endDate = subscription.endDate.ToUniversalTime();
 
@@ -35,46 +31,36 @@ namespace AA2_CS.Repository
             return subscription.id;
         }
 
-        /// <summary>
-        /// Obtiene todas las suscripciones activas
-        /// </summary>
         public List<Subscription> FindAllActive()
         {
+            // Obtiene todas las suscripciones activas (aquellas que están marcadas como activas y cuya fecha de fin es mayor a la fecha actual). Se filtran las suscripciones para devolver solo las que están activas y no han expirado.
             return _context.Subscriptions
                 .Where(s => s.isActive && s.endDate > DateTime.UtcNow)
                 .ToList();
         }
 
-        /// <summary>
-        /// Obtiene todas las suscripciones (incluyendo inactivas)
-        /// </summary>
         public List<Subscription> FindAll()
         {
             return _context.Subscriptions.ToList();
         }
 
-        /// <summary>
-        /// Obtiene una suscripción por ID
-        /// </summary>
+   
         public Subscription? FindById(int id)
         {
             return _context.Subscriptions.FirstOrDefault(s => s.id == id);
         }
 
-        /// <summary>
-        /// Obtiene la suscripción activa de un usuario
-        /// </summary>
+   
         public Subscription? FindByUserId(int userId)
         {
             return _context.Subscriptions
                 .FirstOrDefault(s => s.userid == userId && s.isActive && s.endDate > DateTime.UtcNow);
         }
 
-        /// <summary>
-        /// Obtiene todas las suscripciones de un usuario (histórico)
-        /// </summary>
         public List<SubscriptionDTO> FindHistoryByUserId(int userId)
         {
+            // Obtiene el historial de suscripciones de un usuario, incluyendo tanto las activas como las expiradas. Se hace un join entre Subscriptions y Users para obtener 
+            // la información del usuario junto con cada suscripción, y se ordena por fecha de inicio descendente para mostrar primero las suscripciones más recientes.
             var subscriptions = (from s in _context.Subscriptions
                                  join user in _context.Users on s.userid equals user.id
                                  where s.userid == userId
@@ -96,27 +82,21 @@ namespace AA2_CS.Repository
             return subscriptions;
         }
 
-        /// <summary>
-        /// Verifica si un usuario tiene una suscripción activa
-        /// </summary>
         public bool HasActiveSubscription(int userId)
         {
             return _context.Subscriptions
                 .Any(s => s.userid == userId && s.isActive && s.endDate > DateTime.UtcNow);
         }
 
-        /// <summary>
-        /// Renueva una suscripción existente (extiende la fecha de fin)
-        /// </summary>
         public int RenewSubscription(int userId, int months = 1)
         {
+            // Renueva una suscripción extendiendo su fecha de fin. Se busca la suscripción activa del usuario, se simula el proceso de pago (en producción aquí iría la integración con una pasarela de pago), y se extiende la fecha de fin de la suscripción en función del número de meses especificado.
             var subscription = FindByUserId(userId);
 
             if (subscription == null)
                 throw new InvalidOperationException("No hay una suscripción activa para renovar.");
 
             // Simulación de pago - no se descuenta oro del juego
-            // En producción aquí iría la integración con pasarela de pago (Stripe, PayPal, etc.)
 
             // Extender la fecha de fin
             subscription.endDate = subscription.endDate.AddMonths(months);
@@ -128,11 +108,9 @@ namespace AA2_CS.Repository
             return subscription.id;
         }
 
-        /// <summary>
-        /// Cancela una suscripción (marca como inactiva)
-        /// </summary>
         public int CancelSubscription(int subscriptionId)
         {
+            // Cancela una suscripción marcándola como inactiva. Se busca la suscripción por su ID, se verifica que exista, y se actualiza su estado a inactiva para cancelarla.
             var subscription = FindById(subscriptionId);
             if (subscription == null)
                 return 0;
@@ -144,11 +122,10 @@ namespace AA2_CS.Repository
             return 1;
         }
 
-        /// <summary>
-        /// Actualiza el estado de las suscripciones expiradas
-        /// </summary>
+  
         public int DeactivateExpiredSubscriptions()
         {
+            // Desactiva las suscripciones que han expirado. Se buscan todas las suscripciones que están marcadas como activas pero cuya fecha de fin es menor o igual a la fecha actual, se marcan como inactivas, y se guardan los cambios en la base de datos.
             var expiredSubscriptions = _context.Subscriptions
                 .Where(s => s.isActive && s.endDate <= DateTime.UtcNow)
                 .ToList();
@@ -167,9 +144,6 @@ namespace AA2_CS.Repository
             return expiredSubscriptions.Count;
         }
 
-        /// <summary>
-        /// Obtiene el DTO de la suscripción activa de un usuario
-        /// </summary>
         public SubscriptionDTO? GetActiveSubscriptionDTO(int userId)
         {
             var subscription = (from s in _context.Subscriptions
@@ -190,6 +164,28 @@ namespace AA2_CS.Repository
                                 }).FirstOrDefault();
 
             return subscription;
+        }
+
+        public int PurchaseSubscription(int userId)
+        {
+            var existingSubscription = FindByUserId(userId);
+
+            if (existingSubscription != null)
+            {
+                throw new InvalidOperationException("El usuario ya tiene una suscripción activa.");
+            }
+
+            var subscription = new Subscription
+            {
+                userid = userId,
+                startDate = DateTime.UtcNow,
+                endDate = DateTime.UtcNow.AddMonths(1),
+                planType = "Premium",
+                monthlyPrice = 10.00m,
+                isActive = true
+            };
+
+            return Add(subscription);
         }
     }
 }

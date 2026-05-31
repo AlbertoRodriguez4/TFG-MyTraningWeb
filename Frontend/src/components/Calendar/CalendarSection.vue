@@ -53,7 +53,7 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-
+// Emitir eventos para navegación y acciones del calendario
 const emit = defineEmits<{
   'previous-month': [];
   'next-month': [];
@@ -61,10 +61,7 @@ const emit = defineEmits<{
   'complete-routine': [day: number, routineId: number];
 }>();
 
-/**
- * Maneja la completación de una rutina
- * Emite el evento con el día y el ID de la rutina
- */
+// Obtener la rutina para un día específico, si existe
 const handleCompleteRoutine = (day: number, routineId: number) => {
   emit('complete-routine', day, routineId);
 };

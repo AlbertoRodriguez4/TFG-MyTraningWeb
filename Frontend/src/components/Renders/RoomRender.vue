@@ -21,7 +21,7 @@ const sortField = ref<'level' | 'stats' | null>(null)
 const sortDirection = ref<'asc' | 'desc'>('asc')
 const searchTerm = ref('')
 const activeFilter = ref<'joinable' | 'joined' | 'trainer' | null>(null)
-
+// selectedRoom se usa para pasar la sala a editar al EditRoomPopup
 const selectedRoom = defineModel<{
   id: number; name: string; minlevel: number; minstats: number
   minconsistency: number; description: string; date: string; localization: string
@@ -34,17 +34,17 @@ const itemsPerPage = 9
 
 const roomMemberCounts = ref<Map<number, number>>(new Map())
 const joinedRoomIds = ref<Set<number>>(new Set())
-
+// Escucha cambios en la membresía de las salas para actualizar la lista en tiempo real
 const handleMembershipChange = async () => {
   await loadJoinedRooms()
   await loadRoomMemberCounts()
 }
-
+// Recarga datos al volver a enfocar la ventana, útil para reflejar cambios hechos en otras pestañas o ventanas
 const handleFocus = async () => {
   await loadJoinedRooms()
   await loadRoomMemberCounts()
 }
-
+// Obtener las salas junto con los miembros unidos
 onMounted(async () => {
   await store.fetchRoom()
   await loadRoomMemberCounts()
@@ -61,7 +61,7 @@ onUnmounted(() => {
 
 watch(searchTerm, () => { currentPage.value = 1 })
 watch(activeFilter, () => { currentPage.value = 1 })
-
+// Cargar los usuarios que se encuentran dentro de cada sala en base al id de la propia sala
 async function loadRoomMemberCounts() {
   for (const room of store.room) {
     try {
@@ -72,7 +72,7 @@ async function loadRoomMemberCounts() {
     }
   }
 }
-
+// Cargar las salas en las que el usuario se encuentra unido para poder mostrarlo en la interfaz y aplicar filtros correctamente
 async function loadJoinedRooms() {
   if (!loggedUser.value?.id) return
   try {
@@ -80,6 +80,7 @@ async function loadJoinedRooms() {
     for (const room of store.room) {
       await userRoomStore.fetchMembersByRoomId(room.id)
       const members = userRoomStore.currentRoomMembers
+      // Si el usuario actual se encuentra dentro de los miembros de la sala, se agrega el id de la sala al conjunto de salas unidas
       if (members.some((m) => m.userid === loggedUser.value?.id)) {
         ids.add(room.id)
       }
@@ -89,7 +90,7 @@ async function loadJoinedRooms() {
     console.error('Error cargando salas unidas', e)
   }
 }
-
+// Obtener el conteo de miembros para una sala específica, utilizando el mapa de conteos cargado previamente
 function getMemberCount(roomId: number) {
   return roomMemberCounts.value.get(roomId) || 0
 }
@@ -97,7 +98,7 @@ function getMemberCount(roomId: number) {
 function isJoined(roomId: number) {
   return joinedRoomIds.value.has(roomId)
 }
-
+// Filtro para determinar si el usuario cumple con los requisitos para unirse a una sala específica, basado en su nivel, estadísticas y racha de consistencia
 function canJoin(room: { minlevel: number; minstats: number; minconsistency: number }) {
   const u = loggedUser.value
   if (!u) return false
@@ -106,7 +107,7 @@ function canJoin(room: { minlevel: number; minstats: number; minconsistency: num
   const consistency = u.consistencyStreak ?? 0
   return level >= room.minlevel && stats >= room.minstats && consistency >= room.minconsistency
 }
-
+// Función para alternar el orden de clasificación por nivel o estadísticas, cambiando entre ascendente y descendente al hacer clic repetidamente en el mismo campo
 function toggleSort(field: 'level' | 'stats') {
   if (sortField.value === field) {
     sortDirection.value = sortDirection.value === 'asc' ? 'desc' : 'asc'
@@ -120,7 +121,7 @@ function toggleSort(field: 'level' | 'stats') {
 function toggleFilter(filter: 'joinable' | 'joined' | 'trainer') {
   activeFilter.value = activeFilter.value === filter ? null : filter
 }
-
+// Función para limpiar todos los filtros y volver a la vista predeterminada, restableciendo el campo de búsqueda, ordenación y filtros activos
 function clearAllFilters() {
   activeFilter.value = null
   sortField.value = null
@@ -128,29 +129,33 @@ function clearAllFilters() {
   searchTerm.value = ''
   currentPage.value = 1
 }
-
+// Función computada que devuelve la lista de salas filtradas y ordenadas según el término de búsqueda, el campo de ordenación seleccionado y el filtro activo 
+// (unido, disponible para unirse o creador entrenador)
 const filteredRooms = computed(() => {
   const term = searchTerm.value.toLowerCase()
   let result = store.room.filter(r => r.name.toLowerCase().includes(term))
-
+  // Si se ha seleccionado un filtro, se ordena la lista de salas según el campo seleccionado (nivel o estadísticas) y la dirección de ordenación (ascendente o descendente)
   if (sortField.value) {
     const f = sortField.value === 'level' ? 'minlevel' : 'minstats'
     result = [...result].sort((a, b) =>
       sortDirection.value === 'asc' ? a[f] - b[f] : b[f] - a[f]
     )
   }
-
+// Si el filtro seleccionado es el de que el usuario esta unido a la sala, se filtran las salas para mostrar solo aquellas en las que el usuario esta unido. 
   if (activeFilter.value === 'joined') {
     result = result.filter(r => isJoined(r.id))
+    // Si el filtro es el de salas disponibles para unirse, se muestran solo aquellas en las que el usuario no esta unido pero cumple con los requisitos para unirse. 
   } else if (activeFilter.value === 'joinable') {
     result = result.filter(r => !isJoined(r.id) && canJoin(r))
+    // Si el filtro es el de creador entrenador, se muestran solo aquellas salas cuyo creador tiene el rol de 'userStaff'
   } else if (activeFilter.value === 'trainer') {
     result = result.filter(r => r.creatorRole === 'userStaff')
   }
 
   return result
 })
-
+// Paginador que calcula el número total de páginas en función de la cantidad de salas filtradas y el número de elementos por página, 
+// y devuelve la lista de salas correspondientes a la página actual
 const totalPages = computed(() => Math.ceil(filteredRooms.value.length / itemsPerPage))
 
 const paginatedRooms = computed(() => {
@@ -182,15 +187,17 @@ function nextPage() {
 const pageNumbers = computed(() => {
   const pages: (number | string)[] = []
   const max = 5
+  // Lógica para mostrar un máximo de 5 números de página en la paginación, con puntos suspensivos para indicar páginas adicionales cuando el total de páginas es 
+  // mayor que el máximo permitido.
   if (totalPages.value <= max) {
     for (let i = 1; i <= totalPages.value; i++) pages.push(i)
-  } else if (currentPage.value <= 3) {
+  } else if (currentPage.value <= 3) { // Si la página actual es una de las primeras 3, se muestran las primeras 4 páginas y luego puntos suspensivos seguidos del número de la última página.
     for (let i = 1; i <= 4; i++) pages.push(i)
     pages.push('...'); pages.push(totalPages.value)
-  } else if (currentPage.value >= totalPages.value - 2) {
+  } else if (currentPage.value >= totalPages.value - 2) {// Si la página actual es una de las últimas 3, se muestran el número de la primera página seguido de puntos suspensivos y luego las últimas 4 páginas.
     pages.push(1); pages.push('...')
     for (let i = totalPages.value - 3; i <= totalPages.value; i++) pages.push(i)
-  } else {
+  } else { // Si la página actual está en el medio, se muestran el número de la primera página seguido de puntos suspensivos, luego la página anterior, la página actual y la página siguiente, seguidos de puntos suspensivos y el número de la última página.
     pages.push(1); pages.push('...')
     for (let i = currentPage.value - 1; i <= currentPage.value + 1; i++) pages.push(i)
     pages.push('...'); pages.push(totalPages.value)
@@ -213,7 +220,8 @@ function openEditPopup(room: any) {
 }
 
 function closeRoomPopup() { showRoomPopup.value = false }
-
+// Función para navegar a la página de detalles de una sala específica, pasando el id de la sala como parámetro en la ruta y también como query para facilitar el 
+// acceso a los datos de la sala en la página de destino sin necesidad de hacer una nueva consulta al backend.
 function goToRoom(roomId: number) {
   const room = store.room.find(r => r.id === roomId)
   if (!room) return
@@ -262,12 +270,7 @@ function goToRoom(roomId: number) {
       <!-- Search -->
       <div class="search-box">
         <span class="search-icon">🔍</span>
-        <input
-          v-model="searchTerm"
-          type="text"
-          :placeholder="$t('search_room')"
-          class="search-input"
-        />
+        <input v-model="searchTerm" type="text" :placeholder="$t('search_room')" class="search-input" />
         <span v-if="searchTerm" class="search-clear" @click="searchTerm = ''">✕</span>
       </div>
 
@@ -275,22 +278,14 @@ function goToRoom(roomId: number) {
       <div class="filters-bar">
         <div class="filter-group">
           <span class="filter-group-label">{{ $t('sort_by') }}</span>
-          <button
-            class="filter-chip sort-chip"
-            :class="{ active: sortField === 'level' }"
-            @click="toggleSort('level')"
-          >
+          <button class="filter-chip sort-chip" :class="{ active: sortField === 'level' }" @click="toggleSort('level')">
             <span class="chip-icon">📊</span>
             <span class="chip-text">{{ $t('level_label') }}</span>
             <span v-if="sortField === 'level'" class="sort-arrow">
               {{ sortDirection === 'asc' ? '↑' : '↓' }}
             </span>
           </button>
-          <button
-            class="filter-chip sort-chip"
-            :class="{ active: sortField === 'stats' }"
-            @click="toggleSort('stats')"
-          >
+          <button class="filter-chip sort-chip" :class="{ active: sortField === 'stats' }" @click="toggleSort('stats')">
             <span class="chip-icon">💪</span>
             <span class="chip-text">{{ $t('stats_label') }}</span>
             <span v-if="sortField === 'stats'" class="sort-arrow">
@@ -301,27 +296,18 @@ function goToRoom(roomId: number) {
 
         <div class="filter-group">
           <span class="filter-group-label">{{ $t('filter_by') }}</span>
-          <button
-            class="filter-chip filter-joined"
-            :class="{ active: activeFilter === 'joined' }"
-            @click="toggleFilter('joined')"
-          >
+          <button class="filter-chip filter-joined" :class="{ active: activeFilter === 'joined' }"
+            @click="toggleFilter('joined')">
             <span class="chip-icon">✅</span>
             <span class="chip-text">{{ $t('joined_rooms') }}</span>
           </button>
-          <button
-            class="filter-chip filter-joinable"
-            :class="{ active: activeFilter === 'joinable' }"
-            @click="toggleFilter('joinable')"
-          >
+          <button class="filter-chip filter-joinable" :class="{ active: activeFilter === 'joinable' }"
+            @click="toggleFilter('joinable')">
             <span class="chip-icon">🚀</span>
             <span class="chip-text">{{ $t('available_rooms') }}</span>
           </button>
-          <button
-            class="filter-chip filter-trainer"
-            :class="{ active: activeFilter === 'trainer' }"
-            @click="toggleFilter('trainer')"
-          >
+          <button class="filter-chip filter-trainer" :class="{ active: activeFilter === 'trainer' }"
+            @click="toggleFilter('trainer')">
             <span class="chip-icon">🏅</span>
             <span class="chip-text">{{ $t('trainer_rooms') }}</span>
           </button>
@@ -346,44 +332,32 @@ function goToRoom(roomId: number) {
     <!-- Empty State -->
     <div v-if="filteredRooms.length === 0" class="empty-state">
       <div class="empty-emoji">
-        {{ activeFilter === 'joined' ? '🔒' : activeFilter === 'joinable' ? '🚧' : activeFilter === 'trainer' ? '🏅' : '🏋️‍♂️' }}
+        {{ activeFilter === 'joined' ? '🔒' : activeFilter === 'joinable' ? '🚧' : activeFilter === 'trainer' ? '🏅' :
+        '🏋️‍♂️' }}
       </div>
       <p class="empty-title">
         {{
           activeFilter === 'joined' ? $t('not_in_any_room') :
-          activeFilter === 'joinable' ? $t('no_requirements_met') :
-          activeFilter === 'trainer' ? $t('no_trainer_rooms') :
-          $t('no_results')
+            activeFilter === 'joinable' ? $t('no_requirements_met') :
+              activeFilter === 'trainer' ? $t('no_trainer_rooms') :
+                $t('no_results')
         }}
       </p>
       <p class="empty-sub">
         {{
           activeFilter === 'joined' ? $t('join_room_to_see') :
-          activeFilter === 'joinable' ? $t('keep_training') :
-          activeFilter === 'trainer' ? $t('no_trainer_rooms_desc') :
-          $t('adjust_search')
+            activeFilter === 'joinable' ? $t('keep_training') :
+              activeFilter === 'trainer' ? $t('no_trainer_rooms_desc') :
+                $t('adjust_search')
         }}
       </p>
     </div>
 
     <!-- Grid de Salas -->
-    <TransitionGroup
-      v-else
-      name="room-grid"
-      tag="div"
-      class="rooms-grid"
-      appear
-    >
-      <RoomCard
-        v-for="room in paginatedRooms"
-        :key="room.id"
-        :room="{ ...room, localization: room.localization ?? '' }"
-        :member-count="getMemberCount(room.id)"
-        :is-staff="loggedUser?.role === 'userStaff'"
-        :creator-role="room.creatorRole"
-        @view="goToRoom"
-        @edit="openEditPopup"
-      />
+    <TransitionGroup v-else name="room-grid" tag="div" class="rooms-grid" appear>
+      <RoomCard v-for="room in paginatedRooms" :key="room.id" :room="{ ...room, localization: room.localization ?? '' }"
+        :member-count="getMemberCount(room.id)" :is-staff="loggedUser?.role === 'userStaff'"
+        :creator-role="room.creatorRole" @view="goToRoom" @edit="openEditPopup" />
     </TransitionGroup>
 
     <!-- Paginación -->
@@ -393,14 +367,9 @@ function goToRoom(roomId: number) {
         <span class="nav-label">{{ $t('previous') }}</span>
       </button>
       <div class="page-numbers">
-        <button
-          v-for="(page, i) in pageNumbers"
-          :key="i"
-          class="page-btn"
-          :class="{ active: page === currentPage, ellipsis: page === '...' }"
-          :disabled="page === '...'"
-          @click="typeof page === 'number' ? goToPage(page) : null"
-        >{{ page }}</button>
+        <button v-for="(page, i) in pageNumbers" :key="i" class="page-btn"
+          :class="{ active: page === currentPage, ellipsis: page === '...' }" :disabled="page === '...'"
+          @click="typeof page === 'number' ? goToPage(page) : null">{{ page }}</button>
       </div>
       <button class="page-btn page-nav" :disabled="currentPage === totalPages" @click="nextPage">
         <span class="nav-label">{{ $t('next') }}</span>
@@ -418,13 +387,8 @@ function goToRoom(roomId: number) {
 
     <!-- Popups -->
     <CreateRoomPopup :isVisible="isPopupVisible" @close="closePopup" @create="handleCreateRoom" />
-    <EditRoomPopup
-      v-if="selectedRoom"
-      :isVisible="showRoomPopup"
-      :room="selectedRoom"
-      @close="closeRoomPopup"
-      @edit="(room) => console.log('Editando', room)"
-    />
+    <EditRoomPopup v-if="selectedRoom" :isVisible="showRoomPopup" :room="selectedRoom" @close="closeRoomPopup"
+      @edit="(room) => console.log('Editando', room)" />
   </div>
 </template>
 
@@ -469,8 +433,15 @@ function goToRoom(roomId: number) {
 }
 
 @keyframes icon-float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-4px); }
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-4px);
+  }
 }
 
 .header-title {
@@ -503,8 +474,17 @@ function goToRoom(roomId: number) {
 }
 
 @keyframes sdot {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.3; transform: scale(0.6); }
+
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.3;
+    transform: scale(0.6);
+  }
 }
 
 .create-btn {
@@ -557,7 +537,7 @@ function goToRoom(roomId: number) {
   transform: translateX(-50%);
   width: 140px;
   height: 5px;
-  background: radial-gradient(ellipse, rgba(251,191,36,0.6), transparent 70%);
+  background: radial-gradient(ellipse, rgba(251, 191, 36, 0.6), transparent 70%);
   filter: blur(3px);
 }
 
@@ -824,8 +804,15 @@ function goToRoom(roomId: number) {
 }
 
 @keyframes empty-bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
 }
 
 .empty-title {

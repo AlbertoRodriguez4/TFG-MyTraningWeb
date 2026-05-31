@@ -1,4 +1,4 @@
-using AA2_CS.Model;
+using AA2_CS.Model.Entities;
 
 public class BodyMetricService
 {
@@ -10,27 +10,37 @@ public class BodyMetricService
     }
 
     public async Task<List<BodyMetric>> GetByUserIdAsync(int userId)
-        => await _repository.GetByUserIdAsync(userId);
+    {
+        return await _repository.GetByUserIdAsync(userId);
+    }
 
     public async Task<BodyMetric?> GetByIdAsync(int id)
-        => await _repository.GetByIdAsync(id);
+    {
+        return await _repository.GetByIdAsync(id);
+    }
 
     public async Task<BodyMetric> AddAsync(BodyMetric metric)
-        => await _repository.AddAsync(metric);
+    {
+        return await _repository.AddAsync(metric);
+    }
 
     public async Task<BodyMetric> UpdateAsync(BodyMetric metric)
-        => await _repository.UpdateAsync(metric);
+    {
+        return await _repository.UpdateAsync(metric);
+    }
 
     public async Task<bool> DeleteAsync(int id)
-        => await _repository.DeleteAsync(id);
+    {
+        return await _repository.DeleteAsync(id);
+    }
 
     public async Task<BodyMetric?> GetLatestAsync(int userId)
-        => await _repository.GetLatestAsync(userId);
+    {
+        return await _repository.GetLatestAsync(userId);
+    }
 
     public float? CalculateBMI(float weightKg, float heightCm)
     {
-        if (heightCm <= 0) return null;
-        var heightM = heightCm / 100;
-        return weightKg / (heightM * heightM);
+        return _repository.CalculateBMI(weightKg, heightCm);
     }
 }

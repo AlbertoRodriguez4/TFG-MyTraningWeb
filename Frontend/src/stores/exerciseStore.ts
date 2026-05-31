@@ -30,8 +30,6 @@ export const useExerciseStore = defineStore('exercise', () => {
     'chest', 'back', 'shoulders', 'arms', 'legs', 'core', 'cardio'
   ];
 
-  const difficulties = ['beginner', 'intermediate', 'advanced'];
-
   async function fetchExercises() {
     loading.value = true;
     try {
@@ -48,7 +46,7 @@ export const useExerciseStore = defineStore('exercise', () => {
   async function searchExercises(query: string) {
     loading.value = true;
     try {
-      const res = await fetch(`${API_BASE_URL}/api/exercise/search/${encodeURIComponent(query)}`);
+      const res = await fetch(`${API_BASE_URL}/api/exercise/search/${encodeURIComponent(query)}`); // Endpoint de búsqueda, asegurando que el query esté codificado
       if (!res.ok) throw new Error('Error al buscar ejercicios');
       exercises.value = await res.json();
     } catch (e: any) {
@@ -76,7 +74,6 @@ export const useExerciseStore = defineStore('exercise', () => {
     loading,
     error,
     muscleGroups,
-    difficulties,
     fetchExercises,
     searchExercises,
     filterByMuscleGroup

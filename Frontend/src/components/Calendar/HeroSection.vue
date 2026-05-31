@@ -89,81 +89,47 @@
   </section>
 </template>
 
-<script lang="ts">
-import { defineComponent, type PropType, ref, computed } from 'vue';
-import { useRoutineStore } from '@/stores/RoutineStore';
-import StatsCards from './StatsCards.vue';
-import RoutineStats from './RoutineStats.vue';
+<script setup lang="ts">
+import { ref, computed } from 'vue'
+import { useRoutineStore } from '@/stores/RoutineStore'
+import StatsCards from './StatsCards.vue'
+import RoutineStats from './RoutineStats.vue'
 
-export default defineComponent({
-  name: 'HeroSection',
-  components: {
-    StatsCards,
-    RoutineStats
-  },
-  props: {
-    userLevel: {
-      type: Number as PropType<number>,
-      required: true
-    },
-    userXP: {
-      type: Number as PropType<number>,
-      required: true
-    },
-    xpToNextLevel: {
-      type: Number as PropType<number>,
-      required: true
-    },
-    coins: {
-      type: Number as PropType<number>,
-      required: true
-    },
-    completedRoutines: {
-      type: Number as PropType<number>,
-      required: true
-    },
-    streak: {
-      type: Number as PropType<number>,
-      required: true
-    },
-    xpProgress: {
-      type: Number as PropType<number>,
-      required: true
-    }
-  },
-  emits: ['create-routine'],
-  setup(props, { emit }) {
-    const routineStore = useRoutineStore();
-    const showRestDialog = ref(false);
-    const showStats = ref(false);
+defineProps<{
+  userLevel: number
+  userXP: number
+  xpToNextLevel: number
+  coins: number
+  completedRoutines: number
+  streak: number
+  xpProgress: number
+}>()
 
-    const hasRoutineToday = computed((): boolean => {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
+const emit = defineEmits<{
+  'create-routine': []
+}>()
 
-      return routineStore.routines.some(routine => {
-        const routineDate = new Date(routine.createdat);
-        routineDate.setHours(0, 0, 0, 0);
-        return routineDate.getTime() === today.getTime();
-      });
-    });
+const routineStore = useRoutineStore()
+const showRestDialog = ref(false)
+const showStats = ref(false)
 
-    const handleCreateRoutine = (): void => {
-      if (hasRoutineToday.value) {
-        showRestDialog.value = true;
-      } else {
-        emit('create-routine');
-      }
-    };
+const hasRoutineToday = computed((): boolean => {
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  return routineStore.routines.some(routine => {
+    const routineDate = new Date(routine.createdat)
+    routineDate.setHours(0, 0, 0, 0)
+    return routineDate.getTime() === today.getTime()
+  })
+})
 
-    return {
-      showRestDialog,
-      showStats,
-      handleCreateRoutine,
-      hasRoutineToday
-    };
+function handleCreateRoutine(): void {
+  if (hasRoutineToday.value) {
+    showRestDialog.value = true
+  } else {
+    emit('create-routine')
   }
-});
+}
 </script>
 
 <style scoped>

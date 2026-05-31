@@ -14,12 +14,12 @@ const emit = defineEmits(['close'])
 
 const dialogVisible = ref(props.isVisible)
 
-// 🔄 Sincroniza visibilidad con la prop
+//Sincroniza visibilidad con la prop
 watch(() => props.isVisible, (val) => {
   dialogVisible.value = val
 })
 
-// 🔄 Notifica al padre si el popup se cierra desde dentro
+// Notifica al padre si el popup se cierra desde dentro
 watch(dialogVisible, (val) => {
   if (!val) emit('close')
 })
@@ -28,7 +28,7 @@ const store = useUserStore()
 const roomStore = useRoomStore()
 const loggedUser = ref(store.loggedUser)
 
-// Snackbar state
+// Estado del snackbar para mostrar mensajes de éxito o error
 const snackbar = ref(false)
 const snackbarText = ref('')
 const snackbarColor = ref('success')
@@ -58,7 +58,7 @@ function closePopup() {
   dialogVisible.value = false
   resetForm()
 }
-
+// Reiniciar el formulario a su estado inicial
 function resetForm() {
   roomName.value = ''
   roomDescription.value = ''
@@ -69,24 +69,29 @@ function resetForm() {
   minConsistency.value = 0
   error.value = ''
 }
-
+// Validar los campos del formulario antes de enviar la solicitud de creación de sala
 function validateInputs(): boolean {
+  // Validar que el nombre de la sala no esté vacío
   if (!roomName.value.trim()) {
     error.value = t('room_name_required')
     return false
   }
+  // Validar que la fecha del evento esté seleccionada
   if (!roomDate.value) {
     error.value = t('event_date_required')
     return false
   }
+  // Validar que la ubicación no esté vacía
   if (!roomLocalization.value) {
     error.value = t('location_required')
     return false
   }
+  // Validar que el nivel mínimo sea un número válido y mayor o igual a 1
   if (minLevel.value === null || isNaN(minLevel.value) || minLevel.value < 1) {
     error.value = t('min_level_error')
     return false
   }
+  // Validar que las stats mínimas sean un número válido y mayor o igual a 0
   if (minStats.value === null || isNaN(minStats.value) || minStats.value < 0) {
     error.value = t('min_stats_error')
     return false
@@ -96,9 +101,9 @@ function validateInputs(): boolean {
 
 async function createRoom() {
   error.value = ''
-
+  // Si no pasan las validaciones, no se intenta crear la sala y se muestra el error correspondiente
   if (!validateInputs()) return
-
+  // Verificar que el usuario esté logueado antes de intentar crear la sala
   if (!loggedUser.value?.id) {
     error.value = t('user_not_logged_in')
     logger.error(error.value)
@@ -107,7 +112,7 @@ async function createRoom() {
 
   // Usar la fecha directamente en formato YYYY-MM-DD
   const dateString = roomDate.value // Formato: "2026-01-30"
-
+  // Crear el objeto de la nueva sala con los datos del formulario
   const newRoom = {
     name: roomName.value.trim(),
     description: roomDescription.value.trim() || t('room_no_description'),
@@ -118,7 +123,8 @@ async function createRoom() {
     minconsistency: minConsistency.value as number,
   }
 
-  try {
+  try { 
+  // Se crea la sala y se da mensaje de exito, si hay error se muestra mensaje de error y se loguea el error                      
     await roomStore.createRoom(newRoom, loggedUser.value.id)
     showSnackbar(t('room_created_success'), 'success')
     closePopup()
@@ -131,14 +137,8 @@ async function createRoom() {
 </script>
 
 <template>
-  <v-dialog 
-    v-model="dialogVisible" 
-    max-width="680" 
-    persistent
-    transition="dialog-bottom-transition"
-    :fullscreen="$vuetify.display.mobile"
-    scrollable
-  >
+  <v-dialog v-model="dialogVisible" max-width="680" persistent transition="dialog-bottom-transition"
+    :fullscreen="$vuetify.display.mobile" scrollable>
     <v-card class="create-room-card">
       <!-- Header con gradiente -->
       <div class="card-header">
@@ -151,13 +151,8 @@ async function createRoom() {
             <p class="card-subtitle">{{ $t('configure_new_room') }}</p>
           </div>
         </div>
-        
-        <v-btn
-          icon
-          class="close-btn"
-          @click="closePopup"
-          size="small"
-        >
+
+        <v-btn icon class="close-btn" @click="closePopup" size="small">
           <v-icon size="20">mdi-close</v-icon>
         </v-btn>
       </div>
@@ -166,13 +161,7 @@ async function createRoom() {
         <v-form @submit.prevent="createRoom" ref="formRef">
           <!-- Error Alert -->
           <transition name="slide-fade">
-            <v-alert 
-              v-if="error" 
-              type="error" 
-              class="error-alert"
-              closable
-              @click:close="error = ''"
-            >
+            <v-alert v-if="error" type="error" class="error-alert" closable @click:close="error = ''">
               <div class="d-flex align-center">
                 <v-icon class="mr-2" size="20">mdi-alert-circle</v-icon>
                 <span class="error-text">{{ error }}</span>
@@ -186,16 +175,8 @@ async function createRoom() {
               <v-icon size="18" class="label-icon">mdi-door-open</v-icon>
               {{ $t('nombre de la sala') }}
             </label>
-            <v-text-field
-              v-model="roomName"
-              :placeholder="$t('insertar nombre de la sala')"
-              required
-              variant="outlined"
-              density="comfortable"
-              class="custom-field"
-              bg-color="rgba(255, 255, 255, 0.05)"
-              hide-details
-            >
+            <v-text-field v-model="roomName" :placeholder="$t('insertar nombre de la sala')" required variant="outlined"
+              density="comfortable" class="custom-field" bg-color="rgba(255, 255, 255, 0.05)" hide-details>
               <template v-slot:prepend-inner>
                 <v-icon color="#00ff88" size="20">mdi-format-text</v-icon>
               </template>
@@ -208,18 +189,9 @@ async function createRoom() {
               <v-icon size="18" class="label-icon">mdi-text-box</v-icon>
               {{ $t('descripcion') }}
             </label>
-            <v-textarea
-              v-model="roomDescription"
-              :placeholder="$t('descripcion de la sala')"
-              variant="outlined"
-              density="comfortable"
-              class="custom-field custom-textarea"
-              bg-color="rgba(255, 255, 255, 0.05)"
-              hide-details
-              rows="3"
-              auto-grow
-              max-rows="5"
-            >
+            <v-textarea v-model="roomDescription" :placeholder="$t('descripcion de la sala')" variant="outlined"
+              density="comfortable" class="custom-field custom-textarea" bg-color="rgba(255, 255, 255, 0.05)"
+              hide-details rows="3" auto-grow max-rows="5">
               <template v-slot:prepend-inner>
                 <v-icon color="#6366f1" size="20">mdi-pencil</v-icon>
               </template>
@@ -232,17 +204,9 @@ async function createRoom() {
               <v-icon size="18" class="label-icon">mdi-calendar-clock</v-icon>
               {{ $t('fecha del evento') }}
             </label>
-            <v-text-field
-              v-model="roomDate"
-              type="date"
-              :min="getMinDate()"
-              required
-              variant="outlined"
-              density="comfortable"
-              class="custom-field custom-date-field"
-              bg-color="rgba(255, 255, 255, 0.05)"
-              hide-details
-            >
+            <v-text-field v-model="roomDate" type="date" :min="getMinDate()" required variant="outlined"
+              density="comfortable" class="custom-field custom-date-field" bg-color="rgba(255, 255, 255, 0.05)"
+              hide-details>
               <template v-slot:prepend-inner>
                 <v-icon color="#f59e0b" size="20">mdi-calendar</v-icon>
               </template>
@@ -255,16 +219,9 @@ async function createRoom() {
               <v-icon size="18" class="label-icon">mdi-map-marker</v-icon>
               {{ $t('location_label') }}
             </label>
-            <v-text-field
-              v-model="roomLocalization"
-              :placeholder="$t('location_placeholder')"
-              required
-              variant="outlined"
-              density="comfortable"
-              class="custom-field custom-location-field"
-              bg-color="rgba(255, 255, 255, 0.05)"
-              hide-details
-            >
+            <v-text-field v-model="roomLocalization" :placeholder="$t('location_placeholder')" required
+              variant="outlined" density="comfortable" class="custom-field custom-location-field"
+              bg-color="rgba(255, 255, 255, 0.05)" hide-details>
               <template v-slot:prepend-inner>
                 <v-icon color="#10b981" size="20">mdi-map-marker-radius</v-icon>
               </template>
@@ -285,17 +242,8 @@ async function createRoom() {
                   <v-icon size="16" class="label-icon">mdi-chevron-triple-up</v-icon>
                   {{ $t('nivel minimo') }}
                 </label>
-                <v-text-field
-                  v-model.number="minLevel"
-                  type="number"
-                  min="1"
-                  required
-                  variant="outlined"
-                  density="comfortable"
-                  class="custom-field"
-                  bg-color="rgba(255, 255, 255, 0.05)"
-                  hide-details
-                >
+                <v-text-field v-model.number="minLevel" type="number" min="1" required variant="outlined"
+                  density="comfortable" class="custom-field" bg-color="rgba(255, 255, 255, 0.05)" hide-details>
                   <template v-slot:prepend-inner>
                     <v-icon color="#00d9ff" size="20">mdi-numeric</v-icon>
                   </template>
@@ -308,17 +256,8 @@ async function createRoom() {
                   <v-icon size="16" class="label-icon">mdi-chart-line</v-icon>
                   {{ $t('Stats Minimas') }}
                 </label>
-                <v-text-field
-                  v-model.number="minStats"
-                  type="number"
-                  min="0"
-                  required
-                  variant="outlined"
-                  density="comfortable"
-                  class="custom-field"
-                  bg-color="rgba(255, 255, 255, 0.05)"
-                  hide-details
-                >
+                <v-text-field v-model.number="minStats" type="number" min="0" required variant="outlined"
+                  density="comfortable" class="custom-field" bg-color="rgba(255, 255, 255, 0.05)" hide-details>
                   <template v-slot:prepend-inner>
                     <v-icon color="#ff6b9d" size="20">mdi-numeric</v-icon>
                   </template>
@@ -331,16 +270,8 @@ async function createRoom() {
                   <v-icon size="16" class="label-icon">mdi-calendar-check</v-icon>
                   {{ $t('min_consistency') }}
                 </label>
-                <v-text-field
-                  v-model.number="minConsistency"
-                  type="number"
-                  min="0"
-                  variant="outlined"
-                  density="comfortable"
-                  class="custom-field"
-                  bg-color="rgba(255, 255, 255, 0.05)"
-                  hide-details
-                >
+                <v-text-field v-model.number="minConsistency" type="number" min="0" variant="outlined"
+                  density="comfortable" class="custom-field" bg-color="rgba(255, 255, 255, 0.05)" hide-details>
                   <template v-slot:prepend-inner>
                     <v-icon color="#ffcc00" size="20">mdi-numeric</v-icon>
                   </template>
@@ -353,22 +284,12 @@ async function createRoom() {
 
       <!-- Action Buttons -->
       <v-card-actions class="card-actions">
-        <v-btn
-          color="secondary"
-          @click="closePopup"
-          variant="outlined"
-          size="large"
-          class="action-btn cancel-button"
-        >
+        <v-btn color="secondary" @click="closePopup" variant="outlined" size="large" class="action-btn cancel-button">
           <v-icon class="btn-icon">mdi-close-circle</v-icon>
           <span class="btn-text">{{ $t('cancelar') }}</span>
         </v-btn>
-        
-        <v-btn
-          @click="createRoom"
-          size="large"
-          class="action-btn create-button"
-        >
+
+        <v-btn @click="createRoom" size="large" class="action-btn create-button">
           <v-icon class="btn-icon">mdi-check-circle</v-icon>
           <span class="btn-text">{{ $t('creacion') }}</span>
         </v-btn>
@@ -377,13 +298,7 @@ async function createRoom() {
   </v-dialog>
 
   <!-- Snackbar -->
-  <v-snackbar
-    v-model="snackbar"
-    :color="snackbarColor"
-    :timeout="3000"
-    location="top"
-    rounded="pill"
-  >
+  <v-snackbar v-model="snackbar" :color="snackbarColor" :timeout="3000" location="top" rounded="pill">
     <div class="d-flex align-center">
       <v-icon class="mr-2">
         {{ snackbarColor === 'success' ? 'mdi-check-circle' : 'mdi-alert-circle' }}
@@ -400,11 +315,11 @@ async function createRoom() {
   border: 1px solid rgba(0, 255, 136, 0.2);
   border-radius: 24px !important;
   overflow: hidden;
-  box-shadow: 
+  box-shadow:
     0 20px 60px rgba(0, 0, 0, 0.5),
     0 0 0 1px rgba(255, 255, 255, 0.1) inset;
   animation: fadeIn 0.3s ease-out;
-  
+
 }
 
 /* Header */
@@ -714,6 +629,7 @@ async function createRoom() {
     opacity: 0;
     transform: scale(0.95);
   }
+
   to {
     opacity: 1;
     transform: scale(1);
@@ -721,10 +637,13 @@ async function createRoom() {
 }
 
 @keyframes iconPulse {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: scale(1);
     box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.5);
   }
+
   50% {
     transform: scale(1.05);
     box-shadow: 0 0 0 10px rgba(0, 255, 136, 0);
@@ -756,7 +675,7 @@ async function createRoom() {
   .requirements-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .header-content {
     flex-direction: row;
   }
@@ -779,7 +698,7 @@ async function createRoom() {
   .card-title {
     font-size: 1.1rem;
   }
-  
+
   .card-subtitle {
     font-size: 0.75rem;
   }

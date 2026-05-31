@@ -101,18 +101,9 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import type { CaloriesResult } from '@/components/Models/Health'
 
 const { t } = useI18n()
-
-interface CaloriesResult {
-  bmr: number
-  tdee: number
-  macros: {
-    protein: number
-    carbs: number
-    fat: number
-  }
-}
 
 // Props
 interface Props {
@@ -144,7 +135,7 @@ const genderOptions = computed(() => [
   { title: t('female'), value: 'female' },
 ])
 
-const activityOptions = computed(() => [
+const activityOptions = computed(() => [ // Definir opciones de actividad 
   { title: t('sedentary'), value: 'sedentary' },
   { title: t('light'), value: 'light' },
   { title: t('moderate'), value: 'moderate' },
@@ -152,20 +143,20 @@ const activityOptions = computed(() => [
   { title: t('very_active'), value: 'veryactive' },
 ])
 
-const goalOptions = computed(() => [
+const goalOptions = computed(() => [ // Definir opciones de objetivos con iconos
   { value: 'loss', label: t('loss'), icon: '📉' },
   { value: 'maintenance', label: t('maintenance'), icon: '⚖️' },
   { value: 'gain', label: t('gain_label'), icon: '📈' },
 ])
 
-// Calculate Calories
+// Calcular las calorías en base a los parámetos ingresados y el peso/altura del BMI
 const calculateCalories = () => {
   if (!age.value || !props.bmiWeight || !props.bmiHeight) {
     result.value = null
     return
   }
 
-  // Calculate BMR
+  // Calcular el BMI con la fórmula estándar y luego usarlo para calcular el BMR con la fórmula de Harris-Benedict
   let bmr: number
   if (gender.value === 'male') {
     bmr = 88.362 + (13.397 * props.bmiWeight) + (4.799 * props.bmiHeight) - (5.677 * age.value)
@@ -173,7 +164,7 @@ const calculateCalories = () => {
     bmr = 447.593 + (9.247 * props.bmiWeight) + (3.098 * props.bmiHeight) - (4.33 * age.value)
   }
 
-  // Activity multipliers
+  // Agregar variable de cantidad de actividad física para calcular el TDEE
   const activityMultipliers: Record<string, number> = {
     sedentary: 1.2,
     light: 1.375,
@@ -182,18 +173,18 @@ const calculateCalories = () => {
     veryactive: 1.9,
   }
 
-  const tdeeBase = bmr * (activityMultipliers[activity.value] || 1.55)
+  const tdeeBase = bmr * (activityMultipliers[activity.value] || 1.55) // Calcular TDEE base sin ajustes de objetivo
 
-  // Goal adjustments
+  // Ajustar objetivo de calorías según la meta seleccionada (pérdida, mantenimiento o ganancia)
   const goalAdjustments: Record<string, number> = {
     loss: -500,
     maintenance: 0,
     gain: 500,
   }
 
-  const tdee = Math.round(tdeeBase + (goalAdjustments[currentGoal.value] || 0))
+  const tdee = Math.round(tdeeBase + (goalAdjustments[currentGoal.value] || 0)) // Calcular TDEE final con ajuste de objetivo, y redondear el resutlado final 
 
-  // Calculate macros
+  // Calcular los macros en base a los resultados obtenidos 
   const protein = Math.round(props.bmiWeight * 2)
   const fat = Math.round((tdee * 0.3) / 9)
   const carbs = Math.round((tdee - protein * 4 - fat * 9) / 4)

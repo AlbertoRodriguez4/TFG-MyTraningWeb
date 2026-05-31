@@ -1,18 +1,24 @@
 using AA2_CS.Database;
-using AA2_CS.Model;
+using AA2_CS.Model.Entities;
+using AA2_CS.Model.DTOs;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore; // Vital para usar .Include()
-using BCrypt.Net; 
+using Microsoft.EntityFrameworkCore;
+using BCrypt.Net;
 
 namespace AA2_CS.Repository
 {
     public class UserRepository
     {
         private readonly AppDbContext _context;
+        private readonly PurchaseRepository _purchaseRepository;
 
-        public UserRepository(AppDbContext context)
+        private const int BASE_XP = 100;
+        private const double EXPONENT = 1.5;
+
+        public UserRepository(AppDbContext context, PurchaseRepository purchaseRepository)
         {
             _context = context;
+            _purchaseRepository = purchaseRepository;
         }
 
         public int Add(User entity)
@@ -32,10 +38,11 @@ namespace AA2_CS.Repository
             {
                 user.name = entity.name;
                 user.email = entity.email;
-                
+                // Si se proporciona una nueva contraseña, hashearla y actualizarla. Se verifica si el campo de contraseña no está vacío y es diferente al hash actual 
+                // (lo que indicaría que se ha proporcionado una nueva contraseña), y si es así, se hashea la
                 if (!string.IsNullOrEmpty(entity.passwordhash) && entity.passwordhash != user.passwordhash)
                 {
-                     user.passwordhash = BCrypt.Net.BCrypt.HashPassword(entity.passwordhash);
+                    user.passwordhash = BCrypt.Net.BCrypt.HashPassword(entity.passwordhash);
                 }
 
                 user.level = entity.level;
@@ -43,13 +50,12 @@ namespace AA2_CS.Repository
                 user.endurance = entity.endurance;
                 user.consistencystreak = entity.consistencystreak;
                 user.gold = entity.gold;
-                user.experience = entity.experience; // Opcional, pero buena práctica si cambia
-                
+                user.experience = entity.experience;
+
                 // Actualizar referencias de equipo
                 user.equippedStrengthId = entity.equippedStrengthId;
                 user.equippedEnduranceId = entity.equippedEnduranceId;
-                
-                // --- CAMBIO AÑADIDO: Guardar la nueva URL del avatar ---
+
                 user.avatarUrl = entity.avatarUrl;
 
                 _context.SaveChanges();
@@ -67,9 +73,9 @@ namespace AA2_CS.Repository
             user.name = updatedUser.name;
             user.email = updatedUser.email;
 
-            if (!string.IsNullOrEmpty(updatedUser.passwordhash) && updatedUser.passwordhash != user.passwordhash) 
+            if (!string.IsNullOrEmpty(updatedUser.passwordhash) && updatedUser.passwordhash != user.passwordhash)
             {
-                 user.passwordhash = BCrypt.Net.BCrypt.HashPassword(updatedUser.passwordhash);
+                user.passwordhash = BCrypt.Net.BCrypt.HashPassword(updatedUser.passwordhash);
             }
 
             user.level = updatedUser.level;
@@ -78,12 +84,11 @@ namespace AA2_CS.Repository
             user.consistencystreak = updatedUser.consistencystreak;
             user.gold = updatedUser.gold;
             user.experience = updatedUser.experience;
-            
+
             // Actualizar referencias de equipo
             user.equippedStrengthId = updatedUser.equippedStrengthId;
             user.equippedEnduranceId = updatedUser.equippedEnduranceId;
 
-            // --- CAMBIO AÑADIDO: Guardar la nueva URL del avatar ---
             user.avatarUrl = updatedUser.avatarUrl;
 
             try
@@ -137,20 +142,22 @@ namespace AA2_CS.Repository
 
         public User Login(string email, string plainPassword)
         {
+            // Limpiamos el email de espacios extra y lo pasamos a minúsculas
+            string normalizedEmail = email.Trim().ToLower();
+
             var user = _context.Users
                 .Include(u => u.EquippedStrengthItem)
                 .Include(u => u.EquippedEnduranceItem)
-                .FirstOrDefault(u => u.email == email);
+                .FirstOrDefault(u => u.email.ToLower() == normalizedEmail);
 
             if (user == null) return null;
 
             bool isValid = BCrypt.Net.BCrypt.Verify(plainPassword, user.passwordhash);
-
+  
             if (isValid)
             {
                 return user;
             }
-            
             return null;
         }
 
@@ -164,6 +171,8 @@ namespace AA2_CS.Repository
 
         public List<User> GetTopThreeUsers()
         {
+            // Devuelve los 3 usuarios con mayor nivel, incluyendo su equipo equipado. Se ordenan los usuarios por nivel de forma descendente, 
+            // se incluyen las referencias a los objetos de equipo equipado para que estén disponibles en el resultado, y se limita el resultado a los 3 primeros usuarios.
             return _context.Users
                 .AsNoTracking()
                 .Include(u => u.EquippedStrengthItem)
@@ -175,30 +184,131 @@ namespace AA2_CS.Repository
         public async Task<bool> ChangePassword(int userId, string currentPassword, string newPassword)
         {
             var user = await _context.Users.FindAsync(userId);
-            
+
             if (user == null)
-                return false; // Usuario no encontrado
+                return false;
 
-            // 1. Verificamos que la contraseña actual proporcionada coincida con el hash de la BD
             bool isCurrentPasswordValid = BCrypt.Net.BCrypt.Verify(currentPassword, user.passwordhash);
-            
-            if (!isCurrentPasswordValid)
-                return false; // La contraseña actual no coincide
 
-            // 2. Si es válida, hasheamos la nueva contraseña y la guardamos
+            if (!isCurrentPasswordValid)
+                return false;
+
             user.passwordhash = BCrypt.Net.BCrypt.HashPassword(newPassword);
 
             try
             {
                 await _context.SaveChangesAsync();
-                return true; // Contraseña cambiada con éxito
+                return true;
             }
             catch (Exception ex)
             {
-                // Aquí podrías loguear el error si tienes un logger configurado
-                Console.WriteLine($"Error al cambiar contraseña: {ex.Message}");
                 return false;
             }
+        }
+
+        public int GetXpRequiredForNextLevel(int currentLevel)
+        {
+            return (int)Math.Floor(BASE_XP * Math.Pow(currentLevel, EXPONENT));
+        }
+
+        public void AddExperience(int userId, int xpGained)
+        {
+            var user = FindById(userId);
+            if (user == null) return;
+
+            user.experience += xpGained;
+
+            int xpRequired = GetXpRequiredForNextLevel(user.level);
+
+            while (user.experience >= xpRequired)
+            {
+                user.experience -= xpRequired;
+                user.level++;
+
+                user.gold += 50 * user.level;
+                user.strength += 1;
+
+                xpRequired = GetXpRequiredForNextLevel(user.level);
+            }
+
+            Update(user);
+        }
+
+        public string EquipItem(int userId, int itemId)
+        {
+            var user = FindById(userId);
+            if (user == null) return "User not found";
+
+            var purchases = _purchaseRepository.FindByUserId(userId);
+            var purchase = purchases.FirstOrDefault(p => p.ItemId == itemId);
+
+            if (purchase == null)
+            {
+                return "No posees este objeto, debes comprarlo primero.";
+            }
+
+            string type = purchase.ItemType.ToLower();
+
+            if (type == "strength" || type == "fuerza")
+            {
+                user.equippedStrengthId = itemId;
+            }
+            else if (type == "endurance" || type == "resistencia")
+            {
+                user.equippedEnduranceId = itemId;
+            }
+            else
+            {
+                return "Este tipo de objeto no se puede equipar.";
+            }
+
+            Update(user);
+            return "Item equipped successfully";
+        }
+
+        public string UnequipItem(int userId, string type)
+        {
+            var user = FindById(userId);
+            if (user == null) return "User not found";
+
+            string typeLower = type.ToLower();
+
+            if (typeLower == "strength" || typeLower == "fuerza")
+            {
+                user.equippedStrengthId = null;
+            }
+            else if (typeLower == "endurance" || typeLower == "resistencia")
+            {
+                user.equippedEnduranceId = null;
+            }
+            else
+            {
+                return "Tipo de equipo inválido.";
+            }
+
+            Update(user);
+            return "Item unequipped successfully";
+        }
+
+        public (int totalStrength, int totalEndurance, int xpRequiredForNextLevel, int xpRemaining) GetUserTokenStats(User user)
+        {
+            var purchases = _purchaseRepository.FindByUserId(user.id);
+
+            int bonusStrength = purchases
+                .Where(p => p.ItemType != null && p.ItemType.Equals("Strength", StringComparison.OrdinalIgnoreCase))
+                .Sum(p => p.ItemBonus);
+
+            int bonusEndurance = purchases
+                .Where(p => p.ItemType != null && p.ItemType.Equals("Endurance", StringComparison.OrdinalIgnoreCase))
+                .Sum(p => p.ItemBonus);
+
+            int totalStrength = user.strength + bonusStrength;
+            int totalEndurance = user.endurance + bonusEndurance;
+
+            int xpRequiredForNextLevel = GetXpRequiredForNextLevel(user.level);
+            int xpRemaining = Math.Max(0, xpRequiredForNextLevel - user.experience);
+
+            return (totalStrength, totalEndurance, xpRequiredForNextLevel, xpRemaining);
         }
     }
 }

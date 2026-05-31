@@ -110,7 +110,7 @@ function getUnlockedDate(achievementId: number) {
   const ua = store.userAchievements.find(x => x.achievementId === achievementId);
   return ua?.unlockedAt;
 }
-
+// Función para obtener el color de fondo según la categoría del logro
 function getCategoryColor(category: string) {
   const colors: Record<string, string> = {
     strength: 'red',
@@ -126,7 +126,8 @@ function getCategoryColor(category: string) {
 function getProgress(achievement: any) {
   const user = userStore.loggedUser;
   if (!user) return 0;
-  let current = 0;
+  let current = 0; // Valor actual del progreso del usuario para el logro, se obtiene según el tipo de requisito del logro
+  // Según el tipo de requisito del logro, se obtiene el valor actual correspondiente del usuario para calcular el progreso
   switch (achievement.requirementType) {
     case 'tasks_completed': current = (user as any).tasksCompleted || 0; break;
     case 'streak_days': current = user.consistencyStreak || 0; break;

@@ -118,16 +118,12 @@ interface Props {
 
 const props = defineProps<Props>();
 
-/**
- * Determina si mostrar mensaje motivacional
- */
+// Computed para mostrar el chip de motivación si el usuario ha completado 5 o más rutinas
 const showMotivation = computed((): boolean => {
   return props.completedRoutines >= 5;
 });
 
-/**
- * Calcula el color de la barra de progreso según el nivel
- */
+// Computed para determinar el color de la barra de progreso según el porcentaje de XP
 const progressColor = computed((): string => {
   if (props.xpProgress >= 80) return 'success';
   if (props.xpProgress >= 50) return 'purple';

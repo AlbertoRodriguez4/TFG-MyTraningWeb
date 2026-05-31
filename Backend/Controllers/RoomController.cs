@@ -1,4 +1,5 @@
-using AA2_CS.Model;
+using AA2_CS.Model.Entities;
+using AA2_CS.Model.DTOs;
 using AA2_CS.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,13 +12,11 @@ namespace AA2_CS.Controllers
     public class RoomController : ControllerBase
     {
         private readonly RoomService _roomService;
-        private readonly NotificationService _notificationService;
         private readonly IServiceProvider _serviceProvider;
 
-        public RoomController(RoomService roomService, NotificationService notificationService, IServiceProvider serviceProvider)
+        public RoomController(RoomService roomService, IServiceProvider serviceProvider)
         {
             _roomService = roomService;
-            _notificationService = notificationService;
             _serviceProvider = serviceProvider;
         }
 
@@ -52,7 +51,6 @@ namespace AA2_CS.Controllers
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"Error al enviar notificación de sala: {ex.Message}");
                     }
                 });
 

@@ -1,6 +1,6 @@
 namespace AA2_CS.Controllers;
 
-using AA2_CS.Model;
+using AA2_CS.Model.Entities;
 using AA2_CS.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
@@ -30,6 +30,7 @@ public class TaskController : ControllerBase
         }
 
         task.userId = userId.Value;
+        task.id = 0;
         var result = _tasksService.Add(task);
         return result > 0 ? Ok(task) : BadRequest("Failed to add task");
     }

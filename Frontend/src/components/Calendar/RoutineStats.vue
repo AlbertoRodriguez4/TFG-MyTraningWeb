@@ -137,20 +137,8 @@ import { ref, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoutineStore } from '@/stores/RoutineStore';
 import type { Routines } from '@/components/Models/Routines';
+import type { MonthlyStats } from '@/components/Models/Calendar';
 import MonthDetailDialog from './MonthDetailDialog.vue';
-
-interface MonthlyStats {
-  key: string;
-  name: string;
-  year: number;
-  month: number;
-  total: number;
-  completed: number;
-  pending: number;
-  completionRate: number;
-  totalXP: number;
-  routines: Routines[];
-}
 
 interface Props {
   modelValue: boolean;

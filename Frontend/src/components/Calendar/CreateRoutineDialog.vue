@@ -381,11 +381,10 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import type { Routines } from '../Models/Routines';
+import type { Routines, DifficultyLevel, TrainingType } from '../Models/Routines';
 
 const { t } = useI18n();
 
-// Props
 interface Props {
   value?: boolean;
   selectedDay?: number | null;
@@ -404,7 +403,6 @@ const props = withDefaults(defineProps<Props>(), {
   routineExercises: ''
 });
 
-// Emits
 interface Emits {
   (e: 'input', value: boolean): void;
   (e: 'close'): void;
@@ -413,23 +411,6 @@ interface Emits {
 
 const emit = defineEmits<Emits>();
 
-// Types
-interface DifficultyLevel {
-  value: number;
-  label: string;
-  icon: string;
-  color: string;
-  xpBonus: number;
-}
-
-interface TrainingType {
-  value: string;
-  label: string;
-  icon: string;
-  color: string;
-  description: string;
-}
-
 // Data
 const creating = ref(false);
 const selectedDifficulty = ref(1);
@@ -437,7 +418,7 @@ const estimatedDuration = ref(60);
 const localRoutineName = ref('');
 const localRoutineExercises = ref('');
 const trainingFocus = ref('strength'); // NUEVO
-
+// Miveles de dificultad con bonificaciones de XP (cuanto más difícil, más XP)
 const difficultyLevels = computed<DifficultyLevel[]>(() => [
   {
     value: 0,
@@ -462,7 +443,7 @@ const difficultyLevels = computed<DifficultyLevel[]>(() => [
   }
 ]);
 
-// NUEVO: Tipos de entrenamiento
+// Tipos de entrenamiento con descripciones
 const trainingTypes = computed<TrainingType[]>(() => [
   {
     value: 'strength',
@@ -487,11 +468,11 @@ const trainingTypes = computed<TrainingType[]>(() => [
   }
 ]);
 
-// Computed
+// Devuelve un string formateado con el día y el mes para mostrar en el header del diálogo
 const formatDate = computed(() => {
   return `${props.selectedDay} ${t('common.of')} ${props.monthName}`;
 });
-
+// Comprobar si la fecha seleccionada es pasada para mostrar una advertencia y deshabilitar la creación de la rutina
 const isPastDate = computed(() => {
   if (!props.selectedDate) return false;
   const today = new Date();
@@ -500,22 +481,22 @@ const isPastDate = computed(() => {
   selected.setHours(0, 0, 0, 0);
   return selected.getTime() < today.getTime();
 });
-
+// El formulario es válido si el nombre, los ejercicios, el enfoque de entrenamiento están completos y la fecha no es pasada
 const isFormValid = computed(() => {
   return localRoutineName.value && localRoutineExercises.value && trainingFocus.value && !isPastDate.value;
 });
-
+// Calcular bonificación de XP basada en la duración estimada (cuanto más larga, más XP, con un máximo de +40 XP a 120 minutos)
 const durationBonus = computed(() => {
   return Math.floor(estimatedDuration.value / 15) * 10;
 });
-
+// Calcular XP total basado en la dificultad y la duración
 const calculatedXP = computed(() => {
   const baseXP = 100;
   const difficultyBonus = difficultyLevels.value[selectedDifficulty.value]?.xpBonus ?? 0;
   return baseXP + difficultyBonus + durationBonus.value;
 });
 
-// NUEVO: Calcular recompensas según el tipo de entrenamiento
+// Calcular recompensas adicionales basadas en el enfoque de entrenamiento y el XP total
 const calculatedRewards = computed(() => {
   const rewards = {
     strength: 0,
@@ -525,13 +506,13 @@ const calculatedRewards = computed(() => {
     streak: 1
   };
 
-  if (trainingFocus.value === 'strength') {
+  if (trainingFocus.value === 'strength') { // Si el enfoque es fuerza, otorga más puntos de fuerza
     rewards.strength = Math.floor(calculatedXP.value / 10);
   } else if (trainingFocus.value === 'endurance') {
-    rewards.endurance = Math.floor(calculatedXP.value / 10);
+    rewards.endurance = Math.floor(calculatedXP.value / 10); // Si el enfoque es resistencia, otorga más puntos de resistencia
   } else if (trainingFocus.value === 'ambas') {
-    rewards.strength = Math.floor(calculatedXP.value / 20);
-    rewards.endurance = Math.floor(calculatedXP.value / 20);
+    rewards.strength = Math.floor(calculatedXP.value / 20); // Si el enfoque es híbrido, otorga puntos de fuerza y resistencia pero en menor cantidad
+    rewards.endurance = Math.floor(calculatedXP.value / 20); // Si el enfoque es híbrido, otorga puntos de fuerza y resistencia pero en menor cantidad
   }
 
   rewards.level = Math.floor(calculatedXP.value / 100);
@@ -539,17 +520,18 @@ const calculatedRewards = computed(() => {
   return rewards;
 });
 
-// NUEVO: Tamaño de columna dinámico según recompensas visibles
+// Calcular el tamaño de las columnas para las recompensas dinámicamente según cuántas recompensas se muestren (XP, Monedas, Fuerza, Resistencia, Racha)
 const rewardColumnSize = computed(() => {
   const visibleRewards = 3 + // XP, Monedas, Racha (siempre visibles)
-    (calculatedRewards.value.strength > 0 ? 1 : 0) +
-    (calculatedRewards.value.endurance > 0 ? 1 : 0);
+    (calculatedRewards.value.strength > 0 ? 1 : 0) + // Fuerza (solo si se otorgan puntos de fuerza)
+    (calculatedRewards.value.endurance > 0 ? 1 : 0); // Resistencia (solo si se otorgan puntos de resistencia)
 
   // Si hay 4 recompensas, usar md="3", si hay 5, usar md="2.4" (aproximado a 3)
   return visibleRewards === 5 ? 3 : 3;
 });
 
-// Watch
+// Sincronizar los props con los datos locales cuando se abre el diálogo para editar una rutina existente, esto espera a cuando el diálogo se abra (props.value cambie a true) 
+// y solo actualiza los campos si están vacíos para no sobrescribir lo que el usuario ya haya escrito
 watch(() => props.value, (newVal) => {
   if (newVal && !localRoutineName.value && !localRoutineExercises.value) {
     localRoutineName.value = props.routineName || '';
@@ -557,12 +539,14 @@ watch(() => props.value, (newVal) => {
   }
 });
 
-// Methods
+// Cerrar diálogo y emitir evento de cierre para que el padre pueda manejarlo (por ejemplo, para limpiar campos o actualizar la vista)
 const handleClose = () => {
   emit('input', false);
   emit('close');
 };
-
+// Crear la rutina, primero verifica que el formulario sea válido, luego simula un proceso de creación (con un pequeño delay para mostrar el estado de carga) y 
+// finalmente emite el evento 'create' con el nuevo objeto de rutina que cumple con la interfaz Routines, incluyendo la fecha seleccionada o la fecha actual si no se 
+// seleccionó ninguna fecha. Después de crear la rutina, resetea los campos del formulario para que estén listos para una nueva creación.
 const handleCreate = async () => {
   if (!isFormValid.value) return;
 
@@ -571,7 +555,7 @@ const handleCreate = async () => {
   await new Promise(resolve => setTimeout(resolve, 500));
 
   // Crear objeto que cumple con la interfaz Routines
-  // Usar la fecha seleccionada en el calendario, o hoy si no hay fecha
+  // Usar la fecha seleccionada en el calendario, u hoy si no hay fecha
   const routineDate = props.selectedDate ? new Date(props.selectedDate) : new Date();
   const newRoutine: Routines = {
     id: 0,

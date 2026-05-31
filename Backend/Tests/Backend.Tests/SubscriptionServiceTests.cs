@@ -8,6 +8,7 @@ public class SubscriptionServiceTests
     [Fact]
     public void PurchaseSubscription_SiYaExisteActiva_LanzaExcepcion()
     {
+        // Prueba que al intentar comprar una suscripción para un usuario que ya tiene una suscripción activa, se lanza una excepción. Se espera que se lance una InvalidOperationException indicando que el usuario ya tiene una suscripción activa.
         using var context = TestDbContextFactory.CreateContext();
         var repo = new SubscriptionRepository(context);
         var service = new SubscriptionService(repo);
@@ -23,6 +24,7 @@ public class SubscriptionServiceTests
     [Fact]
     public void PurchaseSubscription_CreaSuscripcionActiva()
     {
+        // Prueba que al comprar una suscripción para un usuario sin suscripción activa, se crea una nueva suscripción activa correctamente. Se espera que el ID de la suscripción devuelta sea mayor a 0, que la suscripción obtenida por GetActiveSubscription no sea nula y que esté marcada como activa.
         using var context = TestDbContextFactory.CreateContext();
         var repo = new SubscriptionRepository(context);
         var service = new SubscriptionService(repo);

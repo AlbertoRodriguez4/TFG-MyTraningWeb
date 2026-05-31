@@ -34,7 +34,7 @@ Antes de iniciar el despliegue, asegurate de contar con lo siguiente:
    aws eks update-kubeconfig --name mi-cluster --region us-east-1
    ```
 5. **Docker Hub** con las imagenes creadas:
-   - Frontend: `albertorodriguezpenalva/asdftest:latest`
+   - Frontend: `albertorodriguezpenalva/front-aws:latest`
    - Backend: `albertorodriguezpenalva/back-aws:latest`
 6. **Instancia RDS de PostgreSQL** (recomendado para produccion) con la base de datos `postgres` creada.
 
@@ -86,8 +86,8 @@ Si necesitas desplegar manualmente desde tu maquina local:
 ```bash
 # Construir y subir imagen
 cd Frontend
-docker build -t albertorodriguezpenalva/asdftest:latest .
-docker push albertorodriguezpenalva/asdftest:latest
+docker build -t albertorodriguezpenalva/front-aws:latest .
+docker push albertorodriguezpenalva/front-aws:latest
 
 # Desplegar en EKS
 kubectl apply -f manifest/front-deployment.yml

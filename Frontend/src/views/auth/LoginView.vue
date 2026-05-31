@@ -3,6 +3,9 @@ import { ref, onMounted } from 'vue'
 import { useUserStore } from '@/stores/userStore'
 import { useRouter } from 'vue-router'
 import { useAuthValidation } from '@/composables/useAuthValidation'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const REMEMBER_EMAIL_KEY = 'remember_email'
 const REMEMBER_FLAG_KEY = 'remember_me'
@@ -29,7 +32,7 @@ const showSnackbar = (message: string, color = 'error') => {
   snackbar.value = true
 }
 
-// ── Al montar: recuperar email guardado ──────────────────────────────────────
+//  Al montar: recuperar email guardado 
 onMounted(() => {
   const savedFlag = localStorage.getItem(REMEMBER_FLAG_KEY)
   const savedEmail = localStorage.getItem(REMEMBER_EMAIL_KEY)
@@ -44,7 +47,7 @@ const togglePasswordVisibility = () => {
   showPassword.value = !showPassword.value
 }
 
-// ── Guardar / limpiar email según la preferencia ─────────────────────────────
+//  Guardar / limpiar email según la preferencia 
 function applyRememberMe(emailValue: string) {
   if (rememberMe.value) {
     localStorage.setItem(REMEMBER_FLAG_KEY, 'true')
@@ -55,6 +58,7 @@ function applyRememberMe(emailValue: string) {
   }
 }
 
+// Función principal de login
 async function handleLogin() {
   errorMessage.value = ''
   isLoading.value = true
@@ -62,15 +66,15 @@ async function handleLogin() {
 
   const emailTrimmed = email.value.trim()
   const passwordTrimmed = password.value.trim()
-
+  // Validaciones básicas antes de llamar al store
   if (!validateEmail(emailTrimmed)) {
-    showSnackbar(errors.email || 'Email inválido', 'warning')
+    showSnackbar(errors.email || t('invalid_email'), 'warning')
     isLoading.value = false
     return
   }
 
   if (!validatePassword(passwordTrimmed)) {
-    showSnackbar(errors.password || 'Contraseña inválida', 'warning')
+    showSnackbar(errors.password || t('invalid_password'), 'warning')
     isLoading.value = false
     return
   }
@@ -79,25 +83,24 @@ async function handleLogin() {
     const loginResult = await store.loginUser(emailTrimmed, passwordTrimmed)
 
     if (loginResult.success && store.loggedUser?.email === emailTrimmed) {
-      // Guardar o limpiar el email según la preferencia ANTES de redirigir
       applyRememberMe(emailTrimmed)
 
-      showSnackbar('¡Bienvenido de vuelta, entrenador!', 'success')
+      showSnackbar(t('welcome_back_train'), 'success')
       setTimeout(() => { router.push('/homeLogged') }, 1500)
     } else if (loginResult.requiresEmailVerification) {
-      showSnackbar(loginResult.message || 'Debes verificar tu correo antes de iniciar sesión.', 'warning')
+      showSnackbar(loginResult.message || t('must_verify_email'), 'warning')
       setTimeout(() => {
         router.push({ name: 'verifyEmail', query: { email: emailTrimmed } })
       }, 1200)
     } else {
-      errorMessage.value = 'Usuario o contraseña incorrectos.'
-      showSnackbar('Usuario o contraseña incorrectos. Verifica tus credenciales.', 'error')
+      errorMessage.value = t('invalid_credentials')
+      showSnackbar(t('invalid_credentials_check'), 'error')
       isLoading.value = false
     }
   } catch (error) {
     console.error('Login failed:', error)
-    errorMessage.value = 'Error inesperado. Intenta más tarde.'
-    showSnackbar('Error del servidor. Por favor, intenta más tarde.', 'error')
+    errorMessage.value = t('unexpected_error')
+    showSnackbar(t('server_error'), 'error')
     isLoading.value = false
   }
 }
@@ -114,11 +117,11 @@ async function handleLogin() {
       <div class="header-banner">
         <div class="logo-container">
           <div class="logo-icon">
-            <img src="@/assets/imgs/Logo.png" alt="Training Hub" class="main-logo" />
+            <img src="@/assets/imgs/Logo.png" :alt="$t('title')" class="main-logo" />
           </div>
         </div>
         <h1 class="hero-title">{{ $t('slogan') }}</h1>
-        <p class="hero-subtitle">TU PROGRESO TE ESTÁ ESPERANDO</p>
+        <p class="hero-subtitle">{{ $t('hero_subtitle_login') }}</p>
       </div>
 
       <!-- Content Grid -->
@@ -129,17 +132,17 @@ async function handleLogin() {
             <div class="form-header">
               <div class="status-badge">
                 <span class="badge-dot"></span>
-                <span class="badge-text">ACCESO AL SISTEMA</span>
+                <span class="badge-text">{{ $t('system_access') }}</span>
               </div>
               <h2 class="form-title">{{ $t('title_login') }}</h2>
-              <p class="form-subtitle">Retoma tu entrenamiento donde lo dejaste</p>
+              <p class="form-subtitle">{{ $t('resume_training') }}</p>
             </div>
 
             <v-form @submit.prevent="handleLogin" class="login-form">
               <div class="inputs-container">
                 <!-- Email -->
                 <div class="input-wrapper">
-                  <label class="input-label">EMAIL</label>
+                  <label class="input-label">{{ $t('email_label') }}</label>
                   <v-text-field v-model="email" type="email" :placeholder="$t('placeholder_email')"
                     variant="solo-filled" density="comfortable" color="purple-lighten-2" class="custom-input"
                     hide-details="auto" autocomplete="email" />
@@ -147,7 +150,7 @@ async function handleLogin() {
 
                 <!-- Contraseña -->
                 <div class="input-wrapper">
-                  <label class="input-label">CONTRASEÑA</label>
+                  <label class="input-label">{{ $t('password_label') }}</label>
                   <v-text-field v-model="password" :type="showPassword ? 'text' : 'password'"
                     :placeholder="$t('placeholder_password')" variant="solo-filled" density="comfortable"
                     color="purple-lighten-2" class="custom-input password-input" hide-details="auto"
@@ -169,13 +172,13 @@ async function handleLogin() {
                   <span class="remember-box">
                     <span v-if="rememberMe" class="remember-check">✓</span>
                   </span>
-                  <span class="remember-label">Recordar mi correo</span>
+                  <span class="remember-label">{{ $t('remember_email') }}</span>
                 </button>
 
                 <!-- Indicador visual cuando está activo -->
                 <div v-if="rememberMe" class="remember-active">
                   <span class="ra-dot"></span>
-                  <span class="ra-text">Se guardará al iniciar sesión</span>
+                  <span class="ra-text">{{ $t('will_save_on_login') }}</span>
                 </div>
               </div>
               <!-- ───────────────────────────────────────────────── -->
@@ -184,11 +187,11 @@ async function handleLogin() {
               <div class="quick-info">
                 <div class="info-item">
                   <span class="info-icon">⚡</span>
-                  <span class="info-text">Acceso instantáneo a tus estadísticas</span>
+                  <span class="info-text">{{ $t('instant_stats_access') }}</span>
                 </div>
                 <div class="info-item">
                   <span class="info-icon">🎯</span>
-                  <span class="info-text">Retoma tus entrenamientos y retos</span>
+                  <span class="info-text">{{ $t('resume_workouts') }}</span>
                 </div>
               </div>
 
@@ -206,14 +209,14 @@ async function handleLogin() {
                 </span>
                 <span v-else class="btn-loading">
                   <v-progress-circular indeterminate size="20" width="2" color="white" />
-                  <span>Verificando...</span>
+                  <span>{{ $t('verifying') }}</span>
                 </span>
               </v-btn>
 
               <!-- Separator -->
               <div class="separator">
                 <div class="separator-line"></div>
-                <span class="separator-text">¿PRIMERA VEZ?</span>
+                <span class="separator-text">{{ $t('first_time') }}</span>
                 <div class="separator-line"></div>
               </div>
 
@@ -232,42 +235,42 @@ async function handleLogin() {
         <div class="info-panel">
           <div class="welcome-card">
             <div class="welcome-icon">👋</div>
-            <h3 class="welcome-title">¡Bienvenido de vuelta!</h3>
-            <p class="welcome-desc">Continúa tu viaje hacia tus metas</p>
+            <h3 class="welcome-title">{{ $t('welcome_back') }}</h3>
+            <p class="welcome-desc">{{ $t('continue_journey') }}</p>
           </div>
 
           <div class="info-card">
             <div class="info-icon">🎮</div>
-            <h3 class="info-title">Sistema Gamificado</h3>
-            <p class="info-desc">Gana XP y sube de nivel con cada entrenamiento</p>
+            <h3 class="info-title">{{ $t('gamified_system') }}</h3>
+            <p class="info-desc">{{ $t('gain_xp') }}</p>
           </div>
 
           <div class="info-card">
             <div class="info-icon">👥</div>
-            <h3 class="info-title">Entrena en Grupo</h3>
-            <p class="info-desc">Únete a salas y motívense juntos</p>
+            <h3 class="info-title">{{ $t('train_group') }}</h3>
+            <p class="info-desc">{{ $t('join_rooms') }}</p>
           </div>
 
           <div class="info-card">
             <div class="info-icon">🏆</div>
-            <h3 class="info-title">Retos Épicos</h3>
-            <p class="info-desc">Desafíos diarios y recompensas exclusivas</p>
+            <h3 class="info-title">{{ $t('epic_challenges') }}</h3>
+            <p class="info-desc">{{ $t('daily_challenges') }}</p>
           </div>
 
           <div class="progress-card">
-            <div class="progress-label">SISTEMA DE PROGRESIÓN</div>
+            <div class="progress-label">{{ $t('progression_system') }}</div>
             <div class="progress-items">
               <div class="progress-item">
                 <span class="progress-icon">⚡</span>
-                <span class="progress-name">Niveles</span>
+                <span class="progress-name">{{ $t('levels') }}</span>
               </div>
               <div class="progress-item">
                 <span class="progress-icon">🪙</span>
-                <span class="progress-name">Monedas</span>
+                <span class="progress-name">{{ $t('coins') }}</span>
               </div>
               <div class="progress-item">
                 <span class="progress-icon">💪</span>
-                <span class="progress-name">Atributos</span>
+                <span class="progress-name">{{ $t('attributes') }}</span>
               </div>
             </div>
           </div>
@@ -284,7 +287,7 @@ async function handleLogin() {
         <span>{{ snackbarMessage }}</span>
       </div>
       <template #actions>
-        <v-btn variant="text" @click="snackbar = false" size="small">Cerrar</v-btn>
+        <v-btn variant="text" @click="snackbar = false" size="small">{{ $t('close') }}</v-btn>
       </template>
     </v-snackbar>
   </div>

@@ -1,4 +1,4 @@
-using AA2_CS.Model;
+using AA2_CS.Model.Entities;
 using AA2_CS.Repository;
 
 namespace Backend.Tests;
@@ -8,6 +8,7 @@ public class ItemRepositoryTests
     [Fact]
     public void FindByCharacteristic_IgnoraMayusculas()
     {
+        // Prueba que el método FindByCharacteristic devuelve resultados sin importar mayúsculas o minúsculas en el nombre del item. Se espera que al buscar "mancuerna", se encuentre el item "Mancuerna Pro".
         using var context = TestDbContextFactory.CreateContext();
         var repo = new ItemRepository(context);
         context.Items.AddRange(
@@ -25,6 +26,7 @@ public class ItemRepositoryTests
     [Fact]
     public async System.Threading.Tasks.Task UpdateByIdAsync_ActualizaItemExistente()
     {
+        // Prueba que el método UpdateByIdAsync actualiza correctamente un item existente. Se espera que después de la actualización, el item tenga los nuevos valores proporcionados.
         using var context = TestDbContextFactory.CreateContext();
         var repo = new ItemRepository(context);
         var item = new Item { name = "Viejo", type = "Strength", bonus = 1, price = 5 };
@@ -49,6 +51,7 @@ public class ItemRepositoryTests
     [Fact]
     public void GetRandomStrengthItems_DevuelveSoloStrength()
     {
+        // Prueba que el método GetRandomStrengthItems devuelve solo items del tipo "Strength". Se espera que todos los items devueltos tengan el tipo "Strength" y cambien cada vez que se ejecuta.
         using var context = TestDbContextFactory.CreateContext();
         var repo = new ItemRepository(context);
         context.Items.AddRange(

@@ -1,4 +1,4 @@
-using AA2_CS.Model;
+using AA2_CS.Model.Entities;
 using AA2_CS.Repository;
 using AA2_CS.Service;
 using ModelTask = AA2_CS.Model.Task;
@@ -10,6 +10,7 @@ public class TasksServiceTests
     [Fact]
     public async System.Threading.Tasks.Task CompleteTask_SiNoExiste_DevuelveTaskNotFound()
     {
+        // Prueba que al intentar completar una tarea que no existe en la base de datos, el método CompleteTask devuelve un mensaje indicando que la tarea no fue encontrada. Se espera que el resultado devuelto sea "Task not found".
         using var context = TestDbContextFactory.CreateContext();
         var service = CrearService(context);
 
@@ -21,6 +22,7 @@ public class TasksServiceTests
     [Fact]
     public async System.Threading.Tasks.Task CompleteTask_SiYaEstaCompletada_DevuelveMensaje()
     {
+        // Prueba que al intentar completar una tarea que ya está marcada como completada, el método CompleteTask devuelve un mensaje indicando que la tarea ya fue completada. Se espera que el resultado devuelto sea "Task is already completed".
         using var context = TestDbContextFactory.CreateContext();
         var user = TestDbContextFactory.CrearUsuarioBasico("task1@test.com");
         context.Users.Add(user);
@@ -48,6 +50,7 @@ public class TasksServiceTests
     [Fact]
     public async System.Threading.Tasks.Task CompleteTask_SiUsuarioNoExiste_DevuelveUserNotFound()
     {
+        // Prueba que al intentar completar una tarea cuyo usuario asociado no existe en la base de datos, el método CompleteTask devuelve un mensaje indicando que el usuario no fue encontrado. Se espera que el resultado devuelto sea "User not found". 
         using var context = TestDbContextFactory.CreateContext();
         var task = new ModelTask
         {
@@ -72,6 +75,7 @@ public class TasksServiceTests
     [Fact]
     public async System.Threading.Tasks.Task CompleteTask_Strength_AplicaRecompensasYOroYXp()
     {
+        // Prueba que al completar una tarea de entrenamiento de fuerza, se aplican correctamente las recompensas al usuario, incluyendo el aumento de fuerza, la ganancia de oro y experiencia, y la actualización de la racha de consistencia. Se espera que después de completar la tarea, el usuario tenga un aumento en su atributo de fuerza, una cantidad específica de oro y experiencia ganados, y que su racha de consistencia se incremente si la tarea anterior también fue completada consecutivamente.
         using var context = TestDbContextFactory.CreateContext();
         var user = TestDbContextFactory.CrearUsuarioBasico("task2@test.com");
         user.strength = 10;
@@ -110,6 +114,7 @@ public class TasksServiceTests
     [Fact]
     public async System.Threading.Tasks.Task CompleteTask_ConTareaPreviaConsecutiva_IncrementaRacha()
     {
+        // Prueba que al completar una tarea con una tarea previa completada de forma consecutiva, la racha de consistencia del usuario se incrementa correctamente. Se espera que después de completar la tarea actual, la racha de consistencia del usuario sea mayor que antes, reflejando la continuidad en la realización de tareas.
         using var context = TestDbContextFactory.CreateContext();
         var user = TestDbContextFactory.CrearUsuarioBasico("task3@test.com");
         user.consistencystreak = 1;
@@ -151,6 +156,7 @@ public class TasksServiceTests
 
     private static TasksService CrearService(AA2_CS.Database.AppDbContext context)
     {
+        // Método auxiliar para crear una instancia de TasksService con los repositorios y servicios necesarios. Se espera que este método configure correctamente las dependencias para permitir la ejecución de las pruebas relacionadas con la gestión de tareas.
         var tasksRepository = new TasksRepository(context);
         var userRepository = new UserRepository(context);
         var purchaseRepository = new PurchaseRepository(context);

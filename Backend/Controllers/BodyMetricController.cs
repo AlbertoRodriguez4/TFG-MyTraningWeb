@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
-using AA2_CS.Model;
+using AA2_CS.Model.Entities;
+using AA2_CS.Model.DTOs;
 using AA2_CS.Services;
 
 [ApiController]
@@ -9,12 +10,10 @@ using AA2_CS.Services;
 public class BodyMetricController : ControllerBase
 {
     private readonly BodyMetricService _service;
-    private readonly AuthService _authService;
 
-    public BodyMetricController(BodyMetricService service, AuthService authService)
+    public BodyMetricController(BodyMetricService service)
     {
         _service = service;
-        _authService = authService;
     }
 
     [HttpGet("my-metrics")]

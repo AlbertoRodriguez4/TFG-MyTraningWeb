@@ -1,4 +1,4 @@
-using AA2_CS.Model;
+using AA2_CS.Model.DTOs;
 using AA2_CS.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

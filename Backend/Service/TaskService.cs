@@ -1,141 +1,56 @@
 using AA2_CS.Repository;
+using AA2_CS.Model.Entities;
+using TaskEntity = AA2_CS.Model.Entities.Task;
 
 namespace AA2_CS.Service
 {
-    public class TasksService : IService<Model.Task>
+    public class TasksService : IService<TaskEntity>
     {
-        private readonly TasksRepository _tasksRepository;
-        private readonly UserRepository _userRepository;
-        private readonly UserService _userService;
-        private readonly AchievementService _achievementService;
+        private readonly TasksRepository _repository;
 
-        public TasksService(TasksRepository tasksRepository, UserRepository userRepository, UserService userService, AchievementService achievementService)
+        public TasksService(TasksRepository repository)
         {
-            _tasksRepository = tasksRepository;
-            _userRepository = userRepository;
-            _userService = userService;
-            _achievementService = achievementService;
+            _repository = repository;
         }
 
-        public int Add(Model.Task entity)
+        public int Add(TaskEntity entity)
         {
-            return _tasksRepository.Add(entity);
+            return _repository.Add(entity);
         }
 
-        public int Delete(Model.Task entity)
+        public int Delete(TaskEntity entity)
         {
-            return _tasksRepository.Delete(entity);
+            return _repository.Delete(entity);
         }
 
-        public List<Model.Task> FindAll()
+        public List<TaskEntity> FindAll()
         {
-            return _tasksRepository.FindAll();
+            return _repository.FindAll();
         }
 
-        public List<Model.Task> FindByCharacteristic(string name)
+        public List<TaskEntity> FindByCharacteristic(string name)
         {
-            return _tasksRepository.FindByCharacteristic(name);
+            return _repository.FindByCharacteristic(name);
         }
 
-        public Model.Task FindById(int id)
+        public TaskEntity FindById(int id)
         {
-            return _tasksRepository.FindById(id);
+            return _repository.FindById(id);
         }
 
-        public int Update(Model.Task entity)
+        public int Update(TaskEntity entity)
         {
-            return _tasksRepository.Update(entity);
+            return _repository.Update(entity);
         }
-        public List<Model.Task> FindByUserId(int userId)
+
+        public List<TaskEntity> FindByUserId(int userId)
         {
-            return _tasksRepository.FindByUserId(userId);
+            return _repository.FindByUserId(userId);
         }
+
         public async System.Threading.Tasks.Task<string> CompleteTask(int taskId)
         {
-            var task = _tasksRepository.FindById(taskId);
-            if (task == null) return "Task not found";
-            if (task.iscompleted) return "Task is already completed";
-
-            var user = _userRepository.FindById(task.userId);
-            if (user == null) return "User not found";
-
-            // 1. Marcar tarea como completada
-            task.iscompleted = true;
-
-            // 2. Dar recompensas de Stats (Lógica original)
-            if (task.trainingfocus == "strength")
-            {
-                user.strength += task.reward / 10;
-            }
-            else if (task.trainingfocus == "endurance")
-            {
-                user.endurance += task.reward / 10;
-            }
-            else if (task.trainingfocus == "ambas")
-            {
-                user.strength += task.reward / 20;
-                user.endurance += task.reward / 20;
-            }
-
-            // 3. Dar Oro
-            user.gold += task.reward;
-
-            // 4. Calcular Racha (Consistencia)
-            var lastCompleted = _tasksRepository.GetLastCompletedTask(user.id, task.id);
-
-            if (lastCompleted != null)
-            {
-                var previousDate = lastCompleted.createdat.Date;
-                var currentDate = task.createdat.Date;
-
-                if ((currentDate - previousDate).TotalDays == 1)
-                {
-                    user.consistencystreak += 1;
-                }
-                else if ((currentDate - previousDate).TotalDays > 1)
-                {
-                    user.consistencystreak = 1;
-                }
-            }
-            else
-            {
-                user.consistencystreak = 1;
-            }
-
-            // 5. Guardar cambios de stats/oro/racha y tarea
-            _tasksRepository.Update(task);
-            _userRepository.Update(user);
-
-            // 6. APLICAR EXPERIENCIA (Usando el nuevo sistema)
-            _userService.AddExperience(user.id, task.reward);
-
-            // 7. VERIFICAR LOGROS
-            await CheckAchievementsAsync(user.id);
-
-            return "Task completed and rewards applied successfully";
-        }
-
-        private async System.Threading.Tasks.Task CheckAchievementsAsync(int userId)
-        {
-            var user = _userRepository.FindById(userId);
-            if (user == null) return;
-
-            // Logros por tareas completadas
-            var completedTasksCount = _tasksRepository.FindByUserId(userId).Count(t => t.iscompleted);
-            await _achievementService.CheckAndUnlockAsync(userId, "tasks_completed", completedTasksCount);
-
-            // Logros por racha
-            await _achievementService.CheckAndUnlockAsync(userId, "streak_days", user.consistencystreak);
-
-            // Logros por nivel
-            await _achievementService.CheckAndUnlockAsync(userId, "level_reached", user.level);
-
-            // Logros por oro
-            await _achievementService.CheckAndUnlockAsync(userId, "gold_earned", user.gold);
-
-            // Logros por stats
-            await _achievementService.CheckAndUnlockAsync(userId, "strength_reached", user.strength);
-            await _achievementService.CheckAndUnlockAsync(userId, "endurance_reached", user.endurance);
+            return await _repository.CompleteTask(taskId);
         }
     }
 }

@@ -131,77 +131,62 @@
     </v-dialog>
 </template>
 
-<script lang="ts">
-import { defineComponent, type PropType, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import type { Routines } from '@/components/Models/Routines';
+<script setup lang="ts">
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import type { Routines } from '@/components/Models/Routines'
 
-export default defineComponent({
-    name: 'RoutineDetailDialog',
-    props: {
-        modelValue: {
-            type: Boolean as PropType<boolean>,
-            required: true
-        },
-        routine: {
-            type: Object as PropType<Routines | null>,
-            default: null
-        }
-    },
-    emits: ['update:modelValue', 'complete'],
-  setup(props, { emit }) {
-    const { t, locale } = useI18n();
-    const showConfirmDialog = ref(false);
+const props = defineProps<{
+    modelValue: boolean
+    routine?: Routines | null
+}>()
 
-        const confirmComplete = () => {
-            if (props.routine) {
-                emit('complete', props.routine.id);
-                showConfirmDialog.value = false;
-            }
-        };
+const emit = defineEmits<{
+    'update:modelValue': [value: boolean]
+    'complete': [id: number]
+}>()
 
-        const getDifficultyText = (difficulty: number): string => {
-            const map: Record<number, string> = {
-                1: t('difficulty.easy'),
-                2: t('difficulty.medium'),
-                3: t('difficulty.hard'),
-                4: t('difficulty.extreme')
-            };
-            return map[difficulty] || t('difficulty.medium');
-        };
+const { t, locale } = useI18n()
+const showConfirmDialog = ref(false)
 
-        const getDifficultyColor = (difficulty: number): string => {
-            const colors: Record<number, string> = {
-                1: '#4CAF50',
-                2: '#FFA726',
-                3: '#EF5350',
-                4: '#7E57C2'
-            };
-            return colors[difficulty] || '#757575';
-        };
-
-        const formatDate = (dateString: string): string => {
-            if (!dateString) return '';
-            const date = new Date(dateString);
-            const options: Intl.DateTimeFormatOptions = {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            };
-            return date.toLocaleDateString(locale.value, options);
-        };
-
-        return {
-            showConfirmDialog,
-            confirmComplete,
-            getDifficultyText,
-            getDifficultyColor,
-            formatDate,
-            t
-        };
+function confirmComplete() {
+    if (props.routine) {
+        emit('complete', props.routine.id)
+        showConfirmDialog.value = false
     }
-});
+}
+
+function getDifficultyText(difficulty: number): string {
+    const map: Record<number, string> = {
+        1: t('difficulty.easy'),
+        2: t('difficulty.medium'),
+        3: t('difficulty.hard'),
+        4: t('difficulty.extreme')
+    }
+    return map[difficulty] || t('difficulty.medium')
+}
+
+function getDifficultyColor(difficulty: number): string {
+    const colors: Record<number, string> = {
+        1: '#4CAF50',
+        2: '#FFA726',
+        3: '#EF5350',
+        4: '#7E57C2'
+    }
+    return colors[difficulty] || '#757575'
+}
+
+function formatDate(dateString: string): string {
+    if (!dateString) return ''
+    const date = new Date(dateString)
+    const options: Intl.DateTimeFormatOptions = {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    }
+    return date.toLocaleDateString(locale.value, options)
+}
 </script>
 
 <style scoped>
@@ -385,9 +370,23 @@ export default defineComponent({
     font-weight: 700;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 960px) {
     .routine-header {
         padding: 20px;
+    }
+
+    .routine-title {
+        font-size: 1.5rem;
+    }
+
+    .header-icon {
+        padding: 10px;
+    }
+}
+
+@media (max-width: 600px) {
+    .routine-header {
+        padding: 16px;
     }
 
     .header-content {
@@ -396,11 +395,25 @@ export default defineComponent({
     }
 
     .routine-title {
-        font-size: 1.5rem;
+        font-size: 1.25rem;
     }
 
     .info-value {
         font-size: 1.25rem;
+    }
+
+    .routine-content {
+        padding: 16px !important;
+    }
+
+    .routine-actions {
+        padding: 12px 16px;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .complete-btn {
+        width: 100%;
     }
 }
 </style>

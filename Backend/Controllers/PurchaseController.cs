@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using AA2_CS.Model;
+using AA2_CS.Model.Entities;
+using AA2_CS.Model.Common;
 using AA2_CS.Service;
 using Microsoft.AspNetCore.Authorization;
 using AA2_CS.Services;
@@ -13,16 +14,13 @@ namespace AA2_CS.Controllers
     {
         private readonly PurchaseService _purchaseService;
         private readonly AuthService _authService;
-        private readonly NotificationService _notificationService;
         private readonly ItemService _itemService;
         private readonly IServiceProvider _serviceProvider;
 
-        // Constructor del controlador, se inyecta el servicio de compras
-        public PurchaseController(PurchaseService purchaseService, AuthService authService, NotificationService notificationService, ItemService itemService, IServiceProvider serviceProvider)
+        public PurchaseController(PurchaseService purchaseService, AuthService authService, ItemService itemService, IServiceProvider serviceProvider)
         {
             _purchaseService = purchaseService;
             _authService = authService;
-            _notificationService = notificationService;
             _itemService = itemService;
             _serviceProvider = serviceProvider;
         }
@@ -82,6 +80,7 @@ namespace AA2_CS.Controllers
                 }
 
                 purchase.userid = userId;
+                purchase.id = 0;
                 var item = _itemService.FindById(purchase.itemid);
                 var id = _purchaseService.Add(purchase); // Agrega una nueva compra
 
@@ -104,7 +103,6 @@ namespace AA2_CS.Controllers
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine($"Error al enviar notificación de compra: {ex.Message}");
                         }
                     });
                 }

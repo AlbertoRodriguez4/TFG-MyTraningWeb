@@ -48,17 +48,9 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
+import type { HistoryItem } from '@/components/Models/Health'
 
 const { locale } = useI18n()
-
-interface HistoryItem {
-  type: 'bmi' | 'calories'
-  date: string
-  bmi?: number
-  tdee?: number
-  weight?: number
-  height?: number
-}
 
 interface Props {
   results: HistoryItem[]
@@ -72,7 +64,7 @@ const emit = defineEmits<{
   'delete': [index: number]
 }>()
 
-// Helpers
+// Ajustar formato de fecha para mostrar el historial de salud de forma más legible y amigable para el usuario
 const formatDate = (dateString: string): string => {
   const date = new Date(dateString)
   return date.toLocaleDateString(locale.value, {
@@ -82,8 +74,8 @@ const formatDate = (dateString: string): string => {
     minute: '2-digit',
   })
 }
-
-const getBMIStatus = (bmiValue?: number): string => {
+// Obtener el estado del BMI para mostrarlo con diferentes colores en el historial de salud
+const getBMIStatus = (bmiValue?: number): string => { 
   if (!bmiValue) return 'normal'
   if (bmiValue < 18.5) return 'underweight'
   if (bmiValue < 25) return 'normal'

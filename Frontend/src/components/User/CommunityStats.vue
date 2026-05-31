@@ -1,18 +1,14 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-
-interface Stats {
-  totalUsers: number
-  activeToday: number
-  totalCheckIns: number
-}
+import type { Stats } from '@/components/Models/User'
 
 interface Props {
   stats: Stats
 }
 
 const props = defineProps<Props>()
-
+// Configuración de estadísticas para la comunidad, que incluye el número total de usuarios, usuarios activos hoy y total de check-ins, 
+// junto con sus respectivos íconos, etiquetas y estilos de color y gradiente para cada estadística.
 const statsConfig = computed(() => [
   {
     key: 'totalUsers',

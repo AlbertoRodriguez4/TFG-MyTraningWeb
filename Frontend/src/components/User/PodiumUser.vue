@@ -1,24 +1,9 @@
 <script setup lang="ts">
 import defaultAvatar from '@/assets/imgs/usuario.png'
 import { useI18n } from 'vue-i18n'
+import type { User } from '@/components/Models/User'
 
 const { t } = useI18n()
-
-interface EquipItem {
-  name: string
-  bonus: number
-}
-
-interface User {
-  id: number
-  name: string
-  level: number
-  strength: number
-  endurance: number
-  avatarUrl?: string
-  equippedStrengthItem?: EquipItem
-  equippedEnduranceItem?: EquipItem
-}
 
 interface Props {
   user: User
@@ -26,9 +11,9 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-
+// Obtener la URL del avatar del usuario, utilizando una imagen predeterminada si el usuario no tiene un avatar personalizado.
 const getAvatar = (user: User) => user.avatarUrl || defaultAvatar
-
+// Podio de los usuarios
 const positionConfig = {
   1: {
     medalColor: '#FFD700',

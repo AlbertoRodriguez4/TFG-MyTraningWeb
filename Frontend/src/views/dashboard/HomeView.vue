@@ -79,25 +79,26 @@ function initMap() {
   const mapElement = document.getElementById('map');
   if (!mapElement) return;
 
+  // Inicializar el mapa centrado en Zaragoza
   map.value = L.map('map').setView([41.6488, -0.8891], 13);
-
+  // Agregar capa de OpenStreetMap 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap contributors'
   }).addTo(map.value as L.Map);
-
+  // Agregar evento de clic para buscar gimnasios cerca de la ubicación clicada
   map.value.on('click', async (e: L.LeafletMouseEvent) => {
     await searchGymsNearLocation(e.latlng.lat, e.latlng.lng);
   });
 }
 
 async function searchByAddress() {
-  if (!searchAddress.value.trim()) return;
+  if (!searchAddress.value.trim()) return; // No hacer nada si el campo de búsqueda está vacío
 
   loading.value = true;
   currentPage.value = 1; // Reset a la primera página
   try {
-    const coords = await mapStore.getCooredadas(searchAddress.value);
-    await searchGymsNearLocation(coords.lat, coords.lon);
+    const coords = await mapStore.getCooredadas(searchAddress.value); // Obtener coordenadas de la dirección ingresada
+    await searchGymsNearLocation(coords.lat, coords.lon); // Buscar gimnasios cerca de las coordenadas obtenidas
   } catch (error) {
     logger.error(t('address_search_error'), error);
     showSnackbar(t('home_could_not_find_address'), 'error');
@@ -109,7 +110,7 @@ async function searchByAddress() {
 async function searchGymsNearLocation(lat: number, lon: number) {
   loading.value = true;
 
-  markers.value.forEach(marker => marker.remove());
+  markers.value.forEach(marker => marker.remove()); // Eliminar marcadores anteriores del mapa
   markers.value = [];
 
   if (map.value) {
@@ -126,12 +127,12 @@ async function searchGymsNearLocation(lat: number, lon: number) {
     currentPage.value = 1; // Reset a la primera página
 
     gyms.forEach((gym: any) => {
-      if (gym.lat && gym.lon && map.value) {
-        const marker = L.marker([parseFloat(gym.lat), parseFloat(gym.lon)], { icon: gymIcon })
+      if (gym.lat && gym.lon && map.value) { // Asegurarse de que el gimnasio tenga coordenadas válidas antes de agregar el marcador
+        const marker = L.marker([parseFloat(gym.lat), parseFloat(gym.lon)], { icon: gymIcon }) // Usar icono personalizado para gimnasios
           .addTo(map.value as L.Map)
-          .bindPopup(`<strong>${gym.nombre || 'Gimnasio'}</strong><br>${gym.direccion || ''}<br>${gym.telefono ? '📞 ' + gym.telefono : ''}<br>${gym.sitioWeb ? '🌐 <a href="' + gym.sitioWeb + '" target="_blank">Web</a>' : ''}`);
+          .bindPopup(`<strong>${gym.nombre || 'Gimnasio'}</strong><br>${gym.direccion || ''}<br>${gym.telefono ? '📞 ' + gym.telefono : ''}<br>${gym.sitioWeb ? '🌐 <a href="' + gym.sitioWeb + '" target="_blank">Web</a>' : ''}`); // Datos de los gimnasios encontrados 
 
-        marker.on('click', () => {
+        marker.on('click', () => { // Al hacer clic en el marcador, mostrar detalles del gimnasio en la sección lateral
           selectedGym.value = gym;
         });
 
@@ -748,7 +749,8 @@ function changePage(page: number) {
                       </p>
                       <p v-if="gym.sitioWeb" class="gym-extra-line">
                         <v-icon small color="primary">mdi-web</v-icon>
-                        <a :href="gym.sitioWeb" target="_blank" rel="noopener noreferrer" class="gym-link">{{ $t('home_visit_website') }}</a>
+                        <a :href="gym.sitioWeb" target="_blank" rel="noopener noreferrer" class="gym-link">{{
+                          $t('home_visit_website') }}</a>
                       </p>
                       <p v-if="gym.horarioApertura" class="gym-extra-line">
                         <v-icon small color="primary">mdi-clock-outline</v-icon>

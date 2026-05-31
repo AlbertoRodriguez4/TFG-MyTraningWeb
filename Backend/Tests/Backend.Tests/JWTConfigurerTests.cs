@@ -1,6 +1,7 @@
 using AA2_CS.Database;
 using AA2_CS.JWT;
-using AA2_CS.Model;
+using AA2_CS.Model.Entities;
+using AA2_CS.Model.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.IdentityModel.Tokens.Jwt;
@@ -13,6 +14,7 @@ public class JWTConfigurerTests
     [Fact]
     public void GenerateToken_IncluyeClaimsCalculadas_ConBonosYExperiencia()
     {
+        // Prueba que el método GenerateToken de JWTConfigurer incluye correctamente los claims calculados para fuerza, resistencia, experiencia requerida y experiencia restante. Se espera que los valores de los claims sean correctos según las propiedades del usuario y sus items equipados.
         var options = new DbContextOptionsBuilder<AppDbContext>()
             .UseInMemoryDatabase(Guid.NewGuid().ToString())
             .Options;

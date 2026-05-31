@@ -4,15 +4,9 @@ import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useSubscriptionStore } from '@/stores/SubscriptionStore'
 import { logger } from '@/utils/logger'
+import type { ValidationState } from '@/components/Models/Payment'
 
 const { t } = useI18n()
-
-interface ValidationState {
-  cardNumber: boolean
-  cardHolder: boolean
-  expiryDate: boolean
-  cvv: boolean
-}
 
 const router = useRouter()
 const subscriptionStore = useSubscriptionStore()
@@ -28,19 +22,20 @@ const cvv = ref('')
 const isProcessing = ref(false)
 const showSuccess = ref(false)
 const errorMessage = ref('')
+// Estado de validación para cada campo del formulario
 const validationErrors = ref<ValidationState>({
   cardNumber: false,
   cardHolder: false,
   expiryDate: false,
   cvv: false
 })
-
+// Función para formatear el número de tarjeta en grupos de 4 dígitos
 const formatCardNumber = (value: string) => {
   const cleaned = value.replace(/\D/g, '')
   const groups = cleaned.match(/.{1,4}/g)
   return groups ? groups.join(' ') : cleaned
 }
-
+// Función para formatear la fecha de caducidad en formato MM/YY
 const formatExpiryDate = (value: string) => {
   const cleaned = value.replace(/\D/g, '')
   if (cleaned.length >= 2) {
@@ -48,7 +43,7 @@ const formatExpiryDate = (value: string) => {
   }
   return cleaned
 }
-
+// Función para validar el fornulario antes de enviar el pago
 const validateForm = (): boolean => {
   errorMessage.value = ''
   validationErrors.value = {
@@ -59,22 +54,22 @@ const validateForm = (): boolean => {
   }
 
   let isValid = true
-
+  // Validar número de tarjeta (mínimo 16 dígitos, ignorando espacios)
   if (!cardNumber.value || cardNumber.value.replace(/\s/g, '').length < 16) {
     validationErrors.value.cardNumber = true
     isValid = false
   }
-
+  // Validar nombre del titular (mínimo 3 caracteres)
   if (!cardHolder.value || cardHolder.value.trim().length < 3) {
     validationErrors.value.cardHolder = true
     isValid = false
   }
-
+  // Validar fecha de vencimiento (mínimo 5 caracteres para formato MM/YY)
   if (!expiryDate.value || expiryDate.value.length < 5) {
     validationErrors.value.expiryDate = true
     isValid = false
   }
-
+  // Validar CVV (mínimo 3 dígitos)
   if (!cvv.value || cvv.value.length < 3) {
     validationErrors.value.cvv = true
     isValid = false
@@ -89,14 +84,14 @@ const validateForm = (): boolean => {
       isValid = false
     }
   }
-
+  // Si el formulario no es válido, mostrar mensaje de error genérico
   if (!isValid) {
     errorMessage.value = t('fill_all_fields_correctly')
   }
 
   return isValid
 }
-
+// Procesar pago al enviar el formulario, simulando una llamada al backend y manejando el resultado
 const handleSubmit = async () => {
   if (!validateForm()) {
     return
@@ -111,7 +106,7 @@ const handleSubmit = async () => {
 
     // Llamar al store para procesar la suscripción
     const result = await subscriptionStore.purchaseSubscription()
-
+    // En caso de que sea exitoso, mostrar mensaje de éxito y redirigir a perfil después de un delay para que el usuario vea la confirmación
     if (result.success) {
       showSuccess.value = true
       emit('payment-success')
@@ -161,16 +156,9 @@ const handleSubmit = async () => {
       <div class="form-group">
         <label class="form-label">{{ $t('card_number') }}</label>
         <div class="input-wrapper">
-          <v-text-field
-            v-model="cardNumber"
-            placeholder="1234 5678 9012 3456"
-            maxlength="19"
-            variant="outlined"
-            density="comfortable"
-            class="form-input"
-            :error="validationErrors.cardNumber"
-            @update:model-value="(val) => cardNumber = formatCardNumber(val)"
-          />
+          <v-text-field v-model="cardNumber" :placeholder="$t('payment.cardNumberPlaceholder')" maxlength="19"
+            variant="outlined" density="comfortable" class="form-input" :error="validationErrors.cardNumber"
+            @update:model-value="(val) => cardNumber = formatCardNumber(val)" />
           <div class="card-icons">
             <v-icon v-if="cardNumber" size="20" color="#4f46e5">mdi-credit-card</v-icon>
           </div>
@@ -184,15 +172,8 @@ const handleSubmit = async () => {
       <div class="form-group">
         <label class="form-label">{{ $t('card_holder') }}</label>
         <div class="input-wrapper">
-          <v-text-field
-            v-model="cardHolder"
-            :placeholder="$t('card_holder_placeholder')"
-            maxlength="50"
-            variant="outlined"
-            density="comfortable"
-            class="form-input"
-            :error="validationErrors.cardHolder"
-          />
+          <v-text-field v-model="cardHolder" :placeholder="$t('card_holder_placeholder')" maxlength="50"
+            variant="outlined" density="comfortable" class="form-input" :error="validationErrors.cardHolder" />
           <div class="card-icons">
             <v-icon v-if="cardHolder" size="20" color="#4f46e5">mdi-account</v-icon>
           </div>
@@ -207,16 +188,9 @@ const handleSubmit = async () => {
         <div class="form-group">
           <label class="form-label">{{ $t('expiry_date') }}</label>
           <div class="input-wrapper">
-            <v-text-field
-              v-model="expiryDate"
-              placeholder="MM/YY"
-              maxlength="5"
-              variant="outlined"
-              density="comfortable"
-              class="form-input"
-              :error="validationErrors.expiryDate"
-              @update:model-value="(val) => expiryDate = formatExpiryDate(val)"
-            />
+            <v-text-field v-model="expiryDate" :placeholder="$t('payment.expiryPlaceholder')" maxlength="5"
+              variant="outlined" density="comfortable" class="form-input" :error="validationErrors.expiryDate"
+              @update:model-value="(val) => expiryDate = formatExpiryDate(val)" />
             <div class="card-icons">
               <v-icon v-if="expiryDate" size="20" color="#4f46e5">mdi-calendar</v-icon>
             </div>
@@ -229,17 +203,9 @@ const handleSubmit = async () => {
         <div class="form-group">
           <label class="form-label">{{ $t('cvv') }}</label>
           <div class="input-wrapper">
-            <v-text-field
-              v-model="cvv"
-              placeholder="123"
-              maxlength="4"
-              type="password"
-              variant="outlined"
-              density="comfortable"
-              class="form-input"
-              :error="validationErrors.cvv"
-              @update:model-value="(val) => cvv = val.replace(/\D/g, '')"
-            />
+            <v-text-field v-model="cvv" :placeholder="$t('payment.cvvPlaceholder')" maxlength="4" type="password"
+              variant="outlined" density="comfortable" class="form-input" :error="validationErrors.cvv"
+              @update:model-value="(val) => cvv = val.replace(/\D/g, '')" />
             <div class="card-icons">
               <v-tooltip :text="$t('cvv_tooltip')">
                 <template #activator="{ props }">
@@ -268,25 +234,12 @@ const handleSubmit = async () => {
       </div>
 
       <!-- Mensaje de error -->
-      <v-alert
-        v-if="errorMessage"
-        type="error"
-        variant="tonal"
-        closable
-        class="error-alert"
-      >
+      <v-alert v-if="errorMessage" type="error" variant="tonal" closable class="error-alert">
         {{ errorMessage }}
       </v-alert>
 
       <!-- Botón de envío -->
-      <v-btn
-        type="submit"
-        :loading="isProcessing"
-        :disabled="isProcessing"
-        block
-        size="large"
-        class="submit-btn"
-      >
+      <v-btn type="submit" :loading="isProcessing" :disabled="isProcessing" block size="large" class="submit-btn">
         <span v-if="!isProcessing">{{ $t('confirm_payment') }} €10,00</span>
         <span v-else>{{ $t('processing_payment') }}</span>
       </v-btn>
@@ -326,13 +279,13 @@ const handleSubmit = async () => {
   font-size: 1.4rem;
   font-weight: 800;
   margin: 0 0 0.5rem;
-  color: #0a0a0a;
+  color: #1a1a1a;
   letter-spacing: -0.5px;
 }
 
 .form-subtitle {
   font-size: 0.9rem;
-  color: #888888;
+  color: rgba(0, 0, 0, 0.6);
   margin: 0;
   font-weight: 400;
   line-height: 1.5;
@@ -429,7 +382,7 @@ const handleSubmit = async () => {
   display: block;
   font-size: 0.8rem;
   font-weight: 700;
-  color: #0a0a0a;
+  color: #1a1a1a;
   margin-bottom: 0.6rem;
   text-transform: uppercase;
   letter-spacing: 0.6px;
@@ -462,13 +415,13 @@ const handleSubmit = async () => {
 }
 
 .form-input :deep(input) {
-  color: #0a0a0a;
+  color: #1a1a1a;
   font-size: 0.95rem;
   font-weight: 500;
 }
 
 .form-input :deep(input::placeholder) {
-  color: #bbb;
+  color: rgba(0, 0, 0, 0.6);
 }
 
 .form-input :deep(.v-field--error) {
@@ -523,7 +476,7 @@ const handleSubmit = async () => {
   height: 50px;
   border-radius: 10px;
   background: #f3f4f6;
-  color: #9ca3af;
+  color: #64748b;
   border: 1px solid #e5e7eb;
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   cursor: pointer;
@@ -531,7 +484,7 @@ const handleSubmit = async () => {
 
 .method:hover {
   background: #f0f1f3;
-  color: #4b5563;
+  color: #475569;
 }
 
 .method.visa:hover {
@@ -582,7 +535,7 @@ const handleSubmit = async () => {
 /* Pie de página */
 .form-footer {
   font-size: 0.75rem;
-  color: #888888;
+  color: rgba(0, 0, 0, 0.6);
   text-align: center;
   margin: 0;
   line-height: 1.5;

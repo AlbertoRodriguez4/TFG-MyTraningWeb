@@ -22,9 +22,9 @@
 
         <v-card-text>
           <div class="free-plan">
-            <div class="plan-badge free">FREE</div>
+            <div class="plan-badge free">{{ $t('subscription.free') }}</div>
 
-            <h3 class="plan-name">Plan Gratuito</h3>
+            <h3 class="plan-name">{{ $t('subscription.freePlan') }}</h3>
             <p class="plan-description">
               {{ $t('free_plan') }}
             </p>
@@ -84,7 +84,7 @@
 
         <v-card-text>
           <div class="current-plan">
-            <div class="plan-badge premium">PREMIUM</div>
+            <div class="plan-badge premium">{{ $t('premium') }}</div>
 
             <h3 class="plan-name">{{ subscription?.planType || $t('plan_premium') }}</h3>
             <p class="plan-price">{{ subscription?.monthlyPrice.toFixed(2) }}€ <span class="period">/mes</span></p>
@@ -138,10 +138,10 @@
         <v-card-text>
           <div v-if="subscriptionHistory.length > 0" class="billing-table">
             <div class="table-header">
-              <div class="table-col">Fecha Inicio</div>
-              <div class="table-col">Fecha Fin</div>
+              <div class="table-col">{{ $t('subscription.startDate') }}</div>
+              <div class="table-col">{{ $t('subscription.endDate') }}</div>
               <div class="table-col">{{ $t('price') }}</div>
-              <div class="table-col">Estado</div>
+              <div class="table-col">{{ $t('subscription.status') }}</div>
             </div>
 
             <div
@@ -168,7 +168,7 @@
           </div>
           <div v-else class="no-history">
             <v-icon size="48" color="rgba(255, 255, 255, 0.3)">mdi-receipt</v-icon>
-            <p>No hay historial disponible</p>
+            <p>{{ $t('subscription.noHistory') }}</p>
           </div>
         </v-card-text>
       </v-card>
@@ -185,7 +185,7 @@
           {{ $t('cancel_subscription_text') }}
         </v-card-text>
         <v-card-actions class="dialog-actions">
-          <v-btn variant="text" @click="showCancelDialog = false">Volver</v-btn>
+          <v-btn variant="text" @click="showCancelDialog = false">{{ $t('subscription.back') }}</v-btn>
           <v-btn color="error" @click="cancelSubscription">{{ $t('yes_cancel') }}</v-btn>
         </v-card-actions>
       </v-card>
@@ -210,7 +210,6 @@ const { t } = useI18n()
 const router = useRouter()
 const route = useRoute()
 const subscriptionStore = useSubscriptionStore()
-const userStore = useUserStore()
 
 const isLoading = ref(true)
 const isRenewing = ref(false)
@@ -227,18 +226,19 @@ const subscriptionHistory = computed(() => subscriptionStore.subscriptionHistory
 onMounted(async () => {
   await loadSubscriptionData()
 
-  // Check if coming from payment success
+  // Mostrar mensaje de activación si venimos de la página de pago con una suscripción activa
   if (route.query.subscribed === 'true') {
     showSnackbarMessage(t('subscription_activated'), 'success')
     router.replace({ query: {} })
   }
 })
-
+// Obtener datos de suscripción al montar el componente
 async function loadSubscriptionData() {
   isLoading.value = true
   try {
+    // Comprobar si el usuario tiene una suscripción activa
     await subscriptionStore.checkSubscription()
-    if (subscriptionStore.hasActiveSubscription) {
+    if (subscriptionStore.hasActiveSubscription) { // si tiene una suscripción activa, cargar los detalles y el historial
       await subscriptionStore.getActiveSubscription()
       await subscriptionStore.getSubscriptionHistory()
     }
@@ -249,10 +249,11 @@ async function loadSubscriptionData() {
     isLoading.value = false
   }
 }
-
+// Función para renovar la suscripción
 async function renewSubscription() {
   isRenewing.value = true
   try {
+    // Se renueva la suscripción y se muestra un mensaje según el resultado
     const result = await subscriptionStore.renewSubscription()
     if (result.success) {
       showSnackbarMessage(result.message || t('subscription_renewed'), 'success')
@@ -270,7 +271,7 @@ async function renewSubscription() {
 function confirmCancel() {
   showCancelDialog.value = true
 }
-
+// Función para cancelar la suscripción
 async function cancelSubscription() {
   if (!subscription.value) return
 
@@ -278,6 +279,7 @@ async function cancelSubscription() {
   showCancelDialog.value = false
 
   try {
+    // Se cancela la suscripción y se muestra un mensaje según el resultado
     const result = await subscriptionStore.cancelSubscription(subscription.value.subscriptionId)
     if (result.success) {
       showSnackbarMessage(result.message || t('subscription_cancelled'), 'success')

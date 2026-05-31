@@ -57,7 +57,9 @@
 import { ref, onMounted, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useUserStore } from '../../stores/userStore'
+import { useRoutineStore } from '../../stores/RoutineStore'
 import { logger } from '@/utils/logger'
+import type { Stat } from '@/components/Models/Chat'
 
 const { t } = useI18n()
 
@@ -66,58 +68,56 @@ defineProps({
 })
 
 const userStore = useUserStore()
+const routineStore = useRoutineStore()
 const loggedUser = ref(userStore.loggedUser)
 
-interface Stat {
-  emoji: string
-  label: string
-  value: string
-  pct: number
-  color: string
-}
+const stats = computed<Stat[]>(() => {
+  const user = loggedUser.value
+  if (!user) return []
+  // Calcular rutinas completadas y progreso de XP
+  const completedRoutines = routineStore.routines.filter(r => r.iscompleted).length // Obtenemos el número de rutinas completadas
+  const xpProgress = user.xpRequired ? Math.round(((user.experience ?? 0) / user.xpRequired) * 100) : 0 // De esta forma, si xpRequired es 0 o undefined, evitamos la división por cero y mostramos 0% de progreso.
 
-// 1. Estado inicial limpio (se muestra mientras carga)
-const stats = ref<Stat[]>([
-  { emoji: '🔥', label: t('chat.calories'), value: '--- kcal', pct: 0, color: 'fill-orange' },
-  { emoji: '🥩', label: t('chat.protein'), value: '--- g', pct: 0, color: 'fill-red' },
-  { emoji: '🍚', label: t('chat.carbs'), value: '--- g', pct: 0, color: 'fill-yellow' },
-])
-
-// 2. Extraemos los datos más importantes al montar el componente
-onMounted(() => {
+    // Retornar las estadísticas formateadas para la sidebar
+  return [
+    {
+      emoji: '⚡',
+      label: t('common.level'),
+      value: `${user.level}`,
+      pct: xpProgress,
+      color: 'fill-violet'
+    },
+    {
+      emoji: '🔥',
+      label: t('common.streak'),
+      value: `${user.consistencyStreak || 0} ${t('common.days')}`,
+      pct: Math.min((user.consistencyStreak || 0) * 10, 100),
+      color: 'fill-orange'
+    },
+    {
+      emoji: '✅',
+      label: t('common.routines'),
+      value: `${completedRoutines}`,
+      pct: routineStore.routines.length ? Math.round((completedRoutines / routineStore.routines.length) * 100) : 0,
+      color: 'fill-blue'
+    },
+    {
+      emoji: '🎯',
+      label: t('common.nextLevel'),
+      value: `${user.xpRemaining || 0} XP`,
+      pct: 100 - xpProgress,
+      color: 'fill-violet'
+    }
+  ]
+})
+// Cargar los datos 
+onMounted(async () => {
   try {
-    const storedData = localStorage.getItem('lastCaloriesResult')
-
-    if (storedData) {
-      const parsed = JSON.parse(storedData)
-
-      // 3. Inyectamos los valores del superávit calórico
-      stats.value = [
-        {
-          emoji: '🔥',
-          label: t('chat.calories'),
-          value: `${parsed.tdee} kcal`,
-          pct: 100,
-          color: 'fill-orange'
-        },
-        {
-          emoji: '🥩',
-          label: t('chat.protein'),
-          value: `${parsed.macros?.protein} g`,
-          pct: 100,
-          color: 'fill-red'
-        },
-        {
-          emoji: '🍚',
-          label: t('chat.carbs'),
-          value: `${parsed.macros?.carbs} g`,
-          pct: 100,
-          color: 'fill-yellow'
-        },
-      ]
+    if (loggedUser.value?.id) {
+      await routineStore.getRoutineByUserId(loggedUser.value.id)
     }
   } catch (error) {
-    logger.error('No se pudieron cargar las métricas:', error)
+    logger.error('No se pudieron cargar las rutinas:', error)
   }
 })
 </script>

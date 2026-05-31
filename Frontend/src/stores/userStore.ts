@@ -72,7 +72,8 @@ export const useUserStore = defineStore('user', () => {
       logger.error("Error fetching community users:", error);
     }
   }
-
+  // Función para registrar un nuevo usuario, devuelve un objeto con el resultado de la operación, el id del nuevo usuario (si se creó correctamente), 
+  // si se envió el email de verificación y el email del usuario registrado (si se creó correctamente)
   async function registerUser(newUser: User): Promise<{ success: boolean; userId?: number; emailSent?: boolean; email?: string }> {
     try {
       const response = await fetch(`${BASE_URL}/api/auth/register`, {
@@ -97,7 +98,7 @@ export const useUserStore = defineStore('user', () => {
       return { success: false };
     }
   }
-
+  // Función para verificar el email del usuario, devuelve true si la verificación fue exitosa y false si hubo un error o la verificación falló
   async function verifyEmail(email: string, code: string): Promise<boolean> {
     try {
       const response = await fetch(`${BASE_URL}/api/auth/verify-email`, {
@@ -177,11 +178,11 @@ export const useUserStore = defineStore('user', () => {
         experience: Number(decoded.experience),
         xpRequired: Number(decoded.xpRequired),
         xpRemaining: Number(decoded.xpRemaining),
-        equippedStrengthItemId: decoded.equippedStrengthItemId !== "" ? Number(decoded.equippedStrengthItemId) : null,
-        equippedEnduranceItemId: decoded.equippedEnduranceItemId !== "" ? Number(decoded.equippedEnduranceItemId) : null,
-        avatarUrl: decoded.avatarUrl && decoded.avatarUrl !== "" ? decoded.avatarUrl : null
+        equippedStrengthItemId: decoded.equippedStrengthItemId !== "" ? Number(decoded.equippedStrengthItemId) : undefined,
+        equippedEnduranceItemId: decoded.equippedEnduranceItemId !== "" ? Number(decoded.equippedEnduranceItemId) : undefined,
+        avatarUrl: decoded.avatarUrl && decoded.avatarUrl !== "" ? decoded.avatarUrl : undefined
       };
-      logger.info('Sesión inicializada correctamente para el usuario:', loggedUser.value.email);
+      logger.info('Sesión inicializada correctamente para el usuario:', loggedUser.value?.email);
     } catch (error) {
       logger.error('Error al decodificar el token JWT:', error);
       localStorage.removeItem('token');
@@ -203,11 +204,8 @@ export const useUserStore = defineStore('user', () => {
     }
 
     try {
-      // Hacemos una petición al backend para obtener un nuevo token
-      // Usamos el endpoint de login con las credenciales almacenadas (no recomendado)
-      // O mejor: creamos un endpoint específico de refresh en el backend
 
-      // Por ahora, simplemente verificamos que el token sigue siendo válido
+      // verificamos que el token sigue siendo válido
       const response = await fetch(`${BASE_URL}/api/User`, {
         method: 'GET',
         headers: getAuthHeaders()
@@ -238,7 +236,7 @@ export const useUserStore = defineStore('user', () => {
     if (loggedUser.value) {
       refreshToken();
     }
-  }, 5 * 60 * 1000); // 5 minutos
+  }, 5 * 60 * 1000); // 5 minutos (5 * 60 * 1000 ms)
 
   async function loginUser(email: string, password: string): Promise<{ success: boolean; requiresEmailVerification?: boolean; message?: string }> {
     try {
@@ -261,7 +259,8 @@ export const useUserStore = defineStore('user', () => {
       if (!response.ok) {
         return { success: false, message: `HTTP error! Status: ${response.status}` };
       }
-
+      // Settear el token en localStorage y actualizar el estado de loggedUser con los datos decodificados del token para mantener la sesión del usuario
+      // Solo ocurre si el login es exitoso, obviamente
       const data = await response.json();
       const token = data.token;
       const decoded = decodeToken(token);
@@ -282,9 +281,9 @@ export const useUserStore = defineStore('user', () => {
         experience: Number(decoded.experience),
         xpRequired: Number(decoded.xpRequired),
         xpRemaining: Number(decoded.xpRemaining),
-        equippedStrengthItemId: decoded.equippedStrengthItemId !== "" ? Number(decoded.equippedStrengthItemId) : null,
-        equippedEnduranceItemId: decoded.equippedEnduranceItemId !== "" ? Number(decoded.equippedEnduranceItemId) : null,
-        avatarUrl: decoded.avatarUrl && decoded.avatarUrl !== "" ? decoded.avatarUrl : null
+        equippedStrengthItemId: decoded.equippedStrengthItemId !== "" ? Number(decoded.equippedStrengthItemId) : undefined,
+        equippedEnduranceItemId: decoded.equippedEnduranceItemId !== "" ? Number(decoded.equippedEnduranceItemId) : undefined,
+        avatarUrl: decoded.avatarUrl && decoded.avatarUrl !== "" ? decoded.avatarUrl : undefined
       };
 
       return { success: true };
@@ -294,7 +293,8 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
-
+// Función para recargar los datos del usuario actualmente logueado, se llama después de editar el usuario para actualizar los datos en la sesión 
+// y después de iniciar sesión para cargar los datos del usuario en la sesión
   async function refreshLoggedUser() {
     if (!loggedUser.value) return;
 
@@ -321,26 +321,6 @@ export const useUserStore = defineStore('user', () => {
 
     } catch (error) {
       logger.error("Error actualizando el usuario:", error);
-    }
-  }
-
-  async function searchByName(name: string): Promise<User[]> {
-    try {
-      const response = await fetch(`${BASE_URL}/api/User/search/${name}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
-      });
-
-      if (!response.ok) throw new Error('Error buscando usuarios');
-
-      const data = await response.json();
-      return data as User[];
-    } catch (error) {
-      logger.error('Error en searchByName:', error);
-      return [];
     }
   }
 
@@ -371,7 +351,7 @@ export const useUserStore = defineStore('user', () => {
       return [];
     }
   }
-
+// Función para obtener estadísticas de la comunidad, devuelve un objeto con el total de usuarios, usuarios activos hoy y total de check-ins
   async function getCommunityStats() {
     try {
       const response = await fetch(`${BASE_URL}/api/User/community-stats`, {
@@ -456,31 +436,6 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
-  async function createUser(user: User): Promise<boolean> {
-    try {
-      const response = await fetch(`${BASE_URL}/api/User`, {
-        method: 'POST',
-        mode: 'cors',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        body: JSON.stringify(user)
-      });
-
-      if (!response.ok) {
-        logger.error(`HTTP error! Status: ${response.status}`);
-        return false;
-      }
-
-      await fetchUser();
-      return true;
-    } catch (error) {
-      logger.error('Error creating user:', error);
-      return false;
-    }
-  }
-
   function logoutUser() {
     localStorage.removeItem('token');
     loggedUser.value = null;
@@ -504,7 +459,9 @@ export const useUserStore = defineStore('user', () => {
       logger.error('Error deleting user:', error);
     }
   }
-
+// Función para equipar un item, se llama desde el inventario del usuario, recibe el id del item a equipar, actualiza el estado de loggedUser para reflejar el 
+// cambio en la interfaz y hace una petición al backend para actualizar el item equipado del usuario en la base de datos
+// El backend se encarga de validar que el item pertenece al usuario y que es del tipo correcto (fuerza o resistencia) antes de actualizar la base de datos
   async function equipItem(itemId: number) {
     if (!loggedUser.value) return;
 
@@ -528,7 +485,7 @@ export const useUserStore = defineStore('user', () => {
         const errorText = await response.text();
         throw new Error(errorText || "Error al equipar objeto");
       }
-
+ // Typelower se usa para comparar el tipo del item (fuerza o resistencia) sin importar mayúsculas/minúsculas ni el idioma (inglés o español) y actualizar el estado de loggedUser con el id del item equipado en la ranura correspondiente (ranura de fuerza o ranura de resistencia) para reflejar el cambio en la interfaz después de equipar el item
       const typeLower = itemToEquip.itemType.toLowerCase();
 
       if (typeLower === 'strength' || typeLower === 'fuerza') {
@@ -543,7 +500,8 @@ export const useUserStore = defineStore('user', () => {
       logger.error("Error equipando objeto:", error);
     }
   }
-
+// Misma lógica que equipItem pero para desequipar un item, se llama desde el inventario del usuario, 
+// recibe el tipo del item a desequipar (fuerza o resistencia), actualiza el estado de loggedUser para reflejar el
   async function unequipItem(type: string) {
     if (!loggedUser.value) return;
 
@@ -561,9 +519,9 @@ export const useUserStore = defineStore('user', () => {
       const typeLower = type.toLowerCase();
 
       if (typeLower === 'strength' || typeLower === 'fuerza') {
-        loggedUser.value.equippedStrengthItemId = null;
+        loggedUser.value.equippedStrengthItemId = undefined;
       } else if (typeLower === 'endurance' || typeLower === 'resistencia') {
-        loggedUser.value.equippedEnduranceItemId = null;
+        loggedUser.value.equippedEnduranceItemId = undefined;
       }
 
       await refreshLoggedUser();
@@ -571,12 +529,15 @@ export const useUserStore = defineStore('user', () => {
       logger.error("Error desequipando:", error);
     }
   }
+// Función para cambiar la contraseña del usuario, se llama desde la configuración de la cuenta, recibe la contraseña actual y 
+// la nueva contraseña, hace una petición al backend para cambiar la contraseña del usuario en la base de datos, el backend se encarga de validar que la 
+// contraseña actual es correcta antes de actualizarla por la nueva contraseña
   async function changePassword(currentPassword: string, newPassword: string): Promise<boolean> {
     if (!loggedUser.value) return false;
 
     try {
       const response = await fetch(`${BASE_URL}/api/User/change-password`, {
-        method: 'POST', // o PUT, según configures tu backend
+        method: 'POST', 
         mode: 'cors',
         headers: {
           'Content-Type': 'application/json',
@@ -599,25 +560,19 @@ export const useUserStore = defineStore('user', () => {
       return false;
     }
   }
-  const userById = (id: number) => user.value.find(user => user.id === id);
-
   return {
     user,
     fetchUser,
     fetchCommunityUsers,
-    userById,
     loginUser,
     loggedUser,
-    searchByName,
     getTopThreeUsers,
     getCommunityStats,
     getItems,
     purchasedItems,
     refreshLoggedUser,
-    refreshToken,
     editUser,
     logoutUser,
-    createUser,
     DeleteUser,
     registerUser,
     verifyEmail,

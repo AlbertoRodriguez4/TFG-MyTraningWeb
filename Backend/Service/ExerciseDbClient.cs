@@ -8,7 +8,7 @@ namespace AA2_CS.Service
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
         private readonly ILogger<ExerciseDbClient> _logger;
-        private const string BaseUrl = "https://exercisedb.p.rapidapi.com";
+        private const string BaseUrl = "https://exercisedb.p.rapidapi.com"; //api base url
 
         public ExerciseDbClient(HttpClient httpClient, IConfiguration configuration, ILogger<ExerciseDbClient> logger)
         {
@@ -18,12 +18,12 @@ namespace AA2_CS.Service
         }
 
         public async Task<List<ExerciseDbResponse>> GetAllExercisesAsync(int limit = 50)
-        {
+        { //Obtener todos los ejericicios, con un límite para evitar sobrecargar la API
             return await FetchExercisesAsync($"{BaseUrl}/exercises?limit={limit}");
         }
 
         public async Task<List<ExerciseDbResponse>> GetExercisesByTargetAsync(string targetMuscle)
-        {
+        { // Obtener ejercicios por grupo muscular objetivo, mapeando el nombre del grupo muscular del frontend al formato esperado por ExerciseDB
             return await FetchExercisesAsync($"{BaseUrl}/exercises/target/{Uri.EscapeDataString(targetMuscle)}");
         }
 
@@ -33,7 +33,7 @@ namespace AA2_CS.Service
         }
 
         private async Task<List<ExerciseDbResponse>> FetchExercisesAsync(string url)
-        {
+        { // Validar que la API Key esté configurada antes de hacer la llamada, también manejar errores de la API
             var apiKey = _configuration["ExerciseDbSettings:ApiKey"];
             if (string.IsNullOrWhiteSpace(apiKey) || apiKey == "TU_API_KEY_AQUI")
             {
@@ -72,7 +72,7 @@ namespace AA2_CS.Service
 
         // Mapeo de grupo muscular del frontend a target de ExerciseDB
         public static string? MapMuscleGroupToTarget(string muscleGroup)
-        {
+        { // Grupos musculares comunes mapeados a los términos de ExerciseDB, con manejo de casos insensibles
             var mapping = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
             {
                 { "chest", "pectorals" },

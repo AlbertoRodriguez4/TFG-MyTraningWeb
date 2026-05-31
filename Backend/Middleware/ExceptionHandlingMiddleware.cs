@@ -29,6 +29,7 @@ namespace AA2_CS.Middleware
 
         private static Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
+            // Configurar la respuesta de error con un mensaje genérico y el código de estado 500. 
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 

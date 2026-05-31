@@ -42,12 +42,9 @@ namespace AA2_CS.Service
                 {
                     using var scope = _serviceProvider.CreateScope();
                     var notificationService = scope.ServiceProvider.GetRequiredService<NotificationService>();
-                    var userRepo = scope.ServiceProvider.GetRequiredService<UserRepository>();
+                    var notificationRepo = scope.ServiceProvider.GetRequiredService<NotificationRepository>();
 
-                    // Comprobación de inactividad: iterar sobre TODOS los usuarios con email
-                    var usersWithEmail = userRepo.FindAll()
-                        .Where(u => !string.IsNullOrEmpty(u.email))
-                        .ToList();
+                    var usersWithEmail = notificationRepo.GetAllUsersWithEmail();
                     _logger.LogInformation("Comprobando inactividad para {Count} usuarios", usersWithEmail.Count);
 
                     foreach (var user in usersWithEmail)
@@ -62,7 +59,6 @@ namespace AA2_CS.Service
                         }
                     }
 
-                    // Comprobación de expiración de suscripción: iterar sobre TODOS los usuarios con email
                     _logger.LogInformation("Comprobando expiración de suscripción para {Count} usuarios", usersWithEmail.Count);
 
                     foreach (var user in usersWithEmail)

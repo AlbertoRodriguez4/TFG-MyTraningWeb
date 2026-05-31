@@ -22,11 +22,12 @@ onMounted(async () => {
 const mobileMenuOpen = ref(false)
 const userDropdownOpen = ref(false)
 
+// Toggle del menú móvil y dropdown de usuario, se asegura que solo uno esté abierto a la vez para evitar solapamientos y problemas de usabilidad.
 const toggleMobileMenu = () => {
   mobileMenuOpen.value = !mobileMenuOpen.value
   userDropdownOpen.value = false
 }
-
+// Toggle del dropdown de usuario, se asegura que solo uno esté abierto a la vez para evitar solapamientos y problemas de usabilidad.
 const toggleUserDropdown = () => {
   userDropdownOpen.value = !userDropdownOpen.value
   mobileMenuOpen.value = false
@@ -50,7 +51,7 @@ const languages = computed(() => [
 ])
 
 const currentLanguage = computed(() => {
-  return languages.value.find(l => l.code === locale.value)?.label || 'Language'
+  return languages.value.find(l => l.code === locale.value)?.label || t('language')
 })
 </script>
 
@@ -122,7 +123,7 @@ const currentLanguage = computed(() => {
               {{ store.loggedUser?.email?.charAt(0).toUpperCase() }}
             </div>
             <div>
-              <p class="user-level">Level {{ store.loggedUser?.level || 1 }}</p>
+              <p class="user-level">{{ $t('header.level') }} {{ store.loggedUser?.level || 1 }}</p>
               <p class="user-email">{{ store.loggedUser?.email }}</p>
             </div>
           </div>
@@ -130,11 +131,11 @@ const currentLanguage = computed(() => {
           <!-- Stats Grid -->
           <div class="stats-grid">
             <div class="stat-card">
-              <span class="stat-label">Strength</span>
+              <span class="stat-label">{{ $t('header.strength') }}</span>
               <span class="stat-value">⚡ {{ store.loggedUser?.strength || 0 }}</span>
             </div>
             <div class="stat-card">
-              <span class="stat-label">Gold</span>
+              <span class="stat-label">{{ $t('header.gold') }}</span>
               <span class="stat-value">🪙 {{ store.loggedUser?.gold || 0 }}</span>
             </div>
           </div>
@@ -1061,7 +1062,7 @@ const currentLanguage = computed(() => {
 
 /* Small Mobile: 480px and below */
 @media (max-width: 480px) {
-  .brand-text {
+  .brand-name {
     display: none;
   }
 

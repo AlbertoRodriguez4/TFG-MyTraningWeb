@@ -38,10 +38,13 @@
   </header>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
-defineEmits(['toggle-sidebar'])
+// Emitimos un evento para que el componente padre controle la apertura del sidebar en móviles
+defineEmits<{
+  'toggle-sidebar': []
+}>()
 </script>
 
 <style scoped>

@@ -1,5 +1,5 @@
 using System.Security.Claims;
-using AA2_CS.Model;
+using AA2_CS.Model.DTOs;
 using AA2_CS.Service;
 using AA2_CS.Services;
 using Microsoft.AspNetCore.Authorization;

@@ -137,7 +137,7 @@ const successMessage = ref('')
 onMounted(() => {
   store.fetchPreferences()
 })
-
+// Función para guardar las preferencias, muestra un mensaje de éxito si se guardan correctamente
 const handleSave = async () => {
   const success = await store.savePreferences()
   if (success) {
@@ -146,7 +146,7 @@ const handleSave = async () => {
     logger.log('Preferencias guardadas correctamente')
   }
 }
-
+// Función para restablecer las preferencias a los valores por defecto, muestra un mensaje de éxito si se restablecen correctamente
 const handleReset = async () => {
   const success = await store.resetDefaults()
   if (success) {

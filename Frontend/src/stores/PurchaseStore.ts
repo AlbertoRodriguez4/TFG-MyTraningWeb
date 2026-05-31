@@ -30,8 +30,9 @@ export const usePurchaseStore = defineStore('purchase', () => {
         }
     }
 
-    // FUNCIÓN CORREGIDA: Ahora actualiza los datos del usuario después de la compra
+    // Hacer compra de objeto y actualizar los datos del usuario
     async function addPurchase(userid: number, itemid: number, itemPrice: number) {
+        // Cuerpo de la petición con los datos necesarios para realizar la compra
         const body = {
             userid,
             itemid,
@@ -52,7 +53,7 @@ export const usePurchaseStore = defineStore('purchase', () => {
             }
 
             
-            // ACTUALIZAR LOS DATOS DEL USUARIO después de la compra
+            // Se actualizan los datos del usuario para reflejar la compra (restar oro, añadir objeto al inventario, etc.)
             const userStore = useUserStore();
             await userStore.refreshLoggedUser();
             

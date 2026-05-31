@@ -8,7 +8,7 @@
         </div>
         <h2 class="lock-title">{{ $t('premium_feature') }}</h2>
         <p class="lock-description">
-          {{ $t('premium_feature') || 'Premium feature' }}
+          {{ $t('premium_calculators_desc') }}
         </p>
         <div class="premium-benefits">
           <div class="benefit-item">
@@ -21,7 +21,7 @@
           </div>
           <div class="benefit-item">
             <v-icon size="20" color="#00ff88">mdi-check-circle</v-icon>
-            <span>{{ $t('nutrition_tips') || 'Nutrition tips' }}</span>
+            <span>{{ $t('nutrition_tips') }}</span>
           </div>
           <div class="benefit-item">
             <v-icon size="20" color="#00ff88">mdi-check-circle</v-icon>
@@ -29,7 +29,7 @@
           </div>
         </div>
         <div class="pricing-info">
-          <span class="price-tag">10€<small>/mes</small></span>
+          <span class="price-tag">{{ $t('chat.perMonth') }}</span>
           <p class="price-desc">{{ $t('cancel_anytime') }}</p>
         </div>
         <v-btn
@@ -46,7 +46,7 @@
           class="later-btn"
           @click="goBack"
         >
-          {{ $t('later') || 'Later' }}
+          {{ $t('later') }}
         </v-btn>
       </div>
     </div>
@@ -58,7 +58,7 @@
         color="#FFD700"
         indeterminate
       />
-      <p class="loading-text">{{ $t('verifying_subscription') || 'Verifying subscription...' }}</p>
+      <p class="loading-text">{{ $t('verifying_subscription') }}</p>
     </div>
 
     <!-- Chat Interface (solo visible si es premium) -->
@@ -105,13 +105,14 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useSubscriptionStore } from '@/stores/SubscriptionStore'
 import { API_BASE_URL, getAuthHeaders } from '@/config/api'
 import { logger } from '@/utils/logger'
+import type { ChatMessage } from '@/components/Models/Chat'
 import ChatSidebar from '../../components/CoachAI/ChatSidebar.vue'
 import ChatHeader from '../../components/CoachAI/ChatHeader.vue'
 import ChatFeed from '../../components/CoachAI/ChatFeed.vue'
@@ -121,14 +122,13 @@ const router = useRouter()
 const subscriptionStore = useSubscriptionStore()
 const { t } = useI18n()
 
-/* ── State ── */
-const messages = ref([])
+const messages = ref<ChatMessage[]>([])
 const isLoading = ref(true)
 const sidebarOpen = ref(false)
 const isPremium = ref(false)
 const hasHealthData = ref(false)
 
-/* ── Check Premium Status ── */
+
 onMounted(async () => {
   try {
     await subscriptionStore.checkSubscription()
@@ -144,6 +144,7 @@ onMounted(async () => {
 
 function checkHealthData() {
   try {
+    // Intentar cargar el perfil de salud del localStorage, si no se pueden cargar o no tienen los datos necesarios, se considera que no hay datos de salud.
     const profile = JSON.parse(localStorage.getItem('userHealthProfile') || '{}')
     // Se requiere al menos peso, altura, bmi y tdee para considerar que hay datos
     hasHealthData.value = !!(profile.weight && profile.height && profile.bmi && profile.tdee)
@@ -163,21 +164,20 @@ function goToPayment() {
 function goBack() {
   router.back()
 }
-
-/* ── Helpers ── */
+// Función para obtener el texto de progreso del logro, se muestra el progreso actual y el requisito total, o "Desbloqueado" si ya se ha desbloqueado el logro.
 const now = () =>
   new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })
 
+  // Función para construir el historial de mensajes en el formato que la API espera, se filtran los mensajes de escritura y se mapean a un array de objetos con role y content.
 const buildHistory = () =>
   messages.value
     .filter(m => !m.isTyping)
     .map(m => ({ role: m.role, content: m.text }))
 
-/* ── Extraer Contexto del Usuario ── */
 const getUserContext = () => {
   let contextText = "";
   try {
-    // 1. Recuperar el perfil completo de salud
+    // Obtenemos los datos de salud del localstorage, si no se pueden cargar o no tienen los datos necesarios, se devuelve un string vacío para no enviar contexto a la IA.
     const rawProfile = localStorage.getItem('userHealthProfile') || '{}';
     const profile = JSON.parse(rawProfile);
 
@@ -185,41 +185,40 @@ const getUserContext = () => {
       return ""; // Sin datos suficientes, no enviar contexto
     }
 
-    // 2. Mapear valores de actividad y objetivo a textos traducidos
-    const activityMap = {
+    const activityMap: Record<string, string> = {
       sedentary: t('sedentary'),
       light: t('light'),
       moderate: t('moderate'),
       active: t('active_label'),
       veryactive: t('very_active'),
     };
-    const goalMap = {
+    const goalMap: Record<string, string> = {
       loss: t('loss'),
       maintenance: t('maintenance'),
       gain: t('gain_label'),
     };
-    const genderMap = {
+    const genderMap: Record<string, string> = {
       male: t('male'),
       female: t('female'),
     };
 
-    // 3. Construir el texto que leerá la IA
+    //Construir el texto que leerá la IA
     contextText = `
 
     --- ${t('physical_info')} ---
     ${t('informacion_fisica_context')}
     - ${t('weight_label')}: ${profile.weight} kg
     - ${t('height_label')}: ${profile.height} cm
-    - ${t('age_label')}: ${profile.age || 'No especificada'} años
-    - ${t('gender')}: ${genderMap[profile.gender] || 'No especificado'}
+    - ${t('age_label')}: ${profile.age || t('chat.noSpecified')} años
+    - ${t('gender')}: ${genderMap[profile.gender] || t('chat.noSpecified')}
     - ${t('bmi_label')}: ${profile.bmi.toFixed(2)} (${profile.bmiCategory || ''})
-    - ${t('activity')}: ${activityMap[profile.activity] || 'No especificada'}
-    - ${t('goal')}: ${goalMap[profile.goal] || 'No especificado'}
-    - ${t('bmr_label')}: ${profile.bmr || 'No calculado'} kcal
+    - ${t('activity')}: ${activityMap[profile.activity] || t('chat.noSpecified')}
+    - ${t('goal')}: ${goalMap[profile.goal] || t('chat.noSpecified')}
+    - ${t('bmr_label')}: ${profile.bmr || t('chat.notCalculated')} kcal
     - ${t('tdee_label')}: ${profile.tdee} kcal
-    - ${t('protein')}: ${profile.macros?.protein || 'No calculado'}g
-    - ${t('carbs')}: ${profile.macros?.carbs || 'No calculado'}g
-    - ${t('fats')}: ${profile.macros?.fat || 'No calculado'}g
+    - ${t('protein')}: ${profile.macros?.protein || t('chat.notCalculated')}g
+    - ${t('carbs')}: ${profile.macros?.carbs || t('chat.notCalculated')}g
+    - ${t('fats')}: ${profile.macros?.fat || t('chat.notCalculated')}g
     `;
   } catch (error) {
     logger.warn("No se pudieron cargar los datos físicos del usuario para el chatbot", error);
@@ -227,8 +226,9 @@ const getUserContext = () => {
   return contextText;
 }
 
-/* ── Send message ── */
-async function handleSend(text) {
+// Enviar el mensaje del usuario al backend, se construye el historial de mensajes y el contexto del usuario, se hace la petición a la API y se 
+// maneja la respuesta o cualquier error que pueda ocurrir. También se maneja un estado de "escribiendo" para mostrar un indicador mientras se espera la respuesta.
+async function handleSend(text: string) {
   const trimmed = text?.trim()
   if (!trimmed || isLoading.value) return
 
@@ -248,16 +248,18 @@ async function handleSend(text) {
     return
   }
 
-  // Add typing placeholder
+  // Agregar mensaje de "escribiendo" del asistente
   const typingId = Date.now() + 1
-  messages.value.push({ id: typingId, role: 'assistant', isTyping: true, time: '' })
+  messages.value.push({ id: typingId, role: 'assistant', text: '', isTyping: true, time: '' })
 
   try {
+    // Obtener el token de autenticación del localStorage, si no hay token se lanza un error para evitar hacer la petición a la API sin autenticación.
     const token = localStorage.getItem('token')
     if (!token) {
       throw new Error(t('no_active_session_coachai'))
     }
-
+    // Hacer la petición a la API con el mensaje del usuario, el historial de mensajes y el contexto del usuario, se espera la respuesta y se 
+    // maneja cualquier error que pueda ocurrir.
     const res = await fetch(`${API_BASE_URL}/api/CoachAI/chat`, {
       method: 'POST',
       headers: getAuthHeaders(token),

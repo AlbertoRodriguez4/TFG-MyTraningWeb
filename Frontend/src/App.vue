@@ -9,7 +9,7 @@ import { useSubscriptionStore } from '@/stores/SubscriptionStore';
 // Inicializar el store para aplicar el tema guardado
 useThemeStore();
 
-// Inicializar el store de suscripciones al cargar la app
+// Inicializar el store de suscripciones al cargar la app, necesario para manejar las notificaciones push y el header entre otras
 const subscriptionStore = useSubscriptionStore();
 onMounted(async () => {
   await subscriptionStore.initializeSubscription();
@@ -55,14 +55,12 @@ body::-webkit-scrollbar {
   display: none;
 }
 
-/* Vuetify overrides */
 .v-application,
 .v-application__wrap {
   background: transparent !important;
   min-height: 100vh !important;
 }
 
-/* Eliminar el padding-top que Vuetify inyecta en v-main por el app bar */
 .v-main {
   padding: 0 !important;
 }
@@ -83,7 +81,7 @@ body::-webkit-scrollbar {
 
 .main-wrapper {
   width: 100%;
-  min-height: calc(100vh - 80px);
+  min-height: 100vh;
   padding: 0 !important;
   background: transparent !important;
 }

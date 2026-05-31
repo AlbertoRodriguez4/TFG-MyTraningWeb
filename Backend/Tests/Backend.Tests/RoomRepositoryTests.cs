@@ -1,4 +1,4 @@
-using AA2_CS.Model;
+using AA2_CS.Model.Entities;
 using AA2_CS.Repository;
 
 namespace Backend.Tests;
@@ -8,6 +8,7 @@ public class RoomRepositoryTests
     [Fact]
     public void CreateRoomWithUser_CreaSalaYRelacionUserRoom()
     {
+        // Prueba que el método CreateRoomWithUser crea una nueva sala y establece correctamente la relación entre el usuario y la sala en la tabla UserRooms. Se espera que se cree un nuevo registro en la tabla de salas, un nuevo registro en la tabla de relaciones UserRooms y que el ID de la sala devuelto sea mayor a 0.
         using var context = TestDbContextFactory.CreateContext();
         var repo = new RoomRepository(context);
         var user = TestDbContextFactory.CrearUsuarioBasico("room1@test.com");
@@ -36,6 +37,7 @@ public class RoomRepositoryTests
     [Fact]
     public void SortByLevelAsc_OrdenaCorrectamente()
     {
+        // Prueba que el método SortByLevelAsc devuelve las salas ordenadas correctamente por el nivel mínimo en orden ascendente. Se espera que la lista devuelta tenga las salas ordenadas de menor a mayor nivel mínimo.
         using var context = TestDbContextFactory.CreateContext();
         var repo = new RoomRepository(context);
         context.Rooms.AddRange(
@@ -53,6 +55,7 @@ public class RoomRepositoryTests
     [Fact]
     public void FindAllWithUsers_DevuelveSalasConUsuarios()
     {
+        //  Prueba que el método FindAllWithUsers devuelve una lista de salas junto con los usuarios asociados a cada sala. Se espera que la lista devuelta contenga las salas con sus respectivos usuarios correctamente relacionados.
         using var context = TestDbContextFactory.CreateContext();
         var repo = new RoomRepository(context);
         var user = TestDbContextFactory.CrearUsuarioBasico("room2@test.com");

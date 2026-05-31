@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using AA2_CS.Model;
+using AA2_CS.Model.Entities;
 
 [ApiController]
 [Route("api/[controller]")]

@@ -11,14 +11,13 @@ export const useItemStore = defineStore('item', () => {
     const generalItems = ref<Item[]>([]);
 
     // Función auxiliar para mapear los datos y evitar repetir código
-    // Asegúrate de que tu API de Items devuelve 'imageUrl'
     const mapItem = (d: any): Item => ({
         id: d.id,
         name: d.name,
         type: d.type,
         bonus: d.bonus,
         price: d.price,
-        imageUrl: d.imageUrl // <--- AQUI MAPEAMOS LA IMAGEN
+        imageUrl: d.imageUrl // Se mapea la imagen 
     });
 
     async function fetchItems() {

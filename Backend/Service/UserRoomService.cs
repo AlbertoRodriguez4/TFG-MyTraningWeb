@@ -1,6 +1,7 @@
 namespace AA2_CS.Service
 {
-    using AA2_CS.Model;
+    using AA2_CS.Model.Entities;
+    using AA2_CS.Model.DTOs;
     using AA2_CS.Repository;
     using System.Collections.Generic;
     using System.Threading.Tasks;

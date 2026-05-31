@@ -24,13 +24,14 @@
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { computed } from 'vue'
+import type { ChatMessage } from '@/components/Models/Chat'
 
-const props = defineProps({
-    message: { type: Object, required: true }
-})
-
+const props = defineProps<{
+    message: ChatMessage
+}>()
+// Formatea el texto del mensaje para soportar negrita, cursiva y saltos de línea (mensajes personalizados que la IA recibe de la API)
 const formatted = computed(() => {
     if (!props.message.text) return ''
     return props.message.text

@@ -16,6 +16,7 @@ namespace AA2_CS.Service
 
         public EmailService(IConfiguration configuration)
         {
+            // Del mismo modo que en CoachAIService, se inyecta IConfiguration para obtener las configuraciones necesarias para el envío de correos electrónicos.
             _smtpServer = configuration["EmailSettings:SmtpServer"] ?? throw new InvalidOperationException("Falta EmailSettings:SmtpServer.");
             _smtpPort = int.TryParse(configuration["EmailSettings:SmtpPort"], out var smtpPort) ? smtpPort : 587;
             _smtpUser = configuration["EmailSettings:SmtpUser"] ?? throw new InvalidOperationException("Falta EmailSettings:SmtpUser.");
@@ -26,6 +27,8 @@ namespace AA2_CS.Service
 
         public async Task<bool> SendVerificationEmail(string toEmail, string userName, string verificationCode)
         {
+            // Cada método de envío de correo electrónico se encarga de construir un mensaje HTML personalizado para diferentes escenarios 
+            // (verificación, recordatorio de inactividad, actividad en salas, recibos de compra, expiración de suscripción, etc.).
             try
             {
                 var message = new MailMessage();
@@ -85,6 +88,8 @@ namespace AA2_CS.Service
 
                 using (var client = new SmtpClient(_smtpServer, _smtpPort))
                 {
+                    // La configuración del cliente SMTP se realiza de manera segura, utilizando las credenciales y parámetros obtenidos de la configuración, 
+                    // y asegurando que la conexión sea cifrada con SSL.
                     client.Credentials = new NetworkCredential(_smtpUser, _smtpPass);
                     client.EnableSsl = true;
                     client.DeliveryMethod = SmtpDeliveryMethod.Network;
@@ -97,7 +102,6 @@ namespace AA2_CS.Service
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error al enviar email: {ex.Message}");
                 return false;
             }
         }
@@ -166,7 +170,6 @@ namespace AA2_CS.Service
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error al enviar email de inactividad: {ex.Message}");
                 return false;
             }
         }
@@ -234,7 +237,6 @@ namespace AA2_CS.Service
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error al enviar email de actividad de sala: {ex.Message}");
                 return false;
             }
         }
@@ -322,7 +324,6 @@ namespace AA2_CS.Service
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error al enviar email de recibo de compra: {ex.Message}");
                 return false;
             }
         }
@@ -396,7 +397,6 @@ namespace AA2_CS.Service
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error al enviar email de expiración de suscripción: {ex.Message}");
                 return false;
             }
         }
@@ -487,7 +487,6 @@ namespace AA2_CS.Service
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error al enviar email de compra de suscripción: {ex.Message}");
                 return false;
             }
         }

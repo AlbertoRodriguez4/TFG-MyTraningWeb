@@ -23,7 +23,47 @@ namespace aa2_alberto_rodriguez_penalva.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("AA2_CS.Model.Achievement", b =>
+            modelBuilder.Entity("AA2_CS.Model.DTOs.UserDTO", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
+
+                    b.Property<int>("consistencystreak")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("email")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("endurance")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("gold")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("level")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("passwordhash")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("strength")
+                        .HasColumnType("integer");
+
+                    b.HasKey("id");
+
+                    b.ToTable("UserDTOs");
+                });
+
+            modelBuilder.Entity("AA2_CS.Model.Entities.Achievement", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -71,7 +111,7 @@ namespace aa2_alberto_rodriguez_penalva.Migrations
                     b.ToTable("achievements", (string)null);
                 });
 
-            modelBuilder.Entity("AA2_CS.Model.BodyMetric", b =>
+            modelBuilder.Entity("AA2_CS.Model.Entities.BodyMetric", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -119,7 +159,7 @@ namespace aa2_alberto_rodriguez_penalva.Migrations
                     b.ToTable("bodymetrics", (string)null);
                 });
 
-            modelBuilder.Entity("AA2_CS.Model.EmailVerification", b =>
+            modelBuilder.Entity("AA2_CS.Model.Entities.EmailVerification", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -148,7 +188,7 @@ namespace aa2_alberto_rodriguez_penalva.Migrations
                     b.ToTable("emailverifications", (string)null);
                 });
 
-            modelBuilder.Entity("AA2_CS.Model.Exercise", b =>
+            modelBuilder.Entity("AA2_CS.Model.Entities.Exercise", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -211,7 +251,7 @@ namespace aa2_alberto_rodriguez_penalva.Migrations
                     b.ToTable("exercises", (string)null);
                 });
 
-            modelBuilder.Entity("AA2_CS.Model.Item", b =>
+            modelBuilder.Entity("AA2_CS.Model.Entities.Item", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -241,7 +281,7 @@ namespace aa2_alberto_rodriguez_penalva.Migrations
                     b.ToTable("items", (string)null);
                 });
 
-            modelBuilder.Entity("AA2_CS.Model.NotificationPreference", b =>
+            modelBuilder.Entity("AA2_CS.Model.Entities.NotificationPreference", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -281,7 +321,7 @@ namespace aa2_alberto_rodriguez_penalva.Migrations
                     b.ToTable("notificationpreferences", (string)null);
                 });
 
-            modelBuilder.Entity("AA2_CS.Model.Plan", b =>
+            modelBuilder.Entity("AA2_CS.Model.Entities.Plan", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -301,7 +341,7 @@ namespace aa2_alberto_rodriguez_penalva.Migrations
                     b.ToTable("plans", (string)null);
                 });
 
-            modelBuilder.Entity("AA2_CS.Model.Purchase", b =>
+            modelBuilder.Entity("AA2_CS.Model.Entities.Purchase", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -327,7 +367,7 @@ namespace aa2_alberto_rodriguez_penalva.Migrations
                     b.ToTable("purchases", (string)null);
                 });
 
-            modelBuilder.Entity("AA2_CS.Model.Room", b =>
+            modelBuilder.Entity("AA2_CS.Model.Entities.Room", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -368,7 +408,7 @@ namespace aa2_alberto_rodriguez_penalva.Migrations
                     b.ToTable("rooms", (string)null);
                 });
 
-            modelBuilder.Entity("AA2_CS.Model.Subscription", b =>
+            modelBuilder.Entity("AA2_CS.Model.Entities.Subscription", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -409,7 +449,7 @@ namespace aa2_alberto_rodriguez_penalva.Migrations
                     b.ToTable("subscriptions", (string)null);
                 });
 
-            modelBuilder.Entity("AA2_CS.Model.Task", b =>
+            modelBuilder.Entity("AA2_CS.Model.Entities.Task", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -449,7 +489,7 @@ namespace aa2_alberto_rodriguez_penalva.Migrations
                     b.ToTable("tasks", (string)null);
                 });
 
-            modelBuilder.Entity("AA2_CS.Model.TaskExercise", b =>
+            modelBuilder.Entity("AA2_CS.Model.Entities.TaskExercise", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -490,7 +530,7 @@ namespace aa2_alberto_rodriguez_penalva.Migrations
                     b.ToTable("taskexercises", (string)null);
                 });
 
-            modelBuilder.Entity("AA2_CS.Model.User", b =>
+            modelBuilder.Entity("AA2_CS.Model.Entities.User", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -553,7 +593,7 @@ namespace aa2_alberto_rodriguez_penalva.Migrations
                     b.ToTable("users", (string)null);
                 });
 
-            modelBuilder.Entity("AA2_CS.Model.UserAchievement", b =>
+            modelBuilder.Entity("AA2_CS.Model.Entities.UserAchievement", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -582,47 +622,7 @@ namespace aa2_alberto_rodriguez_penalva.Migrations
                     b.ToTable("userachievements", (string)null);
                 });
 
-            modelBuilder.Entity("AA2_CS.Model.UserDTO", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
-
-                    b.Property<int>("consistencystreak")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("email")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("endurance")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("gold")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("level")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("passwordhash")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("strength")
-                        .HasColumnType("integer");
-
-                    b.HasKey("id");
-
-                    b.ToTable("UserDTOs");
-                });
-
-            modelBuilder.Entity("AA2_CS.Model.UserRoom", b =>
+            modelBuilder.Entity("AA2_CS.Model.Entities.UserRoom", b =>
                 {
                     b.Property<int>("userid")
                         .HasColumnType("integer")
@@ -639,9 +639,9 @@ namespace aa2_alberto_rodriguez_penalva.Migrations
                     b.ToTable("usersrooms", (string)null);
                 });
 
-            modelBuilder.Entity("AA2_CS.Model.BodyMetric", b =>
+            modelBuilder.Entity("AA2_CS.Model.Entities.BodyMetric", b =>
                 {
-                    b.HasOne("AA2_CS.Model.User", "User")
+                    b.HasOne("AA2_CS.Model.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -650,9 +650,9 @@ namespace aa2_alberto_rodriguez_penalva.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("AA2_CS.Model.NotificationPreference", b =>
+            modelBuilder.Entity("AA2_CS.Model.Entities.NotificationPreference", b =>
                 {
-                    b.HasOne("AA2_CS.Model.User", "User")
+                    b.HasOne("AA2_CS.Model.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("userid")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -661,15 +661,15 @@ namespace aa2_alberto_rodriguez_penalva.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("AA2_CS.Model.Purchase", b =>
+            modelBuilder.Entity("AA2_CS.Model.Entities.Purchase", b =>
                 {
-                    b.HasOne("AA2_CS.Model.Item", "Item")
+                    b.HasOne("AA2_CS.Model.Entities.Item", "Item")
                         .WithMany()
                         .HasForeignKey("itemid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AA2_CS.Model.User", "User")
+                    b.HasOne("AA2_CS.Model.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("userid")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -680,9 +680,9 @@ namespace aa2_alberto_rodriguez_penalva.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("AA2_CS.Model.Subscription", b =>
+            modelBuilder.Entity("AA2_CS.Model.Entities.Subscription", b =>
                 {
-                    b.HasOne("AA2_CS.Model.User", "User")
+                    b.HasOne("AA2_CS.Model.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("userid")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -691,15 +691,15 @@ namespace aa2_alberto_rodriguez_penalva.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("AA2_CS.Model.TaskExercise", b =>
+            modelBuilder.Entity("AA2_CS.Model.Entities.TaskExercise", b =>
                 {
-                    b.HasOne("AA2_CS.Model.Exercise", "Exercise")
+                    b.HasOne("AA2_CS.Model.Entities.Exercise", "Exercise")
                         .WithMany()
                         .HasForeignKey("ExerciseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AA2_CS.Model.Task", "Task")
+                    b.HasOne("AA2_CS.Model.Entities.Task", "Task")
                         .WithMany()
                         .HasForeignKey("TaskId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -710,13 +710,13 @@ namespace aa2_alberto_rodriguez_penalva.Migrations
                     b.Navigation("Task");
                 });
 
-            modelBuilder.Entity("AA2_CS.Model.User", b =>
+            modelBuilder.Entity("AA2_CS.Model.Entities.User", b =>
                 {
-                    b.HasOne("AA2_CS.Model.Item", "EquippedEnduranceItem")
+                    b.HasOne("AA2_CS.Model.Entities.Item", "EquippedEnduranceItem")
                         .WithMany()
                         .HasForeignKey("equippedEnduranceId");
 
-                    b.HasOne("AA2_CS.Model.Item", "EquippedStrengthItem")
+                    b.HasOne("AA2_CS.Model.Entities.Item", "EquippedStrengthItem")
                         .WithMany()
                         .HasForeignKey("equippedStrengthId");
 
@@ -725,15 +725,15 @@ namespace aa2_alberto_rodriguez_penalva.Migrations
                     b.Navigation("EquippedStrengthItem");
                 });
 
-            modelBuilder.Entity("AA2_CS.Model.UserAchievement", b =>
+            modelBuilder.Entity("AA2_CS.Model.Entities.UserAchievement", b =>
                 {
-                    b.HasOne("AA2_CS.Model.Achievement", "Achievement")
+                    b.HasOne("AA2_CS.Model.Entities.Achievement", "Achievement")
                         .WithMany()
                         .HasForeignKey("AchievementId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AA2_CS.Model.User", "User")
+                    b.HasOne("AA2_CS.Model.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -744,15 +744,15 @@ namespace aa2_alberto_rodriguez_penalva.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("AA2_CS.Model.UserRoom", b =>
+            modelBuilder.Entity("AA2_CS.Model.Entities.UserRoom", b =>
                 {
-                    b.HasOne("AA2_CS.Model.Room", "Room")
+                    b.HasOne("AA2_CS.Model.Entities.Room", "Room")
                         .WithMany()
                         .HasForeignKey("roomid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AA2_CS.Model.User", "User")
+                    b.HasOne("AA2_CS.Model.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("userid")
                         .OnDelete(DeleteBehavior.Cascade)

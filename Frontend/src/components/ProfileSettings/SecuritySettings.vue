@@ -4,7 +4,7 @@
     <v-card class="settings-card" elevation="0" border>
       <v-card-title class="card-title">
         <v-icon>mdi-shield-lock</v-icon>
-        Change Password
+        {{ $t('security_password') }}
       </v-card-title>
 
       <v-divider class="card-divider" />
@@ -13,25 +13,25 @@
         <v-form ref="passwordForm" class="settings-form">
           <!-- Current Password -->
           <div class="form-group">
-            <label class="form-label">Current Password</label>
+            <label class="form-label">{{ $t('security.currentPassword') }}</label>
             <v-text-field v-model="passwordData.current" type="password" variant="outlined" density="comfortable"
-              placeholder="Enter current password" class="form-input" :rules="[rules.required]" />
+              :placeholder="$t('security.currentPasswordPlaceholder')" class="form-input" :rules="[rules.required]" />
           </div>
 
           <!-- New Password -->
           <div class="form-group">
-            <label class="form-label">New Password</label>
+            <label class="form-label">{{ $t('security.newPassword') }}</label>
             <v-text-field v-model="passwordData.new" type="password" variant="outlined" density="comfortable"
-              placeholder="Enter new password" class="form-input" :rules="[rules.required, rules.minLength]" counter
+              :placeholder="$t('security.newPasswordPlaceholder')" class="form-input" :rules="[rules.required, rules.minLength]" counter
               maxlength="32" />
-            <p class="password-hint">At least 8 characters with uppercase, lowercase, and numbers</p>
+            <p class="password-hint">{{ $t('security.passwordRequirements') }}</p>
           </div>
 
           <!-- Confirm Password -->
           <div class="form-group">
-            <label class="form-label">Confirm New Password</label>
+            <label class="form-label">{{ $t('security.confirmNewPassword') }}</label>
             <v-text-field v-model="passwordData.confirm" type="password" variant="outlined" density="comfortable"
-              placeholder="Confirm new password" class="form-input" :rules="[rules.required, rules.passwordMatch]" />
+              :placeholder="$t('security.confirmNewPasswordPlaceholder')" class="form-input" :rules="[rules.required, rules.passwordMatch]" />
           </div>
 
           <!-- Action Buttons -->
@@ -39,7 +39,7 @@
             <v-btn color="#ffcc00" text-color="#000" variant="flat" size="large" class="save-btn" :loading="isUpdating"
               @click="handleUpdatePassword">
               <v-icon start>mdi-check</v-icon>
-              Update Password
+              {{ $t('save_changes') }}
             </v-btn>
           </div>
         </v-form>
@@ -83,14 +83,14 @@ const userStore = useUserStore()
 const passwordForm = ref()
 const isUpdating = ref(false)
 const twoFAEnabled = ref(false)
-
+// Estado reactuvo para los campos del formulario de cambio de contraseña
 const passwordData = reactive({
   current: '',
   new: '',
   confirm: '',
 })
 
-// Snackbar state
+// Estado reactivo para el snackbar de notificaciones
 const snackbar = reactive({
   show: false,
   message: '',
@@ -98,7 +98,7 @@ const snackbar = reactive({
   icon: 'mdi-check-circle',
   timeout: 3000,
 })
-
+// Mostrar el snackbar dependiendo de si la acción fue exitosa o hubo un error
 const showSnackbar = (message: string, type: 'success' | 'error') => {
   snackbar.message = message
   snackbar.color = type === 'success' ? '#2e7d32' : '#c62828'
@@ -106,7 +106,7 @@ const showSnackbar = (message: string, type: 'success' | 'error') => {
   snackbar.timeout = type === 'success' ? 3000 : 5000
   snackbar.show = true
 }
-
+// Reglas de validación para los campos del formulario
 const rules = {
   required: (value: string) => !!value || 'This field is required',
   minLength: (value: string) => value?.length >= 8 || 'Password must be at least 8 characters',
@@ -115,11 +115,13 @@ const rules = {
 
 async function handleUpdatePassword() {
   const { valid } = await passwordForm.value.validate()
+  // Se comprueba la validación del formulario, si no es válida se detiene la ejecutión, y si sí que es válida se procede a actualizar la contraseña
   if (!valid) return
 
   isUpdating.value = true
 
   try {
+    // Ejercutar la funcióin de cambio de contraseña del store, y mostrar el snackbar dependiendo del resultado
     const success = await userStore.changePassword(
       passwordData.current,
       passwordData.new

@@ -11,21 +11,21 @@
       <v-form ref="form" class="settings-form">
         <!-- Name -->
         <div class="form-group">
-          <label class="form-label">Nombre Completo</label>
-          <v-text-field v-model="formData.name" placeholder="Ingresa tu nombre completo" variant="outlined"
+          <label class="form-label">{{ $t('profile.fullName') }}</label>
+          <v-text-field v-model="formData.name" :placeholder="$t('profile.fullNamePlaceholder')" variant="outlined"
             density="comfortable" class="form-input" :rules="[rules.required, rules.minLength]" />
         </div>
 
         <!-- Email -->
         <div class="form-group">
           <label class="form-label">{{ $t('email_label') }}</label>
-          <v-text-field v-model="formData.email" placeholder="tu@email.com" type="email" variant="outlined"
+          <v-text-field v-model="formData.email" :placeholder="$t('profile.emailPlaceholder')" type="email" variant="outlined"
             density="comfortable" class="form-input" disabled hint="Contacta con soporte para cambiar tu correo" />
         </div>
 
         <!-- Role Info -->
         <div class="form-group" v-if="store.loggedUser?.role != 'userNormal'">
-          <label class="form-label">Rol</label>
+          <label class="form-label">{{ $t('profile.role') }}</label>
           <v-text-field :model-value="store.loggedUser?.role || 'User'" variant="outlined" density="comfortable"
             class="form-input" disabled />
         </div>
@@ -33,16 +33,16 @@
         <!-- Stats Info (Read Only) -->
         <div class="stats-info">
           <div class="info-group">
-            <label class="form-label">Nivel</label>
+            <label class="form-label">{{ $t('profile.level') }}</label>
             <p class="info-value">{{ store.loggedUser?.level || 0 }}</p>
           </div>
           <div class="info-group">
-            <label class="form-label">Experiencia</label>
+            <label class="form-label">{{ $t('profile.experience') }}</label>
             <p class="info-value">{{ store.loggedUser?.experience || 0 }} / {{ store.loggedUser?.xpRequired || 100 }} XP
             </p>
           </div>
           <div class="info-group">
-            <label class="form-label">Racha de Consistencia</label>
+            <label class="form-label">{{ $t('profile.consistencyStreak') }}</label>
             <p class="info-value">{{ store.loggedUser?.consistencyStreak || 0 }} {{ $t('days_count') }}</p>
           </div>
         </div>
@@ -52,10 +52,10 @@
           <v-btn color="#ffcc00" text-color="#000" variant="flat" size="large" @click="saveChanges" class="save-btn"
             :loading="saving">
             <v-icon start>mdi-check</v-icon>
-            Guardar Cambios
+            {{ $t('save_changes') }}
           </v-btn>
           <v-btn variant="outlined" size="large" @click="resetForm" class="cancel-btn">
-            Cancelar
+            {{ $t('common.cancel') }}
           </v-btn>
         </div>
       </v-form>
@@ -86,14 +86,14 @@ const { t } = useI18n()
 const store = useUserStore()
 const form = ref()
 const saving = ref(false)
-
+// Form data reactivo para los campos editables del perfil
 const formData = reactive({
   name: store.loggedUser?.name || '',
   email: store.loggedUser?.email || '',
   avatarUrl: store.loggedUser?.avatarUrl || '',
 })
 
-// Snackbar state
+
 const snackbar = reactive({
   show: false,
   message: '',
@@ -109,14 +109,16 @@ const showSnackbar = (message: string, type: 'success' | 'error') => {
   snackbar.timeout = type === 'success' ? 3000 : 5000
   snackbar.show = true
 }
-
+// Reglas de validación para el formulario
 const rules = {
   required: (value: string) => !!value || 'Este campo es requerido',
   minLength: (value: string) => value?.length >= 2 || t('min_2_chars'),
 }
-
+// Función para guardar los cambios del perfil, muestra un mensaje de éxito o error dependiendo del resultado
 const saveChanges = async () => {
+  // Comprobar que el formulario es válido antes de intentar guardar los cambios
   const { valid } = await form.value.validate()
+  // Si es válido y hay un usuario logueado, se intenta guardar los cambios, mostrando un mensaje de éxito o error dependiendo del resultado
   if (valid && store.loggedUser) {
     saving.value = true
     try {

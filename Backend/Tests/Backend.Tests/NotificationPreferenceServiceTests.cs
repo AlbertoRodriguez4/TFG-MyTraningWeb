@@ -1,4 +1,5 @@
-using AA2_CS.Model;
+using AA2_CS.Model.Entities;
+using AA2_CS.Model.DTOs;
 using AA2_CS.Repository;
 using AA2_CS.Service;
 
@@ -9,6 +10,7 @@ public class NotificationPreferenceServiceTests
     [Fact]
     public async System.Threading.Tasks.Task GetByUserIdAsync_SiNoExiste_CreaPreferenciasPorDefecto()
     {
+        // Prueba que al llamar a GetByUserIdAsync con un ID de usuario que no tiene preferencias de notificación, se crean y devuelven las preferencias por defecto. Se espera que el DTO devuelto tenga los valores predeterminados establecidos.
         using var context = TestDbContextFactory.CreateContext();
         var service = new NotificationPreferenceService(new NotificationPreferenceRepository(context));
 
@@ -25,6 +27,7 @@ public class NotificationPreferenceServiceTests
     [Fact]
     public async System.Threading.Tasks.Task UpdateAsync_SiInactivityDaysEsMenorA1_AjustaAMinimo()
     {
+        // Prueba que al llamar a UpdateAsync con un DTO que tiene InactivityDays menor a 1, el servicio ajusta ese valor al mínimo permitido (1). Se espera que después de la actualización, el DTO devuelto tenga InactivityDays igual a 1.
         using var context = TestDbContextFactory.CreateContext();
         var service = new NotificationPreferenceService(new NotificationPreferenceRepository(context));
 
@@ -44,6 +47,7 @@ public class NotificationPreferenceServiceTests
     [Fact]
     public async System.Threading.Tasks.Task UpdateAsync_SiInactivityDaysEsMayorA30_AjustaAMaximo()
     {
+        // Prueba que al llamar a UpdateAsync con un DTO que tiene InactivityDays mayor a 30, el servicio ajusta ese valor al máximo permitido (30). Se espera que después de la actualización, el DTO devuelto tenga InactivityDays igual a 30.
         using var context = TestDbContextFactory.CreateContext();
         var service = new NotificationPreferenceService(new NotificationPreferenceRepository(context));
 
@@ -63,6 +67,7 @@ public class NotificationPreferenceServiceTests
     [Fact]
     public async System.Threading.Tasks.Task ResetDefaultsAsync_RestauraValoresIniciales()
     {
+        // Prueba que al llamar a ResetDefaultsAsync para un usuario, se restauran los valores de preferencias de notificación a sus valores iniciales por defecto. Se espera que después de la llamada, el DTO devuelto tenga los valores predeterminados establecidos.
         using var context = TestDbContextFactory.CreateContext();
         var service = new NotificationPreferenceService(new NotificationPreferenceRepository(context));
         await service.UpdateAsync(4, new NotificationPreferenceDTO

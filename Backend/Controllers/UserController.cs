@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using AA2_CS.Model;
+using AA2_CS.Model.Entities;
+using AA2_CS.Model.DTOs;
+using AA2_CS.Model.Common;
 using AA2_CS.Service;
 using Microsoft.AspNetCore.Authorization;
 using AA2_CS.Extensions;

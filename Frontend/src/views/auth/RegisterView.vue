@@ -89,14 +89,14 @@ const register = async () => {
     isLoading.value = false
     return
   }
-
+   // Validar que el email tenga un formato correcto
   if (!validateEmail(emailTrimmed)) {
     errorMessage.value = errors.email || ''
     showSnackbar(errors.email || t('invalid_email'), 'warning')
     isLoading.value = false
     return
   }
-
+  // Validar que la contraseña sea lo suficientemente fuerte
   updatePasswordStrength(passwordTrimmed)
   if (!isPasswordValid.value) {
     const missingRequirements = passwordStrength.value.feedback
@@ -105,7 +105,7 @@ const register = async () => {
     isLoading.value = false
     return
   }
-
+  // Validar que las contraseñas coincidan
   if (!validateConfirmPassword(passwordTrimmed, confirmPasswordTrimmed)) {
     errorMessage.value = errors.confirmPassword || ''
     showSnackbar(errors.confirmPassword || t('passwords_no_match'), 'error')
@@ -127,14 +127,14 @@ const register = async () => {
     experience: 0,
     xpRequired: 100,
     xpRemaining: 100,
-    equippedStrengthItemId: null,
-    equippedEnduranceItemId: null,
+    equippedStrengthItemId: undefined,
+    equippedEnduranceItemId: undefined,
     avatarUrl: ''
   }
 
   try {
     const result = await store.registerUser(user)
-
+    //Mensaje de error 
     if (!result.success) {
       errorMessage.value = t('user_not_created')
       showSnackbar(t('email_registered'), 'error')
@@ -162,7 +162,7 @@ const register = async () => {
 
 <template>
   <div class="register-wrapper">
-    <!-- Gradient orbs - efecto futurista sutil -->
+   
     <div class="orb orb-1"></div>
     <div class="orb orb-2"></div>
 
@@ -192,7 +192,7 @@ const register = async () => {
                 <span class="badge-text">{{ $t('new_user') }}</span>
               </div>
               <h2 class="form-title">{{ $t('register_title') }}</h2>
-                <p class="form-subtitle">{{ $t('init_profile') }}</p>
+              <p class="form-subtitle">{{ $t('init_profile') }}</p>
             </div>
 
             <v-form @submit.prevent="register" class="register-form">
@@ -233,7 +233,8 @@ const register = async () => {
                       {{ getStrengthLabel(passwordStrength.strength) }}
                     </div>
                     <div v-if="passwordStrength.feedback.length > 0" class="strength-feedback">
-                      <span class="feedback-text">{{ $t('password_strength_feedback') }} {{ passwordStrength.feedback.join(', ') }}</span>
+                      <span class="feedback-text">{{ $t('password_strength_feedback') }} {{
+                        passwordStrength.feedback.join(', ') }}</span>
                     </div>
                   </div>
                 </div>

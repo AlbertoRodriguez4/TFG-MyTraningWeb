@@ -1,5 +1,6 @@
 using AA2_CS.Database;
-using AA2_CS.Model;
+using AA2_CS.Model.Entities;
+using AA2_CS.Model.DTOs;
 using Microsoft.EntityFrameworkCore;
 
 namespace AA2_CS.Repository
@@ -15,6 +16,8 @@ namespace AA2_CS.Repository
 
         public int CreateRoomWithUser(Room entity, int userId, string? userRole)
         {
+            // Validar que el usuario exista antes de crear la sala y asignarle el rol de creador. Se añade la lógica para crear la sala y luego asociar al usuario con esa sala a través de UserRoom.
+            // (El primer usuario asignado se considera el creador de la sala)
             var user = _context.Users.Find(userId);
             if (user == null)
                 throw new Exception($"No se encontró el usuario con ID {userId}");
@@ -75,10 +78,10 @@ namespace AA2_CS.Repository
 
         public List<UserRoomDTO> FindAllWithUsers()
         {
+            // Obtener todas las salas junto con los usuarios asociados a cada sala. Se hace un join entre UserRooms, Users y Rooms, y luego se agrupa por sala para construir el DTO que contiene la información de la sala y la lista de usuarios.
             return (from ur in _context.UserRooms
                     join u in _context.Users on ur.userid equals u.id
                     join r in _context.Rooms on ur.roomid equals r.id
-                    // <--- IMPORTANTE: Añadir description y date al group by
                     group new { User = u, Room = r } by new {
                         r.id,
                         r.name,

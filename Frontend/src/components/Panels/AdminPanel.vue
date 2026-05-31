@@ -28,14 +28,15 @@ const itemSearch = ref('')
 const achievementSearch = ref('')
 const adminError = ref('')
 const showAdminError = ref(false)
-
+// Control de errores para el panel de administración
 watch(adminError, (val) => {
   showAdminError.value = !!val
 })
-
+// Limpiar error al cerrar el snackbar
 watch(showAdminError, (val) => {
   if (!val) adminError.value = ''
 })
+// Forzar idioma español para el panel de administración
 const { t, locale } = useI18n()
 locale.value = 'es'
 
@@ -43,16 +44,18 @@ locale.value = 'es'
 const totalUsers = computed(() => store.user.length)
 const totalItems = computed(() => itemStore.items.length)
 const activeUsers = computed(() => store.user.filter(u => u.role !== 'userMaster').length)
-
+// Cargar datos al montar el componente
 onMounted(async () => {
   adminError.value = ''
+  // Solo cargar datos si el usuario tiene sesión iniciada y es un admin
   if (loggedUser.value?.email && loggedUser.value.passwordhash) {
     try {
       await store.getItems()
     } catch {
-      // silenciar
+      // silenciar, no hace nada 
     }
   }
+  // Si el usuario es un userMaster, cargar todos los datos necesarios para la administración
   if (loggedUser.value?.role === 'userMaster') {
     try {
       await store.fetchUser()
@@ -74,7 +77,7 @@ onMounted(async () => {
     }
   }
 })
-
+// Redirigir a home si no hay usuario logueado o si el usuario no es un admin
 watch(
     () => store.loggedUser,
     (newUser) => {
@@ -84,7 +87,7 @@ watch(
     },
     { immediate: true }
 )
-
+// Gestiones de popups para edición de usuarios, items y logros
 const openItemPopup = (item: Item | null = null) => {
     selectedItem.value = item
     showItemPopup.value = true

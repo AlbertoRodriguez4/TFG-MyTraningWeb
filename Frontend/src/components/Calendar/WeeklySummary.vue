@@ -39,28 +39,13 @@
   </v-card>
 </template>
 
-<script>
-export default {
-  name: 'WeeklySummary',
-  props: {
-    completedRoutines: {
-      type: Number,
-      required: true
-    },
-    userXP: {
-      type: Number,
-      required: true
-    },
-    streak: {
-      type: Number,
-      required: true
-    },
-    xpProgress: {
-      type: Number,
-      required: true
-    }
-  }
-};
+<script setup lang="ts">
+defineProps<{
+  completedRoutines: number
+  userXP: number
+  streak: number
+  xpProgress: number
+}>()
 </script>
 
 <style scoped>
@@ -87,6 +72,20 @@ export default {
   font-size: 0.9rem;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.7);
+}
+
+@media (max-width: 960px) {
+  .summary-item {
+    padding: 0.75rem;
+  }
+
+  .summary-value {
+    font-size: 1.75rem;
+  }
+
+  .summary-label {
+    font-size: 0.85rem;
+  }
 }
 
 @media (max-width: 600px) {

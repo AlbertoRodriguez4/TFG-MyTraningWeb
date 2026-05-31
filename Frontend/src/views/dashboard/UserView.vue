@@ -98,7 +98,7 @@ onMounted(async () => {
                 <v-icon size="64" color="#ffcc00">mdi-trophy-variant</v-icon>
                 <div class="loader-ring"></div>
               </div>
-              <p>Cargando campeones...</p>
+              <p>{{ $t('user.loadingChampions') }}</p>
             </div>
           </div>
 

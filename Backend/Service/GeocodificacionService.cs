@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
-using AA2_CS.Model;
+using AA2_CS.Model.DTOs;
+using AA2_CS.Repository;
 
 
 

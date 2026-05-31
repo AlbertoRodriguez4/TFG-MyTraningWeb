@@ -93,22 +93,9 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import type { Routines } from '@/components/Models/Routines';
+import type { MonthlyStats } from '@/components/Models/Calendar';
 
 const { t, locale } = useI18n();
-
-interface MonthlyStats {
-  key: string;
-  name: string;
-  year: number;
-  month: number;
-  total: number;
-  completed: number;
-  pending: number;
-  completionRate: number;
-  totalXP: number;
-  routines: Routines[];
-}
 
 interface Props {
   modelValue: boolean;

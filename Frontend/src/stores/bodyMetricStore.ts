@@ -16,13 +16,14 @@ export interface BodyMetric {
   progressPhotoUrl?: string;
   notes?: string;
 }
-
+// Store para métricas corporales 
+//  permite al usuario registrar y visualizar su evolución física a lo largo del tiempo
 export const useBodyMetricStore = defineStore('bodyMetric', () => {
   const metrics = ref<BodyMetric[]>([]);
   const latestMetric = ref<BodyMetric | null>(null);
   const loading = ref(false);
   const error = ref<string | null>(null);
-
+  // obtener métricas del usuario
   async function fetchMyMetrics() {
     loading.value = true;
     try {
@@ -38,7 +39,7 @@ export const useBodyMetricStore = defineStore('bodyMetric', () => {
       loading.value = false;
     }
   }
-
+// Obtener último registro de métrica
   async function fetchLatestMetric() {
     try {
       const token = localStorage.getItem('token');

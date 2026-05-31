@@ -18,7 +18,7 @@ function parseRoutines(data: any[]): Routines[] {
 }
 
 export const useRoutineStore = defineStore('routine', () => {
-    // --- State ---
+    // Estado del store
     const selectedRoutineId = ref<number | null>(null);
     const routines = ref<Routines[]>([]);
 
@@ -75,7 +75,7 @@ export const useRoutineStore = defineStore('routine', () => {
         }
     }
 
-    // FUNCIÓN CORREGIDA: Ahora actualiza los datos del usuario después de completar la tarea
+    // Actuaizar el estado de una tarea a completada y actualizar los datos del usuario para reflejar los cambios (recompensas, progreso, etc.)
     async function completeTask(taskId: number): Promise<void> {
         try {
             const response = await fetch(`${API_BASE_URL}/api/Task/complete/${taskId}`, {
@@ -87,7 +87,7 @@ export const useRoutineStore = defineStore('routine', () => {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
 
-            // ACTUALIZAR LOS DATOS DEL USUARIO primero para obtener los nuevos valores
+            // Se actualizan los datos del usuario para reflejar los cambios después de completar la tarea (recompensas, progreso, etc.)
             const userStore = useUserStore();
             await userStore.refreshLoggedUser();
 
@@ -102,7 +102,7 @@ export const useRoutineStore = defineStore('routine', () => {
         }
     }
 
-    // --- Actions ---
+    // Función para establecer la rutina seleccionada por su ID
     function setSelectedRoutineId(routineId: number | null) {
         selectedRoutineId.value = routineId;
     }

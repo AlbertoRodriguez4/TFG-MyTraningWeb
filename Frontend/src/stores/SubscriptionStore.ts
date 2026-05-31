@@ -28,9 +28,7 @@ export const useSubscriptionStore = defineStore('subscription', () => {
   const error = ref<string | null>(null)
 
 
-  /**
-   * Verifica si el usuario tiene una suscripción activa
-   */
+  // Función para verificar si el usuario tiene una suscripción activa
   async function checkSubscription() {
     isLoading.value = true
     error.value = null
@@ -57,9 +55,7 @@ export const useSubscriptionStore = defineStore('subscription', () => {
     }
   }
 
-  /**
-   * Obtiene la suscripción activa del usuario
-   */
+  // Función para obtener los detalles de la suscripción activa del usuario
   async function getActiveSubscription() {
     isLoading.value = true
     error.value = null
@@ -81,6 +77,7 @@ export const useSubscriptionStore = defineStore('subscription', () => {
       }
 
       const data = await response.json()
+      // Settear los valores de la suscripción activa y el estado de si tiene una suscripción activa o no
       activeSubscription.value = data
       hasActiveSubscription.value = data.isActive
 
@@ -96,9 +93,7 @@ export const useSubscriptionStore = defineStore('subscription', () => {
     }
   }
 
-  /**
-   * Obtiene el historial de suscripciones del usuario
-   */
+  // Función para obtener el historial de suscripciones del usuario
   async function getSubscriptionHistory() {
     isLoading.value = true
     error.value = null
@@ -127,9 +122,7 @@ export const useSubscriptionStore = defineStore('subscription', () => {
     }
   }
 
-  /**
-   * Compra una nueva suscripción premium (simulación de 10€)
-   */
+  // Función para realizar la compra de una suscripción (Es una simulación)
   async function purchaseSubscription(): Promise<{ success: boolean; message?: string; error?: string }> {
     isLoading.value = true
     error.value = null
@@ -169,9 +162,7 @@ export const useSubscriptionStore = defineStore('subscription', () => {
     }
   }
 
-  /**
-   * Renueva la suscripción existente
-   */
+  // Función para renovar la suscripción existente  
   async function renewSubscription(): Promise<{ success: boolean; message?: string; error?: string }> {
     isLoading.value = true
     error.value = null
@@ -211,9 +202,7 @@ export const useSubscriptionStore = defineStore('subscription', () => {
     }
   }
 
-  /**
-   * Cancela una suscripción
-   */
+  // Función para cancelar la suscripción activa del usuario
   async function cancelSubscription(subscriptionId: number): Promise<{ success: boolean; message?: string; error?: string }> {
     isLoading.value = true
     error.value = null
@@ -254,16 +243,15 @@ export const useSubscriptionStore = defineStore('subscription', () => {
     }
   }
 
-  /**
-   * Inicializa el estado de la suscripción (llamar al cargar la app)
-   */
+  // Función para inicializar el estado de la suscripción al cargar la aplicación (Necesario para el header )
   async function initializeSubscription() {
     if (!localStorage.getItem('token')) {
       hasActiveSubscription.value = false
       activeSubscription.value = null
       return
     }
-
+ // Comprobar si el usuario tiene una suscripción activa y obtener los detalles de la suscripción activa e historial de suscripciones al cargar la aplicación 
+ // para tener el estado actualizado desde el inicio
     await checkSubscription()
     if (hasActiveSubscription.value) {
       await getActiveSubscription()

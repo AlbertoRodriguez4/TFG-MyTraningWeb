@@ -180,7 +180,7 @@
       <!-- Footer Bottom -->
       <div class="footer-bottom">
         <div class="bottom-left">
-          <p class="copyright">© 2025 The Training Hub. All rights reserved.</p>
+          <p class="copyright">{{ $t('footer.copyright') }}</p>
           <p class="made-with">
             {{ $t('made_with') }} <span class="heart">❤️</span> {{ $t('by_fitness_enthusiasts') }}
           </p>
@@ -201,19 +201,22 @@
 
         <div class="bottom-right">
           <div class="legal-links">
-            <a href="#" class="legal-link">Privacy Policy</a>
+            <a href="#" class="legal-link">{{ $t('footer.privacyPolicy') }}</a>
             <span class="dot">•</span>
-            <a href="#" class="legal-link">Terms of Service</a>
+            <a href="#" class="legal-link">{{ $t('footer.termsOfService') }}</a>
             <span class="dot">•</span>
-            <a href="#" class="legal-link">Cookies</a>
+            <a href="#" class="legal-link">{{ $t('footer.cookies') }}</a>
             <span class="dot">•</span>
-            <a href="#" class="legal-link">Contact</a>
+            <a href="#" class="legal-link">{{ $t('footer.contact') }}</a>
           </div>
         </div>
       </div>
     </div>
   </footer>
 </template>
+
+<script setup lang="ts">
+</script>
 
 <style scoped>
 .footer {

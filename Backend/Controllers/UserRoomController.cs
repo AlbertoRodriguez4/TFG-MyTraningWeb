@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using AA2_CS.Model;
+using AA2_CS.Model.Entities;
+using AA2_CS.Model.Common;
 using AA2_CS.Service;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
@@ -14,14 +15,12 @@ namespace AA2_CS.Controllers
     public class UserRoomController : ControllerBase
     {
         private readonly UserRoomService _userRoomService;
-        private readonly NotificationService _notificationService;
         private readonly RoomService _roomService;
         private readonly IServiceProvider _serviceProvider;
 
-        public UserRoomController(UserRoomService userRoomService, NotificationService notificationService, RoomService roomService, IServiceProvider serviceProvider)
+        public UserRoomController(UserRoomService userRoomService, RoomService roomService, IServiceProvider serviceProvider)
         {
             _userRoomService = userRoomService;
-            _notificationService = notificationService;
             _roomService = roomService;
             _serviceProvider = serviceProvider;
         }
@@ -125,7 +124,6 @@ namespace AA2_CS.Controllers
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine($"Error al enviar notificación de unión a sala: {ex.Message}");
                         }
                     });
                 }

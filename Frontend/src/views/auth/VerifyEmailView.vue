@@ -44,13 +44,13 @@ const formatCode = (event: Event) => {
 const verifyEmail = async () => {
   errorMessage.value = ''
   successMessage.value = ''
-
+  // Validar que el código tenga exactamente 6 dígitos antes de llamar al store
   if (verificationCode.value.length !== 6) {
     errorMessage.value = t('code_6_digits')
     showSnackbar(t('please_enter_6'), 'warning')
     return
   }
-
+  // Validar que el email esté presente antes de llamar al store
   if (!verificationEmail.value) {
     errorMessage.value = t('email_not_found_verify')
     showSnackbar(t('email_verif_not_found'), 'error')
@@ -69,7 +69,7 @@ const verifyEmail = async () => {
       if (store.loggedUser) {
         await store.refreshLoggedUser()
       }
-
+      //Redireccionar después de un breve retraso para mostrar el mensaje y permitir que el store actualice el estado del usuario
       setTimeout(() => {
         router.push({ name: store.loggedUser ? 'homeLogged' : 'login' })
       }, 1500)
@@ -91,7 +91,7 @@ const resendCode = async () => {
 
   isResending.value = true
   errorMessage.value = ''
-
+  // Validar que el email esté presente antes de llamar al store
   try {
     if (!verificationEmail.value) {
       errorMessage.value = t('email_not_found_resend')
@@ -100,7 +100,7 @@ const resendCode = async () => {
     }
 
     const result = await store.resendVerificationCode(verificationEmail.value)
-
+    // Mostrar mensaje de éxito o error según el resultado de la solicitud, y en caso de éxito iniciar el contador para limitar reenvíos
     if (result) {
       successMessage.value = t('code_resent')
       showSnackbar(t('code_resent_success'), 'success')
@@ -117,7 +117,7 @@ const resendCode = async () => {
     isResending.value = false
   }
 }
-
+// Función para iniciar el contador de reenvío, que se llama después de un reenvío exitoso
 const startCountdown = () => {
   // Limpiar intervalo anterior si existe
   if (countdownInterval) {
@@ -135,6 +135,7 @@ const startCountdown = () => {
 }
 
 onMounted(() => {
+  // Obtener el email de la query o del usuario logueado para mostrarlo en la interfaz y usarlo en las llamadas al store
   const emailFromQuery = typeof route.query.email === 'string' ? route.query.email.trim() : ''
   verificationEmail.value = emailFromQuery || store.loggedUser?.email || ''
 

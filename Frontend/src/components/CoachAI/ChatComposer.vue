@@ -46,6 +46,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import type { QuickPrompt } from '@/components/Models/Chat'
 
 const { t } = useI18n()
 
@@ -61,23 +62,18 @@ withDefaults(defineProps<Props>(), {
   showQuickPrompts: false,
 })
 
-/* ── Emits ── */
+
 // Tipamos exactamente qué eventos se emiten y qué datos envían
 const emit = defineEmits<{
   (e: 'send', text: string): void
 }>()
 
-/* ── State ── */
+
 const draft = ref<string>('')
 // Tipamos la referencia del DOM específicamente como un HTMLTextAreaElement
 const textareaRef = ref<HTMLTextAreaElement | null>(null)
 
-/* ── Data ── */
-interface QuickPrompt {
-  icon: string
-  text: string
-}
-
+// Mensakes rápidos predefinidos para que el usuario pueda hacer clic y enviar sin escribir (solo se muestran antes del primer mensaje)
 const quickPrompts = computed<QuickPrompt[]>(() => [
   { icon: '💪', text: t('chat.quickRoutine3Days') },
   { icon: '🥗', text: t('chat.quickDietMuscle')  },
@@ -85,7 +81,7 @@ const quickPrompts = computed<QuickPrompt[]>(() => [
   { icon: '😴', text: t('chat.quickRecoveryTips')   },
 ])
 
-/* ── Methods ── */
+// Función para autoajustar la altura del textarea según el contenido, con un máximo de 140px para evitar que crezca demasiado
 function autoResize(): void {
   const el = textareaRef.value
   if (!el) return
@@ -93,7 +89,7 @@ function autoResize(): void {
   el.style.height = 'auto'
   el.style.height = `${Math.min(el.scrollHeight, 140)}px`
 }
-
+// Función para enviar el mensaje. Emite el evento 'send' con el texto, limpia el draft y resetea la altura del textarea
 function submit(): void {
   const text = draft.value.trim()
   if (!text) return

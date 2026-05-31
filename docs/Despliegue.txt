@@ -57,7 +57,7 @@ B) Backend (Backend/Dockerfile)
 A) front-deployment.yml
    - Deployment: 1 replica del contenedor Nginx.
    - Service: Tipo LoadBalancer, puerto 80.
-   - Imagen utilizada: albertorodriguezpenalva/asdftest:latest
+   - Imagen utilizada: albertorodriguezpenalva/front-aws:latest
 
 B) api-deployment.yml
    - Deployment: 1 replica del contenedor .NET 8.
@@ -146,8 +146,8 @@ en el repositorio (Settings > Secrets and variables > Actions):
 
 A) Frontend
     cd Frontend
-    docker build -t albertorodriguezpenalva/asdftest:latest .
-    docker push albertorodriguezpenalva/asdftest:latest
+    docker build -t albertorodriguezpenalva/front-aws:latest .
+    docker push albertorodriguezpenalva/front-aws:latest
     kubectl apply -f manifest/front-deployment.yml
     kubectl rollout restart deployment front
 

@@ -1,17 +1,10 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import type { PlanItem } from '@/components/Models/Payment'
 
 const { t } = useI18n()
-
-interface PlanItem {
-  name: string
-  period: string
-  price: number
-  originalPrice: number
-  features: string[]
-}
-
+// Mostrar el plan seleccionado por el usuario
 const selectedPlan = computed<PlanItem>(() => ({
   name: t('plan_premium'),
   period: t('monthly'),
@@ -26,7 +19,7 @@ const selectedPlan = computed<PlanItem>(() => ({
     t('feature_weekly_updates')
   ]
 }))
-
+// Calcular el descuento aplicado, si es que hay alguno, y el porcentaje de descuento para mostrar en la interfaz
 const discount = computed(() => selectedPlan.value.originalPrice - selectedPlan.value.price)
 const discountPercentage = computed(() =>
   Math.round((discount.value / selectedPlan.value.originalPrice) * 100)
@@ -148,13 +141,13 @@ const discountPercentage = computed(() =>
   font-size: 1.4rem;
   font-weight: 800;
   margin: 0 0 0.5rem;
-  color: #0a0a0a;
+  color: #1a1a1a;
   letter-spacing: -0.5px;
 }
 
 .summary-subtitle {
   font-size: 0.9rem;
-  color: #888888;
+  color: rgba(0, 0, 0, 0.6);
   margin: 0;
   font-weight: 400;
   line-height: 1.5;
@@ -214,14 +207,14 @@ const discountPercentage = computed(() =>
 .plan-name {
   font-size: 1.3rem;
   font-weight: 800;
-  color: #0a0a0a;
+  color: #1a1a1a;
   margin: 0 0 0.5rem;
   letter-spacing: -0.3px;
 }
 
 .plan-period {
   font-size: 0.85rem;
-  color: #888888;
+  color: rgba(0, 0, 0, 0.6);
   margin: 0 0 1.5rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -239,7 +232,7 @@ const discountPercentage = computed(() =>
 
 .original-price {
   font-size: 0.95rem;
-  color: #bbb;
+  color: rgba(0, 0, 0, 0.6);
   text-decoration: line-through;
   font-weight: 500;
 }
@@ -267,13 +260,13 @@ const discountPercentage = computed(() =>
   align-items: flex-start;
   gap: 0.85rem;
   font-size: 0.9rem;
-  color: #555555;
+  color: rgba(0, 0, 0, 0.8);
   line-height: 1.6;
   transition: all 0.2s ease;
 }
 
 .feature:hover {
-  color: #0a0a0a;
+  color: #1a1a1a;
   transform: translateX(4px);
 }
 
@@ -296,12 +289,12 @@ const discountPercentage = computed(() =>
 }
 
 .breakdown-label {
-  color: #666666;
+  color: rgba(0, 0, 0, 0.8);
   font-weight: 600;
 }
 
 .breakdown-value {
-  color: #0a0a0a;
+  color: #1a1a1a;
   font-weight: 600;
 }
 
@@ -333,7 +326,7 @@ const discountPercentage = computed(() =>
 
 .payment-period {
   font-size: 0.75rem;
-  color: #999999;
+  color: rgba(0, 0, 0, 0.6);
   margin: 0.75rem 0 0;
   text-align: center;
   font-weight: 500;
@@ -371,13 +364,13 @@ const discountPercentage = computed(() =>
 .guarantee-title {
   font-size: 0.95rem;
   font-weight: 700;
-  color: #0a0a0a;
+  color: #1a1a1a;
   margin-bottom: 0.25rem;
 }
 
 .guarantee-desc {
   font-size: 0.8rem;
-  color: #666666;
+  color: rgba(0, 0, 0, 0.8);
   margin: 0;
 }
 
@@ -396,13 +389,13 @@ const discountPercentage = computed(() =>
   align-items: center;
   gap: 0.75rem;
   font-size: 0.85rem;
-  color: #555555;
+  color: rgba(0, 0, 0, 0.8);
   font-weight: 500;
   transition: all 0.2s ease;
 }
 
 .benefit-item:hover {
-  color: #0a0a0a;
+  color: #1a1a1a;
   transform: translateX(4px);
 }
 

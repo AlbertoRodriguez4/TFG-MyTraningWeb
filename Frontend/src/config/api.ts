@@ -1,24 +1,15 @@
-/**
- * Configuración centralizada de la API
- *
- * Usa variables de entorno si están disponibles, sino usa valores por defecto
- */
 
-// URL base para todas las peticiones API
+// URL base para todas las peticiones API (para no tener que repertirla en cada función de fectch)
+// El objetivo de este archivo es centralizart las configuraciones de las apis y reducir la repetición  de código usando variables globales
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:6873'
 
-// Timeout para las peticiones (en milisegundos)
-export const API_TIMEOUT = 30000
-
 // Headers comunes
-export const COMMON_HEADERS = {
+const COMMON_HEADERS = {
   'Content-Type': 'application/json'
 }
 
-/**
- * Obtiene los headers de autenticación incluyendo el token JWT
- * @param token - Token JWT opcional (si no se proporciona, se obtiene del localStorage)
- */
+// Función para obtener los headers de autenticación, incluyendo el token JWT si está presente en localStorage, se utiliza en las funciones de fetch para incluir ç
+// el token en las peticiones al backend y así autenticar al usuario
 export const getAuthHeaders = (token?: string) => {
   const authToken = token || localStorage.getItem('token')
   return {
@@ -27,11 +18,7 @@ export const getAuthHeaders = (token?: string) => {
   }
 }
 
-/**
- * Verifica si un token JWT ha expirado
- * @param token - Token JWT a verificar
- * @returns true si el token ha expirado o es inválido, false si es válido
- */
+//FUnción para verificar que el token no ha expirado
 export const isTokenExpired = (token: string): boolean => {
   try {
     const tokenParts = token.split('.')
@@ -54,10 +41,7 @@ export const isTokenExpired = (token: string): boolean => {
   }
 }
 
-/**
- * Verifica si el token actual en localStorage es válido
- * @returns true si hay un token válido, false en caso contrario
- */
+// Comprobar que el token almacenado en memora es valido/la expiración no ha ocurrido
 export const hasValidToken = (): boolean => {
   const token = localStorage.getItem('token')
   if (!token) {

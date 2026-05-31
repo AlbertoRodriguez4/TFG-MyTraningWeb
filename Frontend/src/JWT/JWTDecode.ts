@@ -1,5 +1,5 @@
 import i18n from '@/i18n/i18nConfigurer'
-
+// Función para decodificar un token JWT 
 export function decodeToken(token: string): any {
   if (!token || typeof token !== 'string') {
     throw new Error(i18n.global.t('jwt_invalid_token'));

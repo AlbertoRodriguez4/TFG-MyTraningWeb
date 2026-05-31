@@ -102,6 +102,7 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useSubscriptionStore } from '@/stores/SubscriptionStore'
 import { logger } from '@/utils/logger'
+import type { HistoryItem, BMIData, CaloriesData, UserHealthProfile } from '@/components/Models/Health'
 import BmiCalculatorModern from '../../components/CalculadorCalorias/BmiCalculatorModern.vue'
 import CaloriesCalculatorModern from '../../components/CalculadorCalorias/CaloriesCalculatorModern.vue'
 import HealthHistoryModern from '../../components/CalculadorCalorias/HealthHistoryModern.vue'
@@ -110,51 +111,6 @@ const router = useRouter()
 const subscriptionStore = useSubscriptionStore()
 const isPremium = ref(false)
 const isLoading = ref(true)
-
-interface HistoryItem {
-  type: 'bmi' | 'calories'
-  date: string
-  bmi?: number
-  tdee?: number
-  weight?: number
-  height?: number
-}
-
-interface BMIData {
-  weight: number | null
-  height: number | null
-  bmi?: number
-  category?: string
-}
-
-interface CaloriesData {
-  bmr?: number
-  tdee?: number
-  macros?: {
-    protein: number
-    carbs: number
-    fat: number
-  }
-}
-
-interface UserHealthProfile {
-  weight?: number
-  height?: number
-  bmi?: number
-  bmiCategory?: string
-  age?: number
-  gender?: 'male' | 'female'
-  activity?: string
-  goal?: string
-  bmr?: number
-  tdee?: number
-  macros?: {
-    protein: number
-    carbs: number
-    fat: number
-  }
-  lastUpdated?: string
-}
 
 // State
 const bmiData = ref<BMIData>({ weight: null, height: null })
@@ -176,6 +132,7 @@ onMounted(async () => {
 })
 
 async function checkPremiumStatus() {
+  // Verificar el estado de la suscripción del usuario para determinar si tiene acceso a las calculadoras premium
   isLoading.value = true
   try {
     await subscriptionStore.checkSubscription()
@@ -189,6 +146,7 @@ async function checkPremiumStatus() {
 }
 
 function goToPayment() {
+  // En caso de que no tenga el premium, redirigir al usuario a la página de pago para que pueda adquirir la suscripción y desbloquear las calculadoras de salud.
   router.push('/payment')
 }
 

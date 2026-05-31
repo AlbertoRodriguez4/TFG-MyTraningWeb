@@ -1,4 +1,4 @@
-using AA2_CS.Model;
+using AA2_CS.Model.Entities;
 using AA2_CS.Repository;
 
 namespace Backend.Tests;
@@ -8,6 +8,7 @@ public class UserRoomRepositoryTests
     [Fact]
     public void AddYFindByCompositeKeyYDelete_FuncionaCorrectamente()
     {
+        // Prueba que al agregar una nueva relación entre usuario y sala, luego buscarla por su clave compuesta (userId y roomId) y finalmente eliminarla, se realizan correctamente todas las operaciones. Se espera que después de agregar la relación, se pueda encontrar utilizando la clave compuesta, y que después de eliminarla, ya no se pueda encontrar.
         using var context = TestDbContextFactory.CreateContext();
         var repo = new UserRoomRepository(context);
 

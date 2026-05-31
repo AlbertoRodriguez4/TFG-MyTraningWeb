@@ -12,7 +12,7 @@ export interface UserRoom {
 }
 
 export const useUserRoomStore = defineStore('userRoom', () => {
-    // --- State ---
+    // Estado del store
     const allUserRooms = ref<UserRoom[]>([]);
     const currentUserRooms = ref<UserRoom[]>([]);
     const currentRoomMembers = ref<UserRoom[]>([]);
@@ -20,9 +20,9 @@ export const useUserRoomStore = defineStore('userRoom', () => {
     const loading = ref(false);
     const error = ref<string | null>(null);
 
-    // --- Actions ---
+  
 
-    // 1. Obtener todas las relaciones
+    // Obtener todas las relaciones usuario-sala (para admin)
     async function fetchAllUserRooms() {
         loading.value = true;
         try {
@@ -43,7 +43,7 @@ export const useUserRoomStore = defineStore('userRoom', () => {
         }
     }
 
-    // 2. Obtener salas de un usuario específico
+    // Obtener salas a las que pertenece un usuario
     async function fetchRoomsByUserId(userId: number) {
         loading.value = true;
         try {
@@ -64,7 +64,7 @@ export const useUserRoomStore = defineStore('userRoom', () => {
         }
     }
 
-    // 3. Obtener miembros de una sala
+    //Obtener miembros de una sala 
     async function fetchMembersByRoomId(roomId: number) {
         loading.value = true;
         currentRoomMembers.value = []; 
@@ -76,7 +76,7 @@ export const useUserRoomStore = defineStore('userRoom', () => {
 
             if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
-            // Ahora data es un array de objetos UserRoom [{userid:..., user:{...}, room:{...}}]
+            // Se recupera data con formato de array con la estructura { userId, roomId, user: { id, name, ... }, room: { id, name, ... } }
             const data = await response.json();
             currentRoomMembers.value = data;
             
@@ -88,7 +88,7 @@ export const useUserRoomStore = defineStore('userRoom', () => {
         }
     }
 
-    // 4. Unirse a una sala (Add)
+    // Unirse a una sala (Add), al unirse a una sala se actualizan las salas a las que pertenece el usuario y los miembros de la sala para reflejar los cambios
     async function joinRoom(userId: number, roomId: number) {
         loading.value = true;
         try {
@@ -114,7 +114,7 @@ export const useUserRoomStore = defineStore('userRoom', () => {
         }
     }
 
-    // 5. Salir de una sala (Delete)
+    // Salir de una sala (Delete), al salir de una sala se actualizan las salas a las que pertenece el usuario y los miembros de la sala para reflejar los cambios
     async function leaveRoom(userId: number, roomId: number) {
         loading.value = true;
         try {
@@ -139,7 +139,7 @@ export const useUserRoomStore = defineStore('userRoom', () => {
         }
     }
 
-    // 6. Actualizar relación (Update)
+    // Actualizar relación (Update)
     async function updateUserRoom(userId: number, roomId: number, data: UserRoom) {
         loading.value = true;
         try {
@@ -159,10 +159,11 @@ export const useUserRoomStore = defineStore('userRoom', () => {
         }
     }
 
-    // --- Getters ---
+    // Funcion para obtener los miembros de una sala y el número de miembros de la sala para mostrarlo en la vista de la sala
     const memberCount = computed(() => currentRoomMembers.value.length);
     
-    // CAMBIO 2: Accedemos a m.user.name porque la estructura ahora es anidada
+    // Comprobación para mostrar en la vista de la sala si un usuario es miembro de la sala o no (para mostrar botón de unirse o salir de la sala)
+    // Se comprueba si el nombre de usuario del usuario actual está en la lista de miembros de la sala
     const isMemberInRoom = computed(() => (userName: string) => {
         return currentRoomMembers.value.some(m => m.user?.name === userName);
     });

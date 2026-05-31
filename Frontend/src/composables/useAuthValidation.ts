@@ -1,22 +1,7 @@
 import { ref, reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
+import type { PasswordStrength, ValidationErrors } from '@/components/Models/Auth'
 
-export interface PasswordStrength {
-  strength: number
-  feedback: string[]
-}
-
-export interface ValidationErrors {
-  email?: string
-  password?: string
-  confirmPassword?: string
-  name?: string
-}
-
-/**
- * Composable para validación de formularios de autenticación
- * Centraliza la lógica de validación de email y contraseña
- */
 export function useAuthValidation() {
   const { t } = useI18n()
   const errors = reactive<ValidationErrors>({})
@@ -24,9 +9,7 @@ export function useAuthValidation() {
   const isPasswordValid = ref(false)
   const isEmailValid = ref(false)
 
-  /**
-   * Valida un email usando regex estándar
-   */
+  // Validar el correo electrónico usando regex y proporcionar mensajes de error específicos para campos vacíos o formato no válido
   const validateEmail = (email: string): boolean => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     const isValid = emailRegex.test(email)
@@ -48,10 +31,8 @@ export function useAuthValidation() {
     return true
   }
 
-  /**
-   * Evalúa la fortaleza de la contraseña
-   * Criterios: longitud, mayúsculas, minúsculas, números, caracteres especiales
-   */
+  // Comprobar la fortaleza de la contrseña y proporcionar feedback al usuario sobre qué criterios se han cumplido o no, además de marcar la contraseña como válida si cumple 
+  // al menos 4 de los 5 criterios establecidos
   const updatePasswordStrength = (password: string): void => {
     const strengthCriteria = [
       { test: (p: string) => p.length >= 8, message: t('validation_min_8_chars') },
@@ -61,17 +42,16 @@ export function useAuthValidation() {
       { test: (p: string) => /[!@#$%^&*(),.?":{}|<>]/.test(p), message: t('validation_one_special') }
     ]
 
-    const passedCriteria = strengthCriteria.filter(criteria => criteria.test(password))
+    const passedCriteria = strengthCriteria.filter(criteria => criteria.test(password)) // Filtrar los criterios que se han cumplido
     passwordStrength.value = {
       strength: passedCriteria.length,
-      feedback: passedCriteria.map(c => c.message)
+      feedback: passedCriteria.map(c => c.message) // Proporcionar feedback específico sobre qué criterios se han cumplido
     }
     isPasswordValid.value = passedCriteria.length >= 4
   }
 
-  /**
-   * Valida una contraseña según criterios de fortaleza
-   */
+  // Validar la contraseña asegurándose de que no esté vacía, cumpla con los requisitos mínimos de longitud y contenga mayúsculas, minúsculas y números, 
+  // proporcionando mensajes de error específicos para cada caso
   const validatePassword = (password: string): boolean => {
     if (!password) {
       errors.password = t('validation_password_required')
@@ -108,9 +88,7 @@ export function useAuthValidation() {
     return true
   }
 
-  /**
-   * Valida que las contraseñas coincidan
-   */
+  // Se comprueba que las contraseñas coincidan 
   const validateConfirmPassword = (password: string, confirmPassword: string): boolean => {
     if (!confirmPassword) {
       errors.confirmPassword = t('validation_confirm_required')
@@ -126,9 +104,7 @@ export function useAuthValidation() {
     return true
   }
 
-  /**
-   * Valida un nombre de usuario
-   */
+  // Validar que el nombnre del usuario sea correcto 
   const validateName = (name: string): boolean => {
     if (!name || name.trim().length === 0) {
       errors.name = t('validation_name_required')
@@ -144,9 +120,6 @@ export function useAuthValidation() {
     return true
   }
 
-  /**
-   * Limpia todos los errores de validación
-   */
   const clearErrors = () => {
     errors.email = undefined
     errors.password = undefined
@@ -154,47 +127,16 @@ export function useAuthValidation() {
     errors.name = undefined
   }
 
-  /**
-   * Valida todos los campos del formulario de registro
-   */
-  const validateRegisterForm = (
-    email: string,
-    password: string,
-    confirmPassword: string,
-    name: string
-  ): boolean => {
-    const isEmailValid = validateEmail(email)
-    const isPasswordValid = validatePassword(password)
-    const isConfirmPasswordValid = validateConfirmPassword(password, confirmPassword)
-    const isNameValid = validateName(name)
-
-    return isEmailValid && isPasswordValid && isConfirmPasswordValid && isNameValid
-  }
-
-  /**
-   * Valida todos los campos del formulario de login
-   */
-  const validateLoginForm = (email: string, password: string): boolean => {
-    const isEmailValid = validateEmail(email)
-    const isPasswordValid = validatePassword(password)
-
-    return isEmailValid && isPasswordValid
-  }
-
   return {
-    // State
     errors,
     passwordStrength,
     isPasswordValid,
     isEmailValid,
-    // Methods
     validateEmail,
     validatePassword,
     validateConfirmPassword,
     validateName,
     updatePasswordStrength,
-    clearErrors,
-    validateRegisterForm,
-    validateLoginForm
+    clearErrors
   }
 }

@@ -160,7 +160,7 @@ onMounted(() => {
 });
 
 function handleSearch() {
-  if (searchQuery.value.length > 2) {
+  if (searchQuery.value.length > 2) { // Solo buscar si el término tiene más de 2 caracteres para evitar búsquedas innecesarias
     store.searchExercises(searchQuery.value);
   } else if (searchQuery.value === '') {
     store.fetchExercises();
@@ -185,9 +185,10 @@ function getDifficultyColor(difficulty: string) {
 }
 
 function getImageUrl(exercise: any) {
-  const url = exercise.gifUrl || exercise.imageUrl;
+  const url = exercise.gifUrl || exercise.imageUrl; // Priorizar gifUrl si está disponible, sino usar imageUrl para mostrar la imagen del ejercicio. 
+  // Si ninguno está disponible, se mostrará el fallback definido en el template.
   if (!url) return '';
-  // Solo usar URLs absolutas (http:// o https://)
+  // Solo usar URLs absolutas (http:// o https://) para evitar problemas con URLs relativas o datos corruptos en la base de datos
   if (typeof url === 'string' && (url.startsWith('http://') || url.startsWith('https://'))) {
     return url;
   }

@@ -26,7 +26,7 @@ defineProps<{
 defineEmits<{
   'update:modelValue': [value: string]
 }>()
-
+// Elementos que componen el menú lateral de configuración del perfil
 const menuItems = [
   { id: 'personal', label: t('personal_info'), icon: 'mdi-account-circle' },
   { id: 'security', label: t('security_password'), icon: 'mdi-shield-lock' },

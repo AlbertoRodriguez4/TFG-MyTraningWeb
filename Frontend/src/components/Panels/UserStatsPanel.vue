@@ -3,25 +3,9 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useUserStore } from '@/stores/userStore'
 import defaultAvatar from '@/assets/imgs/usuario.png'
+import type { User } from '@/components/Models/User'
 
 const { t } = useI18n()
-
-interface User {
-  id: number;
-  name: string;
-  email: string;
-  passwordhash: string;
-  level: number;
-  strength: number;
-  endurance: number;
-  consistencyStreak: number;
-  gold: number;
-  role: string;
-  experience: number;
-  xpRequired: number;
-  xpRemaining: number;
-  avatarUrl: string;
-}
 
 const store = useUserStore()
 const loggedUser = computed<User | null>(() => store.loggedUser)
@@ -46,7 +30,7 @@ const labelMap: Record<StatKey, string> = {
   endurance: t('endurance_label'),
   gold: t('gold_label'),
 }
-
+// Valores máximos alacanzables para cada estadística, usados para calcular el progreso
 const maxValues: Record<StatKey, number> = {
   strength: 100000,
   endurance: 100000,
@@ -58,15 +42,15 @@ const calculateProgress = (stat: StatKey, value: number): number => {
   const percentage = (value / maxValue) * 100
   return Math.min(percentage, 100)
 }
-
+// Función para calcular el progreso de experiencia del usuario
 const calculateXpProgress = (): number => {
   if (!loggedUser.value) return 0
-  const currentXp = loggedUser.value.experience
-  const requiredXp = loggedUser.value.xpRequired
+  const currentXp = loggedUser.value.experience ?? 0
+  const requiredXp = loggedUser.value.xpRequired ?? 1
   if (requiredXp === 0) return 100
   return Math.min((currentXp / requiredXp) * 100, 100)
 }
-
+// Función para formatear números grandes (e.g., 1500 -> 1.5K, 2000000 -> 2M) para evitar que se desborden en la interfaz
 const formatNumber = (value: number): string => {
   if (value >= 1000000) {
     return `${(value / 1000000).toFixed(1)}M`
@@ -118,14 +102,14 @@ const formatNumber = (value: number): string => {
               </div>
             </div>
             <div class="xp-values">
-              <span class="xp-current">{{ formatNumber(loggedUser.experience) }}</span>
+              <span class="xp-current">{{ formatNumber(loggedUser.experience ?? 0) }}</span>
               <span class="xp-separator">/</span>
-              <span class="xp-required">{{ formatNumber(loggedUser.xpRequired) }}</span>
+              <span class="xp-required">{{ formatNumber(loggedUser.xpRequired ?? 0) }}</span>
             </div>
           </div>
           <div class="xp-remaining">
             <span class="xp-remaining-icon">🎯</span>
-            <span>{{ formatNumber(loggedUser.xpRemaining) }} XP para nivel {{ Number(loggedUser.level) + 1 }}</span>
+            <span>{{ formatNumber(loggedUser.xpRemaining ?? 0) }} XP para nivel {{ Number(loggedUser.level) + 1 }}</span>
           </div>
         </div>
       </div>
@@ -145,7 +129,7 @@ const formatNumber = (value: number): string => {
             <div class="progress-container">
               <div class="progress-bar">
                 <div class="progress-fill" :style="{
-                  width: `${calculateProgress(stat, loggedUser[stat])}%`,
+                  width: `${calculateProgress(stat, loggedUser[stat] ?? 0)}%`,
                   backgroundColor: colorMap[stat]
                 }">
                   <div class="progress-shine"></div>
@@ -153,13 +137,13 @@ const formatNumber = (value: number): string => {
               </div>
               <div class="stat-values">
                 <span class="stat-value" :style="{ color: colorMap[stat] }">
-                  {{ formatNumber(loggedUser[stat]) }}
+                  {{ formatNumber(loggedUser[stat] ?? 0) }}
                 </span>
                 <span class="stat-max">/ {{ formatNumber(maxValues[stat]) }}</span>
               </div>
             </div>
             <div class="stat-percentage">
-              {{ calculateProgress(stat, loggedUser[stat]).toFixed(1) }}%
+              {{ calculateProgress(stat, loggedUser[stat] ?? 0).toFixed(1) }}%
             </div>
           </div>
         </div>

@@ -1,9 +1,12 @@
 using System.Collections.Generic;
-using AA2_CS.Model;
+using AA2_CS.Model.Entities;
+using AA2_CS.Model.DTOs;
 using Microsoft.EntityFrameworkCore;
+using TaskEntity = AA2_CS.Model.Entities.Task;
 namespace AA2_CS.Database;
 public class AppDbContext : DbContext
 {
+    // Contexto de la base de datos que define las tablas y sus relaciones
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
     public DbSet<User> Users { get; set; }
     public DbSet<UserDTO> UserDTOs { get; set; }
@@ -13,7 +16,7 @@ public class AppDbContext : DbContext
     public DbSet<Subscription> Subscriptions { get; set; }
     public DbSet<Room> Rooms { get; set; }
     public DbSet<UserRoom> UserRooms { get; set; }
-    public DbSet<Model.Task> Tasks { get; set; }
+    public DbSet<TaskEntity> Tasks { get; set; }
     public DbSet<EmailVerification> EmailVerifications { get; set; }
     public DbSet<NotificationPreference> NotificationPreferences { get; set; }
     public DbSet<Achievement> Achievements { get; set; }
@@ -33,7 +36,15 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Subscription>().ToTable("subscriptions");
         modelBuilder.Entity<Room>().ToTable("rooms");
         modelBuilder.Entity<UserRoom>().ToTable("usersrooms");
-        modelBuilder.Entity<Model.Task>().ToTable("tasks");
+        modelBuilder.Entity<TaskEntity>().ToTable("tasks");
+        modelBuilder.Entity<TaskEntity>()
+            .Property(t => t.id)
+            .ValueGeneratedOnAdd();
+
+        modelBuilder.Entity<Purchase>().ToTable("purchases");
+        modelBuilder.Entity<Purchase>()
+            .Property(p => p.id)
+            .ValueGeneratedOnAdd();
 
         // Configuración de clave compuesta para la tabla intermedia UserRoom
         modelBuilder.Entity<UserRoom>()

@@ -1,7 +1,7 @@
 <template>
   <v-dialog
-    :value="value"
-    @input="$emit('input', $event)"
+    :model-value="modelValue"
+    @update:model-value="$emit('update:modelValue', $event)"
     max-width="500"
     persistent
   >
@@ -23,7 +23,7 @@
           dark
           block
           rounded
-          @click="$emit('input', false)"
+          @click="$emit('update:modelValue', false)"
         >
           <v-icon left>mdi-rocket-launch</v-icon>
           {{ $t('levelUp.continue') }}
@@ -33,20 +33,15 @@
   </v-dialog>
 </template>
 
-<script>
-export default {
-  name: 'LevelUpDialog',
-  props: {
-    value: {
-      type: Boolean,
-      default: false
-    },
-    userLevel: {
-      type: Number,
-      required: true
-    }
-  }
-};
+<script setup lang="ts">
+defineProps<{
+  modelValue: boolean
+  userLevel: number
+}>()
+
+defineEmits<{
+  'update:modelValue': [value: boolean]
+}>()
 </script>
 
 <style scoped>
@@ -71,6 +66,16 @@ export default {
   100% {
     transform: scale(1) rotate(360deg);
     opacity: 1;
+  }
+}
+
+@media (max-width: 960px) {
+  .level-up-animation .v-icon {
+    font-size: 120px !important;
+  }
+
+  .level-up-dialog .text-h2 {
+    font-size: 2.75rem !important;
   }
 }
 

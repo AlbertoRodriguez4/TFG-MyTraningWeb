@@ -33,6 +33,7 @@ export const useAchievementStore = defineStore('achievement', () => {
   const loading = ref(false);
   const error = ref<string | null>(null);
 
+  // obtener todos los logros
   async function fetchAllAchievements() {
     loading.value = true;
     try {
@@ -45,7 +46,7 @@ export const useAchievementStore = defineStore('achievement', () => {
       loading.value = false;
     }
   }
-
+  // obtener logros del usuario
   async function fetchMyAchievements() {
     loading.value = true;
     try {
@@ -61,7 +62,7 @@ export const useAchievementStore = defineStore('achievement', () => {
       loading.value = false;
     }
   }
-
+  // obtener conteo de logros nuevos y totales
   async function fetchAchievementCount() {
     try {
       const token = localStorage.getItem('token');
@@ -76,7 +77,7 @@ export const useAchievementStore = defineStore('achievement', () => {
       // silenciar
     }
   }
-
+  // marcar logro como visto
   async function markAsSeen(userAchievementId: number) {
     try {
       const token = localStorage.getItem('token');
@@ -91,7 +92,7 @@ export const useAchievementStore = defineStore('achievement', () => {
       // silenciar
     }
   }
-
+  // crear nuevo logro
   async function createAchievement(achievement: Omit<Achievement, 'id'>) {
     const token = localStorage.getItem('token');
     const res = await fetch(`${API_BASE_URL}/api/achievement`, {
@@ -107,7 +108,7 @@ export const useAchievementStore = defineStore('achievement', () => {
     achievements.value.push(created);
     return created;
   }
-
+// actualizar logro existente
   async function updateAchievement(id: number, achievement: Omit<Achievement, 'id'>) {
     const token = localStorage.getItem('token');
     const res = await fetch(`${API_BASE_URL}/api/achievement/${id}`, {

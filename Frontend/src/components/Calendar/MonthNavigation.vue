@@ -42,56 +42,24 @@
   </v-card>
 </template>
 
-<script>
-export default {
-  name: 'MonthNavigation',
-  
-  props: {
-    /**
-     * Nombre completo del mes actual
-     * Ej: "Enero", "Febrero", "Marzo", etc.
-     */
-    monthName: {
-      type: String,
-      required: true,
-      validator: (value) => {
-        const validMonths = [
-          'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-          'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
-        ];
-        return validMonths.includes(value);
-      }
-    },
-    
-    /**
-     * Año actual en formato numérico
-     * Ej: 2025
-     */
-    year: {
-      type: Number,
-      required: true,
-      validator: (value) => value >= 2020 && value <= 2100
-    }
-  },
-  
-  methods: {
-    /**
-     * Maneja el click en el botón de mes anterior
-     * Emite el evento 'previous' al componente padre
-     */
-    handlePrevious() {
-      this.$emit('previous');
-    },
-    
-    /**
-     * Maneja el click en el botón de mes siguiente
-     * Emite el evento 'next' al componente padre
-     */
-    handleNext() {
-      this.$emit('next');
-    }
-  }
-};
+<script setup lang="ts">
+defineProps<{
+  monthName: string
+  year: number
+}>()
+
+const emit = defineEmits<{
+  previous: []
+  next: []
+}>()
+
+function handlePrevious() {
+  emit('previous')
+}
+
+function handleNext() {
+  emit('next')
+}
 </script>
 
 <style scoped>

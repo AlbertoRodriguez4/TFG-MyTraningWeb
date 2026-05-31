@@ -2,7 +2,8 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using AA2_CS.Model;
+using AA2_CS.Model.Entities;
+using AA2_CS.Model.Common;
 using AA2_CS.Service;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Configuration;
@@ -22,10 +23,10 @@ namespace AA2_CS.JWT
 
         public string GenerateToken(User user)
         {
-            // 1. OBTENER STATS CALCULADAS DESDE EL SERVICIO DE USUARIO
+            // Obtener las estadísticas del usuario para incluirlas como claims en el token. Esto permite que el cliente tenga acceso a esta información
             var (totalStrength, totalEndurance, xpRequiredForNextLevel, xpRemaining) = _userService.GetUserTokenStats(user);
 
-            // 2. CREACIÓN DE CLAIMS
+            // Creación de claims para los tokens, se definen los campos que se van a pasar
             var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, user.id.ToString()),

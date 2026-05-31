@@ -74,11 +74,7 @@
 
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
-
-interface BMIResult {
-  bmi: number
-  category: string
-}
+import type { BMIResult } from '@/components/Models/Health'
 
 // Props and Emits
 const emit = defineEmits<{
@@ -91,18 +87,18 @@ const weight = ref<number | null>(null)
 const height = ref<number | null>(null)
 const result = ref<BMIResult | null>(null)
 
-// Calculate BMI
+// Calcular BMI 
 const calculateBMI = () => {
-  if (!weight.value || !height.value) {
+  if (!weight.value || !height.value) { // Si falta peso o altura, limpiar resultado y emitir cambio
     result.value = null
     emit('result-changed', { weight: weight.value, height: height.value })
     return
   }
 
-  const heightInMeters = height.value / 100
-  const bmiValue = weight.value / (heightInMeters * heightInMeters)
+  const heightInMeters = height.value / 100 // Convertir cm a m
+  const bmiValue = weight.value / (heightInMeters * heightInMeters) // Calcular BMI
 
-  let category = ''
+  let category = '' // Determinar categoría según el valor de BMI
   if (bmiValue < 18.5) category = 'Bajo peso'
   else if (bmiValue < 25) category = 'Peso normal'
   else if (bmiValue < 30) category = 'Sobrepeso'
@@ -110,7 +106,7 @@ const calculateBMI = () => {
 
   result.value = { bmi: bmiValue, category }
 
-  emit('result-changed', {
+  emit('result-changed', { // Emitir resultado del cálculo
     weight: weight.value,
     height: height.value,
     bmi: bmiValue,
@@ -118,7 +114,7 @@ const calculateBMI = () => {
   })
 }
 
-// Helpers
+// Funciones para determinar clase de estado y offset del círculo según el valor de BMI
 const getStatusClass = (bmiValue: number): string => {
   if (bmiValue < 18.5) return 'underweight'
   if (bmiValue < 25) return 'normal'
@@ -126,6 +122,7 @@ const getStatusClass = (bmiValue: number): string => {
   return 'obese'
 }
 
+// El círculo se llena proporcionalmente al valor de BMI, con un máximo de 40 para evitar desbordes visuales
 const getCircleOffset = (bmiValue: number): number => {
   const circumference = 2 * Math.PI * 45
   const maxBMI = 40
@@ -137,7 +134,7 @@ const handleSave = () => {
   // Guardar perfil de salud en localStorage para el chatbot
   try {
     const existing = JSON.parse(localStorage.getItem('userHealthProfile') || '{}')
-    const updated = {
+    const updated = { // Actualizar el perfil con los nuevos datos de BMI, peso y altura
       ...existing,
       weight: weight.value,
       height: height.value,

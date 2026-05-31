@@ -1,4 +1,5 @@
-using AA2_CS.Model;
+using AA2_CS.Model.Entities;
+using AA2_CS.Model.DTOs;
 using AA2_CS.Database;
 using AA2_CS.JWT;
 using AA2_CS.Repository;
@@ -12,9 +13,11 @@ namespace Backend.Tests;
 
 public class AuthServiceTests
 {
-    [Fact]
+    [Fact] // Se marca el método como prueba unitaria 
     public void HasAccessToResource_CuandoEsPropietario_DevuelveTrue()
     {
+        // Esta funcion prueba el acceso a los metodos necesarios cuando el usuario es el propietario del propio objeto. Se espera que devuelva true.
+
         var service = new AuthService(null!, null!, null!, null!, null!);
         var principal = BuildPrincipal(userId: 5, role: Roles.userNormal);
 
@@ -26,6 +29,8 @@ public class AuthServiceTests
     [Fact]
     public void HasAccessToResource_CuandoEsAdmin_DevuelveTrue()
     {
+        // Esta funcion prueba el acceso a los metodos necesarios cuando el usuario es admin. Se espera que devuelva true.
+
         var service = new AuthService(null!, null!, null!, null!, null!);
         var principal = BuildPrincipal(userId: 2, role: Roles.userMaster);
 
@@ -37,6 +42,8 @@ public class AuthServiceTests
     [Fact]
     public void HasAccessToResource_CuandoNoEsPropietarioNiAdmin_DevuelveFalse()
     {
+        // Esta funcion prueba el acceso a los metodos necesarios cuando el usuario no es el propietario ni admin. Se espera que devuelva false.
+
         var service = new AuthService(null!, null!, null!, null!, null!);
         var principal = BuildPrincipal(userId: 2, role: Roles.userNormal);
 
@@ -48,6 +55,7 @@ public class AuthServiceTests
     [Fact]
     public void Login_CredencialesValidas_DevuelveToken()
     {
+        // Comprobación del proceso de login con credenciales válidas. Se espera que devuelva un token no nulo ni vacío.
         using var context = TestDbContextFactory.CreateContext();
         var userRepository = new UserRepository(context);
         var purchaseRepository = new PurchaseRepository(context);
@@ -83,6 +91,7 @@ public class AuthServiceTests
     [Fact]
     public void Login_CredencialesInvalidas_DevuelveNull()
     {
+        // Comprobación del proceso de login con credenciales inválidas. Se espera que devuelva null.
         using var context = TestDbContextFactory.CreateContext();
         var userRepository = new UserRepository(context);
         var purchaseRepository = new PurchaseRepository(context);
@@ -112,6 +121,7 @@ public class AuthServiceTests
 
     private static ClaimsPrincipal BuildPrincipal(int userId, string role)
     {
+        // Construye un ClaimsPrincipal con los claims necesarios para las pruebas de acceso. Incluye el ID del usuario y su rol.
         var identity = new ClaimsIdentity(
             new[]
             {

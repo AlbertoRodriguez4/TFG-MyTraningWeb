@@ -11,7 +11,7 @@ const show = () => {
   isVisible.value = true
   isLoading.value = true
 
-  // Simular transición de carga a éxito
+  // Simular transición de carga cuando es satisfactorio
   setTimeout(() => {
     isLoading.value = false
   }, 1500)
@@ -242,13 +242,13 @@ defineExpose({ show, hide })
   font-size: 1.2rem;
   font-weight: 800;
   margin: 0 0 0.4rem;
-  color: #0a0a0a;
+  color: #1a1a1a;
   letter-spacing: -0.3px;
 }
 
 .message-description {
   font-size: 0.9rem;
-  color: #666666;
+  color: rgba(0, 0, 0, 0.8);
   margin: 0;
   line-height: 1.6;
 }
@@ -266,14 +266,14 @@ defineExpose({ show, hide })
   align-items: center;
   justify-content: center;
   border-radius: 8px;
-  color: #999999;
+  color: #64748b;
   transition: all 0.2s ease;
   z-index: 1;
 }
 
 .close-btn:hover {
   background: #f3f4f6;
-  color: #0a0a0a;
+  color: #1a1a1a;
 }
 
 /* Responsive */

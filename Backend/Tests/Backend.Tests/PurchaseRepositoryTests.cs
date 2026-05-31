@@ -1,4 +1,4 @@
-using AA2_CS.Model;
+using AA2_CS.Model.Entities;
 using AA2_CS.Repository;
 
 namespace Backend.Tests;
@@ -8,6 +8,7 @@ public class PurchaseRepositoryTests
     [Fact]
     public void Add_ConSaldoSuficiente_DescuentaOroYCreaCompra()
     {
+        // Prueba que al agregar una compra con un usuario que tiene suficiente oro, se descuenta el oro del usuario y se crea el registro de compra. Se espera que el ID de la compra sea mayor a 0, el oro del usuario se reduzca correctamente y se cree un registro en la tabla de compras.
         using var context = TestDbContextFactory.CreateContext();
         var repo = new PurchaseRepository(context);
 
@@ -30,6 +31,7 @@ public class PurchaseRepositoryTests
     [Fact]
     public void Add_ConSaldoInsuficiente_LanzaExcepcion()
     {
+        // Prueba que al agregar una compra con un usuario que no tiene suficiente oro, se lanza una excepción y no se crea el registro de compra. Se espera que se lance una InvalidOperationException y que no se cree ningún registro en la tabla de compras.
         using var context = TestDbContextFactory.CreateContext();
         var repo = new PurchaseRepository(context);
 
@@ -48,6 +50,7 @@ public class PurchaseRepositoryTests
     [Fact]
     public void FindByUserId_DevuelveDTOConDatosDelItemYUsuario()
     {
+        // Prueba que el método FindByUserId devuelve una lista de DTOs que contienen los datos del item comprado y el email del usuario. Se espera que la lista devuelta tenga un solo elemento con el nombre del item y el email del usuario correctos.
         using var context = TestDbContextFactory.CreateContext();
         var repo = new PurchaseRepository(context);
 

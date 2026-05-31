@@ -21,6 +21,7 @@ export const useRoomStore = defineStore('room', () => {
             if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
             const data = await response.json();
+            // Asignación de datos a la variable 'room' con mapeo para asegurar que se ajusta a la interfaz Room
             room.value = data.map((d: any) => ({
                 id: d.id,
                 name: d.name,
@@ -37,7 +38,7 @@ export const useRoomStore = defineStore('room', () => {
             logger.error("Error fetching rooms:", error);
         }
     }
-
+    // Función para obtener las salas ordenadas por nivel o estadísticas, en orden ascendente o descendente
     async function fetchSortedRooms(field: 'level' | 'stats', direction: 'asc' | 'desc') {
         const endpoint = `${API_BASE_URL}/api/Room/sort-${field}-${direction}`;
         try {
@@ -67,9 +68,9 @@ export const useRoomStore = defineStore('room', () => {
     }
 
     async function createRoom(
-        newRoom: { name: string; minlevel: number; minstats: number; minconsistency: number, description: string, date: string },
+        newRoom: { name: string; minlevel: number; minstats: number; minconsistency: number, description: string, date: string }, // Se define el tipo del nuevo room sin los campos opcionales
         userid: number,
-        creatorRole?: string
+        creatorRole?: string // Se añade el campo opcional creatorRole para asignarlo al room creado, si se proporciona
     ) {
         try {
             const response = await fetch(`${API_BASE_URL}/api/Room`, {

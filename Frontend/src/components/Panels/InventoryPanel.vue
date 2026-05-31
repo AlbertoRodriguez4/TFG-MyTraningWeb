@@ -7,7 +7,7 @@ const { t } = useI18n()
 
 const store = useUserStore()
 const loggedUser = computed(() => store.loggedUser)
-
+// Cargar items al montar el componente
 onMounted(() => {
   if (loggedUser.value?.email && loggedUser.value?.passwordhash) {
     store.getItems()
@@ -64,14 +64,14 @@ const handleItemClick = async (item: any) => {
     await store.equipItem(item.itemId)
   }
 }
-
+// Función para determinar la rareza del item basada en su bonus (las stats que suma el item al usuario)
 const getItemRarity = (bonus: number) => {
   if (bonus >= 50) return 'legendary'
   if (bonus >= 30) return 'epic'
   if (bonus >= 15) return 'rare'
   return 'common'
 }
-
+// Función para obtener un icono representativo del tipo de item (fuerza o resistencia), se puede expandir para más tipos si es necesario (para futuras actualizaciones en tal caso)
 const getItemIcon = (type: string) => {
   const icons: Record<string, string> = {
     'fuerza': '💪',
@@ -86,7 +86,7 @@ const getItemIcon = (type: string) => {
   }
   return icons[type.toLowerCase()] || icons.default
 }
-
+// Obtener tipo de item dependiendo de su tipo
 const getItemTypeClass = (type: string) => {
   const typeLower = type.toLowerCase()
   if (typeLower === 'strength' || typeLower === 'fuerza') return 'type-strength'

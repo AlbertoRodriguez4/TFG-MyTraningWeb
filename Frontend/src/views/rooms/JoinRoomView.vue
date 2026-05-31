@@ -58,7 +58,7 @@ const roomUsers = computed(() => {
 
     return {
       id: user.name || member.userid,
-      username: user.name || 'Usuario desconocido',
+      username: user.name || t('room.unknownUser'),
       level: user.level || 0,
       stats: (user.strength || 0) + (user.endurance || 0),
       strength: user.strength || 0,
@@ -113,12 +113,12 @@ const getStatusColor = (status: string) => {
 const getStatusText = (status: string) => {
   switch (status) {
     case 'online': return t('room_online')
-    case 'training': return 'Entrenando'
-    case 'offline': return 'Desconectado'
-    default: return 'Desconocido'
+    case 'training': return t('room.training')
+    case 'offline': return t('room.offline')
+    default: return t('room.unknown')
   }
 }
-
+// Verificar que el usuario cumple con los requisitos para unirse a la sala 
 const canJoinRoom = computed(() => {
   if (!loggedUser.value) return false
 
@@ -151,12 +151,12 @@ const confirmJoinRoom = async () => {
     await userRoomStore.joinRoom(loggedUser.value.id, roomData.value.id)
     await userRoomStore.fetchMembersByRoomId(roomData.value.id)
     // Disparar evento para actualizar la lista de salas
-    window.dispatchEvent(new CustomEvent('room-membership-changed'))
+    window.dispatchEvent(new CustomEvent('room-membership-changed')) // Evento personalizado para actualizar la lista de salas en RoomListView
     showJoinPopup.value = false
-    showSnackbar('Te has unido a la sala correctamente', 'success')
+    showSnackbar(t('room.joinedSuccess'), 'success')
   } catch (error: any) {
     logger.error('Error al unirse a la sala:', error)
-    showSnackbar(error.message || 'No se pudo unir a la sala', 'error')
+    showSnackbar(error.message || t('room.joinError'), 'error')
   }
 }
 
@@ -170,21 +170,22 @@ const closeLeaveConfirmDialog = () => {
 
 const leaveRoom = async () => {
   if (!loggedUser.value?.id) {
-    showSnackbar('Debes estar logueado para salir de la sala', 'error')
+    showSnackbar(t('room.mustBeLogged'), 'error')
     return
   }
 
   try {
+    // Misma logica que al unirse pero para salir de la sala, se hace la petición a la API para salir de la sala, se actualiza la lista de miembros y salas, 
+    // se dispara un evento personalizado para actualizar la lista de salas en RoomListView y se muestra un mensaje de éxito o error según corresponda.
     await userRoomStore.leaveRoom(loggedUser.value.id, roomData.value.id)
     await userRoomStore.fetchMembersByRoomId(roomData.value.id)
     await userRoomStore.fetchRoomsByUserId(loggedUser.value.id)
-    // Disparar evento para actualizar la lista de salas
-    window.dispatchEvent(new CustomEvent('room-membership-changed'))
+    window.dispatchEvent(new CustomEvent('room-membership-changed')) // Evento personalizado para actualizar la lista de salas en RoomListView
     showLeaveConfirmDialog.value = false
-    showSnackbar('Has salido de la sala correctamente', 'success')
+    showSnackbar(t('room.leftSuccess'), 'success')
   } catch (error: any) {
     showLeaveConfirmDialog.value = false
-    showSnackbar(error.message || 'No se pudo salir de la sala', 'error')
+    showSnackbar(error.message || t('room.leaveError'), 'error')
   }
 }
 
@@ -338,7 +339,7 @@ const goBack = () => {
                 <span class="stat-value">{{ user.level }}</span>
               </div>
               <div class="user-stat">
-                <span class="stat-label">Experiencia</span>
+                <span class="stat-label">{{ $t('experiencia') }}</span>
                 <span class="stat-value">{{ user.experience }}</span>
               </div>
             </div>
@@ -370,14 +371,14 @@ const goBack = () => {
                   <div class="item-icon">💪</div>
                   <div class="item-info">
                     <span class="item-name">{{ user.equippedStrengthItem.name }}</span>
-                    <span class="item-bonus">+{{ user.equippedStrengthItem.bonus }} Fuerza</span>
+                    <span class="item-bonus">+{{ user.equippedStrengthItem.bonus }} {{ $t('strength_label') }}</span>
                   </div>
                 </div>
                 <div v-if="user.equippedEnduranceItem" class="equipment-item item-endurance">
                   <div class="item-icon">🏃</div>
                   <div class="item-info">
                     <span class="item-name">{{ user.equippedEnduranceItem.name }}</span>
-                    <span class="item-bonus">+{{ user.equippedEnduranceItem.bonus }} Resistencia</span>
+                    <span class="item-bonus">+{{ user.equippedEnduranceItem.bonus }} {{ $t('endurance_label') }}</span>
                   </div>
                 </div>
               </div>
@@ -445,7 +446,7 @@ const goBack = () => {
             </button>
             <button @click="leaveRoom" class="popup-btn danger-btn" :disabled="userRoomStore.loading">
               <span v-if="!userRoomStore.loading">{{ $t('yes_leave') }}</span>
-              <span v-else>Saliendo...</span>
+              <span v-else>{{ $t('room.leaving') }}</span>
             </button>
           </div>
         </div>

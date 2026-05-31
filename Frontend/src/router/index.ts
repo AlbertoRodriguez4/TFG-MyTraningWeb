@@ -132,17 +132,17 @@ const routes: RouteRecordRaw[] = [
 ]
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHistory(import.meta.env.BASE_URL), // Usamos createWebHistory para tener URLs limpias sin hash
   routes,
   scrollBehavior(to, from, savedPosition) {
     return new Promise((resolve) => {
       setTimeout(() => {
-        // Scroll global (window / document)
+        // Scroll global (window / document), objetivo que redireccione a la parte superiopr de la pantalla cada vez que se navega a una nueva ruta 
         window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
         document.documentElement.scrollTop = 0
         document.body.scrollTop = 0
 
-        // Contenedores comunes de Vuetify y layouts con scroll
+        // Contenedores comunes de Vuetify y layouts con scroll, para que sea más suave y consistente entre rutas 
         const selectors = ['.v-main', '.v-main__wrap', '.v-layout', '.v-container']
         selectors.forEach((selector) => {
           const el = document.querySelector(selector)
@@ -164,8 +164,10 @@ const router = createRouter({
     })
   }
 })
-
-// **Global Guard**
+// Comprobación global de rutas para verificar autenticación y suscripción premium antes de permitir el acceso a ciertas rutas, se ejecuta antes de cada cambio de ruta 
+// para proteger las rutas que requieren autenticación o suscripción premium, redirigiendo a los usuarios según corresponda (a home público si intentan acceder a rutas 
+// protegidas sin sesión, a homeLogged si intentan acceder a home público estando logueados, o a la página de planes si intentan acceder a rutas premium sin una suscripción 
+// activa) y asegurando que solo los usuarios autorizados puedan acceder a las rutas protegidas de la aplicación.
 router.beforeEach(async (to, from, next) => {
   const store = useUserStore()
   const subscriptionStore = useSubscriptionStore()

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using AA2_CS.Model;
+using AA2_CS.Model.Entities;
+using AA2_CS.Model.Common;
 using AA2_CS.Service;
 using AA2_CS.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -12,13 +13,11 @@ namespace AA2_CS.Controllers
     public class SubscriptionController : ControllerBase
     {
         private readonly SubscriptionService _subscriptionService;
-        private readonly AuthService _authService;
         private readonly IServiceProvider _serviceProvider;
 
-        public SubscriptionController(SubscriptionService subscriptionService, AuthService authService, IServiceProvider serviceProvider)
+        public SubscriptionController(SubscriptionService subscriptionService, IServiceProvider serviceProvider)
         {
             _subscriptionService = subscriptionService;
-            _authService = authService;
             _serviceProvider = serviceProvider;
         }
 
@@ -178,7 +177,6 @@ namespace AA2_CS.Controllers
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine($"Error al enviar notificación de compra de suscripción: {ex.Message}");
                         }
                     });
                 }

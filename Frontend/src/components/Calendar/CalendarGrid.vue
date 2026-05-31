@@ -63,10 +63,7 @@ const emit = defineEmits<{
   'complete-routine': [day: number, routineId: number];
 }>();
 
-/**
- * Obtiene la rutina asignada a un día específico
- * Compara las fechas de creación de las rutinas con el día del calendario
- */
+// Obtener la rutina para un día específico, si existe
 const getRoutineForDay = (day: number): Routines | null => {
   const targetDate = new Date(
     props.currentDate.getFullYear(),
@@ -77,6 +74,7 @@ const getRoutineForDay = (day: number): Routines | null => {
   // Normalizar a medianoche para comparar solo fechas
   targetDate.setHours(0, 0, 0, 0);
 
+    // Buscar la rutina que coincide con la fecha del día, y devolverla si se encuentra, o null si no hay rutina para ese día
   return props.routines.find(routine => {
     const routineDate = new Date(routine.createdat);
     routineDate.setHours(0, 0, 0, 0);
@@ -85,9 +83,7 @@ const getRoutineForDay = (day: number): Routines | null => {
   }) || null;
 };
 
-/**
- * Verifica si un día es el día actual
- */
+// Comprobar que el día actual es el correcto para marcarlo como hoy
 const isToday = (day: number): boolean => {
   const today = new Date();
   return (
@@ -97,9 +93,7 @@ const isToday = (day: number): boolean => {
   );
 };
 
-/**
- * Maneja la completación de una rutina
- */
+// Manejar la accion de completar una ruta 
 const handleCompleteRoutine = (day: number) => {
   const routine = getRoutineForDay(day);
   if (routine) {

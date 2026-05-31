@@ -92,7 +92,7 @@ const handlePaymentSuccess = () => {
   width: 100%;
   min-height: 100vh;
   background: linear-gradient(135deg, #ffffff 0%, #f8f9fb 100%);
-  color: #0a0a0a;
+  color: #1a1a1a;
   position: relative;
   overflow: hidden;
 }
@@ -197,8 +197,8 @@ const handlePaymentSuccess = () => {
   font-weight: 800;
   margin: 0 0 1rem;
   letter-spacing: -0.8px;
-  color: #0a0a0a;
-  background: linear-gradient(135deg, #0a0a0a, #4f46e5);
+  color: #1a1a1a;
+  background: linear-gradient(135deg, #1a1a1a, #4f46e5);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -206,7 +206,7 @@ const handlePaymentSuccess = () => {
 
 .page-subtitle {
   font-size: 1.1rem;
-  color: #666666;
+  color: rgba(0, 0, 0, 0.8);
   margin: 0;
   font-weight: 400;
   line-height: 1.7;
@@ -322,14 +322,14 @@ const handlePaymentSuccess = () => {
 .trust-title {
   font-size: 0.95rem;
   font-weight: 700;
-  color: #0a0a0a;
+  color: #1a1a1a;
   margin-bottom: 0.3rem;
   letter-spacing: -0.3px;
 }
 
 .trust-desc {
   font-size: 0.8rem;
-  color: #888888;
+  color: rgba(0, 0, 0, 0.6);
   line-height: 1.5;
 }
 

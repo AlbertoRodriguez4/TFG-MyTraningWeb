@@ -28,12 +28,10 @@ export const useNotificationPreferencesStore = defineStore('notificationPreferen
   const isLoading = ref(false)
   const error = ref<string | null>(null)
 
-  /**
-   * Obtiene las preferencias de notificación del usuario actual
-   */
+ // Función para cargar las preferencias de notificación del usuario actual
   async function fetchPreferences() {
-    isLoading.value = true
-    error.value = null
+    isLoading.value = true // Indicamos que estamos cargando
+    error.value = null // Reseteamos el error
 
     try {
       const response = await fetch(`${BASE_URL}/api/NotificationPreference/my-preferences`, {
@@ -56,10 +54,9 @@ export const useNotificationPreferencesStore = defineStore('notificationPreferen
     }
   }
 
-  /**
-   * Guarda las preferencias de notificación del usuario actual
-   */
+  // Función para guardar las preferencias de notificación del usuario
   async function savePreferences(): Promise<boolean> {
+    // Se resetea el estado de carga y error antes de hacer la petición
     isLoading.value = true
     error.value = null
 
@@ -87,9 +84,7 @@ export const useNotificationPreferencesStore = defineStore('notificationPreferen
     }
   }
 
-  /**
-   * Resetea las preferencias a los valores por defecto
-   */
+ 
   async function resetDefaults(): Promise<boolean> {
     isLoading.value = true
     error.value = null

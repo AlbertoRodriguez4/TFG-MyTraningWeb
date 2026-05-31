@@ -85,7 +85,7 @@ const emit = defineEmits<{
   click: [];
   complete: [];
 }>();
-
+// Computed para determinar las clases del card según el estado de la rutina
 const getDayCardClass = computed(() => {
   return {
     'day-card': true,
@@ -97,7 +97,7 @@ const getDayCardClass = computed(() => {
     'clickable': !props.routine?.iscompleted
   };
 });
-
+// Función para manejar el click en la tarjeta del día
 const handleClick = () => {
 
 

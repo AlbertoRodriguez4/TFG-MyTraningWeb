@@ -34,21 +34,25 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, watch, nextTick, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import ChatBubble from './ChatBubble.vue'
+import type { ChatMessage } from '@/components/Models/Chat'
 
 const { t } = useI18n()
 
-const props = defineProps({
-  messages: { type: Array, required: true }
-})
+const props = defineProps<{
+  messages: ChatMessage[]
+}>()
 
-defineEmits(['send'])
+defineEmits<{
+  send: [text: string]
+}>()
 
-const feedEl = ref(null)
+const feedEl = ref<HTMLDivElement | null>(null) // Referencia al contenedor del feed para controlar el scroll
 
+  // Chips de ejemplo para mostrar en la pantalla de bienvenida, traducidos
 const chips = computed(() => [
   t('chat.chipStrengthRoutine'),
   t('chat.chipNutritionPlan'),
@@ -56,7 +60,7 @@ const chips = computed(() => [
   t('chat.chipLoseWeight'),
 ])
 
-// Auto-scroll to bottom whenever messages change
+// Auto-scroll hacia abajo cada vez que cambie la cantidad de mensajes (es decir, cuando llegue una nueva respuesta de la IA)
 watch(
   () => props.messages.length,
   () => nextTick(() => {

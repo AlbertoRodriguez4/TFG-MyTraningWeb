@@ -18,7 +18,7 @@ namespace AA2_CS.Service
         }
 
         public string? GetImageUrl(string exerciseName)
-        {
+        { // Obtener las imagenes del ejercicio con diferentes niveles de coincidencia 
             if (_entries == null)
             {
                 LoadAsync().GetAwaiter().GetResult();
@@ -62,7 +62,7 @@ namespace AA2_CS.Service
         }
 
         private async Task LoadAsync()
-        {
+        { // Cargar el fallback de imágenes desde un JSON público, con manejo de concurrencia para evitar múltiples cargas simultáneas
             await _semaphore.WaitAsync();
             try
             {
@@ -84,7 +84,7 @@ namespace AA2_CS.Service
                         if (ex.Images != null && ex.Images.Count > 0)
                         {
                             list.Add(new ExerciseImageEntry
-                            {
+                            { // Construir la URL de la imagen usando el primer nombre de imagen disponible, asumiendo que el JSON tiene un formato específico
                                 Name = ex.Name,
                                 NormalizedName = NormalizeName(ex.Name),
                                 ImageUrl = $"https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/{ex.Images[0]}"
@@ -108,7 +108,7 @@ namespace AA2_CS.Service
         }
 
         private static string NormalizeName(string name)
-        {
+        { // Normalizar el nombre del ejercicio para mejorar las coincidencias, eliminando caracteres especiales y palabras comunes
             var cleaned = name.ToLowerInvariant().Trim();
             // Eliminar caracteres especiales comunes: ° , . ( ) - /
             cleaned = Regex.Replace(cleaned, @"[°.,()\-/]", " ");
@@ -118,7 +118,7 @@ namespace AA2_CS.Service
         }
 
         private static string[] GetSignificantKeywords(string normalizedName)
-        {
+        { // Extraer palabras clave significativas, eliminando palabras comunes y muy cortas para mejorar la coincidencia por palabras clave
             var stopWords = new HashSet<string> { "the", "a", "an", "and", "or", "with", "on", "in", "of", "to", "for", "from", "by", "assisted", "machine", "leverage" };
             return normalizedName
                 .Split(' ', StringSplitOptions.RemoveEmptyEntries)

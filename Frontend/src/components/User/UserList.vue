@@ -1,24 +1,9 @@
 <script setup lang="ts">
 import defaultAvatar from '@/assets/imgs/usuario.png'
 import { useI18n } from 'vue-i18n'
+import type { User } from '@/components/Models/User'
 
 const { t } = useI18n()
-
-interface EquipItem {
-  name: string
-  bonus: number
-}
-
-interface User {
-  id: number
-  name: string
-  level: number
-  strength: number
-  endurance: number
-  avatarUrl?: string
-  equippedStrengthItem?: EquipItem
-  equippedEnduranceItem?: EquipItem
-}
 
 interface Props {
   users: User[]
@@ -28,7 +13,7 @@ interface Props {
 defineProps<Props>()
 
 const getAvatar = (user: User) => user.avatarUrl || defaultAvatar
-
+// Mostrar item equipado
 const getEquipItem = (user: User) => {
   return user.equippedStrengthItem || user.equippedEnduranceItem
 }

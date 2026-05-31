@@ -1,7 +1,7 @@
 namespace AA2_CS.Repository
 {
     using AA2_CS.Database;
-    using AA2_CS.Model;
+    using AA2_CS.Model.Entities;
     using Microsoft.EntityFrameworkCore;
     using System.Collections.Generic;
     using System.Linq;
@@ -16,7 +16,6 @@ namespace AA2_CS.Repository
             _context = context;
         }
 
-        // 1. Obtener TODOS los registros
         public IEnumerable<UserRoom> GetAll()
         {
             return _context.UserRooms
@@ -28,7 +27,6 @@ namespace AA2_CS.Repository
                 .ToList();
         }
 
-        // 2. Buscar por ID de USUARIO
         public IEnumerable<UserRoom> FindByUserId(int userId)
         {
             return _context.UserRooms
@@ -41,8 +39,7 @@ namespace AA2_CS.Repository
                 .ToList();
         }
 
-        // 3. Buscar por ID de SALA (CORREGIDO)
-        // Antes devolvía DTO, ahora devuelve UserRoom completo con los items cargados
+  
         public IEnumerable<UserRoom> FindUsersByRoomId(int roomId)
         {
             return _context.UserRooms

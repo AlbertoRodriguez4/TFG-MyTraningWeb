@@ -1,5 +1,5 @@
 using AA2_CS.Database;
-using AA2_CS.Model;
+using AA2_CS.Model.Entities;
 using AA2_CS.Repository;
 using System;
 using System.Collections.Generic;

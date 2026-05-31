@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using AA2_CS.Model;
+using AA2_CS.Model.Entities;
 using AA2_CS.Database;
 
 public class BodyMetricRepository
@@ -13,6 +13,7 @@ public class BodyMetricRepository
 
     public async Task<List<BodyMetric>> GetByUserIdAsync(int userId)
     {
+        // Obtener todas las métricas corporales de un usuario específico, ordenadas por fecha (más recientes primero)
         return await _context.BodyMetrics
             .Where(bm => bm.UserId == userId)
             .OrderByDescending(bm => bm.Date)
@@ -53,5 +54,12 @@ public class BodyMetricRepository
             .Where(bm => bm.UserId == userId)
             .OrderByDescending(bm => bm.Date)
             .FirstOrDefaultAsync();
+    }
+
+    public float? CalculateBMI(float weightKg, float heightCm)
+    {
+        if (heightCm <= 0) return null;
+        var heightM = heightCm / 100;
+        return weightKg / (heightM * heightM);
     }
 }

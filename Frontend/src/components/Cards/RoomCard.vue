@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const props = defineProps<{
-  room: {
+  room: { // Propiedades de la sala
     id: number
     name: string
     minlevel: number
@@ -21,6 +21,7 @@ const emit = defineEmits<{
   (e: 'edit', room: any): void
 }>()
 
+// Configuración de dificultades para las salas de entrenamiento, dependiendo del nivel mínimo requerido
 const difficulties: Record<string, { labelKey: string; color: string; rgb: string; gradient: string; glow: string }> = {
   common: {
     labelKey: 'common',
@@ -51,14 +52,14 @@ const difficulties: Record<string, { labelKey: string; color: string; rgb: strin
     glow: 'rgba(251,191,36,0.5)'
   },
 }
-
+// Funciones para determinar la dificultad y el icono de la sala según el nivel mínimo requerido
 const getRoomDifficulty = (level: number) => {
   if (level >= 50) return 'legendary'
   if (level >= 30) return 'epic'
   if (level >= 15) return 'rare'
   return 'common'
 }
-
+// Función para determinar el icono de la sala según el nivel mínimo requerido
 const getRoomIcon = (level: number) => {
   if (level >= 50) return '🐉'
   if (level >= 30) return '⭐'
@@ -68,7 +69,7 @@ const getRoomIcon = (level: number) => {
 
 const diff = getRoomDifficulty(props.room.minlevel)
 const diffConfig = difficulties[diff]
-const isTrainer = props.creatorRole === 'userStaff'
+const isTrainer = props.creatorRole === 'userStaff'// Marcar como sala de entrenador si el creador tiene rol de staff
 </script>
 
 <template>

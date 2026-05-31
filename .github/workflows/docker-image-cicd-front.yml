@@ -36,7 +36,7 @@ jobs:
       id: docker_meta
       uses: docker/metadata-action@v5
       with:
-        images: albertorodriguezpenalva/asdftest
+        images: albertorodriguezpenalva/front-aws
         flavor: |
           latest=false
         tags: |
@@ -51,6 +51,8 @@ jobs:
         push: true
         tags: ${{ steps.docker_meta.outputs.tags }}
         labels: ${{ steps.docker_meta.outputs.labels }}
+        build-args: |
+          VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
         platforms: linux/amd64

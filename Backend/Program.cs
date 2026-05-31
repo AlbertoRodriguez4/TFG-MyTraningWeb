@@ -11,25 +11,25 @@ using AA2_CS.Repository;
 using AA2_CS.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
-Environment.SetEnvironmentVariable("ASPNETCORE_URLS", "http://+:6873");
+Environment.SetEnvironmentVariable("ASPNETCORE_URLS", "http://+:6873"); // Permitir que la aplicación escuche en todas las interfaces de red en el puerto 6873
 
 // Configuración CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend",
-        policy => policy.WithOrigins("http://localhost:5173", "http://127.0.0.1:5173")
+        policy => policy.WithOrigins("http://localhost:5173", "http://127.0.0.1:5173") // Permitir solo el origen del frontend de Vite
                         .AllowAnyHeader()
                         .AllowAnyMethod()
                         .AllowCredentials());
 });
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-if (string.IsNullOrWhiteSpace(connectionString))
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection"); // Obtener la cadena de conexión desde la configuración de appsettings.json
+if (string.IsNullOrWhiteSpace(connectionString)) // Verificar que la cadena de conexión no esté vacía o nula
 {
     throw new InvalidOperationException("Falta ConnectionStrings:DefaultConnection en la configuración.");
 }
 
-var jwtKey = builder.Configuration["JwtSettings:Key"];
+var jwtKey = builder.Configuration["JwtSettings:Key"]; // Obtener la clave secreta para JWT desde la configuración de appsettings.json
 if (string.IsNullOrWhiteSpace(jwtKey))
 {
     throw new InvalidOperationException("Falta JwtSettings:Key en la configuración.");
@@ -41,10 +41,10 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
-        options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+        options.JsonSerializerOptions.PropertyNameCaseInsensitive = true; // Permitir que los nombres de las propiedades sean insensibles a mayúsculas/minúsculas
     });
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(connectionString));
+    options.UseNpgsql(connectionString)); // Configurar Entity Framework Core para usar PostgreSQL con la cadena de conexión obtenida desde la configuración de appsettings.json
 
 // Registrar los servicios específicos
 builder.Services.AddScoped<UserService>();
@@ -71,28 +71,28 @@ builder.Services.AddScoped<UserRoomRepository, UserRoomRepository>();
 builder.Services.AddScoped<UserRoomService, UserRoomService>();
 builder.Services.AddScoped<NotificationPreferenceRepository, NotificationPreferenceRepository>();
 builder.Services.AddScoped<NotificationPreferenceService, NotificationPreferenceService>();
+builder.Services.AddScoped<NotificationRepository, NotificationRepository>();
 builder.Services.AddScoped<NotificationService, NotificationService>();
 builder.Services.AddHostedService<NotificationBackgroundService>();
-
-// Nuevos servicios y repositorios
 builder.Services.AddScoped<AchievementRepository, AchievementRepository>();
 builder.Services.AddScoped<AchievementService, AchievementService>();
 builder.Services.AddScoped<BodyMetricRepository, BodyMetricRepository>();
 builder.Services.AddScoped<BodyMetricService, BodyMetricService>();
 builder.Services.AddScoped<ExerciseRepository, ExerciseRepository>();
 builder.Services.AddScoped<ExerciseService, ExerciseService>();
+builder.Services.AddScoped<AuthRepository, AuthRepository>();
 builder.Services.AddHttpClient<CoachAIService>(client =>
 {
-    client.Timeout = TimeSpan.FromSeconds(60);
+    client.Timeout = TimeSpan.FromSeconds(60); // Establecer un tiempo de espera más largo para las solicitudes a la API de CoachAI, ya que las respuestas pueden tardar más en generarse para no saturar el sistema 
 });
-builder.Services.AddHttpClient<ExerciseDbClient>(client =>
+builder.Services.AddHttpClient<ExerciseDbClient>(client => // Lo mismo para ExerciseDB, que también puede tardar en responder debido a la cantidad de datos que maneja
 {
     client.Timeout = TimeSpan.FromSeconds(30);
 });
-builder.Services.AddSingleton<ExerciseImageFallbackService>();
+builder.Services.AddSingleton<ExerciseImageFallbackService>(); // Servicio singleton para manejar las imágenes de ejercicio, ya que no tiene estado y se puede compartir entre solicitudes
 
-// Evitar que JwtSecurityTokenHandler transforme los claim types (ej: role -> http://schemas...)
-JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
+JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear(); // Evitar que el sistema mapee automáticamente los claims estándar de JWT a tipos de claim específicos de .NET, para recuperarlos mas facilmente en el front
 
 // Configuración de JWT para autenticación
 builder.Services.AddAuthentication("Bearer")
@@ -121,7 +121,7 @@ var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>(); // Obtener el contexto de la base de datos desde el contenedor de servicios
     db.Database.Migrate();  // Aplica migraciones pendientes
 }
 // Configurar el pipeline de la solicitud HTTP

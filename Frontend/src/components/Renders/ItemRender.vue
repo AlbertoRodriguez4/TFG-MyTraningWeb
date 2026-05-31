@@ -30,7 +30,7 @@ const enduranceItems = computed(() => itemStore.enduranceItems)
 const showDialog = ref(false)
 const selectedItem = ref<Item | null>(null)
 
-// Snackbar state
+// Estado del snackbar
 const snackbar = ref(false)
 const snackbarMessage = ref('')
 const snackbarColor = ref('success')
@@ -50,13 +50,15 @@ const closePopup = () => {
   showDialog.value = false
   selectedItem.value = null
 }
-
+// Función para manejar la compra del item seleccionado
 const handleBuy = async () => {
   const userId = loggedUser.value?.id
   const item = selectedItem.value
+  // Validacion basica para comprobar que existe tanto usuario como item
   if (!userId || !item) return
 
   try {
+    //Realizamos al compra y comprobamos la respuesta para mostrar el mensaje adecuado
     const purchase = await purchaseStore.addPurchase(userId, item.id, item.price)
     if (purchase && purchase.id) {
       showSnackbar(t('purchase_success'), "success")
@@ -75,23 +77,23 @@ const handleBuy = async () => {
     closePopup()
   }
 }
-
+// Comprobar que el usuario tiene suficiente oro para comprar el item
 const canAfford = (price: number) => {
   return (loggedUser.value?.gold || 0) >= price
 }
-
+// Funciones para obtener el icono y color según el tipo de item, usadas tanto en la card como en el diálogo
 const getItemIcon = (type: string) => {
   if (type === 'Strength') return 'mdi-dumbbell'
   if (type === 'Endurance') return 'mdi-run-fast'
   return 'mdi-star-circle'
 }
-
+// Colores personalizados para cada tipo de item, usados en glow, borde, texto, etc.
 const getItemColor = (type: string) => {
   if (type === 'Strength') return '#FF4757'
   if (type === 'Endurance') return '#00D2FF'
   return '#FFD700'
 }
-
+// Manejador de error de carga de imagen: oculta la imagen y muestra el icono de fallback si la URL es inválida
 const handleImageError = (event: Event) => {
   const img = event.target as HTMLImageElement
   img.style.display = 'none'

@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
-using AA2_CS.Model;
+using AA2_CS.Model.Entities;
 using AA2_CS.Services;
 
 [ApiController]
@@ -9,12 +9,10 @@ using AA2_CS.Services;
 public class AchievementController : ControllerBase
 {
     private readonly AchievementService _achievementService;
-    private readonly AuthService _authService;
 
-    public AchievementController(AchievementService achievementService, AuthService authService)
+    public AchievementController(AchievementService achievementService)
     {
         _achievementService = achievementService;
-        _authService = authService;
     }
 
     [HttpGet]

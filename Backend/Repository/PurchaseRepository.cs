@@ -1,8 +1,7 @@
 using AA2_CS.Database;
-using AA2_CS.Model;
+using AA2_CS.Model.Entities;
+using AA2_CS.Model.DTOs;
 using Microsoft.EntityFrameworkCore;
-// Asegúrate de importar donde tengas tu PurchaseDTO
-// using AA2_CS.DTOs; 
 
 namespace AA2_CS.Repository
 {
@@ -15,9 +14,9 @@ namespace AA2_CS.Repository
             _context = context;
         }
 
-        // ... Add, Delete, FindAll, FindById, Update SE QUEDAN IGUAL ...
         public int Add(Purchase purchase)
         {
+            // Validar que el usuario y el ítem existan, y que el usuario tenga suficiente oro para la compra, antes de agregar la compra a la base de datos. Se agregan ambos ids del usuario y del objeto
             var user = _context.Users.FirstOrDefault(u => u.id == purchase.userid);
             var item = _context.Items.FirstOrDefault(i => i.id == purchase.itemid);
             purchase.purchasedate = purchase.purchasedate.ToUniversalTime();
@@ -25,8 +24,7 @@ namespace AA2_CS.Repository
             if (user == null || item == null)
                 throw new ArgumentException("User or Item not found.");
 
-            // NOTA: Idealmente esta lógica de oro debería ir en el Service (como la XP),
-            // pero está bien dejarla aquí por ahora para no romper nada más.
+            
             if (user.gold < item.price)
                 throw new InvalidOperationException("El usuario no tiene suficiente oro.");
 
@@ -80,7 +78,7 @@ namespace AA2_CS.Repository
         }
         public List<PurchaseDTO> FindByUserId(int userId)
         {
-
+            
             var purchases = (from p in _context.Purchases
                              join item in _context.Items on p.itemid equals item.id
                              join user in _context.Users on p.userid equals user.id

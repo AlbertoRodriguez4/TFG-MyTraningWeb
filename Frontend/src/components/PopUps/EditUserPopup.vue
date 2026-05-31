@@ -18,11 +18,11 @@ const emit = defineEmits(['close', 'edit', 'delete']);
 
 const errorMessage = ref('');
 
-// Snackbar state
+// Estado del snackbar para mostrar mensajes de éxito o error
 const snackbar = ref(false)
 const snackbarText = ref('')
 const snackbarColor = ref('success')
-
+// Editar el usuario, estado reactivo 
 const editedUser = reactive<User>({
   id: 0,
   name: '',
@@ -43,7 +43,7 @@ const editedUser = reactive<User>({
 });
 
 const availableRoles = ['userNormal', 'userStaff', 'userMaster'];
-
+// Sincronizar el estado del usuario editado con el usuario pasado por props
 watch(() => props.user, (newUser) => {
   if (newUser) {
     editedUser.id = newUser.id;
@@ -70,7 +70,7 @@ function showSnackbar(text: string, color: string = 'success') {
   snackbarColor.value = color
   snackbar.value = true
 }
-
+// Validación de email simple
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const handleEdit = async () => {
@@ -85,12 +85,12 @@ const handleEdit = async () => {
     errorMessage.value = t('enter_valid_email');
     return;
   }
-
+// Validar que el rol seleccionado sea válido
   if (
     editedUser.level < 0 ||
     editedUser.strength < 0 ||
     editedUser.endurance < 0 ||
-    editedUser.gold < 0
+    (editedUser.gold ?? 0) < 0
   ) {
     errorMessage.value = t('no_negative_values');
     return;
