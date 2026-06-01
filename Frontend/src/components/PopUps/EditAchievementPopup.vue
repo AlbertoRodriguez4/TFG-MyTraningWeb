@@ -336,7 +336,7 @@ async function handleDelete() {
               <div class="preview-desc">{{ edited.description || '...' }}</div>
             </div>
             <div class="preview-rewards">
-              <v-chip v-if="edited.rewardGold > 0" x-small color="amber" class="mr-1">+{{ edited.rewardGold }} <v-icon size="14">mdi-cash-coin</v-icon></v-chip>
+              <v-chip v-if="edited.rewardGold > 0" x-small color="amber" class="mr-1">+{{ edited.rewardGold }} <v-icon size="14">mdi-gold</v-icon></v-chip>
               <v-chip v-if="edited.rewardXP > 0" x-small color="purple">+{{ edited.rewardXP }} XP</v-chip>
             </div>
           </div>

@@ -331,7 +331,7 @@ const handleDelete = async () => {
                 min="0"
                 class="stat-input"
               />
-              <v-icon class="stat-suffix-icon">mdi-cash-coin</v-icon>
+              <v-icon class="stat-suffix-icon">mdi-gold</v-icon>
             </div>
           </div>
         </div>
@@ -351,7 +351,7 @@ const handleDelete = async () => {
               <div class="preview-stats">+{{ editedItem.bonus }} {{ editedItem.type === 'Strength' ? $t('fuerza') : $t('resistencia') }}</div>
             </div>
             <div class="preview-price">
-              <v-icon size="small">mdi-cash-coin</v-icon>
+              <v-icon size="small">mdi-gold</v-icon>
               {{ editedItem.price }}
             </div>
           </div>

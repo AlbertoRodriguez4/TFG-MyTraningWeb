@@ -268,7 +268,7 @@ const register = async () => {
                     <div class="stat-name">STK</div>
                   </div>
                   <div class="stat-item">
-                    <div class="stat-icon"><v-icon>mdi-cash-coin</v-icon></div>
+                    <div class="stat-icon"><v-icon>mdi-gold</v-icon></div>
                     <div class="stat-value">100</div>
                     <div class="stat-name">GOLD</div>
                   </div>

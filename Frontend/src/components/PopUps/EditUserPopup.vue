@@ -278,7 +278,7 @@ watch(internalVisible, (val) => {
             <v-col cols="6" sm="3">
               <div class="stat-card gold-card">
                 <div class="stat-header">
-                  <v-icon class="stat-icon">mdi-cash-coin</v-icon>
+                  <v-icon class="stat-icon">mdi-gold</v-icon>
                   <span class="stat-label">{{ $t('oro') }}</span>
                 </div>
                 <input v-model.number="editedUser.gold" type="number" min="0" class="stat-input" />

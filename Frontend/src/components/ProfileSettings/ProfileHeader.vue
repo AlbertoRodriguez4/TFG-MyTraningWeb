@@ -42,7 +42,7 @@
             </div>
           </div>
           <div class="stat-item">
-            <span class="stat-icon"><v-icon>mdi-cash-coin</v-icon></span>
+            <span class="stat-icon"><v-icon>mdi-gold</v-icon></span>
             <div class="stat-content">
               <p class="stat-label">{{ $t('gold_label') }}</p>
               <p class="stat-value">{{ userGold }}</p>

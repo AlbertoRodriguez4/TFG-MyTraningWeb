@@ -265,7 +265,7 @@ async function handleLogin() {
                 <span class="progress-name">{{ $t('levels') }}</span>
               </div>
               <div class="progress-item">
-                <span class="progress-icon"><v-icon>mdi-cash-coin</v-icon></span>
+                <span class="progress-icon"><v-icon>mdi-gold</v-icon></span>
                 <span class="progress-name">{{ $t('coins') }}</span>
               </div>
               <div class="progress-item">
