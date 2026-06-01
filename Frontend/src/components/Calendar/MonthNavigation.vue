@@ -20,7 +20,7 @@
           <h2 class="text-h3 font-weight-black mb-1 month-title">
             {{ monthName }}
           </h2>
-          <p class="text-h6 grey--text year-subtitle mb-0">
+          <p class="text-h6 year-subtitle mb-0">
             {{ year }}
           </p>
         </div>
@@ -164,29 +164,15 @@ function handleNext() {
 }
 
 @media (max-width: 600px) {
-  .month-nav-card .v-card__text {
-    padding: 1rem !important;
+  .month-nav-card {
+    border-radius: 14px !important;
+    border-width: 1.5px;
   }
-  
-  .month-title {
-    font-size: 1.75rem !important;
-  }
-  
-  .year-subtitle {
-    font-size: 1rem !important;
-  }
-  
-  .nav-fab {
-    width: 48px !important;
-    height: 48px !important;
-  }
-  
-  .nav-fab .v-icon {
-    font-size: 24px !important;
-  }
-}
 
-@media (max-width: 400px) {
+  .month-nav-card .v-card__text {
+    padding: 0.85rem !important;
+  }
+  
   .month-title {
     font-size: 1.5rem !important;
   }
@@ -199,21 +185,28 @@ function handleNext() {
     width: 44px !important;
     height: 44px !important;
   }
+  
+  .nav-fab .v-icon {
+    font-size: 22px !important;
+  }
 }
 
-/* Modo oscuro (opcional, si tu app lo tiene) */
-@media (prefers-color-scheme: dark) {
-  .month-nav-card {
-    background: #1e1e1e;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  }
-  
+@media (max-width: 360px) {
   .month-title {
-    color: #ffffff;
+    font-size: 1.3rem !important;
   }
   
   .year-subtitle {
-    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.8rem !important;
+  }
+  
+  .nav-fab {
+    width: 40px !important;
+    height: 40px !important;
+  }
+
+  .nav-fab .v-icon {
+    font-size: 20px !important;
   }
 }
 
@@ -227,7 +220,6 @@ function handleNext() {
   outline: none;
 }
 
-/* Prevenir click doble rápido */
 .nav-fab {
   pointer-events: all;
   -webkit-tap-highlight-color: transparent;

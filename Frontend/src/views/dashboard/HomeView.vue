@@ -130,7 +130,7 @@ async function searchGymsNearLocation(lat: number, lon: number) {
       if (gym.lat && gym.lon && map.value) { // Asegurarse de que el gimnasio tenga coordenadas válidas antes de agregar el marcador
         const marker = L.marker([parseFloat(gym.lat), parseFloat(gym.lon)], { icon: gymIcon }) // Usar icono personalizado para gimnasios
           .addTo(map.value as L.Map)
-          .bindPopup(`<strong>${gym.nombre || 'Gimnasio'}</strong><br>${gym.direccion || ''}<br>${gym.telefono ? '📞 ' + gym.telefono : ''}<br>${gym.sitioWeb ? '🌐 <a href="' + gym.sitioWeb + '" target="_blank">Web</a>' : ''}`); // Datos de los gimnasios encontrados 
+          .bindPopup(`<strong>${gym.nombre || 'Gimnasio'}</strong><br>${gym.direccion || ''}<br>${gym.telefono ? '<i class="mdi mdi-phone"></i> ' + gym.telefono : ''}<br>${gym.sitioWeb ? '<i class="mdi mdi-web"></i> <a href="' + gym.sitioWeb + '" target="_blank">Web</a>' : ''}`); // Datos de los gimnasios encontrados 
 
         marker.on('click', () => { // Al hacer clic en el marcador, mostrar detalles del gimnasio en la sección lateral
           selectedGym.value = gym;

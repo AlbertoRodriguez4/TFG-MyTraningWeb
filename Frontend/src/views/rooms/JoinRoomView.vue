@@ -496,6 +496,8 @@ const goBack = () => {
 
 .room-view-wrapper {
   min-height: 100vh;
+  height: 100vh;
+  overflow-y: auto;
   background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
   padding: 2rem;
 }
@@ -1379,6 +1381,16 @@ const goBack = () => {
 @media (max-width: 640px) {
   .room-view-wrapper {
     padding: 1rem;
+    padding-bottom: 2rem;
+  }
+
+  .view-header {
+    margin-bottom: 1rem;
+  }
+
+  .back-btn {
+    padding: 0.6rem 1rem;
+    font-size: 0.85rem;
   }
 
   .room-info-header {
@@ -1390,12 +1402,30 @@ const goBack = () => {
     font-size: 1.75rem;
   }
 
-  .room-requirements-grid {
-    grid-template-columns: 1fr;
+  .room-info-card {
+    padding: 1.5rem;
+    border-radius: 18px;
   }
 
-  .popup-actions {
+  .room-requirements-grid {
     grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .requirement-card {
+    padding: 1rem;
+  }
+
+  .users-section {
+    margin-top: 0;
+  }
+
+  .users-grid {
+    gap: 0.75rem;
+  }
+
+  .user-card {
+    padding: 1rem;
   }
 
   .user-avatar-img {
@@ -1406,6 +1436,25 @@ const goBack = () => {
   .user-avatar {
     width: 50px;
     height: 50px;
+  }
+
+  .popup-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .popup-content {
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .join-section {
+    margin-top: 1.5rem;
+  }
+
+  .main-join-btn,
+  .leave-btn {
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
   }
 }
 </style>

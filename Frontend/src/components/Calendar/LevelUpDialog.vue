@@ -10,11 +10,11 @@
         <div class="level-up-animation mb-4">
           <v-icon size="140" color="amber">mdi-trophy-variant</v-icon>
         </div>
-        <h2 class="text-h2 font-weight-black purple--text mb-2">
+        <h2 class="text-h2 font-weight-black mb-2 level-title">
           {{ $t('levelUp.newLevel', { level: userLevel }) }}
         </h2>
-          <p class="text-h5 mb-2">{{ $t('levelUp.congrats') }}</p>
-          <p class="text-body-1 grey--text mb-6">
+          <p class="text-h5 mb-2 level-congrats">{{ $t('levelUp.congrats') }}</p>
+          <p class="text-body-1 mb-6 level-description">
           {{ $t('levelUp.description') }}
         </p>
         <v-btn
@@ -49,6 +49,19 @@ defineEmits<{
   background: linear-gradient(135deg, rgba(26, 10, 46, 0.95) 0%, rgba(15, 10, 26, 0.98) 100%);
   border: 2px solid rgba(139, 92, 246, 0.3);
   backdrop-filter: blur(20px);
+}
+
+.level-title {
+  color: #c4b5fd;
+  text-shadow: 0 0 20px rgba(167, 139, 250, 0.5);
+}
+
+.level-congrats {
+  color: #ffffff;
+}
+
+.level-description {
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .level-up-animation {

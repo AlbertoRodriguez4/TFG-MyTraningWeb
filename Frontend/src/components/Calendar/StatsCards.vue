@@ -11,7 +11,7 @@
           
           <!-- Info de Nivel -->
           <div class="ml-3">
-            <div class="text-caption grey--text text-uppercase stat-label">
+            <div class="text-caption text-uppercase stat-label">
               Nivel Actual
             </div>
             <div class="text-h5 font-weight-black stat-value">
@@ -31,7 +31,7 @@
         ></v-progress-linear>
         
         <!-- Texto de XP -->
-        <div class="text-caption grey--text mt-1 xp-text">
+        <div class="text-caption mt-1 xp-text">
           {{ userXP }} / {{ xpToNextLevel }} XP
         </div> 
       </v-card-text>
@@ -49,7 +49,7 @@
             
             <!-- Info de Monedas -->
             <div class="ml-3">
-              <div class="text-caption grey--text text-uppercase stat-label">
+              <div class="text-caption text-uppercase stat-label">
                 Monedas
               </div>
               <div class="text-h5 font-weight-black stat-value">
@@ -78,7 +78,7 @@
             
             <!-- Info de Rutinas Completadas -->
             <div class="ml-3">
-              <div class="text-caption grey--text text-uppercase stat-label">
+              <div class="text-caption text-uppercase stat-label">
                 Completadas
               </div>
               <div class="text-h5 font-weight-black stat-value">

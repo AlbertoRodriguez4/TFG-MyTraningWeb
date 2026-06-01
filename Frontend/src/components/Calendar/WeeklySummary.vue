@@ -91,22 +91,64 @@ defineProps<{
 @media (max-width: 600px) {
   .weekly-summary-card {
     margin-top: 1.5rem;
+    border-radius: 16px !important;
+    border-width: 1.5px;
   }
-  
+
+  .weekly-summary-card .v-card__text {
+    padding: 1rem !important;
+  }
+
+  .weekly-summary-card .text-h5 {
+    font-size: 1.1rem !important;
+    margin-bottom: 0.75rem !important;
+  }
+
+  .weekly-summary-card .v-row {
+    margin: 0 -4px;
+  }
+
+  .weekly-summary-card .v-col {
+    padding: 4px;
+  }
+
   .summary-item {
     padding: 0.75rem 0.5rem;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(139, 92, 246, 0.15);
   }
   
   .summary-item .v-icon {
-    font-size: 30px !important;
+    font-size: 28px !important;
   }
   
   .summary-value {
-    font-size: 1.5rem;
+    font-size: 1.35rem;
+    margin: 0.35rem 0 0.15rem;
   }
   
   .summary-label {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
+    line-height: 1.2;
+  }
+}
+
+@media (max-width: 360px) {
+  .summary-item {
+    padding: 0.6rem 0.35rem;
+  }
+
+  .summary-item .v-icon {
+    font-size: 24px !important;
+  }
+
+  .summary-value {
+    font-size: 1.15rem;
+  }
+
+  .summary-label {
+    font-size: 0.65rem;
   }
 }
 </style>

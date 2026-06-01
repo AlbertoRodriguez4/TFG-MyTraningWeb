@@ -1553,27 +1553,6 @@ const handleCreate = async () => {
   }
 }
 
-/* ===== RESPONSIVE PARA SELECTOR DE TIPO ===== */
-@media (max-width: 960px) {
-  .training-type-selector {
-    grid-template-columns: 1fr;
-  }
-
-  .training-type-card {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    text-align: left;
-    padding: 1rem 1.5rem;
-  }
-
-  .training-type-icon {
-    margin: 0;
-    width: 56px;
-    height: 56px;
-  }
-}
-
 /* ===== RESPONSIVE ===== */
 @media (max-width: 960px) {
   .dialog-header {
@@ -1621,88 +1600,428 @@ const handleCreate = async () => {
     flex-direction: column;
     gap: 1rem;
   }
+
+  .training-type-selector {
+    grid-template-columns: 1fr;
+  }
+
+  .training-type-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    text-align: left;
+    padding: 1rem 1.5rem;
+  }
+
+  .training-type-icon {
+    margin: 0;
+    width: 56px;
+    height: 56px;
+  }
 }
 
 @media (max-width: 600px) {
+  .create-dialog {
+    max-height: 100vh;
+    border-radius: 0 !important;
+  }
+
   .dialog-header {
-    padding: 1.5rem 1rem;
+    padding: 1.25rem 1rem;
+    border-bottom-width: 1px;
   }
 
   .header-content {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
+    gap: 0.75rem;
   }
 
   .header-icon-wrapper {
-    width: 60px;
-    height: 60px;
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+    border-width: 2px;
   }
 
   .pulse-icon {
-    font-size: 36px !important;
+    font-size: 28px !important;
+  }
+
+  .icon-glow {
+    inset: -6px;
+    border-radius: 20px;
+  }
+
+  .level-badge {
+    font-size: 0.65rem;
+    padding: 0.3rem 0.75rem;
+    margin-bottom: 0.25rem;
   }
 
   .title-glow {
-    font-size: 1.5rem !important;
+    font-size: 1.25rem !important;
+  }
+
+  .date-chip {
+    padding: 0.35rem 0.75rem;
+    border-radius: 10px;
+    font-size: 0.8rem;
+  }
+
+  .close-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
   }
 
   .dialog-body {
-    padding: 1.5rem !important;
+    padding: 1rem !important;
+    max-height: calc(100vh - 260px);
+  }
+
+  .form-section {
+    margin-bottom: 1.5rem !important;
   }
 
   .section-header {
-    flex-wrap: wrap;
+    gap: 0.75rem;
   }
 
   .section-icon-wrapper {
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
   }
 
   .section-title {
-    font-size: 1.1rem;
+    font-size: 1rem;
+  }
+
+  .section-subtitle {
+    font-size: 0.8rem;
+  }
+
+  .chip-required {
+    font-size: 0.65rem;
+    height: 20px;
+  }
+
+  .input-wrapper {
+    margin-top: 0.5rem;
+  }
+
+  .custom-textfield-epic>>>.v-input__slot {
+    border-radius: 12px !important;
+    padding: 0.4rem 0.75rem !important;
+  }
+
+  .input-icon-wrapper {
+    border-radius: 8px;
+    padding: 4px;
+    margin-right: 4px;
+  }
+
+  .tips-box {
+    padding: 0.6rem 0.75rem;
+    border-radius: 10px;
+    font-size: 0.8rem;
+  }
+
+  /* Training Type - Mobile Compact */
+  .training-type-selector {
+    grid-template-columns: 1fr;
+    gap: 0.6rem;
+  }
+
+  .training-type-card {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-align: left;
+    padding: 0.85rem 1rem;
+    border-radius: 14px;
+    border-width: 1.5px;
+  }
+
+  .training-type-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    margin: 0;
+    flex-shrink: 0;
+  }
+
+  .training-type-icon .v-icon {
+    font-size: 24px !important;
+  }
+
+  .training-type-label {
+    font-size: 0.95rem;
+    margin-bottom: 0.15rem;
+  }
+
+  .training-type-description {
+    font-size: 0.75rem;
+  }
+
+  .check-indicator {
+    width: 26px;
+    height: 26px;
+    top: 8px;
+    right: 8px;
+  }
+
+  /* Difficulty - Mobile Compact */
+  .difficulty-selector {
+    grid-template-columns: 1fr;
+    gap: 0.6rem;
+  }
+
+  .difficulty-card {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-align: left;
+    padding: 0.85rem 1rem;
+    border-radius: 14px;
+    border-width: 1.5px;
+  }
+
+  .difficulty-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    margin: 0;
+    flex-shrink: 0;
+  }
+
+  .difficulty-icon .v-icon {
+    font-size: 24px !important;
+  }
+
+  .difficulty-label {
+    font-size: 0.95rem;
+    margin-bottom: 0.15rem;
+  }
+
+  .difficulty-xp {
+    font-size: 0.8rem;
+  }
+
+  /* Duration - Mobile */
+  .duration-display {
+    padding: 1.25rem 1rem;
+    border-radius: 16px;
   }
 
   .duration-value {
     font-size: 2.5rem;
   }
 
+  .duration-unit {
+    font-size: 0.9rem;
+  }
+
+  .slider-label {
+    font-size: 0.75rem;
+  }
+
+  .duration-bonus {
+    font-size: 0.8rem;
+  }
+
+  /* Rewards - Mobile */
   .rewards-epic-section {
-    padding: 1.5rem;
+    padding: 1.25rem 1rem;
+    border-radius: 20px;
   }
 
   .rewards-icon-mega {
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
+    border-radius: 14px;
   }
 
   .rewards-icon-mega .v-icon {
-    font-size: 36px !important;
+    font-size: 28px !important;
+  }
+
+  .rewards-epic-header h3 {
+    font-size: 1.25rem !important;
+  }
+
+  .rewards-subtitle {
+    font-size: 0.85rem;
+  }
+
+  .rewards-grid {
+    gap: 0.5rem !important;
   }
 
   .reward-card-epic {
-    padding: 1.5rem 1rem;
+    padding: 1.25rem 0.75rem;
+    border-radius: 18px;
   }
 
   .reward-icon-container {
-    width: 64px;
-    height: 64px;
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    margin-bottom: 1rem;
+  }
+
+  .reward-icon-container .v-icon {
+    font-size: 32px !important;
   }
 
   .reward-amount {
-    font-size: 2.5rem;
+    font-size: 2rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .reward-label {
+    font-size: 0.8rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .reward-info {
+    font-size: 0.75rem;
+    gap: 0.35rem;
+  }
+
+  .achievements-preview {
+    flex-direction: column;
+    gap: 0.6rem;
+    padding-top: 1.25rem;
+    margin-top: 1.25rem;
+  }
+
+  .achievement-item {
+    padding: 0.6rem 1rem;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    gap: 0.5rem;
+  }
+
+  /* Footer - Mobile */
+  .dialog-footer {
+    padding: 1rem !important;
+    flex-direction: column;
+    gap: 0.75rem;
   }
 
   .footer-stats {
-    flex-direction: column;
-    gap: 0.5rem;
+    flex-direction: row;
+    gap: 1rem;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .stat-item {
+    font-size: 0.75rem;
+    gap: 0.35rem;
+  }
+
+  .dialog-footer .v-spacer {
+    display: none;
+  }
+
+  .dialog-footer .cancel-btn {
+    width: 100%;
+    order: 2;
   }
 
   .create-btn-epic {
     width: 100%;
     margin-left: 0 !important;
-    margin-top: 0.5rem;
+    margin-top: 0 !important;
+    order: 1;
+    min-height: 52px;
+  }
+
+  .button-text {
+    align-items: center;
+  }
+
+  .main-text {
+    font-size: 0.95rem;
+  }
+
+  .sub-text {
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .dialog-header {
+    padding: 1rem 0.75rem;
+  }
+
+  .header-icon-wrapper {
+    width: 44px;
+    height: 44px;
+  }
+
+  .pulse-icon {
+    font-size: 24px !important;
+  }
+
+  .title-glow {
+    font-size: 1.1rem !important;
+  }
+
+  .dialog-body {
+    padding: 0.75rem !important;
+  }
+
+  .section-icon-wrapper {
+    width: 32px;
+    height: 32px;
+  }
+
+  .section-title {
+    font-size: 0.9rem;
+  }
+
+  .section-subtitle {
+    font-size: 0.75rem;
+  }
+
+  .training-type-card,
+  .difficulty-card {
+    padding: 0.75rem;
+  }
+
+  .training-type-icon,
+  .difficulty-icon {
+    width: 38px;
+    height: 38px;
+  }
+
+  .training-type-label,
+  .difficulty-label {
+    font-size: 0.85rem;
+  }
+
+  .rewards-epic-section {
+    padding: 1rem 0.75rem;
+    border-radius: 16px;
+  }
+
+  .reward-card-epic {
+    padding: 1rem 0.6rem;
+    border-radius: 14px;
+  }
+
+  .reward-amount {
+    font-size: 1.75rem;
+  }
+
+  .reward-label {
+    font-size: 0.7rem;
+  }
+
+  .duration-value {
+    font-size: 2rem;
   }
 }
 </style>

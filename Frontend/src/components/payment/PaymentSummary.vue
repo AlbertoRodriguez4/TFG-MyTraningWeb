@@ -38,7 +38,7 @@ const discountPercentage = computed(() =>
     <div class="plan-card">
       <!-- Badge de descuento -->
       <div v-if="discount > 0" class="discount-badge">
-        <span class="discount-icon">⚡</span>
+        <v-icon class="discount-icon" size="18">mdi-lightning-bolt</v-icon>
         <span class="discount-text">{{ $t('save_label') }} {{ discountPercentage }}%</span>
       </div>
 

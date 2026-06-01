@@ -89,7 +89,7 @@
                     <v-icon small color="purple">mdi-sigma</v-icon>
                     {{ t('common.total') }}
                   </span>
-                  <span class="stat-value purple--text">{{ month.total }}</span>
+                  <span class="stat-value stat-value-purple">{{ month.total }}</span>
                 </div>
               </div>
 
@@ -420,6 +420,10 @@ const closeDialog = (): void => {
 .stat-value {
   font-size: 1.2rem;
   font-weight: 700;
+}
+
+.stat-value-purple {
+  color: #c4b5fd;
 }
 
 .month-progress {

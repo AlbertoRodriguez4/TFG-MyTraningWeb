@@ -52,7 +52,7 @@
                     {{ $t(`category_${achievement.category}`) }}
                   </v-chip>
                   <v-chip x-small color="amber" v-if="achievement.rewardGold > 0">
-                    +{{ achievement.rewardGold }} 🪙
+                    +{{ achievement.rewardGold }} <v-icon size="14">mdi-coin</v-icon>
                   </v-chip>
                   <v-chip x-small color="purple" v-if="achievement.rewardXP > 0">
                     +{{ achievement.rewardXP }} XP
