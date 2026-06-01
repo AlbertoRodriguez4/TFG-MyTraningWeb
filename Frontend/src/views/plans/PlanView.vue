@@ -29,7 +29,7 @@ const features = [
     desc: 'immediate_activation_desc'
   },
   {
-    icon: 'mdi-chart-line',
+    icon: 'mdi-trending-up',
     title: 'advanced_tracking',
     desc: 'advanced_tracking_desc'
   },

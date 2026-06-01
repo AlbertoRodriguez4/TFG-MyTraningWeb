@@ -405,7 +405,7 @@ const goBack = () => {
               <li><v-icon>mdi-message</v-icon> {{ $t('lenguaje') }}</li>
               <li><v-icon>mdi-target</v-icon> {{ $t('enfocarte') }}</li>
               <li><v-icon>mdi-cancel</v-icon> {{ $t('no_spam') }}</li>
-              <li><v-icon>mdi-scale-balance</v-icon> {{ $t('aceptar_consecuencias') }}</li>
+              <li><v-icon>mdi-trending-neutral</v-icon> {{ $t('aceptar_consecuencias') }}</li>
             </ul>
             <p class="popup-warning">
               {{ $t('advertencia_conducta') }}

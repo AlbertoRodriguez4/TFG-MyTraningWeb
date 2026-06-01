@@ -505,7 +505,7 @@ function changePage(page: number) {
                 <div class="category-card">
                   <div class="category-card-header">
                     <div class="category-card-icon gradient-blue">
-                      <v-icon size="28" color="white">mdi-chart-line</v-icon>
+                      <v-icon size="28" color="white">mdi-trending-up</v-icon>
                     </div>
                     <span class="category-card-title">{{ $t('category_progress') }}</span>
                   </div>

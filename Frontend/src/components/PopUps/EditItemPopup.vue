@@ -305,7 +305,7 @@ const handleDelete = async () => {
         <div class="stats-grid">
           <div class="stat-card bonus-card">
             <div class="stat-header">
-              <v-icon class="stat-icon">mdi-chart-line</v-icon>
+              <v-icon class="stat-icon">mdi-trending-up</v-icon>
               <span class="stat-label">{{ $t('bonus_label') }}</span>
             </div>
             <div class="stat-input-wrapper">

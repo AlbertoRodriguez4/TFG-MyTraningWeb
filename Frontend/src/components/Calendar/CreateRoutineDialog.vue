@@ -290,7 +290,7 @@
                 <div class="reward-amount">+{{ calculatedRewards.strength }}</div>
                 <div class="reward-label">{{ t('calendar.rewardStrength') }}</div>
                 <div class="reward-info">
-                  <v-icon x-small color="white">mdi-chart-line</v-icon>
+                  <v-icon x-small color="white">mdi-trending-up</v-icon>
                   <span>{{ t('calendar.improvePower') }}</span>
                 </div>
               </div>
@@ -322,7 +322,7 @@
                 <div class="reward-amount">+1</div>
                 <div class="reward-label">{{ t('calendar.rewardStreak') }}</div>
                 <div class="reward-info">
-                  <v-icon x-small color="white">mdi-chart-line</v-icon>
+                  <v-icon x-small color="white">mdi-trending-up</v-icon>
                   <span>{{ t('calendar.keepMomentum') }}</span>
                 </div>
               </div>

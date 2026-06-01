@@ -5,7 +5,7 @@
         <!-- Header -->
         <div class="page-header mb-8">
           <div class="header-icon">
-            <v-icon size="48" color="white">mdi-chart-line</v-icon>
+            <v-icon size="48" color="white">mdi-trending-up</v-icon>
           </div>
           <div>
             <h1 class="text-h3 font-weight-bold text-white">{{ $t('body_metrics_title') }}</h1>

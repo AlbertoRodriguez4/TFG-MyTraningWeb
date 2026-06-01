@@ -253,7 +253,7 @@ async function createRoom() {
               <!-- Min Stats -->
               <div class="form-field">
                 <label class="field-label">
-                  <v-icon size="16" class="label-icon">mdi-chart-line</v-icon>
+                  <v-icon size="16" class="label-icon">mdi-trending-up</v-icon>
                   {{ $t('Stats Minimas') }}
                 </label>
                 <v-text-field v-model.number="minStats" type="number" min="0" required variant="outlined"
