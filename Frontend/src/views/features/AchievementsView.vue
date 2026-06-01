@@ -33,12 +33,20 @@
               <div class="card-glow" v-if="isUnlocked(achievement.id)"></div>
               <v-card-text class="pa-6 text-center">
                 <div class="achievement-icon mb-4">
-                  <v-icon
-                    size="64"
-                    :color="isUnlocked(achievement.id) ? getCategoryColor(achievement.category) : 'grey'"
-                  >
-                    {{ achievement.isSecret && !isUnlocked(achievement.id) ? 'mdi-lock' : achievement.iconUrl }}
-                  </v-icon>
+                  <template v-if="achievement.isSecret && !isUnlocked(achievement.id)">
+                    <v-icon size="64" color="grey">mdi-lock</v-icon>
+                  </template>
+                  <template v-else-if="isImageUrl(achievement.iconUrl)">
+                    <img :src="achievement.iconUrl" :alt="achievement.name" class="achievement-icon-img" />
+                  </template>
+                  <template v-else>
+                    <v-icon
+                      size="64"
+                      :color="getCategoryColor(achievement.category)"
+                    >
+                      {{ achievement.iconUrl || 'mdi-trophy' }}
+                    </v-icon>
+                  </template>
                 </div>
                 <h3 class="text-h6 font-weight-bold mb-2" :class="isUnlocked(achievement.id) ? 'text-white' : 'text-grey-medium'">
                   {{ achievement.isSecret && !isUnlocked(achievement.id) ? '???' : achievement.name }}
@@ -149,6 +157,10 @@ function formatDate(dateStr?: string) {
   if (!dateStr) return '';
   return new Date(dateStr).toLocaleDateString();
 }
+
+function isImageUrl(url: string) {
+  return url && (url.startsWith('http://') || url.startsWith('https://'));
+}
 </script>
 
 <style scoped>
@@ -205,6 +217,13 @@ function formatDate(dateStr?: string) {
   align-items: center;
   justify-content: center;
   margin: 0 auto;
+}
+
+.achievement-icon-img {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  border-radius: 12px;
 }
 .achievement-meta {
   display: flex;
