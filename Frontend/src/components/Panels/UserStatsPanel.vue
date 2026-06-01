@@ -22,7 +22,7 @@ const colorMap: Record<StatKey, string> = {
 const iconMap: Record<StatKey, string> = {
   strength: 'mdi-arm-flex',
   endurance: 'mdi-run',
-  gold: 'mdi-coin',
+  gold: 'mdi-cash-coin',
 }
 
 const labelMap: Record<StatKey, string> = {

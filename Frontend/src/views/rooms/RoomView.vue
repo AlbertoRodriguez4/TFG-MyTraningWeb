@@ -166,7 +166,7 @@ async function calculateStats() {
             <div class="dash-stat" style="--stat-color: #a78bfa; --stat-rgb: 167,139,250;">
               <div class="dash-stat-glow"></div>
               <div class="dash-stat-content">
-                <div class="dash-stat-icon"><v-icon>mdi-trending-up</v-icon></div>
+                <div class="dash-stat-icon"><v-icon>mdi-chart-line</v-icon></div>
                 <div class="dash-stat-info">
                   <span class="dash-stat-value">{{ averageLevel || 0 }}</span>
                   <span class="dash-stat-label">{{ $t('average_level') }}</span>

@@ -248,7 +248,7 @@ watch(internalVisible, (val) => {
             <v-col cols="6" sm="3">
               <div class="stat-card level-card">
                 <div class="stat-header">
-                  <v-icon class="stat-icon">mdi-trending-up</v-icon>
+                  <v-icon class="stat-icon">mdi-chart-line</v-icon>
                   <span class="stat-label">{{ $t('level_label') }}</span>
                 </div>
                 <input v-model.number="editedUser.level" type="number" min="0" class="stat-input" />
@@ -278,7 +278,7 @@ watch(internalVisible, (val) => {
             <v-col cols="6" sm="3">
               <div class="stat-card gold-card">
                 <div class="stat-header">
-                  <v-icon class="stat-icon">mdi-coin</v-icon>
+                  <v-icon class="stat-icon">mdi-cash-coin</v-icon>
                   <span class="stat-label">{{ $t('oro') }}</span>
                 </div>
                 <input v-model.number="editedUser.gold" type="number" min="0" class="stat-input" />
@@ -319,7 +319,7 @@ watch(internalVisible, (val) => {
               <span class="summary-item-value">{{ editedUser.role }}</span>
             </div>
             <div class="summary-item">
-              <v-icon size="small" class="summary-item-icon">mdi-trending-up</v-icon>
+              <v-icon size="small" class="summary-item-icon">mdi-chart-line</v-icon>
               <span class="summary-item-label">{{ $t('level_label') }}:</span>
               <span class="summary-item-value">{{ editedUser.level }}</span>
             </div>

@@ -452,7 +452,7 @@ const closeAchievementPopup = () => {
                 </div>
 
                 <div class="achievement-rewards mr-4">
-                  <v-chip v-if="achievement.rewardGold > 0" x-small color="amber" class="mr-1">+{{ achievement.rewardGold }} <v-icon size="14">mdi-coin</v-icon></v-chip>
+                  <v-chip v-if="achievement.rewardGold > 0" x-small color="amber" class="mr-1">+{{ achievement.rewardGold }} <v-icon size="14">mdi-cash-coin</v-icon></v-chip>
                   <v-chip v-if="achievement.rewardXP > 0" x-small color="purple">+{{ achievement.rewardXP }} XP</v-chip>
                 </div>
 

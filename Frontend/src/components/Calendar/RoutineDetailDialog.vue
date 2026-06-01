@@ -58,7 +58,7 @@
 
                     <v-col cols="12" sm="4">
                         <div class="info-card">
-                            <v-icon color="yellow darken-2" large>mdi-coin</v-icon>
+                            <v-icon color="yellow darken-2" large>mdi-cash-coin</v-icon>
                             <div class="info-label">{{ t('common.coins') }}</div>
                             <div class="info-value" style="color: #F9A825">+50</div>
                         </div>

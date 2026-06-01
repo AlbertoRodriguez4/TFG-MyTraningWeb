@@ -144,9 +144,9 @@ const activityOptions = computed(() => [ // Definir opciones de actividad
 ])
 
 const goalOptions = computed(() => [ // Definir opciones de objetivos con iconos
-  { value: 'loss', label: t('loss'), icon: 'mdi-trending-down' },
-  { value: 'maintenance', label: t('maintenance'), icon: 'mdi-scale-balance' },
-  { value: 'gain', label: t('gain_label'), icon: 'mdi-trending-up' },
+  { value: 'loss', label: t('loss'), icon: 'mdi-chart-line-variant' },
+  { value: 'maintenance', label: t('maintenance'), icon: 'mdi-balance-scale' },
+  { value: 'gain', label: t('gain_label'), icon: 'mdi-chart-line' },
 ])
 
 // Calcular las calorías en base a los parámetos ingresados y el peso/altura del BMI

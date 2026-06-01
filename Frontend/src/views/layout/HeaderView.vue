@@ -136,7 +136,7 @@ const currentLanguage = computed(() => {
             </div>
             <div class="stat-card">
               <span class="stat-label">{{ $t('header.gold') }}</span>
-              <span class="stat-value"><v-icon>mdi-coin</v-icon> {{ store.loggedUser?.gold || 0 }}</span>
+              <span class="stat-value"><v-icon>mdi-cash-coin</v-icon> {{ store.loggedUser?.gold || 0 }}</span>
             </div>
           </div>
 
@@ -205,7 +205,7 @@ const currentLanguage = computed(() => {
       <div v-if="isLogged && store.loggedUser" class="mobile-user-summary">
         <div>
           <p class="mobile-level">LV {{ store.loggedUser.level || 1 }}</p>
-          <p class="mobile-stats"><v-icon>mdi-lightning-bolt</v-icon> {{ store.loggedUser.strength || 0 }} • <v-icon>mdi-coin</v-icon> {{ store.loggedUser.gold || 0 }}</p>
+          <p class="mobile-stats"><v-icon>mdi-lightning-bolt</v-icon> {{ store.loggedUser.strength || 0 }} • <v-icon>mdi-cash-coin</v-icon> {{ store.loggedUser.gold || 0 }}</p>
         </div>
       </div>
 

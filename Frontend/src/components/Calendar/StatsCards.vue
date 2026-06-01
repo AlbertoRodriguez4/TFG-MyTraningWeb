@@ -44,7 +44,7 @@
           <div class="d-flex align-center">
             <!-- Icono de Monedas -->
             <div class="mini-icon-wrapper amber">
-              <v-icon color="white" size="24">mdi-coin</v-icon>
+              <v-icon color="white" size="24">mdi-cash-coin</v-icon>
             </div>
             
             <!-- Info de Monedas -->
