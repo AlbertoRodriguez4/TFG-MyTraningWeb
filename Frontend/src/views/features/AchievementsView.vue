@@ -57,7 +57,7 @@
 
                 <div class="achievement-meta">
                   <v-chip x-small :color="getCategoryColor(achievement.category)" class="mr-2">
-                    {{ $t(`category_${achievement.category}`) }}
+                    {{ $t(`category_${achievement.category.toLowerCase()}`) }}
                   </v-chip>
                   <v-chip x-small color="amber" v-if="achievement.rewardGold > 0">
                     +{{ achievement.rewardGold }} <v-icon size="14">mdi-gold</v-icon>
@@ -128,7 +128,7 @@ function getCategoryColor(category: string) {
     exploration: 'teal',
     general: 'purple'
   };
-  return colors[category] || 'grey';
+  return colors[category.toLowerCase()] || 'grey';
 }
 
 function getProgress(achievement: any) {
@@ -209,9 +209,9 @@ function isImageUrl(url: string) {
   background: linear-gradient(90deg, #667eea, #764ba2);
 }
 .achievement-icon {
-  width: 100px;
-  height: 100px;
-  border-radius: 24px;
+  width: 140px;
+  height: 140px;
+  border-radius: 28px;
   background: rgba(255, 255, 255, 0.05);
   display: flex;
   align-items: center;
@@ -220,10 +220,10 @@ function isImageUrl(url: string) {
 }
 
 .achievement-icon-img {
-  width: 72px;
-  height: 72px;
+  width: 110px;
+  height: 110px;
   object-fit: contain;
-  border-radius: 12px;
+  border-radius: 16px;
 }
 .achievement-meta {
   display: flex;
