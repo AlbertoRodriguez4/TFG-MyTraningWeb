@@ -76,48 +76,60 @@
 
       <!-- Day List: show days with routines + today -->
       <div class="mobile-day-list">
+        <div v-if="mobileVisibleDays.length === 0" class="mobile-empty-state">
+          <v-icon size="64" color="rgba(255,255,255,0.2)">mdi-calendar-blank</v-icon>
+          <p class="mobile-empty-text">No hay rutinas este mes</p>
+          <p class="mobile-empty-subtext">Toca un día en el calendario para crear una</p>
+        </div>
+        
         <div
           v-for="day in mobileVisibleDays"
           :key="'list-' + day"
-          class="mobile-day-row"
-          :class="{ 'row-completed': getRoutineForDay(day)?.iscompleted, 'row-pending': getRoutineForDay(day) && !getRoutineForDay(day)?.iscompleted, 'row-today': isToday(day) }"
+          class="mobile-day-card"
+          :class="{ 'card-completed': getRoutineForDay(day)?.iscompleted, 'card-pending': getRoutineForDay(day) && !getRoutineForDay(day)?.iscompleted, 'card-today': isToday(day) && !getRoutineForDay(day) }"
           @click="$emit('day-click', day)"
         >
-          <div class="mobile-day-number">
-            <span class="day-big-num">{{ day }}</span>
-            <span v-if="isToday(day)" class="mobile-today-badge">HOY</span>
+          <!-- Left: Day Number -->
+          <div class="mobile-card-day">
+            <span class="card-day-number">{{ day }}</span>
+            <span v-if="isToday(day)" class="card-today-label">HOY</span>
           </div>
 
-          <div class="mobile-day-content">
+          <!-- Center: Routine Info -->
+          <div class="mobile-card-content">
             <template v-if="getRoutineForDay(day)">
-              <div class="mobile-routine-info">
-                <v-icon :color="getRoutineForDay(day)?.iscompleted ? 'green' : 'orange'" size="20">
+              <div class="card-routine-header">
+                <v-icon :color="getRoutineForDay(day)?.iscompleted ? '#34d399' : '#fbbf24'" size="24">
                   {{ getRoutineForDay(day)?.iscompleted ? 'mdi-check-circle' : 'mdi-dumbbell' }}
                 </v-icon>
-                <div class="mobile-routine-text">
-                  <span class="mobile-routine-name">{{ getRoutineForDay(day)?.name }}</span>
-                  <span class="mobile-routine-xp">+{{ getRoutineForDay(day)?.reward }} XP</span>
-                </div>
+                <span class="card-routine-name">{{ getRoutineForDay(day)?.name }}</span>
+              </div>
+              <div class="card-routine-meta">
+                <span class="card-meta-item">
+                  <v-icon size="14" color="rgba(255,255,255,0.5)">mdi-star</v-icon>
+                  +{{ getRoutineForDay(day)?.reward }} XP
+                </span>
+                <span v-if="getRoutineForDay(day)?.iscompleted" class="card-status-completed">
+                  <v-icon size="14">mdi-check</v-icon>
+                  Completada
+                </span>
+                <span v-else class="card-status-pending">
+                  <v-icon size="14">mdi-clock-outline</v-icon>
+                  Pendiente
+                </span>
               </div>
             </template>
             <template v-else>
-              <div class="mobile-empty-day">
-                <v-icon size="18" color="grey">mdi-plus-circle-outline</v-icon>
-                <span>Sin rutina</span>
+              <div class="card-empty-state">
+                <v-icon size="20" color="rgba(255,255,255,0.3)">mdi-plus-circle-outline</v-icon>
+                <span>Día libre - Toca para añadir rutina</span>
               </div>
             </template>
           </div>
 
-          <div class="mobile-day-status">
-            <v-chip v-if="getRoutineForDay(day)?.iscompleted" x-small color="success" dark>
-              <v-icon x-small left>mdi-check</v-icon>
-              Hecho
-            </v-chip>
-            <v-chip v-else-if="getRoutineForDay(day)" x-small color="warning" dark>
-              <v-icon x-small left>mdi-clock-outline</v-icon>
-              Pendiente
-            </v-chip>
-            <v-icon v-else size="20" color="grey">mdi-chevron-right</v-icon>
+          <!-- Right: Action Indicator -->
+          <div class="mobile-card-action">
+            <v-icon size="20" color="rgba(255,255,255,0.3)">mdi-chevron-right</v-icon>
           </div>
         </div>
       </div>
@@ -147,7 +159,7 @@ const emit = defineEmits<{
 }>();
 
 const windowWidth = ref(typeof window !== 'undefined' ? window.innerWidth : 1024);
-const isMobile = computed(() => windowWidth.value < 600);
+const isMobile = computed(() => windowWidth.value < 960);
 
 function onResize() {
   windowWidth.value = window.innerWidth;
@@ -382,113 +394,169 @@ const handleCompleteRoutine = (day: number) => {
 .mobile-day-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-}
-
-.mobile-day-row {
-  display: flex;
-  align-items: center;
   gap: 12px;
-  padding: 14px 16px;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1.5px solid rgba(139, 92, 246, 0.2);
-  cursor: pointer;
-  transition: all 0.2s ease;
+  margin-top: 20px;
 }
 
-.mobile-day-row:active {
-  transform: scale(0.98);
-  background: rgba(139, 92, 246, 0.1);
-}
-
-.mobile-day-row.row-today {
-  border-color: rgba(167, 139, 250, 0.6);
-  background: rgba(167, 139, 250, 0.08);
-}
-
-.mobile-day-row.row-completed {
-  border-color: rgba(52, 211, 153, 0.4);
-  background: rgba(52, 211, 153, 0.06);
-}
-
-.mobile-day-row.row-pending {
-  border-color: rgba(251, 191, 36, 0.4);
-  background: rgba(251, 191, 36, 0.06);
-}
-
-.mobile-day-number {
+.mobile-empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-width: 44px;
+  gap: 0.75rem;
 }
 
-.day-big-num {
-  font-size: 1.4rem;
+.mobile-empty-text {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0;
+}
+
+.mobile-empty-subtext {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.4);
+  margin: 0;
+}
+
+.mobile-day-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1.5px solid rgba(139, 92, 246, 0.2);
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.mobile-day-card:active {
+  transform: scale(0.98);
+  background: rgba(139, 92, 246, 0.12);
+}
+
+.mobile-day-card.card-today {
+  border-color: rgba(167, 139, 250, 0.6);
+  background: linear-gradient(135deg, rgba(167, 139, 250, 0.08) 0%, rgba(139, 92, 246, 0.05) 100%);
+}
+
+.mobile-day-card.card-completed {
+  border-color: rgba(52, 211, 153, 0.4);
+  background: linear-gradient(135deg, rgba(52, 211, 153, 0.08) 0%, rgba(16, 185, 129, 0.05) 100%);
+}
+
+.mobile-day-card.card-pending {
+  border-color: rgba(251, 191, 36, 0.4);
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.08) 0%, rgba(245, 158, 11, 0.05) 100%);
+}
+
+.mobile-card-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  background: rgba(139, 92, 246, 0.15);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+.card-day-number {
+  font-size: 1.5rem;
   font-weight: 900;
   color: #ffffff;
   line-height: 1;
 }
 
-.mobile-today-badge {
-  font-size: 0.55rem;
+.card-today-label {
+  font-size: 0.6rem;
   font-weight: 800;
   color: #c4b5fd;
   letter-spacing: 1px;
   margin-top: 2px;
 }
 
-.mobile-day-content {
+.mobile-card-content {
   flex: 1;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
-.mobile-routine-info {
+.card-routine-header {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-.mobile-routine-text {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-
-.mobile-routine-name {
-  font-size: 0.9rem;
+.card-routine-name {
+  font-size: 1rem;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(255, 255, 255, 0.95);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.mobile-routine-xp {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.5);
-}
-
-.mobile-empty-day {
+.card-routine-meta {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.card-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.card-status-completed {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #34d399;
+}
+
+.card-status-pending {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #fbbf24;
+}
+
+.card-empty-state {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   color: rgba(255, 255, 255, 0.4);
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   font-weight: 600;
 }
 
-.mobile-day-status {
+.mobile-card-action {
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* ===== DESKTOP RESPONSIVE ===== */
 
 @media (max-width: 960px) {
   .calendar-container {
-    padding: 1rem;
+    padding: 1.25rem;
   }
 
   .week-day-circle {
@@ -519,6 +587,37 @@ const handleCompleteRoutine = (day: number) => {
     padding: 1rem;
     border-radius: 16px;
   }
+
+  .mobile-mini-grid {
+    gap: 3px;
+    margin-bottom: 16px;
+  }
+
+  .mobile-mini-cell {
+    border-radius: 8px;
+  }
+
+  .mini-day-num {
+    font-size: 0.75rem;
+  }
+
+  .mobile-day-card {
+    padding: 14px 16px;
+    gap: 12px;
+  }
+
+  .mobile-card-day {
+    min-width: 48px;
+    height: 48px;
+  }
+
+  .card-day-number {
+    font-size: 1.3rem;
+  }
+
+  .card-routine-name {
+    font-size: 0.9rem;
+  }
 }
 
 @media (max-width: 360px) {
@@ -528,24 +627,33 @@ const handleCompleteRoutine = (day: number) => {
   }
 
   .mobile-mini-cell {
-    border-radius: 8px;
+    border-radius: 6px;
   }
 
   .mini-day-num {
     font-size: 0.7rem;
   }
 
-  .mobile-day-row {
+  .mobile-day-card {
     padding: 12px;
     gap: 10px;
   }
 
-  .day-big-num {
+  .mobile-card-day {
+    min-width: 44px;
+    height: 44px;
+  }
+
+  .card-day-number {
     font-size: 1.2rem;
   }
 
-  .mobile-routine-name {
-    font-size: 0.8rem;
+  .card-routine-name {
+    font-size: 0.85rem;
+  }
+
+  .card-meta-item {
+    font-size: 0.75rem;
   }
 }
 </style>

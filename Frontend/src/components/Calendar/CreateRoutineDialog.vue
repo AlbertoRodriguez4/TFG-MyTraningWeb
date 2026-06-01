@@ -1622,13 +1622,17 @@ const handleCreate = async () => {
 
 @media (max-width: 600px) {
   .create-dialog {
-    max-height: 100vh;
+    max-height: 100vh !important;
+    height: 100vh !important;
     border-radius: 0 !important;
+    display: flex;
+    flex-direction: column;
   }
 
   .dialog-header {
-    padding: 1.25rem 1rem;
+    padding: 1.5rem 1rem 1rem;
     border-bottom-width: 1px;
+    flex-shrink: 0;
   }
 
   .header-content {
@@ -1659,6 +1663,7 @@ const handleCreate = async () => {
 
   .title-glow {
     font-size: 1.25rem !important;
+    margin-bottom: 0.5rem !important;
   }
 
   .date-chip {
@@ -1671,25 +1676,38 @@ const handleCreate = async () => {
     position: absolute;
     top: 12px;
     right: 12px;
+    width: 40px !important;
+    height: 40px !important;
+  }
+
+  .close-btn .v-icon {
+    font-size: 24px !important;
   }
 
   .dialog-body {
-    padding: 1rem !important;
-    max-height: calc(100vh - 260px);
+    padding: 1.25rem 1rem !important;
+    flex: 1;
+    overflow-y: auto;
+    max-height: calc(100vh - 200px);
   }
 
   .form-section {
-    margin-bottom: 1.5rem !important;
+    margin-bottom: 1.75rem !important;
   }
 
   .section-header {
     gap: 0.75rem;
+    margin-bottom: 1rem !important;
   }
 
   .section-icon-wrapper {
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
     border-radius: 10px;
+  }
+
+  .section-icon-wrapper .v-icon {
+    font-size: 20px !important;
   }
 
   .section-title {
@@ -1703,6 +1721,7 @@ const handleCreate = async () => {
   .chip-required {
     font-size: 0.65rem;
     height: 20px;
+    padding: 0 8px;
   }
 
   .input-wrapper {
@@ -1711,195 +1730,229 @@ const handleCreate = async () => {
 
   .custom-textfield-epic>>>.v-input__slot {
     border-radius: 12px !important;
-    padding: 0.4rem 0.75rem !important;
+    padding: 0.5rem 0.75rem !important;
+  }
+
+  .custom-textfield-epic>>>input,
+  .custom-textfield-epic>>>textarea {
+    font-size: 1rem !important;
   }
 
   .input-icon-wrapper {
     border-radius: 8px;
     padding: 4px;
-    margin-right: 4px;
+    margin-right: 6px;
+  }
+
+  .input-icon-wrapper .v-icon {
+    font-size: 20px !important;
   }
 
   .tips-box {
-    padding: 0.6rem 0.75rem;
+    padding: 0.75rem 1rem;
     border-radius: 10px;
-    font-size: 0.8rem;
+    font-size: 0.85rem;
+    margin-top: 0.75rem;
+  }
+
+  .tips-box .v-icon {
+    font-size: 18px !important;
   }
 
   /* Training Type - Mobile Compact */
   .training-type-selector {
     grid-template-columns: 1fr;
-    gap: 0.6rem;
+    gap: 0.75rem;
   }
 
   .training-type-card {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 1rem;
     text-align: left;
-    padding: 0.85rem 1rem;
+    padding: 1rem 1.25rem;
     border-radius: 14px;
     border-width: 1.5px;
   }
 
   .training-type-icon {
-    width: 44px;
-    height: 44px;
+    width: 48px;
+    height: 48px;
     border-radius: 12px;
     margin: 0;
     flex-shrink: 0;
   }
 
   .training-type-icon .v-icon {
-    font-size: 24px !important;
+    font-size: 26px !important;
   }
 
   .training-type-label {
-    font-size: 0.95rem;
-    margin-bottom: 0.15rem;
+    font-size: 1rem;
+    margin-bottom: 0.2rem;
   }
 
   .training-type-description {
-    font-size: 0.75rem;
+    font-size: 0.8rem;
+    line-height: 1.3;
   }
 
   .check-indicator {
-    width: 26px;
-    height: 26px;
-    top: 8px;
-    right: 8px;
+    width: 28px;
+    height: 28px;
+    top: 10px;
+    right: 10px;
+  }
+
+  .check-indicator .v-icon {
+    font-size: 18px !important;
   }
 
   /* Difficulty - Mobile Compact */
   .difficulty-selector {
     grid-template-columns: 1fr;
-    gap: 0.6rem;
+    gap: 0.75rem;
   }
 
   .difficulty-card {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 1rem;
     text-align: left;
-    padding: 0.85rem 1rem;
+    padding: 1rem 1.25rem;
     border-radius: 14px;
     border-width: 1.5px;
   }
 
   .difficulty-icon {
-    width: 44px;
-    height: 44px;
+    width: 48px;
+    height: 48px;
     border-radius: 12px;
     margin: 0;
     flex-shrink: 0;
   }
 
   .difficulty-icon .v-icon {
-    font-size: 24px !important;
+    font-size: 26px !important;
   }
 
   .difficulty-label {
-    font-size: 0.95rem;
-    margin-bottom: 0.15rem;
+    font-size: 1rem;
+    margin-bottom: 0.2rem;
   }
 
   .difficulty-xp {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
   }
 
   /* Duration - Mobile */
   .duration-display {
-    padding: 1.25rem 1rem;
+    padding: 1.5rem 1rem;
     border-radius: 16px;
   }
 
   .duration-value {
-    font-size: 2.5rem;
+    font-size: 3rem;
   }
 
   .duration-unit {
-    font-size: 0.9rem;
+    font-size: 1rem;
+  }
+
+  .custom-slider-epic {
+    margin-top: 1rem !important;
   }
 
   .slider-label {
-    font-size: 0.75rem;
+    font-size: 0.8rem;
   }
 
   .duration-bonus {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
+    margin-top: 0.75rem;
   }
 
   /* Rewards - Mobile */
   .rewards-epic-section {
-    padding: 1.25rem 1rem;
+    padding: 1.5rem 1rem;
     border-radius: 20px;
+    margin-top: 1.5rem;
   }
 
   .rewards-icon-mega {
-    width: 50px;
-    height: 50px;
+    width: 56px;
+    height: 56px;
     border-radius: 14px;
   }
 
   .rewards-icon-mega .v-icon {
-    font-size: 28px !important;
+    font-size: 32px !important;
+  }
+
+  .rewards-epic-header {
+    margin-bottom: 1.5rem;
   }
 
   .rewards-epic-header h3 {
-    font-size: 1.25rem !important;
+    font-size: 1.35rem !important;
+    margin-bottom: 0.25rem !important;
   }
 
   .rewards-subtitle {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
   }
 
   .rewards-grid {
-    gap: 0.5rem !important;
+    gap: 0.75rem !important;
   }
 
   .reward-card-epic {
-    padding: 1.25rem 0.75rem;
+    padding: 1.5rem 1rem;
     border-radius: 18px;
   }
 
   .reward-icon-container {
-    width: 52px;
-    height: 52px;
+    width: 60px;
+    height: 60px;
     border-radius: 14px;
     margin-bottom: 1rem;
   }
 
   .reward-icon-container .v-icon {
-    font-size: 32px !important;
+    font-size: 36px !important;
   }
 
   .reward-amount {
-    font-size: 2rem;
-    margin-bottom: 0.25rem;
+    font-size: 2.25rem;
+    margin-bottom: 0.35rem;
   }
 
   .reward-label {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     margin-bottom: 0.75rem;
   }
 
   .reward-info {
-    font-size: 0.75rem;
-    gap: 0.35rem;
+    font-size: 0.8rem;
+    gap: 0.4rem;
   }
 
   .achievements-preview {
     flex-direction: column;
-    gap: 0.6rem;
-    padding-top: 1.25rem;
-    margin-top: 1.25rem;
+    gap: 0.75rem;
+    padding-top: 1.5rem;
+    margin-top: 1.5rem;
   }
 
   .achievement-item {
-    padding: 0.6rem 1rem;
+    padding: 0.75rem 1rem;
     border-radius: 10px;
-    font-size: 0.8rem;
-    gap: 0.5rem;
+    font-size: 0.85rem;
+    gap: 0.6rem;
+  }
+
+  .achievement-item .v-icon {
+    font-size: 20px !important;
   }
 
   /* Footer - Mobile */
@@ -1907,6 +1960,8 @@ const handleCreate = async () => {
     padding: 1rem !important;
     flex-direction: column;
     gap: 0.75rem;
+    flex-shrink: 0;
+    border-top-width: 1px;
   }
 
   .footer-stats {
@@ -1917,8 +1972,12 @@ const handleCreate = async () => {
   }
 
   .stat-item {
-    font-size: 0.75rem;
-    gap: 0.35rem;
+    font-size: 0.8rem;
+    gap: 0.4rem;
+  }
+
+  .stat-item .v-icon {
+    font-size: 16px !important;
   }
 
   .dialog-footer .v-spacer {
@@ -1928,6 +1987,7 @@ const handleCreate = async () => {
   .dialog-footer .cancel-btn {
     width: 100%;
     order: 2;
+    min-height: 48px;
   }
 
   .create-btn-epic {
@@ -1935,7 +1995,12 @@ const handleCreate = async () => {
     margin-left: 0 !important;
     margin-top: 0 !important;
     order: 1;
-    min-height: 52px;
+    min-height: 56px;
+    border-radius: 14px !important;
+  }
+
+  .create-btn-epic .v-icon {
+    font-size: 24px !important;
   }
 
   .button-text {
@@ -1943,11 +2008,11 @@ const handleCreate = async () => {
   }
 
   .main-text {
-    font-size: 0.95rem;
+    font-size: 1rem;
   }
 
   .sub-text {
-    font-size: 0.7rem;
+    font-size: 0.75rem;
   }
 }
 
