@@ -4,6 +4,7 @@ import { useSubscriptionStore } from '@/stores/SubscriptionStore'
 import { computed, ref, onMounted } from 'vue'
 import { useRouter, RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import logoImg from '@/assets/imgs/Logo.png'
 
 const store = useUserStore()
 const subscriptionStore = useSubscriptionStore()
@@ -63,7 +64,7 @@ const currentLanguage = computed(() => {
 
         <!-- Logo -->
         <RouterLink to="/" class="logo-section">
-          <div class="logo-badge"><v-icon>mdi-arm-flex</v-icon></div>
+          <div class="logo-badge"><img :src="logoImg" alt="TheTrainingHub Logo" class="logo-image" /></div>
           <div class="brand">
             <span class="brand-name">TheTrainingHub</span>
             <span class="brand-tagline">Training Platform</span>
@@ -336,6 +337,13 @@ const currentLanguage = computed(() => {
   font-size: 1.4rem;
   box-shadow: 0 4px 18px rgba(255, 204, 0, 0.45);
   flex-shrink: 0;
+  overflow: hidden;
+}
+
+.logo-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .brand {
