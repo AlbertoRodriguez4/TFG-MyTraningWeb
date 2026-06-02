@@ -68,4 +68,9 @@ public class AchievementService
     {
         await _repository.CheckAndUnlockAsync(userId, requirementType, currentValue);
     }
+
+    public async System.Threading.Tasks.Task EvaluateUserAchievementsAsync(int userId)
+    {
+        await _repository.EvaluateUserAchievementsAsync(userId);
+    }
 }

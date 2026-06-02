@@ -69,10 +69,12 @@ const getRoomIcon = (level: number) => {
   return 'mdi-target'
 }
 
+import { computed } from 'vue'
+
 const diff = getRoomDifficulty(props.room.minlevel)
 const diffConfig = difficulties[diff]
 const isTrainer = props.creatorRole === 'userStaff'
-const canEdit = props.isAdmin || (props.isStaff && props.isJoined)
+const canEdit = computed(() => props.isAdmin || (props.isStaff && props.isJoined))
 </script>
 
 <template>
