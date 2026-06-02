@@ -135,14 +135,18 @@ function getProgress(achievement: any) {
   const user = userStore.loggedUser;
   if (!user) return 0;
   let current = 0; // Valor actual del progreso del usuario para el logro, se obtiene según el tipo de requisito del logro
-  // Según el tipo de requisito del logro, se obtiene el valor actual correspondiente del usuario para calcular el progreso
-  switch (achievement.requirementType) {
-    case 'tasks_completed': current = (user as any).tasksCompleted || 0; break;
-    case 'streak_days': current = user.consistencyStreak || 0; break;
-    case 'level_reached': current = user.level || 0; break;
-    case 'gold_earned': current = user.gold || 0; break;
-    case 'strength_reached': current = user.strength || 0; break;
-    case 'endurance_reached': current = user.endurance || 0; break;
+  switch (achievement.requirementType?.toUpperCase()) {
+    case 'TASKS_COMPLETED': current = (user as any).tasksCompleted || 0; break;
+    case 'STREAK_DAYS': current = user.consistencyStreak || 0; break;
+    case 'LEVEL_REACHED':
+    case 'PLAYER_LEVEL': current = user.level || 0; break;
+    case 'GOLD_EARNED':
+    case 'TOTAL_GOLD': current = user.gold || 0; break;
+    case 'STRENGTH_REACHED': current = user.strength || 0; break;
+    case 'ENDURANCE_REACHED': current = user.endurance || 0; break;
+    // For ITEM_COUNTS we would need the actual item purchases array, which isn't in userStore,
+    // so we cap it or just return 0 if we don't have it locally.
+    // As a fallback for these we can show 0 until the backend marks them as 100% unlocked.
     default: current = 0;
   }
   return Math.min((current / achievement.requirementValue) * 100, 100);

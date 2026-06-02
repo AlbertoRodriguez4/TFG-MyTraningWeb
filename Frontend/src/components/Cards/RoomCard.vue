@@ -72,7 +72,7 @@ const getRoomIcon = (level: number) => {
 const diff = getRoomDifficulty(props.room.minlevel)
 const diffConfig = difficulties[diff]
 const isTrainer = props.creatorRole === 'userStaff'
-const canEdit = props.isAdmin || props.isStaff
+const canEdit = props.isAdmin || (props.isStaff && props.isJoined)
 </script>
 
 <template>
