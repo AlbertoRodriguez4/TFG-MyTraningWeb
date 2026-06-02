@@ -29,6 +29,11 @@ public class AchievementController : ControllerBase
         var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
         if (userId == 0) return Unauthorized();
 
+        // Evaluate achievements before returning to ensure any newly met criteria are unlocked
+        var scope = HttpContext.RequestServices.CreateScope();
+        var achievementRepo = scope.ServiceProvider.GetRequiredService<AA2_CS.Repository.AchievementRepository>();
+        await achievementRepo.EvaluateUserAchievementsAsync(userId);
+
         var achievements = await _achievementService.GetUserAchievementsAsync(userId);
         return Ok(achievements);
     }
