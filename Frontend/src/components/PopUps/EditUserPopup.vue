@@ -118,7 +118,9 @@ const handleEdit = async () => {
 
     await store.editUser(updatedUser.id, updatedUser);
     showSnackbar(t('user_edited_success'), 'success')
-    emit('close');
+    setTimeout(() => {
+      emit('close');
+    }, 1500);
   } catch (error: any) {
     const message = error?.message || error?.data?.message;
     errorMessage.value = message || t('user_edit_error');

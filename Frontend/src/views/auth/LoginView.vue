@@ -85,7 +85,11 @@ async function handleLogin() {
     if (loginResult.success && store.loggedUser?.email?.toLowerCase() === emailTrimmed.toLowerCase()) {
       applyRememberMe(emailTrimmed)
 
-      showSnackbar(t('welcome_back_train'), 'success')
+      let welcomeMsg = t('welcome_back_train')
+      if (store.loggedUser?.role === 'userMaster') welcomeMsg = t('bienvenido_master')
+      else if (store.loggedUser?.role === 'userStaff') welcomeMsg = t('bienvenido_staff')
+
+      showSnackbar(welcomeMsg, 'success')
       setTimeout(() => { router.push('/homeLogged') }, 1500)
     } else if (loginResult.requiresEmailVerification) {
       showSnackbar(loginResult.message || t('must_verify_email'), 'warning')

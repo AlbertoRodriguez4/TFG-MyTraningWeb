@@ -45,6 +45,18 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Purchase>()
             .Property(p => p.id)
             .ValueGeneratedOnAdd();
+            
+        modelBuilder.Entity<Purchase>()
+            .HasOne(p => p.Item)
+            .WithMany()
+            .HasForeignKey(p => p.itemid)
+            .OnDelete(DeleteBehavior.Cascade);
+            
+        modelBuilder.Entity<Purchase>()
+            .HasOne(p => p.User)
+            .WithMany()
+            .HasForeignKey(p => p.userid)
+            .OnDelete(DeleteBehavior.Cascade);
 
         // Configuración de clave compuesta para la tabla intermedia UserRoom
         modelBuilder.Entity<UserRoom>()
