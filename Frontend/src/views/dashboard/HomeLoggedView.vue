@@ -4,12 +4,28 @@ import InventoryPanel from '../../components/Panels/InventoryPanel.vue'
 import AdminPanel from '../../components/Panels/AdminPanel.vue'
 import { useUserStore } from '@/stores/userStore'
 import type { User } from '@/components/Models/User'
-import { computed, onMounted, watch } from 'vue'
+import { computed, watch } from 'vue'
 import type { Item } from '@/components/Models/Item'
 import router from '@/router'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const store = useUserStore()
 const loggedUser = computed(() => store.loggedUser)
+
+const welcomeTitle = computed(() => {
+  if (!loggedUser.value) return ''
+  if (loggedUser.value.role === 'userMaster') return t('bienvenido_master')
+  if (loggedUser.value.role === 'userStaff') return t('bienvenido_staff')
+  return t('bienvenido')
+})
+
+const welcomeSubtitle = computed(() => {
+  if (!loggedUser.value) return ''
+  if (loggedUser.value.role === 'userMaster') return t('listo_master')
+  if (loggedUser.value.role === 'userStaff') return t('listo_staff')
+  return t('listo_entrenar')
+})
 
 const selectedItem = defineModel<Item | null>('selectedItem')
 const selectedUser = defineModel<User | null>('selectedUser')
@@ -41,9 +57,9 @@ function scrollToTop() {
           <div class="banner-content">
             <div class="welcome-icon"><v-icon>mdi-arm-flex</v-icon></div>
             <div class="welcome-text">
-              <h1 class="welcome-title">{{ $t('bienvenido') }}, <span class="username">{{
+              <h1 class="welcome-title">{{ welcomeTitle }}, <span class="username">{{
                 loggedUser.name }}</span></h1>
-              <p class="welcome-subtitle">{{ $t('listo_entrenar') }}</p>
+              <p class="welcome-subtitle">{{ welcomeSubtitle }}</p>
             </div>
           </div>
           <div class="banner-decoration">

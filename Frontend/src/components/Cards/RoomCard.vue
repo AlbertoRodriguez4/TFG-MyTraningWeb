@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const props = defineProps<{
-  room: { // Propiedades de la sala
+  room: {
     id: number
     name: string
     minlevel: number
@@ -13,6 +13,8 @@ const props = defineProps<{
   }
   memberCount: number
   isStaff: boolean
+  isAdmin?: boolean
+  isJoined?: boolean
   creatorRole?: string
 }>()
 
@@ -69,7 +71,8 @@ const getRoomIcon = (level: number) => {
 
 const diff = getRoomDifficulty(props.room.minlevel)
 const diffConfig = difficulties[diff]
-const isTrainer = props.creatorRole === 'userStaff'// Marcar como sala de entrenador si el creador tiene rol de staff
+const isTrainer = props.creatorRole === 'userStaff'
+const canEdit = props.isAdmin || (props.isStaff && props.isJoined)
 </script>
 
 <template>
@@ -167,7 +170,7 @@ const isTrainer = props.creatorRole === 'userStaff'// Marcar como sala de entren
 
       <!-- Acciones -->
       <div class="card-actions">
-        <button v-if="isStaff" class="action-btn edit-btn" @click="emit('edit', room)">
+        <button v-if="canEdit" class="action-btn edit-btn" @click="emit('edit', room)">
           <span class="btn-icon"><v-icon>mdi-pencil</v-icon></span>
           <span>{{ $t('edit_label') }}</span>
         </button>

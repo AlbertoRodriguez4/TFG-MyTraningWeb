@@ -356,6 +356,7 @@ function goToRoom(roomId: number) {
     <TransitionGroup v-else name="room-grid" tag="div" class="rooms-grid" appear>
       <RoomCard v-for="room in paginatedRooms" :key="room.id" :room="{ ...room, localization: room.localization ?? '' }"
         :member-count="getMemberCount(room.id)" :is-staff="loggedUser?.role === 'userStaff'"
+        :is-admin="loggedUser?.role === 'userMaster'" :is-joined="isJoined(room.id)"
         :creator-role="room.creatorRole" @view="goToRoom" @edit="openEditPopup" />
     </TransitionGroup>
 

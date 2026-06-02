@@ -68,9 +68,9 @@ export const useRoomStore = defineStore('room', () => {
     }
 
     async function createRoom(
-        newRoom: { name: string; minlevel: number; minstats: number; minconsistency: number, description: string, date: string }, // Se define el tipo del nuevo room sin los campos opcionales
+        newRoom: { name: string; minlevel: number; minstats: number; minconsistency: number, description: string, date: string, localization?: string },
         userid: number,
-        creatorRole?: string // Se añade el campo opcional creatorRole para asignarlo al room creado, si se proporciona
+        creatorRole?: string
     ) {
         try {
             const response = await fetch(`${API_BASE_URL}/api/Room`, {
@@ -92,7 +92,7 @@ export const useRoomStore = defineStore('room', () => {
             const createdRoom: Room = {
                 id: data.roomId ?? data.id ?? data,
                 ...newRoom,
-                localization: '',
+                localization: newRoom.localization ?? '',
                 creatorRole: creatorRole
             };
 

@@ -71,29 +71,24 @@ function resetForm() {
 }
 // Validar los campos del formulario antes de enviar la solicitud de creación de sala
 function validateInputs(): boolean {
-  // Validar que el nombre de la sala no esté vacío
   if (!roomName.value.trim()) {
-    error.value = t('room_name_required')
+    showSnackbar(t('room_name_required'), 'error')
     return false
   }
-  // Validar que la fecha del evento esté seleccionada
   if (!roomDate.value) {
-    error.value = t('event_date_required')
+    showSnackbar(t('event_date_required'), 'error')
     return false
   }
-  // Validar que la ubicación no esté vacía
   if (!roomLocalization.value) {
-    error.value = t('location_required')
+    showSnackbar(t('location_required'), 'error')
     return false
   }
-  // Validar que el nivel mínimo sea un número válido y mayor o igual a 1
   if (minLevel.value === null || isNaN(minLevel.value) || minLevel.value < 1) {
-    error.value = t('min_level_error')
+    showSnackbar(t('min_level_error'), 'error')
     return false
   }
-  // Validar que las stats mínimas sean un número válido y mayor o igual a 0
   if (minStats.value === null || isNaN(minStats.value) || minStats.value < 0) {
-    error.value = t('min_stats_error')
+    showSnackbar(t('min_stats_error'), 'error')
     return false
   }
   return true
@@ -105,7 +100,7 @@ async function createRoom() {
   if (!validateInputs()) return
   // Verificar que el usuario esté logueado antes de intentar crear la sala
   if (!loggedUser.value?.id) {
-    error.value = t('user_not_logged_in')
+    showSnackbar(t('user_not_logged_in'), 'error')
     logger.error(error.value)
     return
   }
@@ -125,7 +120,7 @@ async function createRoom() {
 
   try { 
   // Se crea la sala y se da mensaje de exito, si hay error se muestra mensaje de error y se loguea el error                      
-    await roomStore.createRoom(newRoom, loggedUser.value.id)
+    await roomStore.createRoom(newRoom, loggedUser.value.id, loggedUser.value?.role)
     showSnackbar(t('room_created_success'), 'success')
     closePopup()
   } catch (e) {
