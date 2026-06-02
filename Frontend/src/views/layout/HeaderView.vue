@@ -73,20 +73,20 @@ const currentLanguage = computed(() => {
 
         <!-- Desktop Navigation -->
         <nav class="nav-desktop">
-          <RouterLink to="/" class="nav-btn"><v-icon>mdi-home</v-icon> {{ $t('home') }}</RouterLink>
-          <RouterLink to="/room" class="nav-btn" :class="{ disabled: !isLogged }"><v-icon>mdi-door</v-icon> {{ $t('rooms') }}</RouterLink>
-          <RouterLink to="/plan" class="nav-btn" :class="{ disabled: !isLogged }"><v-icon>mdi-clipboard-text</v-icon> {{ $t('plans') }}</RouterLink>
-          <RouterLink to="/rutina" class="nav-btn" :class="{ disabled: !isLogged }"><v-icon>mdi-calendar</v-icon> {{ $t('routines') }}</RouterLink>
-          <RouterLink to="/purchase" class="nav-btn" :class="{ disabled: !isLogged }"><v-icon>mdi-cart</v-icon> {{ $t('shop_header') }}</RouterLink>
-          <RouterLink to="/achievements" class="nav-btn" :class="{ disabled: !isLogged }"><v-icon>mdi-trophy</v-icon> {{ $t('achievements_title') }}</RouterLink>
-          <RouterLink to="/exercises" class="nav-btn" :class="{ disabled: !isLogged }"><v-icon>mdi-arm-flex</v-icon> {{ $t('exercises_title') }}</RouterLink>
-          <RouterLink to="/body-metrics" class="nav-btn" :class="{ disabled: !isLogged }"><v-icon>mdi-chart-bar</v-icon> {{ $t('body_metrics_title') }}</RouterLink>
+          <RouterLink to="/" class="nav-btn" :title="$t('home')"><v-icon>mdi-home</v-icon> {{ $t('home') }}</RouterLink>
+          <RouterLink to="/room" class="nav-btn" :class="{ disabled: !isLogged }" :title="$t('rooms')"><v-icon>mdi-door</v-icon> {{ $t('rooms') }}</RouterLink>
+          <RouterLink to="/plan" class="nav-btn" :class="{ disabled: !isLogged }" :title="$t('plans')"><v-icon>mdi-clipboard-text</v-icon> {{ $t('plans') }}</RouterLink>
+          <RouterLink to="/rutina" class="nav-btn" :class="{ disabled: !isLogged }" :title="$t('routines')"><v-icon>mdi-calendar</v-icon> {{ $t('routines') }}</RouterLink>
+          <RouterLink to="/purchase" class="nav-btn" :class="{ disabled: !isLogged }" :title="$t('shop_header')"><v-icon>mdi-cart</v-icon> {{ $t('shop_header') }}</RouterLink>
+          <RouterLink to="/achievements" class="nav-btn" :class="{ disabled: !isLogged }" :title="$t('achievements_title')"><v-icon>mdi-trophy</v-icon> {{ $t('achievements_title') }}</RouterLink>
+          <RouterLink to="/exercises" class="nav-btn" :class="{ disabled: !isLogged }" :title="$t('exercises_title')"><v-icon>mdi-arm-flex</v-icon> {{ $t('exercises_title') }}</RouterLink>
+          <RouterLink to="/body-metrics" class="nav-btn" :class="{ disabled: !isLogged }" :title="$t('body_metrics_title')"><v-icon>mdi-chart-bar</v-icon> {{ $t('body_metrics_title') }}</RouterLink>
 
           <!-- Premium Features -->
-          <RouterLink v-if="isLogged && hasActiveSubscription" to="/CoachAi" class="nav-btn premium-btn">
+          <RouterLink v-if="isLogged && hasActiveSubscription" to="/CoachAi" class="nav-btn premium-btn" :title="$t('coach_ai')">
             <v-icon>mdi-robot-outline</v-icon> {{ $t('coach_ai') }}
           </RouterLink>
-          <RouterLink v-if="isLogged && hasActiveSubscription" to="/calculator" class="nav-btn premium-btn">
+          <RouterLink v-if="isLogged && hasActiveSubscription" to="/calculator" class="nav-btn premium-btn" :title="$t('calculator')">
             <v-icon>mdi-calculator</v-icon> {{ $t('calculator') }}
           </RouterLink>
         </nav>
@@ -303,11 +303,11 @@ const currentLanguage = computed(() => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.75rem 1.5rem;
+  padding: 0.4rem 1.5rem;
   max-width: 1920px;
   margin: 0 auto;
   gap: 1rem;
-  min-height: 68px;
+  min-height: 48px;
 }
 
 /* ═══════════════════════════════════════
@@ -327,14 +327,14 @@ const currentLanguage = computed(() => {
 }
 
 .logo-badge {
-  width: 42px;
-  height: 42px;
-  border-radius: 11px;
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
   background: linear-gradient(135deg, #ffcc00 0%, #ff9900 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.4rem;
+  font-size: 1.1rem;
   box-shadow: 0 4px 18px rgba(255, 204, 0, 0.45);
   flex-shrink: 0;
   overflow: hidden;
@@ -385,18 +385,19 @@ const currentLanguage = computed(() => {
 .nav-btn {
   display: flex;
   align-items: center;
-  gap: 0.35rem;
-  padding: 0.5rem 0.75rem;
+  gap: 0.25rem;
+  padding: 0.35rem 0.5rem;
   color: rgba(255, 255, 255, 0.78);
   text-decoration: none;
   font-weight: 700;
-  font-size: 0.85rem;
-  border-radius: 9px;
+  font-size: 0.75rem;
+  border-radius: 7px;
   transition: all 0.25s;
   white-space: nowrap;
   border: 1px solid transparent;
   cursor: pointer;
-  flex-shrink: 0;
+  flex-shrink: 1;
+  min-width: 0;
 }
 
 .nav-btn:hover {
@@ -465,11 +466,11 @@ const currentLanguage = computed(() => {
 .user-dropdown-trigger {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.4rem;
   background: rgba(255, 204, 0, 0.09);
   border: 1px solid rgba(255, 204, 0, 0.28);
-  border-radius: 10px;
-  padding: 0.35rem 0.9rem;
+  border-radius: 9px;
+  padding: 0.3rem 0.75rem;
   cursor: pointer;
   transition: all 0.2s;
   white-space: nowrap;
@@ -481,8 +482,8 @@ const currentLanguage = computed(() => {
 }
 
 .user-avatar {
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   background: linear-gradient(135deg, #ffcc00, #ff9900);
   display: flex;
@@ -490,7 +491,7 @@ const currentLanguage = computed(() => {
   justify-content: center;
   font-weight: 900;
   color: #000;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   flex-shrink: 0;
 }
 
@@ -548,11 +549,11 @@ const currentLanguage = computed(() => {
 ═══════════════════════════════════════ */
 .user-dropdown {
   position: fixed;
-  top: 68px;
+  top: 48px;
   right: 20px;
   z-index: 2000;
   width: 300px;
-  max-height: calc(100vh - 88px);
+  max-height: calc(100vh - 68px);
   overflow-y: auto;
 }
 
@@ -798,7 +799,7 @@ const currentLanguage = computed(() => {
 .nav-mobile {
   display: none;
   position: fixed;
-  top: 68px;
+  top: 48px;
   left: 0;
   right: 0;
   bottom: 0;
@@ -957,7 +958,7 @@ const currentLanguage = computed(() => {
 ═══════════════════════════════════════ */
 .overlay {
   position: fixed;
-  top: 68px;
+  top: 48px;
   left: 0;
   right: 0;
   bottom: 0;
@@ -982,15 +983,22 @@ const currentLanguage = computed(() => {
    RESPONSIVE
 ═══════════════════════════════════════ */
 
-/* Tablet: 1200px and below */
-@media (max-width: 1200px) {
+/* Desktop compact: 1500px and below */
+@media (max-width: 1500px) {
   .brand-tagline {
     display: none;
   }
 
   .nav-btn {
-    padding: 0.45rem 0.6rem;
-    font-size: 0.8rem;
+    padding: 0.35rem;
+    gap: 0;
+    max-width: 32px;
+    overflow: hidden;
+    font-size: 0;
+  }
+
+  .nav-btn :deep(.v-icon) {
+    font-size: 1.1rem;
   }
 
   .strength-badge {
@@ -998,7 +1006,19 @@ const currentLanguage = computed(() => {
   }
 
   .user-dropdown-trigger {
-    padding: 0.35rem 0.6rem;
+    padding: 0.3rem 0.5rem;
+  }
+}
+
+/* Tablet: 1200px and below */
+@media (max-width: 1200px) {
+  .nav-btn {
+    padding: 0.3rem;
+    max-width: 28px;
+  }
+
+  .nav-btn :deep(.v-icon) {
+    font-size: 1rem;
   }
 }
 
@@ -1009,8 +1029,12 @@ const currentLanguage = computed(() => {
   }
 
   .nav-btn {
-    padding: 0.4rem 0.5rem;
-    font-size: 0.75rem;
+    padding: 0.3rem;
+    max-width: 30px;
+  }
+
+  .nav-btn :deep(.v-icon) {
+    font-size: 1rem;
   }
 
   .brand-name {
@@ -1018,9 +1042,9 @@ const currentLanguage = computed(() => {
   }
 
   .logo-badge {
-    width: 36px;
-    height: 36px;
-    font-size: 1.1rem;
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
   }
 
   .user-dropdown {
@@ -1044,13 +1068,22 @@ const currentLanguage = computed(() => {
   }
 
   .header-container {
-    padding: 0.6rem 1rem;
-    min-height: 62px;
+    padding: 0.5rem 1rem;
+    min-height: 52px;
   }
 
   .user-dropdown {
     right: 15px;
     width: 280px;
+    top: 52px;
+  }
+
+  .nav-mobile {
+    top: 52px;
+  }
+
+  .overlay {
+    top: 52px;
   }
 
   .strength-badge {

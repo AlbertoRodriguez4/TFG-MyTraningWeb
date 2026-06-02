@@ -82,7 +82,7 @@ async function handleLogin() {
   try {
     const loginResult = await store.loginUser(emailTrimmed, passwordTrimmed)
 
-    if (loginResult.success && store.loggedUser?.email === emailTrimmed) {
+    if (loginResult.success && store.loggedUser?.email?.toLowerCase() === emailTrimmed.toLowerCase()) {
       applyRememberMe(emailTrimmed)
 
       showSnackbar(t('welcome_back_train'), 'success')
