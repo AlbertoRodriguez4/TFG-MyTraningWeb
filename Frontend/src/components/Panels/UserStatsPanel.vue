@@ -114,7 +114,7 @@ const formatNumber = (value: number): string => {
         </div>
       </div>
 
-      <!-- Card de Estadísticas -->
+      <!-- Card de todas las estadísticas del usuario  -->
       <div class="stats-card">
         <h2 class="stats-title">
           <span class="title-icon"><v-icon>mdi-chart-bar</v-icon></span>
