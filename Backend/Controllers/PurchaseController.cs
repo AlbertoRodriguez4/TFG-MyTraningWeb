@@ -100,6 +100,9 @@ namespace AA2_CS.Controllers
                             var notificationService = scope.ServiceProvider.GetRequiredService<NotificationService>();
                             await notificationService.SendPurchaseReceiptIfNeeded(
                                 capturedUserId, capturedItemName, capturedItemType, capturedItemBonus, capturedItemPrice);
+
+                            var achievementRepo = scope.ServiceProvider.GetRequiredService<AA2_CS.Repository.AchievementRepository>();
+                            await achievementRepo.EvaluateUserAchievementsAsync(capturedUserId);
                         }
                         catch (Exception ex)
                         {

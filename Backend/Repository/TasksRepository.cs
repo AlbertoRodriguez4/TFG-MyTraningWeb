@@ -138,17 +138,7 @@ namespace AA2_CS.Repository
 
         private async System.Threading.Tasks.Task CheckAchievementsAsync(int userId)
         {
-            var user = _userRepository.FindById(userId);
-            if (user == null) return;
-
-            var completedTasksCount = FindByUserId(userId).Count(t => t.iscompleted);
-            await _achievementRepository.CheckAndUnlockAsync(userId, "tasks_completed", completedTasksCount);
-
-            await _achievementRepository.CheckAndUnlockAsync(userId, "streak_days", user.consistencystreak);
-            await _achievementRepository.CheckAndUnlockAsync(userId, "level_reached", user.level);
-            await _achievementRepository.CheckAndUnlockAsync(userId, "gold_earned", user.gold);
-            await _achievementRepository.CheckAndUnlockAsync(userId, "strength_reached", user.strength);
-            await _achievementRepository.CheckAndUnlockAsync(userId, "endurance_reached", user.endurance);
+            await _achievementRepository.EvaluateUserAchievementsAsync(userId);
         }
     }
 }

@@ -138,12 +138,64 @@ public class AchievementRepository
         return userAchievement;
     }
 
-    public async System.Threading.Tasks.Task CheckAndUnlockAsync(int userId, string requirementType, int currentValue)
+    public async System.Threading.Tasks.Task EvaluateUserAchievementsAsync(int userId)
     {
+        var user = _userRepository.FindById(userId);
+        if (user == null) return;
+
         var achievements = await GetAllAsync();
-        foreach (var achievement in achievements.Where(a => a.RequirementType == requirementType))
+        var userPurchases = await _context.Purchases
+            .Include(p => p.Item)
+            .Where(p => p.userid == userId)
+            .ToListAsync();
+        
+        var strengthItemsCount = userPurchases.Count(p => p.Item != null && p.Item.type.Equals("Strength", StringComparison.OrdinalIgnoreCase));
+        var enduranceItemsCount = userPurchases.Count(p => p.Item != null && p.Item.type.Equals("Endurance", StringComparison.OrdinalIgnoreCase));
+        var totalItemsCount = userPurchases.Count;
+        var completedTasksCount = await _context.Tasks.CountAsync(t => t.userId == userId && t.iscompleted);
+
+        foreach (var achievement in achievements)
         {
-            if (currentValue >= achievement.RequirementValue && !await HasAchievementAsync(userId, achievement.Id))
+            if (await HasAchievementAsync(userId, achievement.Id)) continue;
+
+            bool criteriaMet = false;
+            switch (achievement.RequirementType?.ToUpper())
+            {
+                case "PLAYER_LEVEL":
+                case "LEVEL_REACHED":
+                    criteriaMet = user.level >= achievement.RequirementValue;
+                    break;
+                case "TOTAL_GOLD":
+                case "GOLD_EARNED":
+                    criteriaMet = user.gold >= achievement.RequirementValue;
+                    break;
+                case "ITEMS_COUNT":
+                    criteriaMet = totalItemsCount >= achievement.RequirementValue;
+                    break;
+                case "STRENGTH_COUNT":
+                    criteriaMet = strengthItemsCount >= achievement.RequirementValue;
+                    break;
+                case "ENDURANCE_COUNT":
+                    criteriaMet = enduranceItemsCount >= achievement.RequirementValue;
+                    break;
+                case "SPECIFIC_ITEM":
+                    criteriaMet = userPurchases.Any(p => p.itemid == achievement.RequirementValue);
+                    break;
+                case "STRENGTH_REACHED":
+                    criteriaMet = user.strength >= achievement.RequirementValue;
+                    break;
+                case "ENDURANCE_REACHED":
+                    criteriaMet = user.endurance >= achievement.RequirementValue;
+                    break;
+                case "TASKS_COMPLETED":
+                    criteriaMet = completedTasksCount >= achievement.RequirementValue;
+                    break;
+                case "STREAK_DAYS":
+                    criteriaMet = user.consistencystreak >= achievement.RequirementValue;
+                    break;
+            }
+
+            if (criteriaMet)
             {
                 await UnlockWithRewardsAsync(userId, achievement.Id);
             }

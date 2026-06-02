@@ -15,15 +15,17 @@ const loggedUser = computed(() => store.loggedUser)
 
 const welcomeTitle = computed(() => {
   if (!loggedUser.value) return ''
-  if (loggedUser.value.role === 'userMaster') return t('bienvenido_master')
-  if (loggedUser.value.role === 'userStaff') return t('bienvenido_staff')
+  const role = loggedUser.value.role?.trim()
+  if (role === 'userMaster') return t('bienvenido_master')
+  if (role === 'userStaff') return t('bienvenido_staff')
   return t('bienvenido')
 })
 
 const welcomeSubtitle = computed(() => {
   if (!loggedUser.value) return ''
-  if (loggedUser.value.role === 'userMaster') return t('listo_master')
-  if (loggedUser.value.role === 'userStaff') return t('listo_staff')
+  const role = loggedUser.value.role?.trim()
+  if (role === 'userMaster') return t('listo_master')
+  if (role === 'userStaff') return t('listo_staff')
   return t('listo_entrenar')
 })
 

@@ -120,7 +120,7 @@ const handleEdit = async () => {
     showSnackbar(t('user_edited_success'), 'success')
     emit('close');
   } catch (error: any) {
-    const message = error?.data?.message;
+    const message = error?.message || error?.data?.message;
     errorMessage.value = message || t('user_edit_error');
     logger.error("Error al editar el usuario:", error);
   }

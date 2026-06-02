@@ -314,8 +314,10 @@ export const useUserStore = defineStore('user', () => {
       loggedUser.value = {
         ...loggedUser.value,
         ...updatedUser,
-        equippedStrengthItemId: updatedUser.equippedStrengthId,
-        equippedEnduranceItemId: updatedUser.equippedEnduranceId,
+        role: updatedUser.role?.trim(),
+        consistencyStreak: updatedUser.consistencystreak ?? updatedUser.consistencyStreak,
+        equippedStrengthItemId: updatedUser.equippedStrengthId ?? updatedUser.equippedStrengthItemId,
+        equippedEnduranceItemId: updatedUser.equippedEnduranceId ?? updatedUser.equippedEnduranceItemId,
         avatarUrl: updatedUser.avatarUrl
       };
 
@@ -408,13 +410,16 @@ export const useUserStore = defineStore('user', () => {
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+        const errorText = await response.text();
+        throw new Error(`HTTP error! Status: ${response.status} - ${errorText}`);
       }
+
+      const updatedUserResponse = await response.json();
 
       if (id === loggedUser.value?.id) {
         loggedUser.value = {
           ...loggedUser.value,
-          ...updatedUserData
+          ...updatedUserResponse
         };
         await refreshLoggedUser();
       }
@@ -422,7 +427,7 @@ export const useUserStore = defineStore('user', () => {
       if (userIndex !== -1) {
         user.value[userIndex] = {
           ...user.value[userIndex],
-          ...updatedUserData
+          ...updatedUserResponse
         };
       }
 
