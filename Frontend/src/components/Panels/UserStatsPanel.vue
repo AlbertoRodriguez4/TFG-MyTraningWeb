@@ -22,14 +22,14 @@ const colorMap: Record<StatKey, string> = {
 const iconMap: Record<StatKey, string> = {
   strength: 'mdi-arm-flex',
   endurance: 'mdi-run',
-  gold: 'mdi-gold',
+  gold: 'mdi-coin',
 }
 
-const labelMap: Record<StatKey, string> = {
+const labelMap = computed<Record<StatKey, string>>(() => ({
   strength: t('strength_label'),
   endurance: t('endurance_label'),
   gold: t('gold_label'),
-}
+}))
 // Valores máximos alacanzables para cada estadística, usados para calcular el progreso
 const maxValues: Record<StatKey, number> = {
   strength: 100000,

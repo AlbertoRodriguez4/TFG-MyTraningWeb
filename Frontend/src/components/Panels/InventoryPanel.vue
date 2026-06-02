@@ -9,13 +9,13 @@ const store = useUserStore()
 const loggedUser = computed(() => store.loggedUser)
 // Cargar items al montar el componente
 onMounted(() => {
-  if (loggedUser.value?.email && loggedUser.value?.passwordhash) {
+  if (loggedUser.value?.id) {
     store.getItems()
   }
 })
 
 watch(loggedUser, (newUser) => {
-  if (newUser?.email && newUser?.passwordhash) {
+  if (newUser?.id) {
     store.getItems()
   }
 })
