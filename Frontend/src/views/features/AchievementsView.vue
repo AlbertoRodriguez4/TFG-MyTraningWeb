@@ -14,7 +14,7 @@
           <v-spacer />
           <v-chip color="primary" size="large" class="stats-chip">
             <v-icon start>mdi-trophy</v-icon>
-            {{ store.totalCount }} / {{ store.achievements.length }}
+            {{ userAchievementIds.length }} / {{ store.achievements.length }}
           </v-chip>
         </div>
 
@@ -156,6 +156,7 @@ function getProgress(achievement: any) {
 
 function getProgressText(achievement: any) {
   const progress = getProgress(achievement);
+  if (progress >= 100) return 'Completado';
   return `${Math.round(progress)}%`;
 }
 
