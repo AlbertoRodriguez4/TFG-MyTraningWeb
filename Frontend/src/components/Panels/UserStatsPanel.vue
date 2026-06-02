@@ -123,7 +123,7 @@ const formatNumber = (value: number): string => {
         <div class="stats-grid">
           <div v-for="stat in statList" :key="stat" class="stat-item">
             <div class="stat-header">
-              <span class="stat-icon"><v-icon :icon="iconMap[stat]"></v-icon></span>
+              <span class="stat-icon"><v-icon :class="['mdi', iconMap[stat]]"></v-icon></span>
               <span class="stat-label">{{ labelMap[stat] }}</span>
             </div>
             <div class="progress-container">
