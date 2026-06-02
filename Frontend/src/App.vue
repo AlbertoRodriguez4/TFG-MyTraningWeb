@@ -9,7 +9,7 @@ import { useSubscriptionStore } from '@/stores/SubscriptionStore';
 // Inicializar el store para aplicar el tema guardado
 useThemeStore();
 
-// Inicializar el store de suscripciones al cargar la app, necesario para manejar las notificaciones push y el header entre otras
+// Inicializar el store de suscripciones al cargar la app, necesario para manejar las notificaciones push y el header entre otras cosas
 const subscriptionStore = useSubscriptionStore();
 onMounted(async () => {
   await subscriptionStore.initializeSubscription();
