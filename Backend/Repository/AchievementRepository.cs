@@ -149,9 +149,9 @@ public class AchievementRepository
             .Where(p => p.userid == userId)
             .ToListAsync();
         
-        var strengthItemsCount = userPurchases.Count(p => p.Item != null && p.Item.type.Equals("Strength", StringComparison.OrdinalIgnoreCase));
-        var enduranceItemsCount = userPurchases.Count(p => p.Item != null && p.Item.type.Equals("Endurance", StringComparison.OrdinalIgnoreCase));
-        var totalItemsCount = userPurchases.Count;
+        var strengthItemsCount = userPurchases.Where(p => p.Item != null && p.Item.type.Equals("Strength", StringComparison.OrdinalIgnoreCase)).Select(p => p.itemid).Distinct().Count();
+        var enduranceItemsCount = userPurchases.Where(p => p.Item != null && p.Item.type.Equals("Endurance", StringComparison.OrdinalIgnoreCase)).Select(p => p.itemid).Distinct().Count();
+        var totalItemsCount = userPurchases.Select(p => p.itemid).Distinct().Count();
         var completedTasksCount = await _context.Tasks.CountAsync(t => t.userId == userId && t.iscompleted);
 
         foreach (var achievement in achievements)

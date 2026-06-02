@@ -104,6 +104,7 @@ const userStore = useUserStore();
 onMounted(async () => {
   await store.fetchAllAchievements();
   await store.fetchMyAchievements();
+  await userStore.getItems();
 });
 
 const userAchievementIds = computed(() =>
@@ -144,9 +145,10 @@ function getProgress(achievement: any) {
     case 'TOTAL_GOLD': current = user.gold || 0; break;
     case 'STRENGTH_REACHED': current = user.strength || 0; break;
     case 'ENDURANCE_REACHED': current = user.endurance || 0; break;
-    // For ITEM_COUNTS we would need the actual item purchases array, which isn't in userStore,
-    // so we cap it or just return 0 if we don't have it locally.
-    // As a fallback for these we can show 0 until the backend marks them as 100% unlocked.
+    case 'ITEMS_COUNT': current = new Set(userStore.purchasedItems.map((p: any) => p.itemId)).size; break;
+    case 'STRENGTH_COUNT': current = new Set(userStore.purchasedItems.filter((p: any) => p.itemType?.toLowerCase() === 'strength').map((p: any) => p.itemId)).size; break;
+    case 'ENDURANCE_COUNT': current = new Set(userStore.purchasedItems.filter((p: any) => p.itemType?.toLowerCase() === 'endurance').map((p: any) => p.itemId)).size; break;
+    case 'SPECIFIC_ITEM': current = userStore.purchasedItems.some((p: any) => p.itemId === achievement.requirementValue) ? achievement.requirementValue : 0; break;
     default: current = 0;
   }
   return Math.min((current / achievement.requirementValue) * 100, 100);
