@@ -3,8 +3,10 @@ using AA2_CS.Model.Entities;
 using AA2_CS.Database;
 using AA2_CS.Repository;
 
-public class AchievementRepository
+namespace AA2_CS.Repository
 {
+    public class AchievementRepository
+    {
     private readonly AppDbContext _context;
     private readonly UserRepository _userRepository;
 
@@ -201,4 +203,5 @@ public class AchievementRepository
             }
         }
     }
+}
 }

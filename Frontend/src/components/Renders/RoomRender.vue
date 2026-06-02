@@ -358,6 +358,7 @@ function goToRoom(roomId: number) {
       <RoomCard v-for="room in paginatedRooms" :key="room.id" :room="{ ...room, localization: room.localization ?? '' }"
         :member-count="getMemberCount(room.id)" :is-staff="loggedUser?.role === 'userStaff'"
         :is-admin="loggedUser?.role === 'userMaster'" :is-joined="isJoined(room.id)"
+        :is-creator="room.creatorId === loggedUser?.id"
         :creator-role="room.creatorRole" @view="goToRoom" @edit="openEditPopup" />
     </TransitionGroup>
 

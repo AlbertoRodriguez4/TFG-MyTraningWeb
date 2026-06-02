@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("aa2-alberto-rodriguez-penalva")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ac5a7e90d3e459c7940e572e9066f830c704053c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+731962495ca6ec25aae6206227a6b03ab8fcc1f2")]
 [assembly: System.Reflection.AssemblyProductAttribute("aa2-alberto-rodriguez-penalva")]
 [assembly: System.Reflection.AssemblyTitleAttribute("aa2-alberto-rodriguez-penalva")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

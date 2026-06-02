@@ -10,11 +10,13 @@ const props = defineProps<{
     date: string
     localization: string
     creatorRole?: string
+    creatorId?: number
   }
   memberCount: number
   isStaff: boolean
   isAdmin?: boolean
   isJoined?: boolean
+  isCreator?: boolean
   creatorRole?: string
 }>()
 
@@ -74,7 +76,7 @@ import { computed } from 'vue'
 const diff = getRoomDifficulty(props.room.minlevel)
 const diffConfig = difficulties[diff]
 const isTrainer = props.creatorRole === 'userStaff'
-const canEdit = computed(() => props.isAdmin || (props.isStaff && props.isJoined))
+const canEdit = computed(() => props.isAdmin || props.isCreator || (props.isStaff && props.isJoined))
 </script>
 
 <template>

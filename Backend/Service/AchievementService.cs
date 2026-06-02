@@ -1,4 +1,5 @@
 using AA2_CS.Model.Entities;
+using AA2_CS.Repository;
 
 public class AchievementService
 {
@@ -62,11 +63,6 @@ public class AchievementService
     public async System.Threading.Tasks.Task<int> CountNewAchievementsAsync(int userId)
     {
         return await _repository.CountNewAchievementsAsync(userId);
-    }
-
-    public async System.Threading.Tasks.Task CheckAndUnlockAsync(int userId, string requirementType, int currentValue)
-    {
-        await _repository.CheckAndUnlockAsync(userId, requirementType, currentValue);
     }
 
     public async System.Threading.Tasks.Task EvaluateUserAchievementsAsync(int userId)

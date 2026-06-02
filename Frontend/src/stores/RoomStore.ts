@@ -31,7 +31,8 @@ export const useRoomStore = defineStore('room', () => {
                 description: d.description,
                 date: d.date,
                 localization: d.localization,
-                creatorRole: d.creatorRole
+                creatorRole: d.creatorRole,
+                creatorId: d.creatorId
             }));
             totalRooms.value = room.value.length;
         } catch (error) {
@@ -60,7 +61,8 @@ export const useRoomStore = defineStore('room', () => {
                 description: d.description ?? d.room?.description ?? '',
                 date: d.date ?? d.room?.date ?? '',
                 localization: d.localization ?? d.room?.localization ?? '',
-                creatorRole: d.creatorRole ?? d.room?.creatorRole
+                creatorRole: d.creatorRole ?? d.room?.creatorRole,
+                creatorId: d.creatorId ?? d.room?.creatorId
             }));
         } catch (error) {
             logger.error("Error fetching sorted rooms:", error);

@@ -11,6 +11,7 @@ namespace AA2_CS.Model.Entities
         public string date { get; set; } = string.Empty;
         public string localization { get; set; } = string.Empty;
         public string? creatorRole { get; set; }
+        public int? creatorId { get; set; }
 
         public Room() { }
 

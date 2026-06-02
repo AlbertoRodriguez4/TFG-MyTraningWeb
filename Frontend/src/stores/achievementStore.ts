@@ -51,13 +51,26 @@ export const useAchievementStore = defineStore('achievement', () => {
     loading.value = true;
     try {
       const token = localStorage.getItem('token');
+      if (!token) {
+        error.value = 'No hay token de autenticación';
+        return;
+      }
       const res = await fetch(`${API_BASE_URL}/api/achievement/my-achievements`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      if (!res.ok) throw new Error('Error al cargar mis logros');
-      userAchievements.value = await res.json();
+      if (!res.ok) throw new Error(`Error al cargar mis logros: ${res.status}`);
+      const data = await res.json();
+      userAchievements.value = Array.isArray(data) ? data.map((ua: any) => ({
+        id: ua.id ?? ua.Id,
+        userId: ua.userId ?? ua.UserId,
+        achievementId: ua.achievementId ?? ua.AchievementId,
+        achievement: ua.achievement ?? ua.Achievement,
+        unlockedAt: ua.unlockedAt ?? ua.UnlockedAt,
+        isNew: ua.isNew ?? ua.IsNew
+      })) : [];
     } catch (e: any) {
       error.value = e.message;
+      userAchievements.value = [];
     } finally {
       loading.value = false;
     }

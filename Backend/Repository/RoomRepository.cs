@@ -22,6 +22,7 @@ namespace AA2_CS.Repository
             if (user == null)
                 throw new Exception($"No se encontró el usuario con ID {userId}");
             entity.creatorRole = userRole;
+            entity.creatorId = userId;
             _context.Rooms.Add(entity);
             _context.SaveChanges();
 
@@ -53,6 +54,7 @@ namespace AA2_CS.Repository
                 room.minstats = entity.minstats;
                 room.minconsistency = entity.minconsistency;
                 room.creatorRole = entity.creatorRole;
+                room.creatorId = entity.creatorId;
 
                 room.description = entity.description;
                 room.date = entity.date; 
@@ -91,7 +93,8 @@ namespace AA2_CS.Repository
                         r.description,
                         r.date,
                         r.localization,
-                        r.creatorRole
+                        r.creatorRole,
+                        r.creatorId
                     } into roomGroup
                     select new UserRoomDTO
                     {
@@ -105,7 +108,8 @@ namespace AA2_CS.Repository
                             description = roomGroup.Key.description,
                             date = roomGroup.Key.date,
                             localization = roomGroup.Key.localization,
-                            creatorRole = roomGroup.Key.creatorRole
+                            creatorRole = roomGroup.Key.creatorRole,
+                            creatorId = roomGroup.Key.creatorId
                         },
                         users = roomGroup.Select(g => new UserDTO
                         {
