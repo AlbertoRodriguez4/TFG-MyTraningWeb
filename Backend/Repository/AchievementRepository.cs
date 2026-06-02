@@ -130,6 +130,7 @@ public class AchievementRepository
             if (user != null)
             {
                 user.gold += achievement.RewardGold;
+                _userRepository.Update(user);
                 _userRepository.AddExperience(userId, achievement.RewardXP);
             }
         }

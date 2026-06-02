@@ -116,14 +116,9 @@ const handleEdit = async () => {
       avatarUrl: editedUser.avatarUrl
     };
 
-    const result = await store.editUser(updatedUser.id, updatedUser);
-
-    if (result != null) {
-      showSnackbar(t('user_edited_success'), 'success')
-      emit('close');
-    } else {
-      errorMessage.value = t('user_edit_error');
-    }
+    await store.editUser(updatedUser.id, updatedUser);
+    showSnackbar(t('user_edited_success'), 'success')
+    emit('close');
   } catch (error: any) {
     const message = error?.data?.message;
     errorMessage.value = message || t('user_edit_error');

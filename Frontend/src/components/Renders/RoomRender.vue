@@ -211,6 +211,7 @@ function closePopup() { isPopupVisible.value = false }
 async function handleCreateRoom(newRoom: any) {
   await store.createRoom(newRoom, loggedUser.value?.id ?? 0, loggedUser.value?.role)
   await loadRoomMemberCounts()
+  await loadJoinedRooms()
   closePopup()
 }
 

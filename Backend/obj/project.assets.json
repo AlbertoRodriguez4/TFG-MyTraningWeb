@@ -5049,19 +5049,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\alber\\.nuget\\packages\\": {}
+    "C:\\Users\\altf4\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\alber\\Desktop\\TFG como lo borre me suicido\\TFG MyTraningWeb\\Backend\\aa2-alberto-rodriguez-penalva.csproj",
+      "projectUniqueName": "C:\\Users\\altf4\\Desktop\\TFG NUEVO\\TFG-MyTraningWeb\\Backend\\aa2-alberto-rodriguez-penalva.csproj",
       "projectName": "aa2-alberto-rodriguez-penalva",
-      "projectPath": "C:\\Users\\alber\\Desktop\\TFG como lo borre me suicido\\TFG MyTraningWeb\\Backend\\aa2-alberto-rodriguez-penalva.csproj",
-      "packagesPath": "C:\\Users\\alber\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\alber\\Desktop\\TFG como lo borre me suicido\\TFG MyTraningWeb\\Backend\\obj\\",
+      "projectPath": "C:\\Users\\altf4\\Desktop\\TFG NUEVO\\TFG-MyTraningWeb\\Backend\\aa2-alberto-rodriguez-penalva.csproj",
+      "packagesPath": "C:\\Users\\altf4\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\altf4\\Desktop\\TFG NUEVO\\TFG-MyTraningWeb\\Backend\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\alber\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\altf4\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -5144,16 +5144,6 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
-        "downloadDependencies": [
-          {
-            "name": "Microsoft.NETCore.App.Host.win-x64",
-            "version": "[8.0.27, 8.0.27]"
-          },
-          {
-            "name": "Microsoft.NETCore.App.Ref",
-            "version": "[8.0.27, 8.0.27]"
-          }
-        ],
         "frameworkReferences": {
           "Microsoft.AspNetCore.App": {
             "privateAssets": "none"
@@ -5162,7 +5152,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.421/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.404/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
