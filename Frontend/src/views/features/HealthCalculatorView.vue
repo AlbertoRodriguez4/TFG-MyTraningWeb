@@ -1,17 +1,15 @@
 <template>
   <div class="health-calc-container">
-    <!-- Background Decoration -->
     <div class="bg-decoration">
       <div class="circle circle-1"></div>
       <div class="circle circle-2"></div>
       <div class="circle circle-3"></div>
     </div>
 
-    <!-- Premium Check Overlay -->
     <div v-if="!isPremium && !isLoading" class="premium-overlay">
       <div class="premium-lock">
         <div class="lock-icon">
-          <v-icon size="80" color="#FFD700">mdi-lock-outline</v-icon>
+          <v-icon size="80" color="white">mdi-lock-outline</v-icon>
         </div>
         <h2 class="lock-title">{{ $t('premium_feature') }}</h2>
         <p class="lock-description">
@@ -19,19 +17,19 @@
         </p>
         <div class="premium-benefits">
           <div class="benefit-item">
-            <v-icon size="20" color="#00ff88">mdi-check-circle</v-icon>
+            <v-icon size="20" color="white">mdi-check-circle</v-icon>
             <span>{{ $t('unlimited_imc_calculator') }}</span>
           </div>
           <div class="benefit-item">
-            <v-icon size="20" color="#00ff88">mdi-check-circle</v-icon>
+            <v-icon size="20" color="white">mdi-check-circle</v-icon>
             <span>{{ $t('custom_calorie_calculator') }}</span>
           </div>
           <div class="benefit-item">
-            <v-icon size="20" color="#00ff88">mdi-check-circle</v-icon>
+            <v-icon size="20" color="white">mdi-check-circle</v-icon>
             <span>{{ $t('calculation_history') }}</span>
           </div>
           <div class="benefit-item">
-            <v-icon size="20" color="#00ff88">mdi-check-circle</v-icon>
+            <v-icon size="20" color="white">mdi-check-circle</v-icon>
             <span>{{ $t('chat_coach_ai') }}</span>
           </div>
         </div>
@@ -58,7 +56,6 @@
       </div>
     </div>
 
-    <!-- Loading State -->
     <div v-else-if="isLoading" class="loading-container">
       <v-progress-circular
         size="64"
@@ -68,29 +65,22 @@
       <p class="loading-text">{{ $t('verifying_subscription') }}</p>
     </div>
 
-    <!-- Main Content (solo visible si es premium) -->
     <v-container v-else fluid class="main-content px-0">
-      <!-- Header -->
       <div class="calc-header">
         <h1 class="main-title">{{ $t('calculadora_salud') }}</h1>
         <p class="main-subtitle">{{ $t('calculadora_salud_subtitle') }}</p>
       </div>
 
-      <!-- Calculator Container -->
       <div class="calculator-wrapper">
-        <!-- BMI Section -->
         <BmiCalculatorModern @result-changed="bmiData = $event" @save="saveBMI" />
 
-        <!-- Calories Section -->
         <CaloriesCalculatorModern :bmi-weight="bmiData.weight" :bmi-height="bmiData.height"
           @result-changed="caloriesData = $event" @save="saveCalories" />
       </div>
 
-      <!-- History Section -->
       <HealthHistoryModern :results="allResults" @delete="deleteResult" />
     </v-container>
 
-    <!-- Success Notification -->
     <v-snackbar v-model="showNotification" color="success" timeout="2000" location="top">
       {{ $t(notificationMessage) }}
     </v-snackbar>
@@ -212,7 +202,7 @@ const loadAllResults = () => {
 <style scoped>
 .health-calc-container {
   min-height: 100vh;
-  background: var(--bg-primary);
+  background: transparent;
   position: relative;
   overflow: hidden;
   padding: 2rem 0;
@@ -241,7 +231,7 @@ const loadAllResults = () => {
   height: 400px;
   top: -100px;
   right: -100px;
-  animation: float 20s infinite ease-in-out;
+
 }
 
 .circle-2 {
@@ -249,7 +239,7 @@ const loadAllResults = () => {
   height: 300px;
   bottom: -50px;
   left: -50px;
-  animation: float 25s infinite ease-in-out reverse;
+
 }
 
 .circle-3 {
@@ -257,19 +247,7 @@ const loadAllResults = () => {
   height: 200px;
   top: 50%;
   left: 10%;
-  animation: float 30s infinite ease-in-out;
-}
 
-@keyframes float {
-
-  0%,
-  100% {
-    transform: translate(0, 0);
-  }
-
-  50% {
-    transform: translate(30px, 30px);
-  }
 }
 
 /* Loading Container */

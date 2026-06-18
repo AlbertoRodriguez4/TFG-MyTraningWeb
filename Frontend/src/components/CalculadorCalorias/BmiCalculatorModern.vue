@@ -1,6 +1,6 @@
 <template>
   <div class="calc-section bmi-section">
-    <v-icon class="section-icon" color="primary">mdi-chart-bar</v-icon>
+    <v-icon class="section-icon" color="white">mdi-chart-bar</v-icon>
     <h2 class="section-title">Índice de Masa Corporal</h2>
 
     <div class="input-group">
@@ -33,7 +33,6 @@
       </div>
     </div>
 
-    <!-- BMI Result Circle -->
     <div v-if="result" class="result-circle">
       <svg viewBox="0 0 100 100" class="circle-svg">
         <circle cx="50" cy="50" r="45" class="circle-bg" />
@@ -158,12 +157,6 @@ const handleSave = () => {
   background: rgba(20, 20, 20, 0.6);
   backdrop-filter: blur(10px);
   transition: all 0.3s ease;
-}
-
-.calc-section:hover {
-  border-color: rgba(255, 204, 0, 0.4);
-  background: rgba(20, 20, 20, 0.8);
-  transform: translateY(-2px);
 }
 
 .section-icon {

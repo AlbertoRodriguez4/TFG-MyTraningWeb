@@ -33,7 +33,10 @@ export const useExerciseStore = defineStore('exercise', () => {
   async function fetchExercises() {
     loading.value = true;
     try {
-      const res = await fetch(`${API_BASE_URL}/api/exercise`);
+      const token = localStorage.getItem('token');
+      const res = await fetch(`${API_BASE_URL}/api/exercise`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       if (!res.ok) throw new Error('Error al cargar ejercicios');
       exercises.value = await res.json();
     } catch (e: any) {
@@ -46,7 +49,10 @@ export const useExerciseStore = defineStore('exercise', () => {
   async function searchExercises(query: string) {
     loading.value = true;
     try {
-      const res = await fetch(`${API_BASE_URL}/api/exercise/search/${encodeURIComponent(query)}`); // Endpoint de búsqueda, asegurando que el query esté codificado
+      const token = localStorage.getItem('token');
+      const res = await fetch(`${API_BASE_URL}/api/exercise/search/${encodeURIComponent(query)}`, { // Endpoint de búsqueda, asegurando que el query esté codificado
+        headers: { Authorization: `Bearer ${token}` }
+      });
       if (!res.ok) throw new Error('Error al buscar ejercicios');
       exercises.value = await res.json();
     } catch (e: any) {
@@ -59,7 +65,10 @@ export const useExerciseStore = defineStore('exercise', () => {
   async function filterByMuscleGroup(muscleGroup: string) {
     loading.value = true;
     try {
-      const res = await fetch(`${API_BASE_URL}/api/exercise/muscle-group/${encodeURIComponent(muscleGroup)}`);
+      const token = localStorage.getItem('token');
+      const res = await fetch(`${API_BASE_URL}/api/exercise/muscle-group/${encodeURIComponent(muscleGroup)}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       if (!res.ok) throw new Error('Error al filtrar ejercicios');
       exercises.value = await res.json();
     } catch (e: any) {

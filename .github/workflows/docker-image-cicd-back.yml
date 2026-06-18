@@ -1,14 +1,7 @@
 name: Docker Image CICD - Backend
 
 on:
-  push:
-    branches: [ "main" ]
-    paths:
-      - 'Backend/**'
-  pull_request:
-    branches: [ "main" ]
-    paths:
-      - 'Backend/**'
+  workflow_dispatch: 
 
 env:
   EKS_CLUSTER_NAME: TheTrainingHubCluster

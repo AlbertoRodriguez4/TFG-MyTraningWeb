@@ -1,10 +1,9 @@
 <template>
   <div class="app-root">
-    <!-- Premium Check Overlay -->
     <div v-if="!isPremium && !isLoading" class="premium-overlay">
       <div class="premium-lock">
         <div class="lock-icon">
-          <v-icon size="80" color="#FFD700">mdi-lock-outline</v-icon>
+          <v-icon size="80" color="white">mdi-lock-outline</v-icon>
         </div>
         <h2 class="lock-title">{{ $t('premium_feature') }}</h2>
         <p class="lock-description">
@@ -12,19 +11,19 @@
         </p>
         <div class="premium-benefits">
           <div class="benefit-item">
-            <v-icon size="20" color="#00ff88">mdi-check-circle</v-icon>
+            <v-icon size="20" color="white">mdi-check-circle</v-icon>
             <span>{{ $t('coach_ai_personal') }}</span>
           </div>
           <div class="benefit-item">
-            <v-icon size="20" color="#00ff88">mdi-check-circle</v-icon>
+            <v-icon size="20" color="white">mdi-check-circle</v-icon>
             <span>{{ $t('premium_access') }}</span>
           </div>
           <div class="benefit-item">
-            <v-icon size="20" color="#00ff88">mdi-check-circle</v-icon>
+            <v-icon size="20" color="white">mdi-check-circle</v-icon>
             <span>{{ $t('nutrition_tips') }}</span>
           </div>
           <div class="benefit-item">
-            <v-icon size="20" color="#00ff88">mdi-check-circle</v-icon>
+            <v-icon size="20" color="white">mdi-check-circle</v-icon>
             <span>{{ $t('advanced_tracking') }}</span>
           </div>
         </div>
@@ -51,7 +50,6 @@
       </div>
     </div>
 
-    <!-- Loading State -->
     <div v-else-if="isLoading" class="loading-container">
       <v-progress-circular
         size="64"
@@ -61,23 +59,19 @@
       <p class="loading-text">{{ $t('verifying_subscription') }}</p>
     </div>
 
-    <!-- Chat Interface (solo visible si es premium) -->
     <div v-else>
       <div class="chat-shell">
 
-        <!-- Sidebar -->
         <ChatSidebar :open="sidebarOpen" />
 
-        <!-- Main column -->
         <div class="main">
           <ChatHeader @toggle-sidebar="sidebarOpen = !sidebarOpen" />
 
           <ChatFeed :messages="messages" @send="handleSend" />
 
-          <!-- Banner: se necesitan datos de salud -->
           <div v-if="!hasHealthData" class="health-data-banner">
             <div class="health-data-content">
-              <v-icon color="#FFD700" size="24">mdi-calculator-variant</v-icon>
+              <v-icon color="white" size="24">mdi-calculator-variant</v-icon>
               <div class="health-data-text">
                 <span class="health-data-title">{{ $t('chatbot_no_health_data') }}</span>
                 <span class="health-data-desc">{{ $t('chatbot_complete_calculator_desc') }}</span>
@@ -99,7 +93,6 @@
 
       </div>
 
-      <!-- Mobile backdrop: closes sidebar on outside tap -->
       <div class="backdrop" :class="{ 'backdrop--on': sidebarOpen }" @click="sidebarOpen = false" />
     </div>
   </div>
@@ -313,7 +306,7 @@ body,
 }
 
 body {
-  background: var(--bg-primary);
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -335,33 +328,6 @@ body {
   --r-md: 14px;
   --r-lg: 20px;
   --r-xl: 26px;
-}
-
-@keyframes fadeSlideUp {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes blink {
-
-  0%,
-  80%,
-  100% {
-    opacity: .25;
-    transform: scale(.75);
-  }
-
-  40% {
-    opacity: 1;
-    transform: scale(1);
-  }
 }
 </style>
 

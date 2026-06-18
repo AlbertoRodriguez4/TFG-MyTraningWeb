@@ -10,17 +10,18 @@
   >
     <div class="d-flex align-center">
       <v-avatar size="40" color="white" class="mr-3">
-        <v-icon color="green">mdi-check-bold</v-icon>
+        <v-icon color="white">mdi-check-bold</v-icon>
       </v-avatar>
       <div>
-        <div class="font-weight-bold">¡Excelente Trabajo!</div>
-        <div class="text-caption">Rutina completada exitosamente</div>
+        <div class="text-caption">{{  t('routine_completed_reward') }}</div>
       </div>
     </div>
   </v-snackbar>
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
+
 defineProps<{
   modelValue: boolean
 }>()
@@ -28,6 +29,8 @@ defineProps<{
 defineEmits<{
   'update:modelValue': [value: boolean]
 }>()
+
+const { t } = useI18n()
 </script>
 
 <style scoped>

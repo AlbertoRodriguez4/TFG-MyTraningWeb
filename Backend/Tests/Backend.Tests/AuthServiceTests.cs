@@ -7,6 +7,7 @@ using AA2_CS.Service;
 using AA2_CS.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using AA2_CS.Model.Common;
 using System.Security.Claims;
 
 namespace Backend.Tests;
@@ -18,7 +19,7 @@ public class AuthServiceTests
     {
         // Esta funcion prueba el acceso a los metodos necesarios cuando el usuario es el propietario del propio objeto. Se espera que devuelva true.
 
-        var service = new AuthService(null!, null!, null!, null!, null!);
+        var service = new AuthService(new AuthRepository(null!, null!, null!, null!, null!));
         var principal = BuildPrincipal(userId: 5, role: Roles.userNormal);
 
         var canAccess = service.HasAccessToResource(5, principal);
@@ -31,7 +32,7 @@ public class AuthServiceTests
     {
         // Esta funcion prueba el acceso a los metodos necesarios cuando el usuario es admin. Se espera que devuelva true.
 
-        var service = new AuthService(null!, null!, null!, null!, null!);
+        var service = new AuthService(new AuthRepository(null!, null!, null!, null!, null!));
         var principal = BuildPrincipal(userId: 2, role: Roles.userMaster);
 
         var canAccess = service.HasAccessToResource(9, principal);
@@ -44,7 +45,7 @@ public class AuthServiceTests
     {
         // Esta funcion prueba el acceso a los metodos necesarios cuando el usuario no es el propietario ni admin. Se espera que devuelva false.
 
-        var service = new AuthService(null!, null!, null!, null!, null!);
+        var service = new AuthService(new AuthRepository(null!, null!, null!, null!, null!));
         var principal = BuildPrincipal(userId: 2, role: Roles.userNormal);
 
         var canAccess = service.HasAccessToResource(9, principal);
@@ -57,9 +58,8 @@ public class AuthServiceTests
     {
         // Comprobación del proceso de login con credenciales válidas. Se espera que devuelva un token no nulo ni vacío.
         using var context = TestDbContextFactory.CreateContext();
-        var userRepository = new UserRepository(context);
         var purchaseRepository = new PurchaseRepository(context);
-        var userService = new UserService(userRepository, purchaseRepository);
+        var userRepository = new UserRepository(context, purchaseRepository);
         var verificationRepository = new EmailVerificationRepository(context);
 
         var config = new ConfigurationBuilder()
@@ -71,8 +71,8 @@ public class AuthServiceTests
             })
             .Build();
 
-        var jwtConfigurer = new JWTConfigurer(config, userService);
-        var authService = new AuthService(userService, jwtConfigurer, null!, verificationRepository, new NotificationPreferenceRepository(context));
+        var jwtConfigurer = new JWTConfigurer(config, new UserService(userRepository));
+        var authService = new AuthService(new AuthRepository(userRepository, jwtConfigurer, null!, verificationRepository, new NotificationPreferenceRepository(context)));
 
         userRepository.Register(new User
         {
@@ -93,9 +93,8 @@ public class AuthServiceTests
     {
         // Comprobación del proceso de login con credenciales inválidas. Se espera que devuelva null.
         using var context = TestDbContextFactory.CreateContext();
-        var userRepository = new UserRepository(context);
         var purchaseRepository = new PurchaseRepository(context);
-        var userService = new UserService(userRepository, purchaseRepository);
+        var userRepository = new UserRepository(context, purchaseRepository);
 
         var config = new ConfigurationBuilder()
             .AddInMemoryCollection(new Dictionary<string, string?>
@@ -106,13 +105,13 @@ public class AuthServiceTests
             })
             .Build();
 
-        var jwtConfigurer = new JWTConfigurer(config, userService);
-        var authService = new AuthService(
-            userService,
+        var jwtConfigurer = new JWTConfigurer(config, null!);
+        var authService = new AuthService(new AuthRepository(
+            userRepository,
             jwtConfigurer,
             null!,
             new EmailVerificationRepository(context),
-            new NotificationPreferenceRepository(context));
+            new NotificationPreferenceRepository(context)));
 
         var token = authService.Login("noexiste@test.com", "123456");
 

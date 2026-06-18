@@ -12,7 +12,7 @@
 
         <div class="notification-section">
           <h3 class="section-title">{{ $t('Alertas de la App') }}</h3>
-          <p class="section-subtitle mb-4 text-medium-emphasis">{{ $t('Elige qué notificaciones quieres recibir para mantenerte informado sin distracciones.') }}</p>
+          <p class="section-subtitle mb-4 text-white">{{ $t('Elige qué notificaciones quieres recibir para mantenerte informado sin distracciones.') }}</p>
 
           <div class="notification-item">
             <div class="item-content">
@@ -82,12 +82,10 @@
 
         </div>
 
-        <!-- Mensaje de error -->
         <v-alert v-if="store.error" type="error" variant="tonal" class="mt-2" closable @click:close="store.error = null">
           {{ store.error }}
         </v-alert>
 
-        <!-- Snackbar de éxito -->
         <v-snackbar v-model="showSuccessSnackbar" :timeout="3000" color="success" location="top">
           {{ successMessage }}
           <template #actions>
@@ -209,11 +207,6 @@ const handleReset = async () => {
   background: rgba(255, 204, 0, 0.02);
   margin-bottom: 0.8rem;
   transition: all 0.2s ease;
-}
-
-.notification-item:hover {
-  border-color: rgba(255, 204, 0, 0.2);
-  background: rgba(255, 204, 0, 0.04);
 }
 
 .item-content {

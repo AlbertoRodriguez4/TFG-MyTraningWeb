@@ -1,6 +1,5 @@
 <template>
   <footer class="footer">
-    <!-- Partículas flotantes -->
     <div class="particles-footer">
       <div class="particle" v-for="n in 15" :key="n" :style="{ 
         left: `${Math.random() * 100}%`, 
@@ -9,7 +8,6 @@
       }"></div>
     </div>
 
-    <!-- Onda decorativa superior con gradiente -->
     <div class="footer-wave">
       <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
         <defs>
@@ -27,13 +25,11 @@
     </div>
 
     <div class="footer-container">
-      <!-- Contenido principal en grid -->
       <div class="footer-grid">
-        <!-- Columna 1: Branding -->
         <div class="footer-column brand-column">
           <div class="brand-section">
             <div class="logo-wrapper">
-              <div class="logo-glow-ring"></div>
+              <div ></div>
               <img src="@/assets/imgs/Logo.png" alt="Logo" class="footer-logo" />
             </div>
             <h3 class="brand-name">The Training Hub</h3>
@@ -43,7 +39,6 @@
             </p>
           </div>
 
-          <!-- Stats badge -->
           <div class="stats-badge">
             <div class="stat-item">
               <span class="stat-icon"><v-icon>mdi-account-group</v-icon></span>
@@ -69,7 +64,6 @@
           </div>
         </div>
 
-        <!-- Columna 2: Quick Links -->
         <div class="footer-column links-column">
           <h4 class="column-title">
             <span class="title-icon"><v-icon>mdi-link</v-icon></span>
@@ -99,7 +93,6 @@
           </ul>
         </div>
 
-        <!-- Columna 3: Recursos -->
         <div class="footer-column resources-column">
           <h4 class="column-title">
             <span class="title-icon"><v-icon>mdi-book-open-page-variant</v-icon></span>
@@ -129,7 +122,6 @@
           </ul>
         </div>
 
-        <!-- Columna 4: Comunidad -->
         <div class="footer-column community-column">
           <h4 class="column-title">
             <span class="title-icon"><v-icon>mdi-star</v-icon></span>
@@ -161,7 +153,6 @@
             </a>
           </div>
 
-          <!-- Newsletter -->
           <div class="newsletter-box">
             <div class="newsletter-icon"><v-icon>mdi-email</v-icon></div>
             <p class="newsletter-text">{{ $t('newsletter_text') }}</p>
@@ -170,14 +161,12 @@
         </div>
       </div>
 
-      <!-- Separador decorativo -->
       <div class="footer-divider">
         <div class="divider-line"></div>
         <div class="divider-icon"><v-icon>mdi-arm-flex</v-icon></div>
         <div class="divider-line"></div>
       </div>
 
-      <!-- Footer Bottom -->
       <div class="footer-bottom">
         <div class="bottom-left">
           <p class="copyright">{{ $t('footer.copyright') }}</p>
@@ -247,25 +236,8 @@
   background: #ffc107;
   border-radius: 50%;
   opacity: 0;
-  animation: float-up linear infinite;
-  box-shadow: 0 0 8px #ffc107;
-}
 
-@keyframes float-up {
-  0% {
-    transform: translateY(0) scale(0);
-    opacity: 0;
-  }
-  10% {
-    opacity: 1;
-  }
-  90% {
-    opacity: 0.7;
-  }
-  100% {
-    transform: translateY(-800px) scale(1);
-    opacity: 0;
-  }
+  box-shadow: 0 0 8px #ffc107;
 }
 
 /* Ondas decorativas */
@@ -289,30 +261,12 @@
 
 .wave-path-1 {
   fill: rgba(255, 255, 255, 0.05);
-  animation: waveMove1 8s ease-in-out infinite;
+
 }
 
 .wave-path-2 {
   fill: rgba(255, 255, 255, 0.03);
-  animation: waveMove2 12s ease-in-out infinite;
-}
 
-@keyframes waveMove1 {
-  0%, 100% {
-    d: path("M0,40 C300,100 600,20 900,60 C1050,80 1150,40 1200,60 L1200,120 L0,120 Z");
-  }
-  50% {
-    d: path("M0,60 C300,30 600,80 900,40 C1050,60 1150,70 1200,50 L1200,120 L0,120 Z");
-  }
-}
-
-@keyframes waveMove2 {
-  0%, 100% {
-    d: path("M0,60 C250,20 550,80 800,50 C1000,30 1100,70 1200,50 L1200,120 L0,120 Z");
-  }
-  50% {
-    d: path("M0,50 C250,90 550,30 800,70 C1000,50 1100,40 1200,60 L1200,120 L0,120 Z");
-  }
 }
 
 /* Container principal */
@@ -353,29 +307,6 @@
   margin-bottom: 0.5rem;
 }
 
-.logo-glow-ring {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 193, 7, 0.3), transparent);
-  animation: ringPulse 3s ease-in-out infinite;
-}
-
-@keyframes ringPulse {
-  0%, 100% {
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 0.5;
-  }
-  50% {
-    transform: translate(-50%, -50%) scale(1.2);
-    opacity: 0.8;
-  }
-}
-
 .footer-logo {
   width: 100%;
   height: 100%;
@@ -384,10 +315,6 @@
   box-shadow: 0 8px 32px rgba(255, 193, 7, 0.3);
   object-fit: cover;
   transition: transform 0.3s ease;
-}
-
-.footer-logo:hover {
-  transform: rotate(10deg) scale(1.05);
 }
 
 .brand-name {
@@ -431,12 +358,6 @@
   gap: 0.3rem;
   backdrop-filter: blur(10px);
   transition: all 0.3s ease;
-}
-
-.stat-item:hover {
-  transform: translateY(-5px);
-  border-color: rgba(255, 193, 7, 0.6);
-  background: rgba(255, 255, 255, 0.08);
 }
 
 .stat-icon {
@@ -540,11 +461,6 @@
   transition: all 0.3s ease;
 }
 
-.social-card:hover {
-  transform: translateY(-5px);
-  border-color: rgba(255, 255, 255, 0.3);
-}
-
 .social-bg {
   position: absolute;
   top: 0;
@@ -555,26 +471,6 @@
   transition: opacity 0.3s ease;
 }
 
-.social-card.twitter:hover .social-bg {
-  background: linear-gradient(135deg, #1DA1F2, #0d8bd9);
-  opacity: 0.2;
-}
-
-.social-card.facebook:hover .social-bg {
-  background: linear-gradient(135deg, #4267B2, #365899);
-  opacity: 0.2;
-}
-
-.social-card.instagram:hover .social-bg {
-  background: linear-gradient(135deg, #E1306C, #C13584, #833AB4);
-  opacity: 0.2;
-}
-
-.social-card.tiktok:hover .social-bg {
-  background: linear-gradient(135deg, #000000, #fe2c55);
-  opacity: 0.2;
-}
-
 .social-icon {
   width: 32px;
   height: 32px;
@@ -582,10 +478,6 @@
   position: relative;
   z-index: 2;
   transition: transform 0.3s ease;
-}
-
-.social-card:hover .social-icon {
-  transform: scale(1.1);
 }
 
 .social-name {
@@ -656,16 +548,7 @@
 .divider-icon {
   font-size: 1.8rem;
   filter: drop-shadow(0 0 8px rgba(255, 193, 7, 0.5));
-  animation: pulse 2s ease-in-out infinite;
-}
 
-@keyframes pulse {
-  0%, 100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-  }
 }
 
 /* Footer Bottom */
@@ -699,19 +582,7 @@
 .heart {
   color: #ff6b6b;
   display: inline-block;
-  animation: heartbeat 1.5s ease-in-out infinite;
-}
 
-@keyframes heartbeat {
-  0%, 100% {
-    transform: scale(1);
-  }
-  10%, 30% {
-    transform: scale(1.2);
-  }
-  20%, 40% {
-    transform: scale(1);
-  }
 }
 
 .bottom-center {

@@ -1,6 +1,6 @@
 <template>
   <div class="calc-section calories-section">
-    <v-icon class="section-icon" color="orange">mdi-fire</v-icon>
+    <v-icon class="section-icon" color="white">mdi-fire</v-icon>
     <h2 class="section-title">{{ $t('calories_needed') }}</h2>
 
     <div class="input-group">
@@ -53,7 +53,6 @@
       </div>
     </div>
 
-    <!-- Calories Result Card -->
     <div v-if="result" class="calories-result">
       <div class="calories-main">
         <span class="calories-label">{{ $t('daily_calories') }}</span>
@@ -61,7 +60,6 @@
         <span class="calories-unit">kcal</span>
       </div>
 
-      <!-- Macros Mini -->
       <div class="macros-mini">
         <div class="macro-mini-item">
           <div class="macro-mini-label">{{ $t('protein') }}</div>
@@ -229,12 +227,6 @@ const handleSave = () => {
   background: rgba(20, 20, 20, 0.6);
   backdrop-filter: blur(10px);
   transition: all 0.3s ease;
-}
-
-.calc-section:hover {
-  border-color: rgba(255, 204, 0, 0.4);
-  background: rgba(20, 20, 20, 0.8);
-  transform: translateY(-2px);
 }
 
 .section-icon {

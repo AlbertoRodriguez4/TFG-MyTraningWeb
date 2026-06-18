@@ -1,7 +1,7 @@
 
 // URL base para todas las peticiones API (para no tener que repertirla en cada función de fectch)
 // El objetivo de este archivo es centralizart las configuraciones de las apis y reducir la repetición  de código usando variables globales
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:6873'
+export const API_BASE_URL = 'http://localhost:6873'
 
 // Headers comunes
 const COMMON_HEADERS = {

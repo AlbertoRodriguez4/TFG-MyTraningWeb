@@ -21,7 +21,7 @@ spec:
         - name: ASPNETCORE_ENVIRONMENT
           value: "Development"
         - name: ConnectionStrings__DefaultConnection
-          value: "Host=database-1.ccatzoucznx6.us-east-1.rds.amazonaws.com;Port=5432;Database=postgres;Username=postgres;Password=Ab11072004."
+          value: "Host=postgres;Port=5432;Database=thetraininghub;Username=postgres;Password=postgres"
 ---
 apiVersion: v1
 kind: Service

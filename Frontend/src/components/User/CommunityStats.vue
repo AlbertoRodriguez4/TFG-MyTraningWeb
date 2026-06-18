@@ -45,14 +45,11 @@ const statsConfig = computed(() => [
       class="stat-card"
       :style="{ '--stat-color': stat.color }"
     >
-      <!-- Background Effects -->
       <div class="stat-bg" :style="{ background: stat.gradient }"></div>
       <div class="stat-shine"></div>
-      <div class="stat-glow" :style="{ background: `radial-gradient(ellipse, ${stat.color}40, transparent 70%)` }"></div>
+      <div  :style="{ background: `radial-gradient(ellipse, ${stat.color}40, transparent 70%)` }"></div>
 
-      <!-- Content -->
       <div class="stat-content">
-        <!-- Icon Badge -->
         <div class="icon-badge" :style="{ background: stat.gradient }">
           <v-icon size="24" color="#fff">
             {{ stat.icon }}
@@ -60,21 +57,17 @@ const statsConfig = computed(() => [
           <div class="icon-shine"></div>
         </div>
 
-        <!-- Value -->
         <div class="stat-value-wrapper">
           <span class="stat-value">{{ stat.value.toLocaleString() }}</span>
         </div>
 
-        <!-- Label -->
         <div class="stat-label">{{ stat.label }}</div>
 
-        <!-- Progress Bar Decoration -->
         <div class="stat-progress">
           <div class="progress-fill" :style="{ background: stat.gradient }"></div>
         </div>
       </div>
 
-      <!-- Corner Decorations -->
       <div class="corner corner-tl"></div>
       <div class="corner corner-br"></div>
     </div>
@@ -102,23 +95,12 @@ const statsConfig = computed(() => [
   transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   cursor: pointer;
   overflow: hidden;
-  animation: stat-entrance 0.6s ease-out backwards;
+
 }
 
 .stat-card:nth-child(1) { animation-delay: 0.1s; }
 .stat-card:nth-child(2) { animation-delay: 0.2s; }
 .stat-card:nth-child(3) { animation-delay: 0.3s; }
-
-@keyframes stat-entrance {
-  0% {
-    opacity: 0;
-    transform: translateY(30px) scale(0.9);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
 
 /* Background Effects */
 .stat-bg {
@@ -129,10 +111,6 @@ const statsConfig = computed(() => [
   height: 100%;
   opacity: 0.05;
   transition: opacity 0.4s ease;
-}
-
-.stat-card:hover .stat-bg {
-  opacity: 0.15;
 }
 
 .stat-shine {
@@ -148,35 +126,6 @@ const statsConfig = computed(() => [
     transparent
   );
   transition: left 0.6s ease;
-}
-
-.stat-card:hover .stat-shine {
-  left: 100%;
-}
-
-.stat-glow {
-  position: absolute;
-  bottom: -50%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  height: 80%;
-  opacity: 0;
-  filter: blur(30px);
-  pointer-events: none;
-  transition: opacity 0.4s ease;
-}
-
-.stat-card:hover .stat-glow {
-  opacity: 0.5;
-}
-
-.stat-card:hover {
-  transform: translateY(-8px) scale(1.03);
-  border-color: var(--stat-color);
-  box-shadow:
-    0 15px 40px rgba(0, 0, 0, 0.4),
-    0 0 50px color-mix(in srgb, var(--stat-color) 30%, transparent);
 }
 
 /* Content */
@@ -208,10 +157,6 @@ const statsConfig = computed(() => [
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, transparent 50%);
   border-radius: 16px;
   pointer-events: none;
-}
-
-.stat-card:hover .icon-badge {
-  transform: scale(1.1) rotate(5deg);
 }
 
 /* Value */
@@ -282,11 +227,6 @@ const statsConfig = computed(() => [
   border-left: none;
   border-top: none;
   border-radius: 0 0 4px 0;
-}
-
-.stat-card:hover .corner {
-  border-color: var(--stat-color);
-  opacity: 1;
 }
 
 /* Responsive */

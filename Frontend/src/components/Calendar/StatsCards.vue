@@ -1,15 +1,12 @@
 <template>
   <div class="stats-cards-floating">
-    <!-- Tarjeta 1: Nivel y Progreso XP -->
     <v-card class="floating-stat-card card-1" elevation="12" rounded="xl">
       <v-card-text class="pa-4">
         <div class="d-flex align-center">
-          <!-- Icono de Nivel -->
           <div class="mini-icon-wrapper purple">
             <v-icon color="white" size="24">mdi-star</v-icon>
           </div>
           
-          <!-- Info de Nivel -->
           <div class="ml-3">
             <div class="text-caption text-uppercase stat-label">
               Nivel Actual
@@ -20,7 +17,6 @@
           </div>
         </div>
         
-        <!-- Barra de Progreso XP -->
         <v-progress-linear
           :value="xpProgress"
           height="6"
@@ -30,24 +26,20 @@
           class="mt-3 xp-progress"
         ></v-progress-linear>
         
-        <!-- Texto de XP -->
         <div class="text-caption mt-1 xp-text">
           {{ userXP }} / {{ xpToNextLevel }} XP
         </div> 
       </v-card-text>
     </v-card>
 
-    <!-- Tarjeta 2: Monedas -->
     <v-card class="floating-stat-card card-2" elevation="12" rounded="xl">
       <v-card-text class="pa-4">
         <div class="d-flex align-center justify-space-between">
           <div class="d-flex align-center">
-            <!-- Icono de Monedas -->
             <div class="mini-icon-wrapper amber">
               <v-icon color="white" size="24">mdi-gold</v-icon>
             </div>
             
-            <!-- Info de Monedas -->
             <div class="ml-3">
               <div class="text-caption text-uppercase stat-label">
                 Monedas
@@ -58,25 +50,21 @@
             </div>
           </div>
           
-          <!-- Icono Decorativo de Cofre -->
-          <v-icon color="amber" size="40" class="treasure-icon">
+          <v-icon color="white" size="40" class="treasure-icon">
             mdi-treasure-chest
           </v-icon>
         </div>
       </v-card-text>
     </v-card>
 
-    <!-- Tarjeta 3: Rutinas Completadas -->
     <v-card class="floating-stat-card card-3" elevation="12" rounded="xl">
       <v-card-text class="pa-4">
         <div class="d-flex align-center justify-space-between">
           <div class="d-flex align-center">
-            <!-- Icono de Completadas -->
             <div class="mini-icon-wrapper green">
               <v-icon color="white" size="24">mdi-check-all</v-icon>
             </div>
             
-            <!-- Info de Rutinas Completadas -->
             <div class="ml-3">
               <div class="text-caption text-uppercase stat-label">
                 Completadas
@@ -87,7 +75,6 @@
             </div>
           </div>
           
-          <!-- Badge de Motivación (opcional) -->
           <v-chip
             v-if="completedRoutines >= 5"
             small
@@ -138,62 +125,17 @@ const progressColor = computed((): string => {
   width: 100%;
 }
 
-/* Tarjeta flotante base - Tema oscuro futurista */
+/* Tarjeta estática - Tema oscuro futurista */
 .floating-stat-card {
   margin-bottom: 1rem;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   background: linear-gradient(135deg, rgba(26, 10, 46, 0.9) 0%, rgba(15, 10, 26, 0.95) 100%);
   border: 2px solid rgba(139, 92, 246, 0.3);
   backdrop-filter: blur(10px);
-  cursor: default;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
-.floating-stat-card:hover {
-  transform: translateY(-4px) scale(1.02);
-  box-shadow: 0 16px 48px rgba(139, 92, 246, 0.4) !important;
-  border-color: rgba(139, 92, 246, 0.6);
-}
-
-/* Animaciones flotantes escalonadas */
-.card-1 {
-  animation: float-1 3s ease-in-out infinite;
-}
-
 .card-2 {
-  animation: float-2 3s ease-in-out infinite 0.5s;
   margin-left: 2rem;
-}
-
-.card-3 {
-  animation: float-3 3s ease-in-out infinite 1s;
-}
-
-@keyframes float-1 {
-  0%, 100% { 
-    transform: translateY(0); 
-  }
-  50% { 
-    transform: translateY(-10px); 
-  }
-}
-
-@keyframes float-2 {
-  0%, 100% { 
-    transform: translateY(0); 
-  }
-  50% { 
-    transform: translateY(-15px); 
-  }
-}
-
-@keyframes float-3 {
-  0%, 100% { 
-    transform: translateY(0); 
-  }
-  50% { 
-    transform: translateY(-12px); 
-  }
 }
 
 /* Wrapper del icono circular */
@@ -205,13 +147,7 @@ const progressColor = computed((): string => {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  transition: all 0.3s ease;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.floating-stat-card:hover .mini-icon-wrapper {
-  transform: scale(1.1) rotate(5deg);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
 }
 
 /* Colores de los iconos - Tema oscuro */
@@ -243,29 +179,18 @@ const progressColor = computed((): string => {
 .stat-value {
   line-height: 1;
   color: #ffffff;
-  transition: all 0.3s ease;
   text-shadow: 0 0 20px rgba(167, 139, 250, 0.3);
-}
-
-.floating-stat-card:hover .stat-value {
-  color: #a78bfa;
-  text-shadow: 0 0 25px rgba(167, 139, 250, 0.6);
 }
 
 /* Barra de progreso XP - Tema oscuro */
 .xp-progress {
   border-radius: 10px;
   overflow: hidden;
-  transition: all 0.3s ease;
   background: rgba(255, 255, 255, 0.1) !important;
 }
 
 .xp-progress >>> .v-progress-linear__determinate {
   transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.floating-stat-card:hover .xp-progress {
-  box-shadow: 0 2px 12px rgba(139, 92, 246, 0.4);
 }
 
 /* Texto de XP - Tema oscuro */
@@ -280,63 +205,12 @@ const progressColor = computed((): string => {
 /* Icono decorativo del cofre */
 .treasure-icon {
   opacity: 0.7;
-  transition: all 0.3s ease;
-}
-
-.floating-stat-card:hover .treasure-icon {
-  opacity: 1;
-  transform: scale(1.1) rotate(-5deg);
 }
 
 /* Chip de motivación */
 .motivation-chip {
   font-weight: 700;
   letter-spacing: 0.5px;
-  animation: pulse-chip 2s ease-in-out infinite;
-}
-
-@keyframes pulse-chip {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.05);
-    opacity: 0.9;
-  }
-}
-
-/* Efecto de brillo en hover */
-.floating-stat-card::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(
-    45deg,
-    transparent 30%,
-    rgba(255, 255, 255, 0.3) 50%,
-    transparent 70%
-  );
-  opacity: 0;
-  transition: opacity 0.5s ease;
-  pointer-events: none;
-}
-
-.floating-stat-card:hover::before {
-  opacity: 1;
-  animation: shine 1.5s ease-in-out;
-}
-
-@keyframes shine {
-  0% {
-    transform: translateX(-100%) translateY(-100%) rotate(45deg);
-  }
-  100% {
-    transform: translateX(100%) translateY(100%) rotate(45deg);
-  }
 }
 
 /* Responsive Design */
@@ -430,7 +304,7 @@ const progressColor = computed((): string => {
   .mini-icon-wrapper,
   .treasure-icon,
   .motivation-chip {
-    animation: none !important;
+
     transition: none !important;
   }
 }

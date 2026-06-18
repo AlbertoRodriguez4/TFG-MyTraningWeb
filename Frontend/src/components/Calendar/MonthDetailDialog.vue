@@ -1,7 +1,6 @@
 <template>
   <v-dialog v-model="showDialog" max-width="800" scrollable>
     <v-card v-if="monthData" class="month-detail-card">
-      <!-- Header -->
       <div class="detail-header">
         <div class="header-content">
           <v-icon large color="white" class="mr-3">mdi-calendar-month</v-icon>
@@ -17,30 +16,28 @@
         </v-btn>
       </div>
 
-      <!-- Stats Summary -->
       <v-card-text class="pa-6">
         <div class="mini-stats">
           <div class="mini-stat success">
-            <v-icon color="success">mdi-check-circle</v-icon>
+            <v-icon color="white">mdi-check-circle</v-icon>
             <div class="mini-stat-value">{{ monthData.completed }}</div>
             <div class="mini-stat-label">{{ t('common.completed') }}</div>
           </div>
           <div class="mini-stat warning">
-            <v-icon color="warning">mdi-clock-outline</v-icon>
+            <v-icon color="white">mdi-clock-outline</v-icon>
             <div class="mini-stat-value">{{ monthData.pending }}</div>
             <div class="mini-stat-label">{{ t('common.pending') }}</div>
           </div>
           <div class="mini-stat info">
-            <v-icon color="amber">mdi-star</v-icon>
+            <v-icon color="white">mdi-star</v-icon>
             <div class="mini-stat-value">{{ monthData.totalXP }}</div>
             <div class="mini-stat-label">{{ t('common.totalXP') }}</div>
           </div>
         </div>
 
-        <!-- Lista de Rutinas -->
         <div class="routines-list">
           <h3 class="list-title">
-            <v-icon color="purple" class="mr-2">mdi-dumbbell</v-icon>
+            <v-icon color="white" class="mr-2">mdi-dumbbell</v-icon>
             {{ t('monthDetail.monthRoutines') }}
           </h3>
 
@@ -58,7 +55,7 @@
 
             <div class="routine-info">
               <div class="routine-name">
-                <v-icon :color="routine.iscompleted ? 'success' : 'warning'" class="mr-2">
+                <v-icon :color="white" class="mr-2">
                   {{ routine.iscompleted ? 'mdi-check-circle' : 'mdi-clock-outline' }}
                 </v-icon>
                 {{ routine.name }}
@@ -71,7 +68,7 @@
                 {{ getDifficultyText(routine.difficulty) }}
               </v-chip>
               <div class="reward-badge">
-                <v-icon small color="amber">mdi-star</v-icon>
+                <v-icon small color="white">mdi-star</v-icon>
                 <span>+{{ routine.reward }} XP</span>
               </div>
             </div>
@@ -79,7 +76,6 @@
         </div>
       </v-card-text>
 
-      <!-- Footer -->
       <v-card-actions class="detail-footer">
         <v-spacer></v-spacer>
         <v-btn color="purple" text large @click="closeDialog">
@@ -295,12 +291,6 @@ const closeDialog = (): void => {
 .routine-item.completed {
   border-left-color: rgba(52, 211, 153, 0.8);
   background: linear-gradient(135deg, rgba(52, 211, 153, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
-}
-
-.routine-item:hover {
-  transform: translateX(4px);
-  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.3);
-  border-color: rgba(167, 139, 250, 0.5);
 }
 
 .routine-date {

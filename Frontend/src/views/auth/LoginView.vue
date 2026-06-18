@@ -117,20 +117,7 @@ async function handleLogin() {
     <div class="grid-lines"></div>
 
     <div class="login-container">
-      <!-- Header -->
-      <div class="header-banner">
-        <div class="logo-container">
-          <div class="logo-icon">
-            <img src="@/assets/imgs/Logo.png" :alt="$t('title')" class="main-logo" />
-          </div>
-        </div>
-        <h1 class="hero-title">{{ $t('slogan') }}</h1>
-        <p class="hero-subtitle">{{ $t('hero_subtitle_login') }}</p>
-      </div>
-
-      <!-- Content Grid -->
       <div class="content-grid">
-        <!-- Form Panel -->
         <div class="form-panel">
           <div class="form-card">
             <div class="form-header">
@@ -144,7 +131,6 @@ async function handleLogin() {
 
             <v-form @submit.prevent="handleLogin" class="login-form">
               <div class="inputs-container">
-                <!-- Email -->
                 <div class="input-wrapper">
                   <label class="input-label">{{ $t('email_label') }}</label>
                   <v-text-field v-model="email" type="email" :placeholder="$t('placeholder_email')"
@@ -152,7 +138,6 @@ async function handleLogin() {
                     hide-details="auto" autocomplete="email" />
                 </div>
 
-                <!-- Contraseña -->
                 <div class="input-wrapper">
                   <label class="input-label">{{ $t('password_label') }}</label>
                   <v-text-field v-model="password" :type="showPassword ? 'text' : 'password'"
@@ -169,7 +154,6 @@ async function handleLogin() {
                 </div>
               </div>
 
-              <!-- ── Recordar sesión ────────────────────────────── -->
               <div class="remember-row">
                 <button type="button" class="remember-toggle" :class="{ checked: rememberMe }"
                   @click="rememberMe = !rememberMe" :aria-checked="rememberMe" role="checkbox">
@@ -179,15 +163,12 @@ async function handleLogin() {
                   <span class="remember-label">{{ $t('remember_email') }}</span>
                 </button>
 
-                <!-- Indicador visual cuando está activo -->
                 <div v-if="rememberMe" class="remember-active">
                   <span class="ra-dot"></span>
                   <span class="ra-text">{{ $t('will_save_on_login') }}</span>
                 </div>
               </div>
-              <!-- ───────────────────────────────────────────────── -->
 
-              <!-- Quick Info -->
               <div class="quick-info">
                 <div class="info-item">
                   <span class="info-icon"><v-icon>mdi-lightning-bolt</v-icon></span>
@@ -199,13 +180,11 @@ async function handleLogin() {
                 </div>
               </div>
 
-              <!-- Error -->
               <div v-if="errorMessage" class="error-alert">
                 <span class="error-icon"><v-icon>mdi-alert</v-icon></span>
                 <span class="error-text">{{ errorMessage }}</span>
               </div>
 
-              <!-- Submit -->
               <v-btn type="submit" size="x-large" class="submit-btn" :loading="isLoading" :disabled="isLoading" block>
                 <span v-if="!isLoading" class="btn-text">
                   <span>{{ $t('login_button') }}</span>
@@ -217,14 +196,12 @@ async function handleLogin() {
                 </span>
               </v-btn>
 
-              <!-- Separator -->
               <div class="separator">
                 <div class="separator-line"></div>
                 <span class="separator-text">{{ $t('first_time') }}</span>
                 <div class="separator-line"></div>
               </div>
 
-              <!-- Register -->
               <div class="register-section">
                 <p class="register-text">{{ $t('no_account') }}</p>
                 <v-btn variant="outlined" size="large" class="register-btn" to="/register" block>
@@ -235,7 +212,6 @@ async function handleLogin() {
           </div>
         </div>
 
-        <!-- Info Panel -->
         <div class="info-panel">
           <div class="welcome-card">
             <div class="welcome-icon"><v-icon>mdi-hand-wave</v-icon></div>
@@ -282,7 +258,6 @@ async function handleLogin() {
       </div>
     </div>
 
-    <!-- Snackbar -->
     <v-snackbar v-model="snackbar" :color="snackbarColor" :timeout="4000" location="top" rounded="pill">
       <div class="snackbar-content">
         <span class="snackbar-icon">
@@ -306,7 +281,7 @@ async function handleLogin() {
 
 .login-wrapper {
   min-height: 100vh;
-  background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 50%, #0f0a1a 100%);
+  background: transparent;
   position: relative;
   overflow-x: hidden;
 }
@@ -317,7 +292,7 @@ async function handleLogin() {
   filter: blur(80px);
   pointer-events: none;
   z-index: 1;
-  animation: pulse 4s ease-in-out infinite;
+
 }
 
 .orb-1 {
@@ -335,20 +310,6 @@ async function handleLogin() {
   height: 400px;
   background: rgba(34, 211, 238, 0.15);
   animation-delay: 2s;
-}
-
-@keyframes pulse {
-
-  0%,
-  100% {
-    opacity: 0.5;
-    transform: scale(1);
-  }
-
-  50% {
-    opacity: 0.8;
-    transform: scale(1.1);
-  }
 }
 
 .grid-lines {
@@ -374,19 +335,7 @@ async function handleLogin() {
 .header-banner {
   text-align: center;
   margin-bottom: 3rem;
-  animation: fadeIn 0.8s ease-out;
-}
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 .logo-container {
@@ -434,19 +383,7 @@ async function handleLogin() {
 }
 
 .form-panel {
-  animation: slideUp 0.8s ease-out;
-}
 
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 .form-card {
@@ -479,19 +416,7 @@ async function handleLogin() {
   height: 8px;
   background: #22d3ee;
   border-radius: 50%;
-  animation: blink 2s ease-in-out infinite;
-}
 
-@keyframes blink {
-
-  0%,
-  100% {
-    opacity: 1;
-  }
-
-  50% {
-    opacity: 0.3;
-  }
 }
 
 .badge-text {
@@ -541,11 +466,6 @@ async function handleLogin() {
   border-radius: 12px !important;
   color: #f8fafc !important;
   transition: all 0.3s ease !important;
-}
-
-:deep(.custom-input .v-field:hover) {
-  border-color: rgba(139, 92, 246, 0.4) !important;
-  background: rgba(0, 0, 0, 0.4) !important;
 }
 
 :deep(.custom-input .v-field--focused) {
@@ -614,10 +534,6 @@ async function handleLogin() {
   transition: opacity 0.2s;
 }
 
-.remember-toggle:hover {
-  opacity: 0.85;
-}
-
 .remember-box {
   width: 18px;
   height: 18px;
@@ -671,7 +587,7 @@ async function handleLogin() {
   border-radius: 50%;
   background: #22d3ee;
   box-shadow: 0 0 5px #22d3ee;
-  animation: blink 1.8s ease-in-out infinite;
+
 }
 
 .ra-text {
@@ -716,23 +632,7 @@ async function handleLogin() {
   border-radius: 12px;
   padding: 1rem;
   margin-bottom: 1.5rem;
-  animation: shake 0.3s ease;
-}
 
-@keyframes shake {
-
-  0%,
-  100% {
-    transform: translateX(0);
-  }
-
-  25% {
-    transform: translateX(-10px);
-  }
-
-  75% {
-    transform: translateX(10px);
-  }
 }
 
 .error-icon {
@@ -833,7 +733,7 @@ async function handleLogin() {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  animation: fadeIn 0.8s ease-out 0.2s both;
+
 }
 
 .welcome-card {
@@ -848,23 +748,7 @@ async function handleLogin() {
 .welcome-icon {
   font-size: 3rem;
   margin-bottom: 1rem;
-  animation: wave 2s ease-in-out infinite;
-}
 
-@keyframes wave {
-
-  0%,
-  100% {
-    transform: rotate(0deg);
-  }
-
-  25% {
-    transform: rotate(20deg);
-  }
-
-  75% {
-    transform: rotate(-20deg);
-  }
 }
 
 .welcome-title {
@@ -886,12 +770,6 @@ async function handleLogin() {
   border-radius: 16px;
   padding: 1.5rem;
   transition: all 0.3s ease;
-}
-
-.info-card:hover {
-  transform: translateY(-3px);
-  border-color: rgba(139, 92, 246, 0.3);
-  background: rgba(15, 15, 30, 0.6);
 }
 
 .info-title {
@@ -940,10 +818,6 @@ async function handleLogin() {
   align-items: center;
   gap: 0.5rem;
   transition: transform 0.3s ease;
-}
-
-.progress-item:hover {
-  transform: scale(1.05);
 }
 
 .progress-icon {

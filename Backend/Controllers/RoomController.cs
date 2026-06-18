@@ -9,6 +9,7 @@ namespace AA2_CS.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class RoomController : ControllerBase
     {
         private readonly RoomService _roomService;
@@ -115,7 +116,7 @@ namespace AA2_CS.Controllers
             }
         }
         
-        // Endpoint extra si quieres traer salas + usuarios en una sola llamada
+        
         [HttpGet("with-users")]
         [Authorize]
         public IActionResult GetAllRoomsWithUsers()

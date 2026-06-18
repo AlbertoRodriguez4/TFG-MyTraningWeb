@@ -4,19 +4,15 @@
 <template>
   <div class="user-view-header">
     <div class="header-content">
-      <!-- Animated Background Glow -->
-      <div class="header-glow"></div>
+      <div ></div>
 
-      <!-- Icon Wrapper -->
       <div class="icon-wrapper">
-        <!-- Rotating Rings -->
         <div class="icon-rings">
           <div class="ring ring-outer"></div>
           <div class="ring ring-middle"></div>
           <div class="ring ring-inner"></div>
         </div>
 
-        <!-- Sparkles -->
         <div class="sparkles">
           <div class="sparkle" v-for="i in 5" :key="i" :style="{
             left: `${20 + i * 15}%`,
@@ -25,30 +21,26 @@
           }"></div>
         </div>
 
-        <!-- Main Trophy Icon -->
         <div class="trophy-container">
           <v-icon class="trophy-icon">mdi-trophy-variant</v-icon>
           <div class="trophy-shine"></div>
         </div>
       </div>
 
-      <!-- Title -->
       <h1 class="title">
         <span class="title-sub">{{ $t('HALL OF') }}</span>
         <span class="title-main">
           <span class="title-text">{{ $t('CHAMPIONS') }}</span>
-          <div class="title-glow"></div>
+          <div ></div>
         </span>
       </h1>
 
-      <!-- Subtitle -->
       <p class="subtitle">
         <span class="subtitle-icon"><v-icon>mdi-star-four-points</v-icon></span>
         {{ $t('Los atletas legendarios de TheTrainingHub') }}
         <span class="subtitle-icon"><v-icon>mdi-star-four-points</v-icon></span>
       </p>
 
-      <!-- Decorative Divider -->
       <div class="divider">
         <div class="divider-line"></div>
         <div class="divider-diamond">
@@ -70,25 +62,6 @@
 .header-content {
   display: inline-block;
   position: relative;
-}
-
-/* Background Glow */
-.header-glow {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 300px;
-  height: 300px;
-  background: radial-gradient(ellipse, rgba(255, 215, 0, 0.15), transparent 70%);
-  filter: blur(40px);
-  pointer-events: none;
-  animation: glow-pulse 3s ease-in-out infinite;
-}
-
-@keyframes glow-pulse {
-  0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
-  50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
 }
 
 /* Icon Wrapper */
@@ -115,7 +88,7 @@
   transform: translate(-50%, -50%);
   border-radius: 50%;
   border: 2px solid transparent;
-  animation: ring-rotate linear infinite;
+
 }
 
 .ring-outer {
@@ -143,11 +116,6 @@
   animation-duration: 4s;
 }
 
-@keyframes ring-rotate {
-  from { transform: translate(-50%, -50%) rotate(0deg); }
-  to { transform: translate(-50%, -50%) rotate(360deg); }
-}
-
 /* Sparkles */
 .sparkles {
   position: absolute;
@@ -165,18 +133,7 @@
   background: #FFD700;
   border-radius: 50%;
   box-shadow: 0 0 10px #FFD700, 0 0 20px rgba(255, 215, 0, 0.5);
-  animation: sparkle-twinkle 1.5s ease-in-out infinite;
-}
 
-@keyframes sparkle-twinkle {
-  0%, 100% {
-    opacity: 0;
-    transform: scale(0) rotate(0deg);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1) rotate(180deg);
-  }
 }
 
 /* Trophy Container */
@@ -193,16 +150,7 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
   filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.6));
-  animation: trophy-float 3s ease-in-out infinite;
-}
 
-@keyframes trophy-float {
-  0%, 100% {
-    transform: translateY(0) scale(1);
-  }
-  50% {
-    transform: translateY(-10px) scale(1.05);
-  }
 }
 
 .trophy-shine {
@@ -215,12 +163,7 @@
   background: radial-gradient(circle, rgba(255, 255, 255, 0.4), transparent 70%);
   border-radius: 50%;
   filter: blur(10px);
-  animation: shine-pulse 2s ease-in-out infinite;
-}
 
-@keyframes shine-pulse {
-  0%, 100% { opacity: 0.3; transform: translate(-50%, -50%) scale(1); }
-  50% { opacity: 0.6; transform: translate(-50%, -50%) scale(1.2); }
 }
 
 /* Title */
@@ -256,26 +199,9 @@
   background-clip: text;
   letter-spacing: 4px;
   text-transform: uppercase;
-  animation: gradient-shift 4s ease infinite;
+
   position: relative;
   z-index: 2;
-}
-
-@keyframes gradient-shift {
-  0%, 100% { background-position: 0% center; }
-  50% { background-position: 100% center; }
-}
-
-.title-glow {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 100%;
-  height: 50px;
-  background: radial-gradient(ellipse, rgba(255, 215, 0, 0.3), transparent 70%);
-  filter: blur(20px);
-  pointer-events: none;
 }
 
 /* Subtitle */
@@ -293,12 +219,7 @@
 
 .subtitle-icon {
   font-size: 1.2rem;
-  animation: subtitle-sparkle 2s ease-in-out infinite;
-}
 
-@keyframes subtitle-sparkle {
-  0%, 100% { opacity: 0.5; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.2); }
 }
 
 /* Decorative Divider */
@@ -333,11 +254,7 @@
   width: 100%;
   height: 100%;
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-  animation: line-shine 3s linear infinite;
-}
 
-@keyframes line-shine {
-  to { left: 100%; }
 }
 
 .divider-diamond {
@@ -346,18 +263,7 @@
   justify-content: center;
   color: #FFD700;
   filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.6));
-  animation: diamond-pulse 2s ease-in-out infinite;
-}
 
-@keyframes diamond-pulse {
-  0%, 100% {
-    opacity: 1;
-    transform: scale(1) rotate(0deg);
-  }
-  50% {
-    opacity: 0.8;
-    transform: scale(1.1) rotate(45deg);
-  }
 }
 
 /* Responsive */

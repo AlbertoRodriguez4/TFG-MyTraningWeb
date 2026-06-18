@@ -1,7 +1,6 @@
 <template>
   <div class="composer">
 
-    <!-- Quick prompts (only shown before first message) -->
     <div class="quick-row" v-if="showQuickPrompts">
       <button
         class="quick"
@@ -14,7 +13,6 @@
       </button>
     </div>
 
-    <!-- Input row -->
     <div class="input-row">
       <textarea
         ref="textareaRef"
@@ -137,12 +135,6 @@ function submit(): void {
   transition: all .15s;
   font-family: inherit;
   flex-shrink: 0;
-}
-
-.quick:hover {
-  border-color: var(--c-accent);
-  color: var(--c-accent);
-  background: #fff1eb;
 }
 
 .quick-icon { font-size: 13px; }

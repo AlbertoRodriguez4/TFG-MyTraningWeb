@@ -20,9 +20,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowFrontend",
         policy => policy.WithOrigins(
                         "http://localhost:5173", 
-                        "http://127.0.0.1:5173",
-                        "http://a8e4b496a2b2348fc8baabf2f8b72fd5-1796830399.us-east-1.elb.amazonaws.com", 
-                        "http://traininghub.retocsv.es" 
+                        "http://127.0.0.1:5173"
                     ) 
                         .AllowAnyHeader()
                         .AllowAnyMethod()

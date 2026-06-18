@@ -1,6 +1,5 @@
 <template>
   <div class="subscription-container">
-    <!-- Loading State -->
     <div v-if="isLoading" class="loading-state">
       <v-progress-circular
         size="64"
@@ -10,7 +9,6 @@
       <p class="loading-text">{{ $t('loading_subscription') }}</p>
     </div>
 
-    <!-- No Subscription -->
     <div v-else-if="!hasActiveSubscription" class="no-subscription">
       <v-card class="settings-card plan-card" elevation="0" border>
         <v-card-title class="card-title">
@@ -71,9 +69,7 @@
       </v-card>
     </div>
 
-    <!-- Active Subscription -->
     <div v-else>
-      <!-- Current Plan -->
       <v-card class="settings-card plan-card" elevation="0" border>
         <v-card-title class="card-title">
           <v-icon>mdi-crown</v-icon>
@@ -90,7 +86,7 @@
             <p class="plan-price">{{ subscription?.monthlyPrice.toFixed(2) }}€ <span class="period">/mes</span></p>
 
             <div class="renewal-info">
-              <v-icon size="small" color="#4ade80">mdi-calendar-check</v-icon>
+              <v-icon size="small" color="white">mdi-calendar-check</v-icon>
               <span>{{ $t('renewal_on') }} <strong>{{ formatDate(subscription?.endDate) }}</strong></span>
             </div>
 
@@ -126,7 +122,6 @@
         </v-card-text>
       </v-card>
 
-      <!-- Billing History -->
       <v-card class="settings-card" elevation="0" border>
         <v-card-title class="card-title">
           <v-icon>mdi-receipt</v-icon>
@@ -167,18 +162,17 @@
             </div>
           </div>
           <div v-else class="no-history">
-            <v-icon size="48" color="rgba(255, 255, 255, 0.3)">mdi-receipt</v-icon>
+            <v-icon size="48" color="white">mdi-receipt</v-icon>
             <p>{{ $t('subscription.noHistory') }}</p>
           </div>
         </v-card-text>
       </v-card>
     </div>
 
-    <!-- Confirmation Dialog -->
     <v-dialog v-model="showCancelDialog" max-width="400">
       <v-card class="dialog-card">
         <v-card-title class="dialog-title">
-          <v-icon color="#ff9500">mdi-alert-circle</v-icon>
+          <v-icon color="white">mdi-alert-circle</v-icon>
           {{ $t('cancel_subscription_confirm') }}
         </v-card-title>
         <v-card-text class="dialog-text">
@@ -191,7 +185,6 @@
       </v-card>
     </v-dialog>
 
-    <!-- Success/Error Snackbar -->
     <v-snackbar v-model="showSnackbar" :color="snackbarColor" timeout="3000" location="top">
       {{ snackbarMessage }}
     </v-snackbar>

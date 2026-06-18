@@ -88,15 +88,13 @@ async function calculateStats() {
 <template>
   <v-app>
     <v-main class="main">
-      <!-- Background Effects -->
       <div class="background-overlay"></div>
       <div class="gradient-orb orb-1"></div>
       <div class="gradient-orb orb-2"></div>
 
       <v-container fluid class="content-container">
-        <!-- Welcome Banner -->
         <div class="welcome-banner">
-          <div class="banner-glow"></div>
+          <div ></div>
           <div class="banner-content">
             <div class="welcome-icon"><v-icon>mdi-bank</v-icon></div>
             <div class="welcome-text">
@@ -111,12 +109,10 @@ async function calculateStats() {
           </div>
         </div>
 
-        <!-- Stats Dashboard -->
         <section class="stats-dashboard">
           <div class="stats-row">
-            <!-- Total Salas -->
             <div class="dash-stat" style="--stat-color: #fbbf24; --stat-rgb: 251,191,36;">
-              <div class="dash-stat-glow"></div>
+              <div ></div>
               <div class="dash-stat-content">
                 <div class="dash-stat-icon"><v-icon>mdi-stadium</v-icon></div>
                 <div class="dash-stat-info">
@@ -129,9 +125,8 @@ async function calculateStats() {
               </div>
             </div>
 
-            <!-- Mis Salas -->
             <div class="dash-stat" style="--stat-color: #38bdf8; --stat-rgb: 56,189,248;">
-              <div class="dash-stat-glow"></div>
+              <div ></div>
               <div class="dash-stat-content">
                 <div class="dash-stat-icon"><v-icon>mdi-check-circle</v-icon></div>
                 <div class="dash-stat-info">
@@ -147,9 +142,8 @@ async function calculateStats() {
               </div>
             </div>
 
-            <!-- Total Miembros -->
             <div class="dash-stat" style="--stat-color: #34d399; --stat-rgb: 52,211,153;">
-              <div class="dash-stat-glow"></div>
+              <div ></div>
               <div class="dash-stat-content">
                 <div class="dash-stat-icon"><v-icon>mdi-account-group</v-icon></div>
                 <div class="dash-stat-info">
@@ -162,9 +156,8 @@ async function calculateStats() {
               </div>
             </div>
 
-            <!-- Nivel Promedio -->
             <div class="dash-stat" style="--stat-color: #a78bfa; --stat-rgb: 167,139,250;">
-              <div class="dash-stat-glow"></div>
+              <div ></div>
               <div class="dash-stat-content">
                 <div class="dash-stat-icon"><v-icon>mdi-trending-up</v-icon></div>
                 <div class="dash-stat-info">
@@ -182,7 +175,6 @@ async function calculateStats() {
           </div>
         </section>
 
-        <!-- Content Section -->
         <section class="content-section" id="inventarios">
           <RoomRender />
         </section>
@@ -203,7 +195,7 @@ async function calculateStats() {
   position: relative;
   min-height: 100vh;
   width: 100%;
-  background: var(--bg-primary);
+  background: transparent;
   overflow-x: hidden;
   overflow-y: auto;
 }
@@ -232,7 +224,7 @@ async function calculateStats() {
   opacity: 0.12;
   z-index: 1;
   pointer-events: none;
-  animation: float-orb 20s ease-in-out infinite;
+
 }
 
 .orb-1 {
@@ -251,21 +243,6 @@ async function calculateStats() {
   bottom: -200px;
   left: -200px;
   animation-delay: 5s;
-}
-
-@keyframes float-orb {
-  0%, 100% {
-    transform: translate(0, 0) scale(1);
-  }
-  25% {
-    transform: translate(50px, -50px) scale(1.1);
-  }
-  50% {
-    transform: translate(-30px, 30px) scale(0.9);
-  }
-  75% {
-    transform: translate(40px, 40px) scale(1.05);
-  }
 }
 
 /* Content Container */
@@ -292,21 +269,6 @@ async function calculateStats() {
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
-.banner-glow {
-  position: absolute;
-  inset: -2px;
-  background: linear-gradient(135deg, #fbbf24, #f59e0b);
-  border-radius: 24px;
-  opacity: 0;
-  filter: blur(20px);
-  transition: opacity 0.3s;
-  z-index: -1;
-}
-
-.welcome-banner:hover .banner-glow {
-  opacity: 0.25;
-}
-
 .banner-content {
   display: flex;
   align-items: center;
@@ -317,16 +279,6 @@ async function calculateStats() {
 .welcome-icon {
   font-size: 4rem;
   filter: drop-shadow(0 4px 12px rgba(251, 191, 36, 0.5));
-  animation: pulse-icon 2s ease-in-out infinite;
-}
-
-@keyframes pulse-icon {
-  0%, 100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-  }
 }
 
 .welcome-text {
@@ -381,12 +333,7 @@ async function calculateStats() {
 /* Stats Dashboard */
 .stats-dashboard {
   margin-bottom: 2.5rem;
-  animation: fadeInUp 0.6s ease-out;
-}
 
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
 }
 
 .stats-row {
@@ -403,34 +350,9 @@ async function calculateStats() {
   padding: 1.25rem;
   overflow: hidden;
   backdrop-filter: blur(20px);
-  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
   box-shadow:
     0 4px 20px rgba(0, 0, 0, 0.3),
     0 0 0 1px rgba(255, 255, 255, 0.03);
-}
-
-.dash-stat:hover {
-  transform: translateY(-6px) scale(1.02);
-  border-color: rgba(var(--stat-rgb), 0.5);
-  box-shadow:
-    0 16px 48px rgba(0, 0, 0, 0.4),
-    0 0 30px rgba(var(--stat-rgb), 0.15),
-    0 0 0 1px rgba(var(--stat-rgb), 0.25);
-}
-
-.dash-stat-glow {
-  position: absolute;
-  inset: -1px;
-  background: linear-gradient(135deg, rgba(var(--stat-rgb), 0.4), transparent, rgba(var(--stat-rgb), 0.2));
-  border-radius: 16px;
-  opacity: 0;
-  transition: opacity 0.4s;
-  z-index: 0;
-  pointer-events: none;
-}
-
-.dash-stat:hover .dash-stat-glow {
-  opacity: 0.6;
 }
 
 .dash-stat-content {
@@ -453,12 +375,6 @@ async function calculateStats() {
   border: 1px solid rgba(var(--stat-rgb), 0.3);
   border-radius: 12px;
   box-shadow: 0 0 16px rgba(var(--stat-rgb), 0.15), inset 0 0 10px rgba(var(--stat-rgb), 0.06);
-  transition: all 0.3s ease;
-}
-
-.dash-stat:hover .dash-stat-icon {
-  transform: scale(1.1) rotate(-4deg);
-  box-shadow: 0 0 24px rgba(var(--stat-rgb), 0.25), inset 0 0 14px rgba(var(--stat-rgb), 0.1);
 }
 
 .dash-stat-info {
@@ -475,12 +391,6 @@ async function calculateStats() {
   line-height: 1;
   font-family: 'Courier New', monospace;
   text-shadow: 0 2px 10px rgba(var(--stat-rgb), 0.4);
-  transition: all 0.3s ease;
-}
-
-.dash-stat:hover .dash-stat-value {
-  color: var(--stat-color);
-  text-shadow: 0 0 20px rgba(var(--stat-rgb), 0.6);
 }
 
 .dash-stat-label {
@@ -530,16 +440,7 @@ async function calculateStats() {
   position: relative;
   z-index: 2;
   margin-top: 0;
-  animation: fadeIn 0.8s ease-out 0.2s both;
-}
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
 }
 
 /* Floating Action Button - Estilo consistente con HomeLoggedView */
@@ -564,14 +465,7 @@ async function calculateStats() {
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
-  animation: fab-pulse 2s ease-in-out infinite;
-}
 
-.fab:hover {
-  transform: translateY(-4px) scale(1.1);
-  box-shadow:
-    0 8px 24px rgba(251, 191, 36, 0.7),
-    0 0 0 8px rgba(251, 191, 36, 0.15);
 }
 
 .fab:active {
@@ -582,19 +476,6 @@ async function calculateStats() {
   font-size: 1.5rem;
   color: white;
   font-weight: bold;
-}
-
-@keyframes fab-pulse {
-  0%, 100% {
-    box-shadow:
-      0 4px 12px rgba(251, 191, 36, 0.5),
-      0 0 0 0 rgba(251, 191, 36, 0.5);
-  }
-  50% {
-    box-shadow:
-      0 4px 12px rgba(251, 191, 36, 0.5),
-      0 0 0 10px rgba(251, 191, 36, 0);
-  }
 }
 
 /* Responsive Design */

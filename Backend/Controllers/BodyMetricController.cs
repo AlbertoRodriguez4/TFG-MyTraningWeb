@@ -7,6 +7,7 @@ using AA2_CS.Services;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class BodyMetricController : ControllerBase
 {
     private readonly BodyMetricService _service;

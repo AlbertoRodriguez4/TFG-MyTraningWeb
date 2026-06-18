@@ -2,7 +2,6 @@
   <aside class="sidebar" :class="{ 'sidebar--open': open }">
     <div class="sidebar-inner">
 
-      <!-- Brand -->
       <div class="brand">
         <div class="brand-mark">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
@@ -12,7 +11,6 @@
         <span class="brand-name">Coach<strong>AI</strong></span>
       </div>
 
-      <!-- Nav -->
       <nav class="nav">
         <a class="nav-link nav-link--active" href="#">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
@@ -22,7 +20,6 @@
         </a>  
       </nav>
 
-      <!-- Stats -->
       <div class="stats-block">
         <p class="stats-title">{{ t('common.today') }}</p>
         <div class="stat-row" v-for="s in stats" :key="s.label">
@@ -39,7 +36,6 @@
         </div>
       </div>
 
-      <!-- User -->
       <div class="user-row">
         <div class="user-ava">A</div>
         <div class="user-data">

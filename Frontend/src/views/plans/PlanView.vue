@@ -47,9 +47,8 @@ const navigateToPayment = () => {
 
 <template>
   <div class="plan-view">
-    <!-- Hero -->
     <section class="hero">
-      <div class="hero-bg-glow"></div>
+      <div ></div>
       <div class="hero-content">
         <v-icon class="hero-icon">mdi-crown-outline</v-icon>
         <h1 class="hero-title">{{ $t('plan_premium') }}</h1>
@@ -59,95 +58,83 @@ const navigateToPayment = () => {
       </div>
     </section>
 
-    <!-- Plan Card -->
     <section class="plans-section">
       <div class="plan-card">
-        <div class="card-glow"></div>
+        <div ></div>
         <div class="card-shine"></div>
 
-        <!-- Badge -->
-        <div class="featured-badge">
-          <v-icon size="16">mdi-star</v-icon>
-          <span>{{ $t('recommended') }}</span>
-        </div>
 
-        <!-- Header -->
-        <div class="tier-header">
-          <div class="tier-icon-wrapper">
-            <v-icon size="40" color="white">mdi-crown</v-icon>
-          </div>
-          <div class="tier-badge">{{ $t('premium') }}</div>
-        </div>
 
-        <!-- Content -->
-        <div class="card-content">
-          <div class="plan-header">
-            <h2 class="plan-name">{{ $t('plan_premium') }}</h2>
-            <p class="plan-description">{{ $t('plan_premium_description') }}</p>
-          </div>
-
-          <!-- Price -->
-          <div class="price-section">
-            <div class="price-wrapper">
-              <div class="price-main">
-                <span class="currency">€</span>
-                <span class="price-amount">{{ planPrice }}</span>
+        <div class="card-content layout-split">
+          <div class="plan-left">
+            <div class="tier-header">
+              <div class="tier-icon-wrapper">
+                <v-icon size="40" color="white">mdi-crown</v-icon>
               </div>
-              <div class="price-meta">
-                <span class="price-period">{{ $t('per_month') }}</span>
-                <span class="price-note">{{ $t('monthly_billing') }}</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Features -->
-          <div class="features-section">
-            <div class="features-header">
-              <v-icon size="20" color="#FFD700">mdi-check-decagram</v-icon>
-              <span>{{ $t('unlock_tools') }}</span>
+              <div class="tier-badge">{{ $t('premium') }}</div>
             </div>
 
-            <div class="features-list">
-              <div
-                v-for="(item, idx) in features"
-                :key="idx"
-                class="feature-item"
-                :style="{ animationDelay: (idx * 0.07) + 's' }"
-              >
-                <div class="feature-icon-wrapper">
-                  <v-icon size="20" color="#FFD700">{{ item.icon }}</v-icon>
+            <div class="price-section">
+              <div class="price-wrapper">
+                <div class="price-main">
+                  <span class="currency">€</span>
+                  <span class="price-amount">{{ planPrice }}</span>
                 </div>
-                <div class="feature-body">
-                  <span class="feature-title">{{ $t(item.title) }}</span>
-                  <span class="feature-desc">{{ $t(item.desc) }}</span>
+                <div class="price-meta">
+                  <span class="price-period">{{ $t('per_month') }}</span>
+                  <span class="price-note">{{ $t('monthly_billing') }}</span>
                 </div>
               </div>
             </div>
+
+            <v-btn
+              block
+              size="x-large"
+              class="cta-button"
+              elevation="0"
+              @click="navigateToPayment"
+            >
+              <v-icon class="mr-2" size="20">mdi-rocket-launch</v-icon>
+              <span>{{ $t('subscribe_now') }}</span>
+            </v-btn>
+
+            <div class="card-footer">
+              <v-icon size="16" color="white">mdi-information</v-icon>
+              <span>{{ $t('no_commitment') }}</span>
+            </div>
           </div>
 
-          <!-- CTA -->
-          <v-btn
-            block
-            size="x-large"
-            class="cta-button"
-            elevation="0"
-            @click="navigateToPayment"
-          >
-            <v-icon class="mr-2" size="20">mdi-rocket-launch</v-icon>
-            <span>{{ $t('subscribe_now') }}</span>
-          </v-btn>
+          <div class="plan-right">
+            <div class="features-section">
+              <div class="features-header">
+                <v-icon size="20" color="white">mdi-check-decagram</v-icon>
+                <span>{{ $t('unlock_tools') }}</span>
+              </div>
 
-          <div class="card-footer">
-            <v-icon size="16" color="rgba(255,255,255,0.4)">mdi-information</v-icon>
-            <span>{{ $t('no_commitment') }}</span>
+              <div class="features-list">
+                <div
+                  v-for="(item, idx) in features"
+                  :key="idx"
+                  class="feature-item"
+                  :style="{ animationDelay: (idx * 0.07) + 's' }"
+                >
+                  <div class="feature-icon-wrapper">
+                    <v-icon size="20" color="white">{{ item.icon }}</v-icon>
+                  </div>
+                  <div class="feature-body">
+                    <span class="feature-title">{{ $t(item.title) }}</span>
+                    <span class="feature-desc">{{ $t(item.desc) }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Guarantee -->
       <div class="guarantee-banner">
         <div class="guarantee-icon">
-          <v-icon size="32" color="#FFD700">mdi-shield-check</v-icon>
+          <v-icon size="32" color="white">mdi-shield-check</v-icon>
         </div>
         <div class="guarantee-content">
           <div class="guarantee-title">{{ $t('30_day_guarantee') }}</div>
@@ -164,7 +151,7 @@ const navigateToPayment = () => {
 .plan-view {
   position: relative;
   min-height: 100vh;
-  background: linear-gradient(180deg, #0a0e1a 0%, #0f1419 50%, #0a0e1a 100%);
+  background: transparent;
   overflow-x: hidden;
 }
 
@@ -173,17 +160,6 @@ const navigateToPayment = () => {
   position: relative;
   text-align: center;
   padding: 5rem 2rem 3rem;
-}
-
-.hero-bg-glow {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 800px;
-  height: 800px;
-  background: radial-gradient(circle, rgba(255, 215, 0, 0.08) 0%, transparent 70%);
-  pointer-events: none;
 }
 
 .hero-content {
@@ -196,12 +172,7 @@ const navigateToPayment = () => {
   color: #FFD700;
   filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.6));
   margin-bottom: 1.5rem;
-  animation: icon-glow 3s ease-in-out infinite;
-}
 
-@keyframes icon-glow {
-  0%, 100% { filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.6)); }
-  50% { filter: drop-shadow(0 0 50px rgba(255, 215, 0, 0.9)); }
 }
 
 .hero-title {
@@ -215,12 +186,7 @@ const navigateToPayment = () => {
   letter-spacing: 2px;
   text-transform: uppercase;
   margin: 0 0 1rem;
-  animation: gradient-shift 4s ease infinite;
-}
 
-@keyframes gradient-shift {
-  0%, 100% { background-position: 0% center; }
-  50% { background-position: 100% center; }
 }
 
 .hero-subtitle {
@@ -245,43 +211,17 @@ const navigateToPayment = () => {
 .plan-card {
   position: relative;
   width: 100%;
-  max-width: 520px;
+  max-width: 900px;
   background: linear-gradient(135deg, rgba(20, 30, 48, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%);
   backdrop-filter: blur(20px);
   border: 2px solid rgba(255, 215, 0, 0.35);
-  border-radius: 24px;
-  padding: 2.5rem;
+  border-radius: 20px;
+  padding: 2rem 2.5rem;
   overflow: hidden;
-  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  animation: card-entrance 0.8s ease-out backwards;
-  box-shadow: 0 20px 60px rgba(255, 215, 0, 0.15);
+  box-shadow: 0 15px 45px rgba(255, 215, 0, 0.15);
 }
 
-@keyframes card-entrance {
-  0% { opacity: 0; transform: translateY(50px) scale(0.9); }
-  100% { opacity: 1; transform: translateY(0) scale(1); }
-}
 
-.plan-card:hover {
-  transform: translateY(-10px) scale(1.02);
-  border-color: rgba(255, 215, 0, 0.7);
-  box-shadow: 0 30px 80px rgba(255, 215, 0, 0.25);
-}
-
-.card-glow {
-  position: absolute;
-  inset: -2px;
-  background: linear-gradient(135deg, #FFD700, #FFA500);
-  border-radius: 24px;
-  opacity: 0;
-  transition: opacity 0.4s ease;
-  z-index: -1;
-  filter: blur(20px);
-}
-
-.plan-card:hover .card-glow {
-  opacity: 0.5;
-}
 
 .card-shine {
   position: absolute;
@@ -294,9 +234,7 @@ const navigateToPayment = () => {
   pointer-events: none;
 }
 
-.plan-card:hover .card-shine {
-  left: 100%;
-}
+
 
 /* Featured Badge */
 .featured-badge {
@@ -316,12 +254,25 @@ const navigateToPayment = () => {
   gap: 0.4rem;
   z-index: 10;
   box-shadow: 0 8px 25px rgba(255, 215, 0, 0.5);
-  animation: badge-float 3s ease-in-out infinite;
+
 }
 
-@keyframes badge-float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-5px); }
+/* Layout Split */
+.layout-split {
+  display: flex;
+  flex-direction: row;
+  gap: 3rem;
+  align-items: center;
+}
+
+.plan-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.plan-right {
+  flex: 1.2;
 }
 
 /* Tier Header */
@@ -329,33 +280,28 @@ const navigateToPayment = () => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
-  margin-bottom: 2rem;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
 }
 
 .tier-icon-wrapper {
-  width: 90px;
-  height: 90px;
-  border-radius: 20px;
+  width: 70px;
+  height: 70px;
+  border-radius: 16px;
   background: linear-gradient(135deg, #FFD700, #FFA500);
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: 0 10px 30px rgba(255, 215, 0, 0.4);
-  animation: icon-pulse 2s ease-in-out infinite;
-}
 
-@keyframes icon-pulse {
-  0%, 100% { transform: scale(1); box-shadow: 0 10px 30px rgba(255, 215, 0, 0.4); }
-  50% { transform: scale(1.1); box-shadow: 0 15px 40px rgba(255, 215, 0, 0.6); }
 }
 
 .tier-badge {
   background: rgba(0, 0, 0, 0.4);
   border: 2px solid #FFD700;
-  padding: 0.6rem 1.5rem;
-  border-radius: 25px;
-  font-size: 0.9rem;
+  padding: 0.4rem 1.25rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
   font-weight: 900;
   color: #FFD700;
   text-transform: uppercase;
@@ -392,8 +338,8 @@ const navigateToPayment = () => {
 
 /* Price Section */
 .price-section {
-  margin-bottom: 2rem;
-  padding: 1.75rem 1.5rem;
+  margin-bottom: 1.5rem;
+  padding: 1.25rem 1rem;
   background: rgba(0, 0, 0, 0.3);
   border-radius: 20px;
   border: 2px solid rgba(255, 255, 255, 0.05);
@@ -480,38 +426,29 @@ const navigateToPayment = () => {
 }
 
 .features-list {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 0.75rem;
 }
 
 .feature-item {
   display: flex;
-  align-items: flex-start;
-  gap: 1rem;
-  padding: 1rem;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
   background: rgba(255, 255, 255, 0.03);
-  border-radius: 14px;
+  border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.05);
   transition: all 0.3s ease;
-  animation: feature-fade-in 0.5s ease-out backwards;
+
 }
 
-@keyframes feature-fade-in {
-  0% { opacity: 0; transform: translateX(-20px); }
-  100% { opacity: 1; transform: translateX(0); }
-}
 
-.feature-item:hover {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 215, 0, 0.3);
-  transform: translateX(5px);
-}
 
 .feature-icon-wrapper {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
   background: rgba(0, 0, 0, 0.3);
   display: flex;
   align-items: center;
@@ -596,20 +533,15 @@ const navigateToPayment = () => {
   display: flex;
   align-items: center;
   gap: 1.5rem;
-  max-width: 520px;
+  max-width: 900px;
   width: 100%;
-  padding: 1.75rem 2rem;
+  padding: 1.25rem 1.5rem;
   background: linear-gradient(135deg, rgba(255, 215, 0, 0.15) 0%, rgba(255, 165, 0, 0.1) 100%);
   backdrop-filter: blur(20px);
   border: 2px solid rgba(255, 215, 0, 0.3);
   border-radius: 20px;
   box-shadow: 0 10px 40px rgba(255, 215, 0, 0.2);
-  animation: fadeIn 0.8s ease-out 0.3s backwards;
-}
 
-@keyframes fadeIn {
-  0% { opacity: 0; transform: translateY(20px); }
-  100% { opacity: 1; transform: translateY(0); }
 }
 
 .guarantee-icon {
@@ -698,6 +630,19 @@ const navigateToPayment = () => {
 @media (max-width: 400px) {
   .price-amount {
     font-size: 2.8rem;
+  }
+}
+
+@media (max-width: 850px) {
+  .layout-split {
+    flex-direction: column;
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .features-list {
+    grid-template-columns: 1fr;
   }
 }
 </style>

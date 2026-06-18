@@ -240,7 +240,6 @@ function goToRoom(roomId: number) {
 
 <template>
   <div class="rooms-wrapper">
-    <!-- Header -->
     <div class="rooms-header">
       <div class="header-left">
         <div class="header-icon">
@@ -260,22 +259,18 @@ function goToRoom(roomId: number) {
       </button>
     </div>
 
-    <!-- Divider -->
     <div class="header-rule">
       <div class="rule-line"></div>
-      <div class="rule-glow"></div>
+      <div ></div>
     </div>
 
-    <!-- Controls -->
     <div class="controls-section">
-      <!-- Search -->
       <div class="search-box">
         <span class="search-icon"><v-icon>mdi-magnify</v-icon></span>
         <input v-model="searchTerm" type="text" :placeholder="$t('search_room')" class="search-input" />
         <span v-if="searchTerm" class="search-clear" @click="searchTerm = ''"><v-icon>mdi-close</v-icon></span>
       </div>
 
-      <!-- Filters Bar -->
       <div class="filters-bar">
         <div class="filter-group">
           <span class="filter-group-label">{{ $t('sort_by') }}</span>
@@ -321,7 +316,6 @@ function goToRoom(roomId: number) {
       </div>
     </div>
 
-    <!-- Results Counter -->
     <div class="results-bar">
       <div class="results-line"></div>
       <span class="results-label">
@@ -330,7 +324,6 @@ function goToRoom(roomId: number) {
       <div class="results-line"></div>
     </div>
 
-    <!-- Empty State -->
     <div v-if="filteredRooms.length === 0" class="empty-state">
       <div class="empty-emoji">
         <v-icon>{{ activeFilter === 'joined' ? 'mdi-lock' : activeFilter === 'joinable' ? 'mdi-boom-gate' : activeFilter === 'trainer' ? 'mdi-medal' : 'mdi-weight-lifter' }}</v-icon>
@@ -353,7 +346,6 @@ function goToRoom(roomId: number) {
       </p>
     </div>
 
-    <!-- Grid de Salas -->
     <TransitionGroup v-else name="room-grid" tag="div" class="rooms-grid" appear>
       <RoomCard v-for="room in paginatedRooms" :key="room.id" :room="{ ...room, localization: room.localization ?? '' }"
         :member-count="getMemberCount(room.id)" :is-staff="loggedUser?.role === 'userStaff'"
@@ -362,7 +354,6 @@ function goToRoom(roomId: number) {
         :creator-role="room.creatorRole" @view="goToRoom" @edit="openEditPopup" />
     </TransitionGroup>
 
-    <!-- Paginación -->
     <div v-if="filteredRooms.length > 0 && totalPages > 1" class="pagination">
       <button class="page-btn page-nav" :disabled="currentPage === 1" @click="previousPage">
         <span class="nav-arrow">←</span>
@@ -387,7 +378,6 @@ function goToRoom(roomId: number) {
       }) }}
     </p>
 
-    <!-- Popups -->
     <CreateRoomPopup :isVisible="isPopupVisible" @close="closePopup" @create="handleCreateRoom" />
     <EditRoomPopup v-if="selectedRoom" :isVisible="showRoomPopup" :room="selectedRoom" @close="closeRoomPopup"
       @edit="(room) => console.log('Editando', room)" />
@@ -431,19 +421,6 @@ function goToRoom(roomId: number) {
   border-radius: 16px;
   box-shadow: 0 0 24px rgba(251, 191, 36, 0.15), inset 0 0 16px rgba(251, 191, 36, 0.08);
   flex-shrink: 0;
-  animation: icon-float 3s ease-in-out infinite;
-}
-
-@keyframes icon-float {
-
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(-4px);
-  }
 }
 
 .header-title {
@@ -472,21 +449,7 @@ function goToRoom(roomId: number) {
   border-radius: 50%;
   background: #fbbf24;
   box-shadow: 0 0 8px #fbbf24;
-  animation: sdot 2s ease-in-out infinite;
-}
 
-@keyframes sdot {
-
-  0%,
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-
-  50% {
-    opacity: 0.3;
-    transform: scale(0.6);
-  }
 }
 
 .create-btn {
@@ -530,17 +493,6 @@ function goToRoom(roomId: number) {
   position: absolute;
   inset: 0;
   background: linear-gradient(90deg, transparent, rgba(251, 191, 36, 0.35) 30%, rgba(251, 191, 36, 0.35) 70%, transparent);
-}
-
-.rule-glow {
-  position: absolute;
-  top: -2px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 140px;
-  height: 5px;
-  background: radial-gradient(ellipse, rgba(251, 191, 36, 0.6), transparent 70%);
-  filter: blur(3px);
 }
 
 /* ── Controls ── */
@@ -601,11 +553,6 @@ function goToRoom(roomId: number) {
   flex-shrink: 0;
 }
 
-.search-clear:hover {
-  color: #94a3b8;
-  background: rgba(255, 255, 255, 0.06);
-}
-
 /* Filters Bar */
 .filters-bar {
   display: flex;
@@ -651,23 +598,11 @@ function goToRoom(roomId: number) {
   font-family: inherit;
 }
 
-.filter-chip:hover {
-  color: #e2e8f0;
-  border-color: rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.07);
-  transform: translateY(-1px);
-}
-
 /* Sort chips */
 .sort-chip {
   background: rgba(139, 92, 246, 0.08);
   border-color: rgba(139, 92, 246, 0.25);
   color: #c4b5fd;
-}
-
-.sort-chip:hover {
-  background: rgba(139, 92, 246, 0.14);
-  border-color: rgba(139, 92, 246, 0.4);
 }
 
 .sort-chip.active {
@@ -690,11 +625,6 @@ function goToRoom(roomId: number) {
   color: #7dd3fc;
 }
 
-.filter-joined:hover {
-  background: rgba(56, 189, 248, 0.14);
-  border-color: rgba(56, 189, 248, 0.4);
-}
-
 .filter-joined.active {
   background: rgba(56, 189, 248, 0.2);
   border-color: rgba(56, 189, 248, 0.5);
@@ -707,11 +637,6 @@ function goToRoom(roomId: number) {
   background: rgba(52, 211, 153, 0.08);
   border-color: rgba(52, 211, 153, 0.25);
   color: #6ee7b7;
-}
-
-.filter-joinable:hover {
-  background: rgba(52, 211, 153, 0.14);
-  border-color: rgba(52, 211, 153, 0.4);
 }
 
 .filter-joinable.active {
@@ -728,11 +653,6 @@ function goToRoom(roomId: number) {
   color: #fbbf24;
 }
 
-.filter-trainer:hover {
-  background: rgba(251, 191, 36, 0.14);
-  border-color: rgba(251, 191, 36, 0.4);
-}
-
 .filter-trainer.active {
   background: rgba(251, 191, 36, 0.2);
   border-color: rgba(251, 191, 36, 0.5);
@@ -746,12 +666,6 @@ function goToRoom(roomId: number) {
   background: rgba(239, 68, 68, 0.08);
   border-color: rgba(239, 68, 68, 0.25);
   color: #f87171;
-}
-
-.filter-clear:hover {
-  background: rgba(239, 68, 68, 0.15);
-  border-color: rgba(239, 68, 68, 0.45);
-  color: #ef4444;
 }
 
 .chip-icon {
@@ -802,19 +716,7 @@ function goToRoom(roomId: number) {
   font-size: 4rem;
   opacity: 0.4;
   filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
-  animation: empty-bounce 3s ease-in-out infinite;
-}
 
-@keyframes empty-bounce {
-
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(-8px);
-  }
 }
 
 .empty-title {
@@ -835,8 +737,12 @@ function goToRoom(roomId: number) {
 /* ── Grid ── */
 .rooms-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
   gap: 1.5rem;
+}
+
+.rooms-grid > * {
+  min-width: 0;
 }
 
 /* Transiciones del grid */

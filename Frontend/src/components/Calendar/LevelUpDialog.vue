@@ -8,7 +8,7 @@
     <v-card rounded="xl" class="level-up-dialog">
       <v-card-text class="pa-10 text-center">
         <div class="level-up-animation mb-4">
-          <v-icon size="140" color="amber">mdi-trophy-variant</v-icon>
+          <v-icon size="140" color="white">mdi-trophy-variant</v-icon>
         </div>
         <h2 class="text-h2 font-weight-black mb-2 level-title">
           {{ $t('levelUp.newLevel', { level: userLevel }) }}
@@ -65,21 +65,7 @@ defineEmits<{
 }
 
 .level-up-animation {
-  animation: trophy-rotate 1s ease-out;
-}
 
-@keyframes trophy-rotate {
-  0% {
-    transform: scale(0) rotate(-180deg);
-    opacity: 0;
-  }
-  50% {
-    transform: scale(1.2) rotate(180deg);
-  }
-  100% {
-    transform: scale(1) rotate(360deg);
-    opacity: 1;
-  }
 }
 
 @media (max-width: 960px) {

@@ -167,15 +167,12 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="verify-wrapper">
-    <!-- Gradient orbs -->
     <div class="orb orb-1"></div>
     <div class="orb orb-2"></div>
 
-    <!-- Grid lines -->
     <div class="grid-lines"></div>
 
     <div class="verify-container">
-      <!-- Header -->
       <div class="header-banner">
         <div class="logo-container">
           <div class="logo-icon">
@@ -186,7 +183,6 @@ onBeforeUnmount(() => {
         <p class="hero-subtitle">{{ $t('account_verification') }}</p>
       </div>
 
-      <!-- Main Content -->
       <div class="verify-card">
         <div class="verify-header">
           <div class="verify-icon"><v-icon>mdi-email</v-icon></div>
@@ -197,19 +193,16 @@ onBeforeUnmount(() => {
           </p>
         </div>
 
-        <!-- Success Message -->
         <div v-if="successMessage" class="success-alert">
           <span class="success-icon"><v-icon>mdi-check</v-icon></span>
           <span class="success-text">{{ successMessage }}</span>
         </div>
 
-        <!-- Error Alert -->
         <div v-if="errorMessage" class="error-alert">
           <span class="error-icon"><v-icon>mdi-alert</v-icon></span>
           <span class="error-text">{{ errorMessage }}</span>
         </div>
 
-        <!-- Code Input -->
         <div class="code-section">
           <label class="code-label">{{ $t('verification_code_label') }}</label>
           <div class="code-input-container">
@@ -227,7 +220,6 @@ onBeforeUnmount(() => {
           <p class="code-hint">{{ $t('enter_6_digits') }}</p>
         </div>
 
-        <!-- Verify Button -->
         <v-btn
           @click="verifyEmail"
           size="x-large"
@@ -246,7 +238,6 @@ onBeforeUnmount(() => {
           </span>
         </v-btn>
 
-        <!-- Resend Section -->
         <div class="resend-section">
           <p class="resend-text">{{ $t('didnt_receive') }}</p>
           <v-btn
@@ -266,12 +257,10 @@ onBeforeUnmount(() => {
           </v-btn>
         </div>
 
-        <!-- Separator -->
         <div class="separator">
           <div class="separator-line"></div>
         </div>
 
-        <!-- Back to Login -->
         <v-btn
           variant="outlined"
           size="large"
@@ -283,7 +272,6 @@ onBeforeUnmount(() => {
         </v-btn>
       </div>
 
-      <!-- Info Cards -->
       <div class="info-grid">
         <div class="info-card">
           <div class="info-icon"><v-icon>mdi-timer</v-icon></div>
@@ -299,7 +287,6 @@ onBeforeUnmount(() => {
       </div>
     </div>
 
-    <!-- Snackbar -->
     <v-snackbar v-model="snackbar" :color="snackbarColor" :timeout="4000" location="top" rounded="pill">
       <div class="snackbar-content">
         <span class="snackbar-icon">
@@ -335,7 +322,7 @@ onBeforeUnmount(() => {
   filter: blur(80px);
   pointer-events: none;
   z-index: 1;
-  animation: pulse 4s ease-in-out infinite;
+
 }
 
 .orb-1 {
@@ -353,17 +340,6 @@ onBeforeUnmount(() => {
   height: 400px;
   background: rgba(34, 211, 238, 0.15);
   animation-delay: 2s;
-}
-
-@keyframes pulse {
-  0%, 100% {
-    opacity: 0.5;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.8;
-    transform: scale(1.1);
-  }
 }
 
 /* Grid lines */
@@ -390,18 +366,7 @@ onBeforeUnmount(() => {
 .header-banner {
   text-align: center;
   margin-bottom: 2rem;
-  animation: fadeIn 0.8s ease-out;
-}
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 .logo-container {
@@ -447,18 +412,7 @@ onBeforeUnmount(() => {
   border-radius: 24px;
   padding: 2.5rem;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-  animation: slideUp 0.8s ease-out;
-}
 
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 .verify-header {
@@ -502,18 +456,7 @@ onBeforeUnmount(() => {
   border-radius: 12px;
   padding: 1rem;
   margin-bottom: 1.5rem;
-  animation: slideIn 0.3s ease;
-}
 
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 .success-icon {
@@ -536,19 +479,7 @@ onBeforeUnmount(() => {
   border-radius: 12px;
   padding: 1rem;
   margin-bottom: 1.5rem;
-  animation: shake 0.3s ease;
-}
 
-@keyframes shake {
-  0%, 100% {
-    transform: translateX(0);
-  }
-  25% {
-    transform: translateX(-10px);
-  }
-  75% {
-    transform: translateX(10px);
-  }
 }
 
 .error-icon {
@@ -713,7 +644,7 @@ onBeforeUnmount(() => {
   grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
   margin-top: 2rem;
-  animation: fadeIn 0.8s ease-out 0.2s both;
+
 }
 
 .info-card {
@@ -724,12 +655,6 @@ onBeforeUnmount(() => {
   padding: 1.5rem;
   text-align: center;
   transition: all 0.3s ease;
-}
-
-.info-card:hover {
-  transform: translateY(-3px);
-  border-color: rgba(139, 92, 246, 0.3);
-  background: rgba(15, 15, 30, 0.6);
 }
 
 .info-card .info-icon {

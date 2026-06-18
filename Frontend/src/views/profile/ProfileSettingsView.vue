@@ -38,7 +38,7 @@ const activeTab = ref('personal')
 <style scoped>
 .profile-settings {
   min-height: 100vh;
-  background: var(--bg-primary);
+  background: transparent;
 }
 
 .settings-container {

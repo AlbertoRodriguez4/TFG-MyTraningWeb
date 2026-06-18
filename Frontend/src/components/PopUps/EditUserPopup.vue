@@ -154,7 +154,6 @@ watch(internalVisible, (val) => {
 <template>
   <v-dialog v-model="internalVisible" max-width="700" class="user-dialog">
     <v-card class="user-card">
-      <!-- Header personalizado -->
       <div class="user-header">
         <div class="header-content">
           <v-icon class="header-icon">mdi-account-circle</v-icon>
@@ -166,12 +165,10 @@ watch(internalVisible, (val) => {
       </div>
 
       <v-card-text class="user-content">
-        <!-- Error message -->
         <v-alert v-if="errorMessage" type="error" variant="tonal" class="error-alert">
           {{ errorMessage }}
         </v-alert>
 
-        <!-- Información básica -->
         <div class="section">
           <div class="section-header">
             <v-icon class="section-icon">mdi-account</v-icon>
@@ -234,7 +231,6 @@ watch(internalVisible, (val) => {
           </v-row>
         </div>
 
-        <!-- Estadísticas del jugador -->
         <div class="section">
           <div class="section-header">
             <v-icon class="section-icon">mdi-trophy</v-icon>
@@ -284,7 +280,6 @@ watch(internalVisible, (val) => {
           </v-row>
         </div>
 
-        <!-- Racha de consistencia -->
         <div class="section">
           <div class="streak-card">
             <div class="streak-header">
@@ -298,7 +293,6 @@ watch(internalVisible, (val) => {
           </div>
         </div>
 
-        <!-- Resumen del usuario -->
         <div class="summary-card">
           <div class="summary-header">
             <v-icon size="small">mdi-information</v-icon>
@@ -329,7 +323,6 @@ watch(internalVisible, (val) => {
         </div>
       </v-card-text>
 
-      <!-- Footer con acciones -->
       <v-card-actions class="user-actions">
         <v-btn color="error" variant="outlined" @click="handleDelete" class="action-btn delete-btn">
           <v-icon left>mdi-delete</v-icon>
@@ -347,7 +340,6 @@ watch(internalVisible, (val) => {
     </v-card>
   </v-dialog>
 
-  <!-- Snackbar -->
   <v-snackbar v-model="snackbar" :color="snackbarColor" :timeout="3000" location="top" rounded="pill">
     <div class="d-flex align-center">
       <v-icon class="mr-2">
@@ -506,10 +498,6 @@ watch(internalVisible, (val) => {
   padding: 16px;
   height: 100%;
   transition: all 0.3s ease;
-}
-
-.stat-card:hover {
-  transform: translateY(-2px);
 }
 
 .level-card {
@@ -778,10 +766,6 @@ watch(internalVisible, (val) => {
   border-radius: 4px;
 }
 
-.user-content::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 184, 0.5);
-}
-
 /* Responsive adjustments */
 @media (max-width: 600px) {
   .streak-card {
@@ -798,20 +782,7 @@ watch(internalVisible, (val) => {
   }
 }
 
-/* Animaciones */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
 .user-card {
-  animation: fadeIn 0.3s ease-out;
+
 }
 </style>

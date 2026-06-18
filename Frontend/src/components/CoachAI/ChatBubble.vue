@@ -1,21 +1,17 @@
 <template>
     <div class="bubble-row" :class="message.role">
 
-        <!-- Bot avatar -->
         <div v-if="message.role === 'assistant'" class="bot-ava">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
                 <path d="M12 2L14 9H21L15.5 13.5L17.5 21L12 16.5L6.5 21L8.5 13.5L3 9H10L12 2Z" fill="currentColor" />
             </svg>
         </div>
 
-        <!-- Content -->
         <div class="bubble-wrap">
             <div class="bubble" :class="message.role">
-                <!-- Typing indicator -->
                 <div v-if="message.isTyping" class="dots">
                     <span /><span /><span />
                 </div>
-                <!-- Text -->
                 <span v-else v-html="formatted" />
             </div>
             <time class="ts">{{ message.time }}</time>
@@ -47,7 +43,7 @@ const formatted = computed(() => {
     display: flex;
     gap: 9px;
     align-items: flex-end;
-    animation: fadeSlideUp .25s ease forwards;
+
 }
 
 .bubble-row.user {
@@ -123,7 +119,7 @@ const formatted = computed(() => {
     height: 7px;
     border-radius: 50%;
     background: var(--c-accent);
-    animation: blink 1.2s ease-in-out infinite;
+
 }
 
 .dots span:nth-child(2) {

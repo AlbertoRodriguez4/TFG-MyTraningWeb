@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\buildMultiTargeting\aa2-alberto-rodriguez-penalva.props" />
-</Project>

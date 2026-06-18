@@ -9,28 +9,24 @@
 
     <v-card-text>
       <v-form ref="form" class="settings-form">
-        <!-- Name -->
         <div class="form-group">
           <label class="form-label">{{ $t('profile.fullName') }}</label>
           <v-text-field v-model="formData.name" :placeholder="$t('profile.fullNamePlaceholder')" variant="outlined"
             density="comfortable" class="form-input" :rules="[rules.required, rules.minLength]" />
         </div>
 
-        <!-- Email -->
         <div class="form-group">
           <label class="form-label">{{ $t('email_label') }}</label>
           <v-text-field v-model="formData.email" :placeholder="$t('profile.emailPlaceholder')" type="email" variant="outlined"
             density="comfortable" class="form-input" disabled hint="Contacta con soporte para cambiar tu correo" />
         </div>
 
-        <!-- Role Info -->
         <div class="form-group" v-if="store.loggedUser?.role != 'userNormal'">
           <label class="form-label">{{ $t('profile.role') }}</label>
           <v-text-field :model-value="store.loggedUser?.role || 'User'" variant="outlined" density="comfortable"
             class="form-input" disabled />
         </div>
 
-        <!-- Stats Info (Read Only) -->
         <div class="stats-info">
           <div class="info-group">
             <label class="form-label">{{ $t('profile.level') }}</label>
@@ -47,7 +43,6 @@
           </div>
         </div>
 
-        <!-- Action Buttons -->
         <div class="form-actions">
           <v-btn color="#ffcc00" text-color="#000" variant="flat" size="large" @click="saveChanges" class="save-btn"
             :loading="saving">
@@ -62,7 +57,6 @@
     </v-card-text>
   </v-card>
 
-  <!-- Snackbar -->
   <v-snackbar v-model="snackbar.show" :color="snackbar.color" :timeout="snackbar.timeout" location="bottom right"
     rounded="lg" elevation="4">
     <div class="snackbar-content">
@@ -189,11 +183,6 @@ const resetForm = () => {
 .form-input :deep(.v-field) {
   background: rgba(255, 204, 0, 0.03) !important;
   border-color: rgba(255, 204, 0, 0.15) !important;
-}
-
-.form-input :deep(.v-field:hover) {
-  background: rgba(255, 204, 0, 0.05) !important;
-  border-color: rgba(255, 204, 0, 0.25) !important;
 }
 
 .form-input :deep(.v-field--focused) {

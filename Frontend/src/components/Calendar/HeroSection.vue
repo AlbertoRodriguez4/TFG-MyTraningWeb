@@ -1,7 +1,5 @@
 <template>
   <section class="hero-section">
-    <div class="hero-overlay"></div>
-    <div class="hero-particles"></div>
     <v-container class="hero-content">
       <v-row align="center" justify="space-between">
         <v-col cols="12" md="7">
@@ -25,7 +23,7 @@
                 elevation="8"
                 @click="handleCreateRoutine"
               >
-                <v-icon left color="purple">mdi-plus-circle</v-icon>
+                <v-icon left color="white">mdi-plus-circle</v-icon>
                 <span class="purple--text font-weight-bold">{{ $t('calendar.createRoutineButton') }}</span>
               </v-btn>
               <v-btn
@@ -54,7 +52,6 @@
       </v-row>
     </v-container>
 
-    <!-- Diálogo de descanso -->
     <v-dialog v-model="showRestDialog" max-width="500">
       <v-card class="rest-dialog">
         <v-card-title class="rest-dialog-title">
@@ -84,7 +81,6 @@
       </v-card>
     </v-dialog>
 
-    <!-- Diálogo de Estadísticas -->
     <RoutineStats v-model="showStats" />
   </section>
 </template>
@@ -134,41 +130,13 @@ function handleCreateRoutine(): void {
 
 <style scoped>
 .hero-section {
-  background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 50%, #0f0a1a 100%);
+  background: transparent;
   padding: 4rem 0 6rem;
   position: relative;
   overflow: hidden;
 }
 
-.hero-overlay {
-  position: absolute;
-  inset: 0;
-  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="rgba(139,92,246,0.08)" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,144C960,149,1056,139,1152,122.7C1248,107,1344,85,1392,74.7L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>');
-  background-size: cover;
-  background-position: bottom;
-  opacity: 0.5;
-}
 
-.hero-particles {
-  position: absolute;
-  inset: 0;
-  background-image:
-    radial-gradient(circle at 20% 50%, rgba(139, 92, 246, 0.15) 1px, transparent 1px),
-    radial-gradient(circle at 80% 80%, rgba(34, 211, 238, 0.12) 1px, transparent 1px),
-    radial-gradient(circle at 40% 20%, rgba(167, 139, 250, 0.1) 1px, transparent 1px);
-  background-size: 60px 60px, 100px 100px, 120px 120px;
-  background-position: 0 0, 50px 70px, 150px 280px;
-  animation: particleFloat 20s linear infinite;
-}
-
-@keyframes particleFloat {
-  from {
-    transform: translateY(0);
-  }
-  to {
-    transform: translateY(-15px);
-  }
-}
 
 .hero-content {
   position: relative;
@@ -177,18 +145,7 @@ function handleCreateRoutine(): void {
 
 .hero-title {
   text-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
-  animation: fadeInUp 0.8s ease-out;
-}
 
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 .hero-badge {
@@ -196,21 +153,10 @@ function handleCreateRoutine(): void {
   font-size: 0.95rem;
   border-radius: 50px;
   padding: 10px 20px;
-  animation: pulse 2s ease-in-out infinite;
+
   background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(34, 211, 238, 0.3)) !important;
   backdrop-filter: blur(10px);
   border: 1px solid rgba(139, 92, 246, 0.5) !important;
-}
-
-@keyframes pulse {
-  0%, 100% {
-    transform: scale(1);
-    box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
-  }
-  50% {
-    transform: scale(1.08);
-    box-shadow: 0 0 30px rgba(139, 92, 246, 0.5);
-  }
 }
 
 .gradient-text-hero {
@@ -219,14 +165,8 @@ function handleCreateRoutine(): void {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  animation: shimmer 3s linear infinite;
-  filter: drop-shadow(0 0 20px rgba(167, 139, 250, 0.5));
-}
 
-@keyframes shimmer {
-  to {
-    background-position: 200% center;
-  }
+  filter: drop-shadow(0 0 20px rgba(167, 139, 250, 0.5));
 }
 
 .hero-subtitle {
@@ -234,13 +174,13 @@ function handleCreateRoutine(): void {
   max-width: 600px;
   color: var(--text-muted);
   text-shadow: none;
-  animation: fadeInUp 0.8s ease-out 0.2s both;
+
 }
 
 .hero-actions {
   display: flex;
   gap: 1rem;
-  animation: fadeInUp 0.8s ease-out 0.4s both;
+
 }
 
 .hero-btn-primary {

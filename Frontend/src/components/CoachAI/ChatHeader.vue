@@ -1,7 +1,6 @@
 <template>
   <header class="topbar">
 
-    <!-- Mobile menu button -->
     <button class="menu-btn" @click="$emit('toggle-sidebar')"       :aria-label="t('chat.menuAria')">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
         <line x1="3" y1="6"  x2="21" y2="6"/>
@@ -10,7 +9,6 @@
       </svg>
     </button>
 
-    <!-- Identity -->
     <div class="topbar-id">
       <div class="topbar-ava">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
@@ -27,7 +25,6 @@
       </div>
     </div>
 
-    <!-- Badge -->
     <div class="topbar-badge">
       <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
         <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>

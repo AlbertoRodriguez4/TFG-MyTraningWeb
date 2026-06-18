@@ -11,77 +11,42 @@ watchEffect(() => {
 })
 </script>
 
-<template>
-  <v-app>
-    <v-main class="shop-main">
-      <!-- Overlay oscuro para mejorar legibilidad -->
-      <div class="overlay"></div>
-      
-      <v-container fluid class="shop-container fill-height d-flex flex-column">
-        <!-- Header de la tienda -->
-        <div class="shop-header-wrapper">
-          <div class="shop-header">
-            <div class="header-content">
-              <div class="shop-icon">
-                <v-icon size="48" color="#FFD700">mdi-store</v-icon>
-              </div>
-              <div class="shop-title-section">
-                <h1 class="shop-title">
-                  {{ $t('tienda') }}
-                </h1>
-                <p class="shop-subtitle">{{ $t('shop_subtitle') }}</p>
-              </div>
-            </div>
-            
-            <!-- Badge de oro del usuario -->
-            <div class="gold-badge">
-              <v-icon class="gold-icon" size="28" color="#FFD700">mdi-currency-usd</v-icon>
-              <div class="gold-info">
-                <span class="gold-label">{{ $t('tu oro') }}</span>
-                <span class="gold-amount">{{ loggedUser?.gold || 0 }}</span>
-              </div>
-            </div>
+  <template>
+  <v-container fluid class="shop-container fill-height d-flex flex-column">
+    <div class="shop-header-wrapper">
+      <div class="shop-header">
+        <div class="header-content">
+          <div class="shop-icon">
+            <v-icon size="48" color="white">mdi-store</v-icon>
+          </div>
+          <div class="shop-title-section">
+            <h1 class="shop-title">
+              {{ $t('tienda') }}
+            </h1>
+            <p class="shop-subtitle">{{ $t('shop_subtitle') }}</p>
           </div>
         </div>
+        
+        <div class="gold-badge">
+          <v-icon class="gold-icon" size="28" color="white">mdi-currency-usd</v-icon>
+          <div class="gold-info">
+            <span class="gold-label">{{ $t('tu oro') }}</span>
+            <span class="gold-amount">{{ loggedUser?.gold || 0 }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
 
-        <!-- Contenido de la tienda -->
-        <div class="items-section">
-          <div class="items-wrapper">
-            <ItemRender />
-          </div>
-        </div>
-      </v-container>
-    </v-main>
-  </v-app>
+    <div class="items-section">
+      <div class="items-wrapper">
+        <ItemRender />
+      </div>
+    </div>
+  </v-container>
 </template>
 
 <style scoped>
-.shop-main {
-  min-height: 100vh;
-  background-image: url('@/assets/imgs/gimansio-fondo.jpg');
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-}
 
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(
-    135deg,
-    rgba(0, 0, 0, 0.75) 0%,
-    rgba(13, 27, 42, 0.85) 50%,
-    rgba(0, 0, 0, 0.75) 100%
-  );
-  z-index: 1;
-  pointer-events: none;
-}
 
 .shop-container {
   position: relative;
@@ -179,28 +144,11 @@ watchEffect(() => {
   border-radius: 50px;
   border: 2px solid rgba(255, 215, 0, 0.4);
   box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2);
-  transition: all 0.3s ease;
   flex-shrink: 0;
-}
-
-.gold-badge:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(255, 215, 0, 0.3);
-  border-color: rgba(255, 215, 0, 0.6);
 }
 
 .gold-icon {
-  animation: pulse 2s ease-in-out infinite;
   flex-shrink: 0;
-}
-
-@keyframes pulse {
-  0%, 100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-  }
 }
 
 .gold-info {
@@ -395,9 +343,5 @@ watchEffect(() => {
   background: rgba(255, 215, 0, 0.3);
   border-radius: 4px;
   transition: background 0.3s ease;
-}
-
-.items-section::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 215, 0, 0.5);
 }
 </style>

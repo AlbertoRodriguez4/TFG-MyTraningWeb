@@ -40,7 +40,7 @@
     </div>
 
     <div v-else class="history-empty">
-      <v-icon size="48" color="rgba(255, 204, 0, 0.3)">mdi-history</v-icon>
+      <v-icon size="48" color="white">mdi-history</v-icon>
       <p>{{ $t('no_records_yet') }}</p>
     </div>
   </div>
@@ -123,11 +123,6 @@ const handleDelete = (index: number) => {
   border: 1px solid rgba(255, 204, 0, 0.15);
   background: rgba(255, 204, 0, 0.03);
   transition: all 0.2s ease;
-}
-
-.history-card:hover {
-  background: rgba(255, 204, 0, 0.08);
-  border-color: rgba(255, 204, 0, 0.3);
 }
 
 .history-card-header {

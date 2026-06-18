@@ -105,11 +105,10 @@ const handleEdit = async () => {
   <Transition name="popup">
     <div v-if="dialogVisible" class="popup-overlay" @click="closePopup">
       <div class="popup-content" @click.stop>
-        <!-- Header con icono -->
         <div class="popup-header">
           <div class="header-icon-wrapper">
             <div class="header-icon"><v-icon>mdi-pencil</v-icon></div>
-            <div class="icon-glow"></div>
+            <div ></div>
           </div>
           <h2 class="popup-title">Editar Sala</h2>
           <button @click="closePopup" class="close-btn" type="button">
@@ -117,10 +116,8 @@ const handleEdit = async () => {
           </button>
         </div>
 
-        <!-- Body del formulario -->
         <div class="popup-body">
           <form @submit.prevent="handleEdit">
-            <!-- Campo Nombre -->
             <div class="form-group">
               <label class="form-label">
                 <span class="label-icon"><v-icon>mdi-tag</v-icon></span>
@@ -135,7 +132,6 @@ const handleEdit = async () => {
               />
             </div>
 
-            <!-- Campo Nivel Mínimo -->
             <div class="form-group">
               <label class="form-label">
                 <span class="label-icon"><v-icon>mdi-chart-bar</v-icon></span>
@@ -151,7 +147,6 @@ const handleEdit = async () => {
               />
             </div>
 
-            <!-- Campo Stats Mínimas -->
             <div class="form-group">
               <label class="form-label">
                 <span class="label-icon"><v-icon>mdi-arm-flex</v-icon></span>
@@ -167,7 +162,6 @@ const handleEdit = async () => {
               />
             </div>
 
-            <!-- Campo Consistencia Mínima -->
             <div class="form-group">
               <label class="form-label">
                 <span class="label-icon"><v-icon>mdi-target</v-icon></span>
@@ -186,7 +180,6 @@ const handleEdit = async () => {
           </form>
         </div>
 
-        <!-- Footer con botones -->
         <div class="popup-footer">
           <button @click="closePopup" class="btn btn-cancel" type="button">
             <span class="btn-icon"><v-icon>mdi-close</v-icon></span>
@@ -201,7 +194,6 @@ const handleEdit = async () => {
     </div>
   </Transition>
 
-  <!-- Snackbar -->
   <Transition name="snackbar">
     <div v-if="snackbar" :class="['snackbar', `snackbar-${snackbarType}`]">
       <span class="snackbar-icon">
@@ -261,19 +253,6 @@ const handleEdit = async () => {
   font-size: 2rem;
   z-index: 2;
   position: relative;
-}
-
-.icon-glow {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle, rgba(59, 130, 246, 0.3) 0%, transparent 70%);
-  border-radius: 50%;
-  animation: pulse 2s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  0%, 100% { transform: scale(1); opacity: 0.5; }
-  50% { transform: scale(1.1); opacity: 0.8; }
 }
 
 .popup-title {
@@ -348,10 +327,6 @@ const handleEdit = async () => {
   background: rgba(255, 255, 255, 0.08);
   border-color: #3b82f6;
   box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
-}
-
-.form-input:hover:not(:focus) {
-  border-color: rgba(255, 255, 255, 0.2);
 }
 
 /* Remove spinner for number inputs */

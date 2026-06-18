@@ -26,7 +26,6 @@ defineExpose({ show, hide })
 
 <template>
   <teleport to="body">
-    <!-- Fondo oscuro -->
     <transition
       name="backdrop"
       @after-leave="isVisible = false"
@@ -34,11 +33,9 @@ defineExpose({ show, hide })
       <div v-if="isVisible" class="backdrop" @click="hide"></div>
     </transition>
 
-    <!-- Snackbar con animación -->
     <transition name="snackbar" @after-leave="isVisible = false">
       <div v-if="isVisible" class="snackbar-wrapper">
         <div class="snackbar">
-          <!-- Animación de éxito -->
           <div v-if="isLoading" class="success-animation-wrapper">
             <div class="success-circle">
               <div class="spinner"></div>
@@ -46,7 +43,6 @@ defineExpose({ show, hide })
           </div>
 
           <div v-else class="success-content">
-            <!-- Checkmark animado -->
             <div class="checkmark-wrapper">
               <svg class="checkmark" viewBox="0 0 52 52">
                 <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none" />
@@ -54,7 +50,6 @@ defineExpose({ show, hide })
               </svg>
             </div>
 
-            <!-- Contenido del mensaje -->
             <div class="message-content">
               <h3 class="message-title">{{ $t('payment_completed') }}</h3>
               <p class="message-description">
@@ -63,7 +58,6 @@ defineExpose({ show, hide })
             </div>
           </div>
 
-          <!-- Botón de cierre -->
           <button class="close-btn" @click="hide" :aria-label="$t('close')">
             <v-icon size="24">mdi-close</v-icon>
           </button>
@@ -165,11 +159,7 @@ defineExpose({ show, hide })
   border: 3px solid rgba(255, 255, 255, 0.3);
   border-top-color: white;
   border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
 }
 
 /* Contenido de éxito */
@@ -193,7 +183,7 @@ defineExpose({ show, hide })
 .checkmark-circle {
   stroke: #22c55e;
   stroke-width: 2;
-  animation: checkmark-circle-draw 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+
 }
 
 .checkmark-check {
@@ -201,36 +191,9 @@ defineExpose({ show, hide })
   stroke-width: 3;
   stroke-linecap: round;
   stroke-linejoin: round;
-  animation: checkmark-draw 0.6s cubic-bezier(0.65, 0, 0.45, 1) 0.3s forwards;
+
   stroke-dasharray: 48;
   stroke-dashoffset: 48;
-}
-
-@keyframes checkmark-circle-draw {
-  0% {
-    stroke-dasharray: 166;
-    stroke-dashoffset: 166;
-    opacity: 0;
-  }
-  50% {
-    opacity: 1;
-  }
-  100% {
-    stroke-dasharray: 166;
-    stroke-dashoffset: 0;
-    opacity: 1;
-  }
-}
-
-@keyframes checkmark-draw {
-  0% {
-    stroke-dasharray: 48;
-    stroke-dashoffset: 48;
-  }
-  100% {
-    stroke-dasharray: 48;
-    stroke-dashoffset: 0;
-  }
 }
 
 /* Contenido del mensaje */

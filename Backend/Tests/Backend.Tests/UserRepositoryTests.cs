@@ -1,4 +1,5 @@
 using AA2_CS.Model.Entities;
+using AA2_CS.Model.Common;
 using AA2_CS.Repository;
 
 namespace Backend.Tests;
@@ -10,7 +11,7 @@ public class UserRepositoryTests
     {
         // Prueba que al registrar un nuevo usuario, la contraseña proporcionada se hashea correctamente antes de ser almacenada en la base de datos. Se espera que el hash de la contraseña no sea igual a la contraseña original y que el hash verifique correctamente la contraseña original utilizando el algoritmo de hashing BCrypt.
         using var context = TestDbContextFactory.CreateContext();
-        var repo = new UserRepository(context);
+        var repo = new UserRepository(context, new PurchaseRepository(context));
 
         var user = new User
         {
@@ -31,7 +32,7 @@ public class UserRepositoryTests
     {
         // Prueba que al intentar iniciar sesión con un correo electrónico y contraseña correctos, el método Login devuelve el usuario correspondiente. Se espera que el usuario devuelto no sea nulo y que su correo electrónico coincida con el proporcionado en la solicitud de inicio de sesión.
         using var context = TestDbContextFactory.CreateContext();
-        var repo = new UserRepository(context);
+        var repo = new UserRepository(context, new PurchaseRepository(context));
         repo.Register(new User
         {
             name = "User Login",
@@ -51,7 +52,7 @@ public class UserRepositoryTests
     {
         // Prueba que al intentar cambiar la contraseña de un usuario proporcionando una contraseña actual incorrecta, el método ChangePassword devuelve false y no actualiza el hash de la contraseña. Se espera que el resultado devuelto sea false, indicando que el cambio de contraseña no se realizó debido a la contraseña actual incorrecta.
         using var context = TestDbContextFactory.CreateContext();
-        var repo = new UserRepository(context);
+        var repo = new UserRepository(context, new PurchaseRepository(context));
         var created = repo.Register(new User
         {
             name = "User Pass",
@@ -70,7 +71,7 @@ public class UserRepositoryTests
     {
         // Prueba que al intentar cambiar la contraseña de un usuario proporcionando la contraseña actual correcta, el método ChangePassword devuelve true y actualiza el hash de la contraseña. Se espera que el resultado devuelto sea true, indicando que el cambio de contraseña se realizó correctamente, y que al intentar iniciar sesión con la nueva contraseña, se obtenga el usuario correspondiente, confirmando que el hash de la contraseña fue actualizado.
         using var context = TestDbContextFactory.CreateContext();
-        var repo = new UserRepository(context);
+        var repo = new UserRepository(context, new PurchaseRepository(context));
         var created = repo.Register(new User
         {
             name = "User Pass2",

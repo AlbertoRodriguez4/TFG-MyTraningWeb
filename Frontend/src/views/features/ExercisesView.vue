@@ -1,8 +1,6 @@
 <template>
-  <v-app>
-    <v-main class="exercises-page">
-      <v-container fluid class="pa-6">
-        <!-- Header -->
+  <div class="exercises-page">
+    <v-container fluid class="pa-6">
         <div class="page-header mb-8">
           <div class="header-icon">
             <v-icon size="48" color="white">mdi-dumbbell</v-icon>
@@ -13,7 +11,6 @@
           </div>
         </div>
 
-        <!-- Filtros -->
         <v-row class="mb-6">
           <v-col cols="12" md="6">
             <v-text-field
@@ -38,7 +35,6 @@
           </v-col>
         </v-row>
 
-        <!-- Grid de ejercicios -->
         <v-row v-if="!store.loading">
           <v-col
             v-for="exercise in store.exercises"
@@ -142,9 +138,8 @@
         </v-row>
 
         <v-skeleton-loader v-else type="card" :loading="true" />
-      </v-container>
-    </v-main>
-  </v-app>
+    </v-container>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -198,7 +193,7 @@ function getImageUrl(exercise: any) {
 
 <style scoped>
 .exercises-page {
-  background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
+  background: transparent;
   min-height: 100vh;
 }
 .page-header {
@@ -224,10 +219,6 @@ function getImageUrl(exercise: any) {
   display: flex;
   flex-direction: column;
   height: 100%;
-}
-.exercise-card:hover {
-  transform: translateY(-4px);
-  border-color: rgba(102, 126, 234, 0.5);
 }
 .exercise-image-wrapper {
   position: relative;

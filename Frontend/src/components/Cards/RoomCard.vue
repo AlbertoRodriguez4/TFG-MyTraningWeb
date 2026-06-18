@@ -65,7 +65,7 @@ const getRoomDifficulty = (level: number) => {
 }
 // Función para determinar el icono de la sala según el nivel mínimo requerido
 const getRoomIcon = (level: number) => {
-  if (level >= 50) return 'mdi-dragon'
+  if (level >= 50) return 'mdi-crown'
   if (level >= 30) return 'mdi-star'
   if (level >= 15) return 'mdi-diamond-stone'
   return 'mdi-target'
@@ -81,11 +81,9 @@ const canEdit = computed(() => props.isAdmin || props.isCreator || (props.isStaf
 
 <template>
   <div class="room-card-wrapper" :class="{ 'trainer-card': isTrainer }">
-    <!-- Efecto de borde brillante -->
-    <div class="card-glow-border"></div>
+    <div ></div>
 
     <div class="room-card" :style="{ '--diff-color': diffConfig.color, '--diff-rgb': diffConfig.rgb }">
-      <!-- Header con gradiente -->
       <div class="card-header" :style="{ background: diffConfig.gradient }">
         <div class="header-left">
           <div class="room-icon"><v-icon>{{ getRoomIcon(room.minlevel) }}</v-icon></div>
@@ -112,10 +110,8 @@ const canEdit = computed(() => props.isAdmin || props.isCreator || (props.isStaf
         </div>
       </div>
 
-      <!-- Descripción -->
       <p v-if="room.description" class="room-description">{{ room.description }}</p>
 
-      <!-- Stats Grid -->
       <div class="stats-grid">
         <div class="stat-item">
           <div class="stat-icon"><v-icon>mdi-chart-bar</v-icon></div>
@@ -154,25 +150,16 @@ const canEdit = computed(() => props.isAdmin || props.isCreator || (props.isStaf
         </div>
       </div>
 
-      <!-- Barra de nivel -->
       <div class="level-bar-container">
         <div class="level-bar-label">
           <span>{{ $t('difficulty') }}</span>
           <span :style="{ color: diffConfig.color }">{{ room.minlevel }}/100</span>
         </div>
         <div class="level-bar-track">
-          <div
-            class="level-bar-fill"
-            :style="{
-              width: `${Math.min(room.minlevel, 100)}%`,
-              background: `linear-gradient(90deg, ${diffConfig.color}, ${diffConfig.glow})`,
-              boxShadow: `0 0 12px ${diffConfig.glow}`
-            }"
-          ></div>
+          <div class="level-bar-fill" :style="{ width: room.minlevel + '%', background: `linear-gradient(90deg, ${diffConfig.color}, ${diffConfig.glow})`, boxShadow: `0 0 8px ${diffConfig.glow}` }"></div>
         </div>
       </div>
 
-      <!-- Acciones -->
       <div class="card-actions">
         <button v-if="canEdit" class="action-btn edit-btn" @click="emit('edit', room)">
           <span class="btn-icon"><v-icon>mdi-pencil</v-icon></span>
@@ -192,26 +179,8 @@ const canEdit = computed(() => props.isAdmin || props.isCreator || (props.isStaf
   position: relative;
   border-radius: 20px;
   transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.room-card-wrapper:hover {
-  transform: translateY(-8px);
-}
-
-/* Efecto de borde brillante */
-.card-glow-border {
-  position: absolute;
-  inset: -1px;
-  border-radius: 21px;
-  background: linear-gradient(135deg, var(--diff-color, rgba(255,255,255,0.1)), transparent, var(--diff-color, rgba(255,255,255,0.1)));
-  opacity: 0;
-  transition: opacity 0.4s;
-  z-index: 0;
-  pointer-events: none;
-}
-
-.room-card-wrapper:hover .card-glow-border {
-  opacity: 0.6;
+  overflow: hidden;
+  min-width: 0;
 }
 
 /* Tarjeta principal */
@@ -229,13 +198,6 @@ const canEdit = computed(() => props.isAdmin || props.isCreator || (props.isStaf
   transition: box-shadow 0.4s ease;
   display: flex;
   flex-direction: column;
-}
-
-.room-card-wrapper:hover .room-card {
-  box-shadow:
-    0 20px 60px rgba(0, 0, 0, 0.5),
-    0 0 40px rgba(var(--diff-rgb), 0.15),
-    0 0 0 1px rgba(var(--diff-rgb), 0.2);
 }
 
 /* Header */
@@ -271,9 +233,10 @@ const canEdit = computed(() => props.isAdmin || props.isCreator || (props.isStaf
 
 .room-name-row {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 0.5rem;
   margin-bottom: 0.5rem;
+  min-width: 0;
 }
 
 .room-id {
@@ -294,9 +257,8 @@ const canEdit = computed(() => props.isAdmin || props.isCreator || (props.isStaf
   font-weight: 800;
   color: #ffffff;
   letter-spacing: -0.3px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  overflow-wrap: break-word;
+  word-break: break-word;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
@@ -323,12 +285,7 @@ const canEdit = computed(() => props.isAdmin || props.isCreator || (props.isStaf
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  animation: pulse-dot 2s ease-in-out infinite;
-}
 
-@keyframes pulse-dot {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.4; transform: scale(0.7); }
 }
 
 .trainer-badge {
@@ -344,16 +301,11 @@ const canEdit = computed(() => props.isAdmin || props.isCreator || (props.isStaf
   border: 1px solid rgba(251, 191, 36, 0.4);
   border-radius: 6px;
   padding: 0.25rem 0.6rem;
-  animation: trainer-glow 2.5s ease-in-out infinite;
+
 }
 
 .trainer-icon {
   font-size: 0.875rem;
-}
-
-@keyframes trainer-glow {
-  0%, 100% { box-shadow: 0 0 8px rgba(251, 191, 36, 0.2); }
-  50% { box-shadow: 0 0 16px rgba(251, 191, 36, 0.45); }
 }
 
 /* Member badge */
@@ -403,7 +355,7 @@ const canEdit = computed(() => props.isAdmin || props.isCreator || (props.isStaf
 /* Stats Grid */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
   gap: 0.5rem;
   padding: 0.875rem 1.25rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.04);
@@ -418,12 +370,6 @@ const canEdit = computed(() => props.isAdmin || props.isCreator || (props.isStaf
   border-radius: 10px;
   padding: 0.5rem 0.625rem;
   transition: all 0.25s ease;
-}
-
-.stat-item:hover {
-  background: rgba(var(--diff-rgb), 0.08);
-  border-color: rgba(var(--diff-rgb), 0.2);
-  transform: translateY(-2px);
 }
 
 .stat-icon {
@@ -458,9 +404,8 @@ const canEdit = computed(() => props.isAdmin || props.isCreator || (props.isStaf
   font-family: inherit;
   font-weight: 600;
   font-size: 0.75rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 /* Level Bar */
@@ -558,26 +503,11 @@ const canEdit = computed(() => props.isAdmin || props.isCreator || (props.isStaf
   border-color: rgba(251, 191, 36, 0.35);
 }
 
-.trainer-card .card-glow-border {
-  background: linear-gradient(135deg, rgba(251, 191, 36, 0.6), transparent, rgba(251, 191, 36, 0.4));
-}
-
-.trainer-card:hover .card-glow-border {
-  opacity: 0.8;
-}
-
 .trainer-card .room-card {
   box-shadow:
     0 4px 24px rgba(0, 0, 0, 0.4),
     0 0 30px rgba(251, 191, 36, 0.08),
     0 0 0 1px rgba(251, 191, 36, 0.15);
-}
-
-.trainer-card:hover .room-card {
-  box-shadow:
-    0 20px 60px rgba(0, 0, 0, 0.5),
-    0 0 60px rgba(251, 191, 36, 0.18),
-    0 0 0 1px rgba(251, 191, 36, 0.3);
 }
 
 /* Responsive */
@@ -595,6 +525,16 @@ const canEdit = computed(() => props.isAdmin || props.isCreator || (props.isStaf
 
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 360px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .card-actions {
+    flex-direction: column;
   }
 }
 </style>

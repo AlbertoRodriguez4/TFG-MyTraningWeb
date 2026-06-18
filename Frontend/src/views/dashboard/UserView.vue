@@ -34,8 +34,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <v-main class="user-view">
-    <!-- Fondo con efecto -->
+  <div class="user-view">
     <div class="background-gradient"></div>
     <div class="animated-bg">
       <div class="orb orb-1"></div>
@@ -56,18 +55,15 @@ onMounted(async () => {
     </div>
 
     <v-container class="container">
-      <!-- Header -->
       <UserViewHeader />
 
-      <!-- Stats -->
       <CommunityStats :stats="communityStats" />
 
-      <!-- Podium Section -->
       <div class="podium-section">
         <div class="section-title">
-          <v-icon class="section-icon" color="amber">mdi-trophy</v-icon>
+          <v-icon class="section-icon" color="white">mdi-trophy</v-icon>
           <h2>{{ $t('home_hall_of_fame') }}</h2>
-          <v-icon class="section-icon" color="amber">mdi-trophy</v-icon>
+          <v-icon class="section-icon" color="white">mdi-trophy</v-icon>
         </div>
 
         <div class="podium-wrapper">
@@ -91,35 +87,32 @@ onMounted(async () => {
             />
           </div>
 
-          <!-- Loading -->
           <div class="loading" v-else-if="loading">
             <div class="loading-content">
               <div class="trophy-loader">
-                <v-icon size="64" color="#ffcc00">mdi-trophy-variant</v-icon>
+                <v-icon size="64" color="white">mdi-trophy-variant</v-icon>
                 <div class="loader-ring"></div>
               </div>
               <p>{{ $t('user.loadingChampions') }}</p>
             </div>
           </div>
 
-          <!-- Empty state -->
           <div class="empty-state" v-else>
-            <v-icon size="80" color="rgba(255, 204, 0, 0.3)">mdi-trophy-outline</v-icon>
+            <v-icon size="80" color="white">mdi-trophy-outline</v-icon>
             <p>{{ $t('home_no_champions') }}</p>
           </div>
         </div>
       </div>
 
-      <!-- Top Users List -->
       <UserList :users="allUsers" :loading="loading" />
     </v-container>
-  </v-main>
+  </div>
 </template>
 
 <style scoped>
 .user-view {
   min-height: 100vh;
-  background: var(--bg-primary);
+  background: transparent;
   position: relative;
   padding: 2rem 0 4rem;
   overflow-x: hidden;
@@ -154,7 +147,7 @@ onMounted(async () => {
   border-radius: 50%;
   filter: blur(80px);
   opacity: 0.3;
-  animation: orb-float 20s ease-in-out infinite;
+
 }
 
 .orb-1 {
@@ -184,13 +177,6 @@ onMounted(async () => {
   animation-delay: -14s;
 }
 
-@keyframes orb-float {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  25% { transform: translate(30px, -30px) scale(1.1); }
-  50% { transform: translate(-20px, 20px) scale(0.95); }
-  75% { transform: translate(20px, 30px) scale(1.05); }
-}
-
 /* Particles Background */
 .particles-bg {
   position: absolute;
@@ -210,24 +196,7 @@ onMounted(async () => {
   background: rgba(255, 215, 0, 0.5);
   border-radius: 50%;
   box-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
-  animation: float-particle linear infinite;
-}
 
-@keyframes float-particle {
-  0% {
-    transform: translateY(100vh) translateX(0) scale(0);
-    opacity: 0;
-  }
-  10% {
-    opacity: 1;
-  }
-  90% {
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(-100px) translateX(50px) scale(1);
-    opacity: 0;
-  }
 }
 
 .container {
@@ -259,24 +228,14 @@ onMounted(async () => {
   background-clip: text;
   letter-spacing: 3px;
   text-transform: uppercase;
-  animation: gradient-shift 4s ease infinite;
+
   margin: 0;
 }
 
 .section-icon {
   font-size: 2rem;
   filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
-  animation: trophy-glow 2s ease-in-out infinite;
-}
 
-@keyframes trophy-glow {
-  0%, 100% { transform: scale(1) rotate(-5deg); }
-  50% { transform: scale(1.1) rotate(5deg); }
-}
-
-@keyframes gradient-shift {
-  0%, 100% { background-position: 0% center; }
-  50% { background-position: 100% center; }
 }
 
 /* Podium Wrapper */
@@ -324,12 +283,7 @@ onMounted(async () => {
 
 .trophy-loader {
   position: relative;
-  animation: trophy-bounce 1s ease-in-out infinite;
-}
 
-@keyframes trophy-bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-15px); }
 }
 
 .loader-ring {
@@ -342,11 +296,7 @@ onMounted(async () => {
   border: 3px solid rgba(255, 215, 0, 0.2);
   border-top-color: #FFD700;
   border-radius: 50%;
-  animation: loader-spin 1s linear infinite;
-}
 
-@keyframes loader-spin {
-  to { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
 .loading-content p {

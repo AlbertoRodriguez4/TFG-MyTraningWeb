@@ -1,6 +1,5 @@
 <template>
   <div class="security-settings">
-    <!-- Password Section -->
     <v-card class="settings-card" elevation="0" border>
       <v-card-title class="card-title">
         <v-icon>mdi-shield-lock</v-icon>
@@ -11,14 +10,12 @@
 
       <v-card-text>
         <v-form ref="passwordForm" class="settings-form">
-          <!-- Current Password -->
           <div class="form-group">
             <label class="form-label">{{ $t('security.currentPassword') }}</label>
             <v-text-field v-model="passwordData.current" type="password" variant="outlined" density="comfortable"
               :placeholder="$t('security.currentPasswordPlaceholder')" class="form-input" :rules="[rules.required]" />
           </div>
 
-          <!-- New Password -->
           <div class="form-group">
             <label class="form-label">{{ $t('security.newPassword') }}</label>
             <v-text-field v-model="passwordData.new" type="password" variant="outlined" density="comfortable"
@@ -27,14 +24,12 @@
             <p class="password-hint">{{ $t('security.passwordRequirements') }}</p>
           </div>
 
-          <!-- Confirm Password -->
           <div class="form-group">
             <label class="form-label">{{ $t('security.confirmNewPassword') }}</label>
             <v-text-field v-model="passwordData.confirm" type="password" variant="outlined" density="comfortable"
               :placeholder="$t('security.confirmNewPasswordPlaceholder')" class="form-input" :rules="[rules.required, rules.passwordMatch]" />
           </div>
 
-          <!-- Action Buttons -->
           <div class="form-actions">
             <v-btn color="#ffcc00" text-color="#000" variant="flat" size="large" class="save-btn" :loading="isUpdating"
               @click="handleUpdatePassword">
@@ -46,7 +41,6 @@
       </v-card-text>
     </v-card>
 
-    <!-- Snackbar -->
     <v-snackbar
       v-model="snackbar.show"
       :color="snackbar.color"
@@ -199,11 +193,6 @@ async function handleUpdatePassword() {
 .form-input :deep(.v-field) {
   background: rgba(255, 204, 0, 0.03) !important;
   border-color: rgba(255, 204, 0, 0.15) !important;
-}
-
-.form-input :deep(.v-field:hover) {
-  background: rgba(255, 204, 0, 0.05) !important;
-  border-color: rgba(255, 204, 0, 0.25) !important;
 }
 
 .form-input :deep(.v-field--focused) {

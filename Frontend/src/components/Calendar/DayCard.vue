@@ -6,7 +6,6 @@
       @click="handleClick"
     >
       <div class="day-card-inner">
-        <!-- Day Header -->
         <div class="day-top">
           <span class="day-num">{{ day }}</span>
           <v-chip
@@ -20,13 +19,11 @@
           </v-chip>
         </div>
 
-        <!-- Day Content -->
         <div class="day-body">
-          <!-- Has Workout -->
           <div v-if="routine" class="has-workout">
             <div class="workout-icon-container">
               <v-icon 
-                :color="routine.iscompleted ? 'green' : 'orange'"
+                :color="white"
                 size="28"
               >
                 {{ routine.iscompleted ? 'mdi-check-circle' : 'mdi-dumbbell' }}
@@ -34,7 +31,6 @@
             </div>
             <p class="workout-name">{{ routine.name }}</p>
             
-            <!-- Indicador cuando está pendiente -->
             <div v-if="!routine.iscompleted" class="pending-indicator">
                 <v-chip small color="orange" dark>
                 <v-icon small left>mdi-clock-outline</v-icon>
@@ -43,17 +39,15 @@
               <p class="click-hint">{{ $t('calendar.clickToComplete') }}</p>
             </div>
 
-            <!-- Badge cuando está completada -->
             <div v-else class="completed-badge">
-              <v-icon small color="green" class="mr-1">mdi-trophy</v-icon>
+              <v-icon small color="white" class="mr-1">mdi-trophy</v-icon>
               <span>+{{ routine.reward }} XP</span>
             </div>
           </div>
 
-          <!-- No Workout -->
           <div v-else class="no-workout">
             <div class="add-workout-icon">
-              <v-icon size="40" color="grey lighten-1">mdi-plus</v-icon>
+              <v-icon size="40" color="white">mdi-plus</v-icon>
             </div>
             <p class="add-workout-text">{{ $t('calendar.addRoutine') }}</p>
           </div>
@@ -120,7 +114,7 @@ const handleClick = () => {
 <style scoped>
 .day-item {
   aspect-ratio: 1;
-  animation: fadeInUp 0.5s ease-out backwards;
+
 }
 
 .day-card {
@@ -137,12 +131,6 @@ const handleClick = () => {
   cursor: pointer;
 }
 
-.day-card.clickable:hover {
-  transform: translateY(-8px) scale(1.02);
-  box-shadow: 0 12px 30px rgba(139, 92, 246, 0.3) !important;
-  border-color: rgba(139, 92, 246, 0.6);
-}
-
 /* Las completadas tienen cursor normal y no tienen hover */
 .day-card-completed {
   cursor: default;
@@ -151,19 +139,9 @@ const handleClick = () => {
   opacity: 0.9;
 }
 
-.day-card-completed:hover {
-  transform: none;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2) !important;
-}
-
 .day-card-empty {
   border-style: dashed;
   border-color: rgba(255, 255, 255, 0.2);
-}
-
-.day-card-empty:hover {
-  border-color: rgba(167, 139, 250, 0.6);
-  background: rgba(167, 139, 250, 0.1);
 }
 
 .day-card-today {
@@ -175,18 +153,7 @@ const handleClick = () => {
 .day-card-pending {
   border-color: rgba(251, 191, 36, 0.6);
   background: linear-gradient(135deg, rgba(251, 191, 36, 0.12), rgba(245, 158, 11, 0.1));
-  animation: pulse-border 2s ease-in-out infinite;
-}
 
-@keyframes pulse-border {
-  0%, 100% {
-    border-color: rgba(251, 191, 36, 0.6);
-    box-shadow: 0 4px 15px rgba(251, 191, 36, 0.3);
-  }
-  50% {
-    border-color: rgba(251, 191, 36, 0.9);
-    box-shadow: 0 4px 25px rgba(251, 191, 36, 0.5);
-  }
 }
 
 .day-card-inner {
@@ -242,12 +209,6 @@ const handleClick = () => {
   box-shadow: 0 2px 12px rgba(167, 139, 250, 0.2);
 }
 
-.day-card-pending:hover .workout-icon-container {
-  transform: scale(1.1);
-  background: rgba(251, 191, 36, 0.2);
-  box-shadow: 0 4px 20px rgba(251, 191, 36, 0.4);
-}
-
 .workout-name {
   font-size: 0.9rem;
   font-weight: 700;
@@ -278,10 +239,6 @@ const handleClick = () => {
   transition: opacity 0.3s ease;
 }
 
-.day-card-pending:hover .click-hint {
-  opacity: 1;
-}
-
 .completed-badge {
   background: #4caf50;
   color: white;
@@ -305,10 +262,6 @@ const handleClick = () => {
   transition: opacity 0.3s ease;
 }
 
-.day-card:hover .no-workout {
-  opacity: 0.6;
-}
-
 .add-workout-icon {
   margin-bottom: 0.5rem;
 }
@@ -318,17 +271,6 @@ const handleClick = () => {
   font-weight: 600;
   color: rgba(255, 255, 255, 0.5);
   margin: 0;
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 @media (max-width: 960px) {

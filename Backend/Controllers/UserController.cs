@@ -10,6 +10,7 @@ namespace AA2_CS.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UserController : ControllerBase
     {
         private readonly UserService _userService;
@@ -79,7 +80,23 @@ namespace AA2_CS.Controllers
                         u.level,
                         u.strength,
                         u.endurance,
-                        u.avatarUrl
+                        u.avatarUrl,
+                        equippedStrengthItem = u.EquippedStrengthItem != null ? new
+                        {
+                            u.EquippedStrengthItem.id,
+                            u.EquippedStrengthItem.name,
+                            u.EquippedStrengthItem.type,
+                            u.EquippedStrengthItem.bonus,
+                            u.EquippedStrengthItem.imageUrl
+                        } : null,
+                        equippedEnduranceItem = u.EquippedEnduranceItem != null ? new
+                        {
+                            u.EquippedEnduranceItem.id,
+                            u.EquippedEnduranceItem.name,
+                            u.EquippedEnduranceItem.type,
+                            u.EquippedEnduranceItem.bonus,
+                            u.EquippedEnduranceItem.imageUrl
+                        } : null
                     })
                     .ToList();
                 return Ok(users);
@@ -117,7 +134,34 @@ namespace AA2_CS.Controllers
         public IActionResult GetTopThreeUsers()
         {
             var users = _userService.GetTopThreeUsers();
-            return users != null ? Ok(users) : NotFound();
+            if (users == null || users.Count == 0) return Ok(new List<object>());
+
+            var result = users.Select(u => new
+            {
+                u.name,
+                u.level,
+                u.strength,
+                u.endurance,
+                u.avatarUrl,
+                equippedStrengthItem = u.EquippedStrengthItem != null ? new
+                {
+                    u.EquippedStrengthItem.id,
+                    u.EquippedStrengthItem.name,
+                    u.EquippedStrengthItem.type,
+                    u.EquippedStrengthItem.bonus,
+                    u.EquippedStrengthItem.imageUrl
+                } : null,
+                equippedEnduranceItem = u.EquippedEnduranceItem != null ? new
+                {
+                    u.EquippedEnduranceItem.id,
+                    u.EquippedEnduranceItem.name,
+                    u.EquippedEnduranceItem.type,
+                    u.EquippedEnduranceItem.bonus,
+                    u.EquippedEnduranceItem.imageUrl
+                } : null
+            }).ToList();
+
+            return Ok(result);
         }
 
         [HttpGet("community-stats")]

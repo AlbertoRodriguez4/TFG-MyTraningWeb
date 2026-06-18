@@ -4,6 +4,7 @@
         @update:model-value="$emit('update:modelValue', $event)" 
         max-width="600" 
         persistent
+        scrollable
     >
         <v-card v-if="routine" class="routine-detail-card">
             <div class="routine-header" :class="routine.iscompleted ? 'completed' : 'pending'">
@@ -29,7 +30,7 @@
             <v-card-text class="routine-content">
                 <div class="section">
                     <div class="section-label">
-                        <v-icon color="purple" class="mr-2">mdi-text</v-icon>
+                        <v-icon color="white" class="mr-2">mdi-text</v-icon>
                         {{ t('common.description') }}
                     </div>
                     <p class="section-text">{{ routine.description }}</p>
@@ -38,7 +39,7 @@
                 <v-row class="info-cards">
                     <v-col cols="12" sm="4">
                         <div class="info-card">
-                            <v-icon :color="getDifficultyColor(routine.difficulty)" large>
+                            <v-icon :color="white" large>
                                 mdi-gauge
                             </v-icon>
                             <div class="info-label">{{ t('common.difficulty') }}</div>
@@ -50,7 +51,7 @@
 
                     <v-col cols="12" sm="4">
                         <div class="info-card">
-                            <v-icon color="amber" large>mdi-star</v-icon>
+                            <v-icon color="white" large>mdi-star</v-icon>
                             <div class="info-label">{{ t('common.experience') }}</div>
                             <div class="info-value" style="color: #FFA726">+{{ routine.reward }} XP</div>
                         </div>
@@ -58,7 +59,7 @@
 
                     <v-col cols="12" sm="4">
                         <div class="info-card">
-                            <v-icon color="yellow darken-2" large>mdi-gold</v-icon>
+                            <v-icon color="white" large>mdi-gold</v-icon>
                             <div class="info-label">{{ t('common.coins') }}</div>
                             <div class="info-value" style="color: #F9A825">+50</div>
                         </div>
@@ -67,7 +68,7 @@
 
                 <div class="section">
                     <div class="section-label">
-                        <v-icon color="purple" class="mr-2">mdi-calendar</v-icon>
+                        <v-icon color="white" class="mr-2">mdi-calendar</v-icon>
                         {{ t('routineDetail.scheduledDate') }}
                     </div>
                     <p class="section-text">{{ routine.createdat ? formatDate(routine.createdat.toString()) : '-' }}</p>
@@ -75,7 +76,7 @@
 
                 <v-alert v-if="routine.iscompleted" type="success" colored-border elevation="2" class="mt-4">
                     <div class="completed-message">
-                        <v-icon large color="success" class="mr-3">mdi-trophy</v-icon>
+                        <v-icon large color="white" class="mr-3">mdi-trophy</v-icon>
                         <div>
                             <div class="font-weight-bold">{{ t('routineDetail.greatJob') }}</div>
                             <div class="text-caption">{{ t('routineDetail.completedSuccess') }}</div>
@@ -84,13 +85,9 @@
                 </v-alert>
             </v-card-text>
 
-            <v-card-actions class="routine-actions">
+            <v-card-actions class="routine-actions" v-if="!routine.iscompleted">
                 <v-spacer></v-spacer>
-                <v-btn text large @click="$emit('update:modelValue', false)">
-                    {{ t('common.close') }}
-                </v-btn>
                 <v-btn 
-                    v-if="!routine.iscompleted" 
                     color="success" 
                     large 
                     elevation="2" 
@@ -103,11 +100,10 @@
             </v-card-actions>
         </v-card>
 
-        <!-- Diálogo de confirmación -->
         <v-dialog v-model="showConfirmDialog" max-width="400" persistent>
             <v-card class="confirm-dialog">
                 <v-card-title class="text-h5 confirm-title">
-                    <v-icon large color="amber" class="mr-2">mdi-alert-circle</v-icon>
+                    <v-icon large color="white" class="mr-2">mdi-alert-circle</v-icon>
                     {{ t('common.areYouSure') }}
                 </v-card-title>
                 <v-card-text class="confirm-text">
@@ -301,12 +297,6 @@ function formatDate(dateString: string): string {
     gap: 8px;
 }
 
-.info-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(139, 92, 246, 0.3);
-    border-color: rgba(139, 92, 246, 0.5);
-}
-
 .info-label {
     font-size: 0.85rem;
     color: rgba(255, 255, 255, 0.6);
@@ -370,6 +360,8 @@ function formatDate(dateString: string): string {
     font-weight: 700;
 }
 
+
+
 @media (max-width: 960px) {
     .routine-header {
         padding: 20px;
@@ -390,8 +382,9 @@ function formatDate(dateString: string): string {
     }
 
     .header-content {
-        flex-direction: column;
-        align-items: flex-start;
+        flex-direction: row;
+        align-items: center;
+        gap: 12px;
     }
 
     .routine-title {

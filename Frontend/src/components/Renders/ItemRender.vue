@@ -106,7 +106,6 @@ const handleImageError = (event: Event) => {
 
 <template>
   <v-container fluid class="items-container pa-6">
-    <!-- Sección: Rotación diaria -->
     <section class="shop-section mb-10">
       <div class="section-header">
         <div class="header-icon-wrapper daily">
@@ -117,12 +116,11 @@ const handleImageError = (event: Event) => {
           <p class="section-subtitle">{{ $t('shop_subtitle') }}</p>
         </div>
         <div class="daily-badge">
-          <v-icon size="20" color="#FFD700">mdi-timer-sand</v-icon>
+          <v-icon size="20" color="white">mdi-timer-sand</v-icon>
           <span>24h</span>
         </div>
       </div>
 
-      <!-- justify="center" centra los items cuando hay pocos -->
       <v-row class="items-grid" justify="center">
         <v-col
           v-for="item in dailyRotation"
@@ -133,7 +131,7 @@ const handleImageError = (event: Event) => {
           lg="4"
         >
           <div class="item-card daily-item" @click="openPopup(item)">
-            <div class="item-glow" :style="{ background: `radial-gradient(circle, ${getItemColor(item.type)}40 0%, transparent 70%)` }"></div>
+            <div  :style="{ background: `radial-gradient(circle, ${getItemColor(item.type)}40 0%, transparent 70%)` }"></div>
             <div class="daily-ribbon">
               <span>{{ $t('daily_ribbon') }}</span>
             </div>
@@ -148,7 +146,7 @@ const handleImageError = (event: Event) => {
                   @error="handleImageError"
                 />
                 <div class="item-icon-fallback">
-                  <v-icon :color="getItemColor(item.type)" size="40">{{ getItemIcon(item.type) }}</v-icon>
+                  <v-icon :color="white" size="40">{{ getItemIcon(item.type) }}</v-icon>
                 </div>
               </div>
             </div>
@@ -158,13 +156,13 @@ const handleImageError = (event: Event) => {
 
               <div class="item-stats">
                 <div class="stat-badge" :style="{ background: `${getItemColor(item.type)}20`, borderColor: `${getItemColor(item.type)}60` }">
-                  <v-icon :color="getItemColor(item.type)" size="18">{{ getItemIcon(item.type) }}</v-icon>
+                  <v-icon :color="white" size="18">{{ getItemIcon(item.type) }}</v-icon>
                   <span :style="{ color: getItemColor(item.type) }">+{{ item.bonus }}</span>
                 </div>
               </div>
 
               <div class="item-price" :class="{ 'insufficient-gold': !canAfford(item.price) }">
-                <v-icon size="20" color="#FFD700">mdi-currency-usd</v-icon>
+                <v-icon size="20" color="white">mdi-currency-usd</v-icon>
                 <span>{{ item.price }}</span>
               </div>
             </div>
@@ -185,7 +183,6 @@ const handleImageError = (event: Event) => {
       </v-row>
     </section>
 
-    <!-- Sección: Objetos de Fuerza -->
     <section class="shop-section mb-10">
       <div class="section-header">
         <div class="header-icon-wrapper strength">
@@ -207,7 +204,7 @@ const handleImageError = (event: Event) => {
           lg="3"
         >
           <div class="item-card strength-item" @click="openPopup(item)">
-            <div class="item-glow" style="background: radial-gradient(circle, #FF475740 0%, transparent 70%)"></div>
+            <div  style="background: radial-gradient(circle, #FF475740 0%, transparent 70%)"></div>
 
             <div class="item-image-wrapper" style="border-color: #FF4757; box-shadow: 0 0 20px #FF475740;">
               <div class="item-image-inner">
@@ -219,7 +216,7 @@ const handleImageError = (event: Event) => {
                   @error="handleImageError"
                 />
                 <div class="item-icon-fallback">
-                  <v-icon color="#FF4757" size="40">mdi-dumbbell</v-icon>
+                  <v-icon color="white" size="40">mdi-dumbbell</v-icon>
                 </div>
               </div>
             </div>
@@ -229,13 +226,13 @@ const handleImageError = (event: Event) => {
 
               <div class="item-stats">
                 <div class="stat-badge" style="background: #FF475720; border-color: #FF475760;">
-                  <v-icon color="#FF4757" size="18">mdi-dumbbell</v-icon>
+                  <v-icon color="white" size="18">mdi-dumbbell</v-icon>
                   <span style="color: #FF4757;">+{{ item.bonus }}</span>
                 </div>
               </div>
 
               <div class="item-price" :class="{ 'insufficient-gold': !canAfford(item.price) }">
-                <v-icon size="20" color="#FFD700">mdi-currency-usd</v-icon>
+                <v-icon size="20" color="white">mdi-currency-usd</v-icon>
                 <span>{{ item.price }}</span>
               </div>
             </div>
@@ -256,7 +253,6 @@ const handleImageError = (event: Event) => {
       </v-row>
     </section>
 
-    <!-- Sección: Objetos de Resistencia -->
     <section class="shop-section">
       <div class="section-header">
         <div class="header-icon-wrapper endurance">
@@ -278,7 +274,7 @@ const handleImageError = (event: Event) => {
           lg="3"
         >
           <div class="item-card endurance-item" @click="openPopup(item)">
-            <div class="item-glow" style="background: radial-gradient(circle, #00D2FF40 0%, transparent 70%)"></div>
+            <div  style="background: radial-gradient(circle, #00D2FF40 0%, transparent 70%)"></div>
 
             <div class="item-image-wrapper" style="border-color: #00D2FF; box-shadow: 0 0 20px #00D2FF40;">
               <div class="item-image-inner">
@@ -290,7 +286,7 @@ const handleImageError = (event: Event) => {
                   @error="handleImageError"
                 />
                 <div class="item-icon-fallback">
-                  <v-icon color="#00D2FF" size="40">mdi-run-fast</v-icon>
+                  <v-icon color="white" size="40">mdi-run-fast</v-icon>
                 </div>
               </div>
             </div>
@@ -300,13 +296,13 @@ const handleImageError = (event: Event) => {
 
               <div class="item-stats">
                 <div class="stat-badge" style="background: #00D2FF20; border-color: #00D2FF60;">
-                  <v-icon color="#00D2FF" size="18">mdi-run-fast</v-icon>
+                  <v-icon color="white" size="18">mdi-run-fast</v-icon>
                   <span style="color: #00D2FF;">+{{ item.bonus }}</span>
                 </div>
               </div>
 
               <div class="item-price" :class="{ 'insufficient-gold': !canAfford(item.price) }">
-                <v-icon size="20" color="#FFD700">mdi-currency-usd</v-icon>
+                <v-icon size="20" color="white">mdi-currency-usd</v-icon>
                 <span>{{ item.price }}</span>
               </div>
             </div>
@@ -327,11 +323,9 @@ const handleImageError = (event: Event) => {
       </v-row>
     </section>
 
-    <!-- Diálogo de Compra -->
     <v-dialog v-model="showDialog" max-width="450px">
       <v-card class="purchase-dialog">
         <div class="dialog-header" :style="{ background: `linear-gradient(135deg, ${getItemColor(selectedItem?.type || '')}30 0%, transparent 100%)` }">
-          <!-- Imagen en el diálogo también con nuevo estilo -->
           <div class="dialog-image-wrapper" :style="{ borderColor: getItemColor(selectedItem?.type || ''), boxShadow: `0 0 30px ${getItemColor(selectedItem?.type || '')}50` }">
             <div class="dialog-image-inner">
               <img
@@ -354,7 +348,7 @@ const handleImageError = (event: Event) => {
             <div class="info-row">
               <span class="info-label">{{ $t('price') }}:</span>
               <div class="info-value gold-value">
-                <v-icon size="20" color="#FFD700">mdi-currency-usd</v-icon>
+                <v-icon size="20" color="white">mdi-currency-usd</v-icon>
                 <strong>{{ selectedItem?.price }}</strong>
               </div>
             </div>
@@ -362,7 +356,7 @@ const handleImageError = (event: Event) => {
             <div class="info-row">
               <span class="info-label">{{ $t('bonus_label') }}:</span>
               <div class="info-value">
-                <v-icon :color="getItemColor(selectedItem?.type || '')" size="20">{{ getItemIcon(selectedItem?.type || '') }}</v-icon>
+                <v-icon :color="white" size="20">{{ getItemIcon(selectedItem?.type || '') }}</v-icon>
                 <strong :style="{ color: getItemColor(selectedItem?.type || '') }">+{{ selectedItem?.bonus }}</strong>
                 <span v-if="selectedItem?.type === 'Strength'">{{ $t('fuerza') }}</span>
                 <span v-else-if="selectedItem?.type === 'Endurance'">{{ $t('resistencia') }}</span>
@@ -405,7 +399,6 @@ const handleImageError = (event: Event) => {
       </v-card>
     </v-dialog>
 
-    <!-- Snackbar -->
     <v-snackbar
       v-model="snackbar"
       :color="snackbarColor"
@@ -516,26 +509,7 @@ const handleImageError = (event: Event) => {
   transition: opacity 0.3s ease;
 }
 
-.item-card:hover {
-  transform: translateY(-8px);
-  border-color: rgba(255, 255, 255, 0.3);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 40px rgba(255, 255, 255, 0.1);
-}
 
-.item-card:hover::before { opacity: 1; }
-
-.item-glow {
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  width: 200px; height: 200px;
-  border-radius: 50%;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.4s ease;
-}
-
-.item-card:hover .item-glow { opacity: 1; }
 
 .daily-ribbon {
   position: absolute;
@@ -566,9 +540,7 @@ const handleImageError = (event: Event) => {
   background: rgba(0, 0, 0, 0.35);
 }
 
-.item-card:hover .item-image-wrapper {
-  transform: scale(1.04);
-}
+
 
 /* Ratio 16:10 — ajusta a tu gusto */
 .item-image-inner {
@@ -588,9 +560,7 @@ const handleImageError = (event: Event) => {
   transition: transform 0.35s ease;
 }
 
-.item-card:hover .item-image {
-  transform: scale(1.06);
-}
+
 
 .item-icon-fallback {
   position: absolute;
@@ -668,7 +638,7 @@ const handleImageError = (event: Event) => {
   letter-spacing: 1.2px;
   border-radius: 12px !important;
   min-height: 52px !important;
-  animation: fadeInUp 0.4s ease-out;
+
 }
 
 .buy-btn:focus-visible {
@@ -676,26 +646,7 @@ const handleImageError = (event: Event) => {
   outline-offset: 2px;
 }
 
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-/* ─── HOVER POR TIPO ───────────────────────────────────── */
-.strength-item:hover {
-  border-color: rgba(255, 71, 87, 0.6);
-  box-shadow: 0 12px 40px rgba(255, 71, 87, 0.3), 0 0 40px rgba(255, 71, 87, 0.2);
-}
-
-.endurance-item:hover {
-  border-color: rgba(0, 210, 255, 0.6);
-  box-shadow: 0 12px 40px rgba(0, 210, 255, 0.3), 0 0 40px rgba(0, 210, 255, 0.2);
-}
-
-.daily-item:hover {
-  border-color: rgba(255, 215, 0, 0.6);
-  box-shadow: 0 12px 40px rgba(255, 215, 0, 0.3), 0 0 40px rgba(255, 215, 0, 0.2);
-}
+/* ─── BOTON ───────────────────────────────────── */
 
 /* Shimmer en items diarios */
 .daily-item::after {
@@ -704,12 +655,7 @@ const handleImageError = (event: Event) => {
   top: 0; left: -100%;
   width: 100%; height: 100%;
   background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.15), transparent);
-  animation: shimmer 3s infinite;
-}
 
-@keyframes shimmer {
-  0%   { left: -100%; }
-  100% { left: 100%; }
 }
 
 /* ─── DIÁLOGO ──────────────────────────────────────────── */
@@ -853,5 +799,4 @@ const handleImageError = (event: Event) => {
 .items-container::-webkit-scrollbar { width: 8px; }
 .items-container::-webkit-scrollbar-track { background: rgba(0,0,0,.2); border-radius: 10px; }
 .items-container::-webkit-scrollbar-thumb { background: linear-gradient(180deg,#0D6EFD,#0a58ca); border-radius: 10px; }
-.items-container::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg,#0a58ca,#084298); }
 </style>

@@ -1,7 +1,6 @@
 <template>
   <v-dialog v-model="showDialog" max-width="1200" persistent scrollable>
     <v-card class="routine-stats-card">
-      <!-- Header -->
       <div class="stats-header">
         <div class="header-content">
           <v-icon large color="white" class="mr-3">mdi-chart-timeline-variant</v-icon>
@@ -15,48 +14,44 @@
         </v-btn>
       </div>
 
-      <!-- Resumen General -->
       <v-card-text class="pa-6">
         <div class="summary-cards">
           <div class="summary-card">
-            <v-icon color="purple" size="40">mdi-dumbbell</v-icon>
+            <v-icon color="white" size="40">mdi-dumbbell</v-icon>
             <div class="summary-value">{{ totalRoutines }}</div>
             <div class="summary-label">{{ t('routineStats.totalRoutines') }}</div>
           </div>
           <div class="summary-card">
-            <v-icon color="success" size="40">mdi-check-circle</v-icon>
+            <v-icon color="white" size="40">mdi-check-circle</v-icon>
             <div class="summary-value">{{ completedRoutines }}</div>
             <div class="summary-label">{{ t('common.completed') }}</div>
           </div>
           <div class="summary-card">
-            <v-icon color="warning" size="40">mdi-clock-outline</v-icon>
+            <v-icon color="white" size="40">mdi-clock-outline</v-icon>
             <div class="summary-value">{{ pendingRoutines }}</div>
             <div class="summary-label">{{ t('common.pending') }}</div>
           </div>
           <div class="summary-card">
-            <v-icon color="info" size="40">mdi-percent</v-icon>
+            <v-icon color="white" size="40">mdi-percent</v-icon>
             <div class="summary-value">{{ completionRate }}%</div>
             <div class="summary-label">{{ t('routineStats.successRate') }}</div>
           </div>
         </div>
 
-        <!-- Estadísticas por Mes -->
         <div class="monthly-stats">
           <h3 class="section-title">
-            <v-icon color="purple" class="mr-2">mdi-calendar-month</v-icon>
+            <v-icon color="white" class="mr-2">mdi-calendar-month</v-icon>
             {{ t('routineStats.monthlyStats') }}
           </h3>
 
-          <!-- Si no hay datos -->
           <v-alert v-if="monthlyData.length === 0" type="info" outlined class="mt-4">
             <div class="text-center">
-              <v-icon large color="info" class="mb-2">mdi-information</v-icon>
+              <v-icon large color="white" class="mb-2">mdi-information</v-icon>
               <p class="text-h6 mb-0">{{ t('routineStats.noRoutinesTitle') }}</p>
               <p class="text-body-2">{{ t('routineStats.noRoutinesHint') }}</p>
             </div>
           </v-alert>
 
-          <!-- Grid de meses -->
           <div v-else class="months-grid">
             <div
               v-for="month in monthlyData"
@@ -72,28 +67,27 @@
               <div class="month-stats">
                 <div class="stat-row">
                   <span class="stat-label">
-                    <v-icon small color="success">mdi-check</v-icon>
+                    <v-icon small color="white">mdi-check</v-icon>
                     {{ t('common.completed') }}
                   </span>
                   <span class="stat-value success--text">{{ month.completed }}</span>
                 </div>
                 <div class="stat-row">
                   <span class="stat-label">
-                    <v-icon small color="warning">mdi-clock</v-icon>
+                    <v-icon small color="white">mdi-clock</v-icon>
                     {{ t('common.pending') }}
                   </span>
                   <span class="stat-value warning--text">{{ month.pending }}</span>
                 </div>
                 <div class="stat-row">
                   <span class="stat-label">
-                    <v-icon small color="purple">mdi-sigma</v-icon>
+                    <v-icon small color="white">mdi-sigma</v-icon>
                     {{ t('common.total') }}
                   </span>
                   <span class="stat-value stat-value-purple">{{ month.total }}</span>
                 </div>
               </div>
 
-              <!-- Barra de progreso -->
               <div class="month-progress">
                 <div class="progress-bar">
                   <div
@@ -104,9 +98,8 @@
                 <span class="progress-label">{{ month.completionRate }}{{ t('routineStats.percentCompleted') }}</span>
               </div>
 
-              <!-- Badge de XP ganado -->
               <div class="xp-earned">
-                <v-icon small color="amber">mdi-star</v-icon>
+                <v-icon small color="white">mdi-star</v-icon>
                 <span>+{{ month.totalXP }} XP</span>
               </div>
             </div>
@@ -114,7 +107,6 @@
         </div>
       </v-card-text>
 
-      <!-- Footer -->
       <v-card-actions class="stats-footer">
         <v-spacer></v-spacer>
         <v-btn color="purple" text large @click="closeDialog">
@@ -123,7 +115,6 @@
       </v-card-actions>
     </v-card>
 
-    <!-- Diálogo de detalle del mes -->
     <MonthDetailDialog
       v-model="showMonthDetail"
       :month-data="selectedMonth"
@@ -322,12 +313,6 @@ const closeDialog = (): void => {
   backdrop-filter: blur(10px);
 }
 
-.summary-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(139, 92, 246, 0.3);
-  border-color: rgba(167, 139, 250, 0.6);
-}
-
 .summary-value {
   font-size: 2.5rem;
   font-weight: 800;
@@ -368,12 +353,6 @@ const closeDialog = (): void => {
   transition: all 0.3s ease;
   cursor: pointer;
   backdrop-filter: blur(10px);
-}
-
-.month-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(139, 92, 246, 0.3);
-  border-color: rgba(167, 139, 250, 0.6);
 }
 
 .month-header {

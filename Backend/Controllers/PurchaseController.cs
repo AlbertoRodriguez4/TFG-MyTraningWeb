@@ -10,6 +10,7 @@ namespace AA2_CS.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class PurchaseController : ControllerBase
     {
         private readonly PurchaseService _purchaseService;
@@ -165,17 +166,15 @@ namespace AA2_CS.Controllers
             }
         }
 
-        [HttpGet("my-purchases")] // Ruta limpia, sin parámetros sensibles
-        [Authorize] // Esto asegura que solo entre alguien con Token válido
+        [HttpGet("my-purchases")]
+        [Authorize]
         public IActionResult GetMyPurchases()
         {
             try
             {
-                // 1. Extraer el ID del usuario directamente del Token
-                // El ClaimTypes.NameIdentifier suele ser donde se guarda el ID en el JWT
+
                 var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-                // Si por alguna razón el token no tiene ID (raro si está autorizado)
                 if (string.IsNullOrEmpty(userIdString))
                 {
                     return Unauthorized("Token inválido: No contiene ID de usuario.");

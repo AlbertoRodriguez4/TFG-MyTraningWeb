@@ -38,14 +38,12 @@ const getEquipItem = (user: User) => {
         class="user-card"
         :style="{ animationDelay: `${index * 0.1}s` }"
       >
-        <div class="card-glow"></div>
+        <div ></div>
         <div class="card-content">
-          <!-- Rank Badge -->
           <div class="rank-badge">
             <span>{{ index + 4 }}</span>
           </div>
 
-          <!-- Avatar -->
           <div class="avatar-container">
             <div class="avatar-ring"></div>
             <img
@@ -59,10 +57,8 @@ const getEquipItem = (user: User) => {
             </div>
           </div>
 
-          <!-- User Info -->
           <h4 class="user-name">{{ user.name }}</h4>
 
-          <!-- Stats Row -->
           <div class="stats-row">
             <div class="stat-item strength">
               <v-icon size="16">mdi-arm-flex</v-icon>
@@ -74,9 +70,8 @@ const getEquipItem = (user: User) => {
             </div>
           </div>
 
-          <!-- Equipment -->
           <div v-if="getEquipItem(user)" class="equipment-bar">
-            <v-icon size="14" color="rgba(255, 215, 0, 0.8)">mdi-sword-cross</v-icon>
+            <v-icon size="14" color="white">mdi-sword-cross</v-icon>
             <span class="equip-name">{{ getEquipItem(user)?.name }}</span>
             <span class="equip-bonus">+{{ getEquipItem(user)?.bonus }}</span>
           </div>
@@ -84,7 +79,6 @@ const getEquipItem = (user: User) => {
       </div>
     </div>
 
-    <!-- Loading State -->
     <div class="loading-state" v-else-if="loading">
       <div class="skeleton-grid">
         <div
@@ -100,9 +94,8 @@ const getEquipItem = (user: User) => {
       </div>
     </div>
 
-    <!-- Empty State -->
     <div class="empty-state" v-else>
-      <v-icon size="60" color="rgba(255, 255, 255, 0.2)">mdi-account-group-outline</v-icon>
+      <v-icon size="60" color="white">mdi-account-group-outline</v-icon>
       <p>{{ $t('no_more_athletes') }}</p>
     </div>
   </div>
@@ -163,42 +156,7 @@ const getEquipItem = (user: User) => {
   text-align: center;
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   overflow: hidden;
-  animation: card-entrance 0.5s ease-out backwards;
-}
 
-@keyframes card-entrance {
-  0% {
-    opacity: 0;
-    transform: translateY(20px) scale(0.95);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-.card-glow {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: radial-gradient(ellipse at center, rgba(255, 215, 0, 0.1), transparent 70%);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  pointer-events: none;
-}
-
-.user-card:hover {
-  transform: translateY(-5px) scale(1.02);
-  border-color: rgba(255, 215, 0, 0.4);
-  box-shadow:
-    0 10px 30px rgba(0, 0, 0, 0.4),
-    0 0 40px rgba(255, 215, 0, 0.15);
-}
-
-.user-card:hover .card-glow {
-  opacity: 1;
 }
 
 .card-content {
@@ -240,18 +198,7 @@ const getEquipItem = (user: User) => {
   height: 70px;
   border: 2px solid rgba(255, 215, 0, 0.3);
   border-radius: 50%;
-  animation: ring-pulse 2s ease-in-out infinite;
-}
 
-@keyframes ring-pulse {
-  0%, 100% {
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: translate(-50%, -50%) scale(1.1);
-    opacity: 0.5;
-  }
 }
 
 .avatar {
@@ -263,10 +210,6 @@ const getEquipItem = (user: User) => {
   border: 3px solid rgba(255, 255, 255, 0.2);
   z-index: 2;
   transition: border-color 0.3s ease;
-}
-
-.user-card:hover .avatar {
-  border-color: rgba(255, 215, 0, 0.6);
 }
 
 .level-badge {
@@ -317,10 +260,6 @@ const getEquipItem = (user: User) => {
   font-weight: 600;
   color: #fff;
   transition: transform 0.2s ease;
-}
-
-.stat-item:hover {
-  transform: translateY(-2px);
 }
 
 .stat-item.strength {
@@ -382,12 +321,7 @@ const getEquipItem = (user: User) => {
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 20px;
   padding: 1.25rem;
-  animation: skeleton-pulse 1.5s ease-in-out infinite;
-}
 
-@keyframes skeleton-pulse {
-  0%, 100% { opacity: 0.3; }
-  50% { opacity: 0.6; }
 }
 
 .skeleton-avatar {

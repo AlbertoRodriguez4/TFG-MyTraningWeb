@@ -27,6 +27,7 @@ namespace AA2_CS.Controllers
 
         // GET: api/UserRoom
         [HttpGet]
+        [Authorize]
         public IActionResult GetAll()
         {
             if (!IsAdmin())
@@ -45,9 +46,8 @@ namespace AA2_CS.Controllers
             }
         }
 
-        // GET: api/UserRoom/user/5
-        // Devuelve todas las salas donde está el usuario 5
         [HttpGet("user/{userId}")]
+        [Authorize]
         public IActionResult GetByUserId(int userId)
         {
             if (!CanAccessUserResource(userId))
@@ -67,9 +67,8 @@ namespace AA2_CS.Controllers
             }
         }
 
-        // GET: api/UserRoom/room/10
-        // Devuelve todos los usuarios que están en la sala 10
         [HttpGet("room/{roomId}")]
+        [Authorize]
         public IActionResult GetByRoomId(int roomId)
         {
             try
@@ -83,8 +82,8 @@ namespace AA2_CS.Controllers
             }
         }
 
-        // POST: api/UserRoom
         [HttpPost]
+        [Authorize]
         public IActionResult Add([FromBody] UserRoom userRoom)
         {
             try
@@ -94,7 +93,6 @@ namespace AA2_CS.Controllers
                     return Forbid();
                 }
 
-                // Opcional: Validar si la relación ya existe antes de agregar
                 var existing = _userRoomService.FindByCompositeKey(userRoom.userid, userRoom.roomid);
                 if (existing != null)
                 {
@@ -103,7 +101,6 @@ namespace AA2_CS.Controllers
 
                 var result = _userRoomService.Add(userRoom);
 
-                // Enviar notificación de unión a sala (fire-and-forget con scope propio)
                 if (result > 0)
                 {
                     var capturedUserId = userRoom.userid;
@@ -136,9 +133,8 @@ namespace AA2_CS.Controllers
             }
         }
 
-        // PUT: api/UserRoom/5/10
-        // Necesitamos ambos IDs para identificar qué registro actualizar
         [HttpPut("{userId}/{roomId}")]
+        [Authorize]
         public async Task<IActionResult> Update(int userId, int roomId, [FromBody] UserRoom updatedUserRoom)
         {
             try
@@ -148,7 +144,6 @@ namespace AA2_CS.Controllers
                     return Forbid();
                 }
 
-                // Validar que los IDs de la URL coincidan con el cuerpo (opcional, pero recomendado)
                 if (userId != updatedUserRoom.userid || roomId != updatedUserRoom.roomid)
                 {
                     return BadRequest("IDs in URL do not match IDs in body.");
@@ -169,8 +164,8 @@ namespace AA2_CS.Controllers
             }
         }
 
-        // DELETE: api/UserRoom/5/10
         [HttpDelete("{userId}/{roomId}")]
+        [Authorize]
         public IActionResult Delete(int userId, int roomId)
         {
             try

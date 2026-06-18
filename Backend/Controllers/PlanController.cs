@@ -8,6 +8,7 @@ namespace AA2_CS.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class PlanController : ControllerBase
     {
         private readonly PlanService _planService;

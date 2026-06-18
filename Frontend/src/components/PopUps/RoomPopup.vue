@@ -135,11 +135,10 @@ async function createRoom() {
   <v-dialog v-model="dialogVisible" max-width="680" persistent transition="dialog-bottom-transition"
     :fullscreen="$vuetify.display.mobile" scrollable>
     <v-card class="create-room-card">
-      <!-- Header con gradiente -->
       <div class="card-header">
         <div class="header-content">
           <div class="header-icon">
-            <v-icon size="large" color="#00ff88">mdi-plus-circle</v-icon>
+            <v-icon size="large" color="white">mdi-plus-circle</v-icon>
           </div>
           <div class="header-text">
             <h2 class="card-title">{{ $t('crear') }}</h2>
@@ -154,7 +153,6 @@ async function createRoom() {
 
       <v-card-text class="card-content">
         <v-form @submit.prevent="createRoom" ref="formRef">
-          <!-- Error Alert -->
           <transition name="slide-fade">
             <v-alert v-if="error" type="error" class="error-alert" closable @click:close="error = ''">
               <div class="d-flex align-center">
@@ -164,7 +162,6 @@ async function createRoom() {
             </v-alert>
           </transition>
 
-          <!-- Room Name -->
           <div class="form-field">
             <label class="field-label">
               <v-icon size="18" class="label-icon">mdi-door-open</v-icon>
@@ -173,12 +170,11 @@ async function createRoom() {
             <v-text-field v-model="roomName" :placeholder="$t('insertar nombre de la sala')" required variant="outlined"
               density="comfortable" class="custom-field" bg-color="rgba(255, 255, 255, 0.05)" hide-details>
               <template v-slot:prepend-inner>
-                <v-icon color="#00ff88" size="20">mdi-format-text</v-icon>
+                <v-icon color="white" size="20">mdi-format-text</v-icon>
               </template>
             </v-text-field>
           </div>
 
-          <!-- Room Description -->
           <div class="form-field">
             <label class="field-label">
               <v-icon size="18" class="label-icon">mdi-text-box</v-icon>
@@ -188,12 +184,11 @@ async function createRoom() {
               density="comfortable" class="custom-field custom-textarea" bg-color="rgba(255, 255, 255, 0.05)"
               hide-details rows="3" auto-grow max-rows="5">
               <template v-slot:prepend-inner>
-                <v-icon color="#6366f1" size="20">mdi-pencil</v-icon>
+                <v-icon color="white" size="20">mdi-pencil</v-icon>
               </template>
             </v-textarea>
           </div>
 
-          <!-- Event Date -->
           <div class="form-field">
             <label class="field-label">
               <v-icon size="18" class="label-icon">mdi-calendar-clock</v-icon>
@@ -203,12 +198,11 @@ async function createRoom() {
               density="comfortable" class="custom-field custom-date-field" bg-color="rgba(255, 255, 255, 0.05)"
               hide-details>
               <template v-slot:prepend-inner>
-                <v-icon color="#f59e0b" size="20">mdi-calendar</v-icon>
+                <v-icon color="white" size="20">mdi-calendar</v-icon>
               </template>
             </v-text-field>
           </div>
 
-          <!-- Location -->
           <div class="form-field">
             <label class="field-label">
               <v-icon size="18" class="label-icon">mdi-map-marker</v-icon>
@@ -218,20 +212,18 @@ async function createRoom() {
               variant="outlined" density="comfortable" class="custom-field custom-location-field"
               bg-color="rgba(255, 255, 255, 0.05)" hide-details>
               <template v-slot:prepend-inner>
-                <v-icon color="#10b981" size="20">mdi-map-marker-radius</v-icon>
+                <v-icon color="white" size="20">mdi-map-marker-radius</v-icon>
               </template>
             </v-text-field>
           </div>
 
-          <!-- Requirements Section -->
           <div class="requirements-section">
             <div class="section-header">
-              <v-icon color="#ffcc00" size="20">mdi-shield-lock</v-icon>
+              <v-icon color="white" size="20">mdi-shield-lock</v-icon>
               <span class="section-title">{{ $t('access_requirements') }}</span>
             </div>
 
             <div class="requirements-grid">
-              <!-- Min Level -->
               <div class="form-field">
                 <label class="field-label">
                   <v-icon size="16" class="label-icon">mdi-chevron-triple-up</v-icon>
@@ -240,12 +232,11 @@ async function createRoom() {
                 <v-text-field v-model.number="minLevel" type="number" min="1" required variant="outlined"
                   density="comfortable" class="custom-field" bg-color="rgba(255, 255, 255, 0.05)" hide-details>
                   <template v-slot:prepend-inner>
-                    <v-icon color="#00d9ff" size="20">mdi-numeric</v-icon>
+                    <v-icon color="white" size="20">mdi-numeric</v-icon>
                   </template>
                 </v-text-field>
               </div>
 
-              <!-- Min Stats -->
               <div class="form-field">
                 <label class="field-label">
                   <v-icon size="16" class="label-icon">mdi-trending-up</v-icon>
@@ -254,12 +245,11 @@ async function createRoom() {
                 <v-text-field v-model.number="minStats" type="number" min="0" required variant="outlined"
                   density="comfortable" class="custom-field" bg-color="rgba(255, 255, 255, 0.05)" hide-details>
                   <template v-slot:prepend-inner>
-                    <v-icon color="#ff6b9d" size="20">mdi-numeric</v-icon>
+                    <v-icon color="white" size="20">mdi-numeric</v-icon>
                   </template>
                 </v-text-field>
               </div>
 
-              <!-- Min Consistency -->
               <div class="form-field full-width">
                 <label class="field-label">
                   <v-icon size="16" class="label-icon">mdi-calendar-check</v-icon>
@@ -268,7 +258,7 @@ async function createRoom() {
                 <v-text-field v-model.number="minConsistency" type="number" min="0" variant="outlined"
                   density="comfortable" class="custom-field" bg-color="rgba(255, 255, 255, 0.05)" hide-details>
                   <template v-slot:prepend-inner>
-                    <v-icon color="#ffcc00" size="20">mdi-numeric</v-icon>
+                    <v-icon color="white" size="20">mdi-numeric</v-icon>
                   </template>
                 </v-text-field>
               </div>
@@ -277,7 +267,6 @@ async function createRoom() {
         </v-form>
       </v-card-text>
 
-      <!-- Action Buttons -->
       <v-card-actions class="card-actions">
         <v-btn color="secondary" @click="closePopup" variant="outlined" size="large" class="action-btn cancel-button">
           <v-icon class="btn-icon">mdi-close-circle</v-icon>
@@ -292,7 +281,6 @@ async function createRoom() {
     </v-card>
   </v-dialog>
 
-  <!-- Snackbar -->
   <v-snackbar v-model="snackbar" :color="snackbarColor" :timeout="3000" location="top" rounded="pill">
     <div class="d-flex align-center">
       <v-icon class="mr-2">
@@ -313,7 +301,7 @@ async function createRoom() {
   box-shadow:
     0 20px 60px rgba(0, 0, 0, 0.5),
     0 0 0 1px rgba(255, 255, 255, 0.1) inset;
-  animation: fadeIn 0.3s ease-out;
+
 
 }
 
@@ -341,7 +329,6 @@ async function createRoom() {
   border-radius: 50%;
   border: 2px solid rgba(0, 255, 136, 0.3);
   flex-shrink: 0;
-  animation: iconPulse 2s ease-in-out infinite;
 }
 
 .header-icon .v-icon {
@@ -443,11 +430,6 @@ async function createRoom() {
   min-height: clamp(2.5rem, 8vw, 3.5rem);
 }
 
-.custom-field :deep(.v-field:hover) {
-  border-color: rgba(0, 255, 136, 0.4);
-  background: rgba(255, 255, 255, 0.08) !important;
-}
-
 .custom-field :deep(.v-field--focused) {
   border-color: #00ff88;
   box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.1);
@@ -484,18 +466,10 @@ async function createRoom() {
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
 }
 
-.custom-textarea :deep(.v-field:hover) {
-  border-color: rgba(99, 102, 241, 0.4);
-}
-
 /* Date field específico */
 .custom-date-field :deep(.v-field--focused) {
   border-color: #f59e0b;
   box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
-}
-
-.custom-date-field :deep(.v-field:hover) {
-  border-color: rgba(245, 158, 11, 0.4);
 }
 
 .custom-date-field :deep(input[type="date"]) {
@@ -510,18 +484,10 @@ async function createRoom() {
   transition: opacity 0.2s;
 }
 
-.custom-date-field :deep(input[type="date"]::-webkit-calendar-picker-indicator:hover) {
-  opacity: 1;
-}
-
 /* Location field específico */
 .custom-location-field :deep(.v-field--focused) {
   border-color: #10b981;
   box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
-}
-
-.custom-location-field :deep(.v-field:hover) {
-  border-color: rgba(16, 185, 129, 0.4);
 }
 
 /* Requirements Section */
@@ -616,33 +582,6 @@ async function createRoom() {
 
 .create-button:active {
   transform: translateY(0);
-}
-
-/* Animations */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@keyframes iconPulse {
-
-  0%,
-  100% {
-    transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.5);
-  }
-
-  50% {
-    transform: scale(1.05);
-    box-shadow: 0 0 0 10px rgba(0, 255, 136, 0);
-  }
 }
 
 .slide-fade-enter-active {

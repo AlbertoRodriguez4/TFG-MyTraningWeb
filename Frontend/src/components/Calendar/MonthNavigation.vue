@@ -2,7 +2,6 @@
   <v-card class="month-nav-card" elevation="0" rounded="xl">
     <v-card-text class="pa-5">
       <div class="d-flex align-center justify-space-between">
-        <!-- Botón Mes Anterior -->
         <v-btn
           fab
           color="purple"
@@ -15,7 +14,6 @@
           <v-icon>mdi-chevron-left</v-icon>
         </v-btn>
 
-        <!-- Información del Mes y Año -->
         <div class="text-center month-info">
           <h2 class="text-h3 font-weight-black mb-1 month-title">
             {{ monthName }}
@@ -25,7 +23,6 @@
           </p>
         </div>
 
-        <!-- Botón Mes Siguiente -->
         <v-btn
           fab
           color="purple"
@@ -131,21 +128,9 @@ function handleNext() {
   transform: scale(1.2);
 }
 
-/* Animación sutil al cambiar de mes */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 .month-title,
 .year-subtitle {
-  animation: fadeIn 0.4s ease-out;
+
 }
 
 /* Responsive Design */

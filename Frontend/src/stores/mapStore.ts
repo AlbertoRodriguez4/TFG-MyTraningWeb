@@ -18,8 +18,8 @@ export const useMapStore = defineStore('map', () => {
         return { lat: data.lat, lon: data.lon };
     }
 
-    async function getEstablecimientos(lat: number, lon: number, tipo: string) {
-        const response = await fetch(`${API_BASE_URL}/api/geocodificacion/establecimientos?lat=${lat}&lon=${lon}&tipo=${encodeURIComponent(tipo)}&radio=1000`);
+    async function getEstablecimientos(lat: number, lon: number, tipo: string, radio: number = 2000) {
+        const response = await fetch(`${API_BASE_URL}/api/geocodificacion/establecimientos?lat=${lat}&lon=${lon}&tipo=${encodeURIComponent(tipo)}&radio=${radio}`);
         if (!response.ok) {
             throw new Error(t('map_establishments_error'));
         }

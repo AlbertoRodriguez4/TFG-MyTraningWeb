@@ -58,11 +58,9 @@ const currentLanguage = computed(() => {
 
 <template>
   <div class="header-wrapper">
-    <!-- Main Header -->
     <header class="header-main">
       <div class="header-container">
 
-        <!-- Logo -->
         <RouterLink to="/" class="logo-section">
           <div class="logo-badge"><img :src="logoImg" alt="TheTrainingHub Logo" class="logo-image" /></div>
           <div class="brand">
@@ -71,7 +69,6 @@ const currentLanguage = computed(() => {
           </div>
         </RouterLink>
 
-        <!-- Desktop Navigation -->
         <nav class="nav-desktop">
           <RouterLink to="/" class="nav-btn" :title="$t('home')"><v-icon>mdi-home</v-icon> {{ $t('home') }}</RouterLink>
           <RouterLink to="/room" class="nav-btn" :class="{ disabled: !isLogged }" :title="$t('rooms')"><v-icon>mdi-door</v-icon> {{ $t('rooms') }}</RouterLink>
@@ -82,7 +79,6 @@ const currentLanguage = computed(() => {
           <RouterLink to="/exercises" class="nav-btn" :class="{ disabled: !isLogged }" :title="$t('exercises_title')"><v-icon>mdi-arm-flex</v-icon> {{ $t('exercises_title') }}</RouterLink>
           <RouterLink to="/body-metrics" class="nav-btn" :class="{ disabled: !isLogged }" :title="$t('body_metrics_title')"><v-icon>mdi-chart-bar</v-icon> {{ $t('body_metrics_title') }}</RouterLink>
 
-          <!-- Premium Features -->
           <RouterLink v-if="isLogged && hasActiveSubscription" to="/CoachAi" class="nav-btn premium-btn" :title="$t('coach_ai')">
             <v-icon>mdi-robot-outline</v-icon> {{ $t('coach_ai') }}
           </RouterLink>
@@ -91,10 +87,8 @@ const currentLanguage = computed(() => {
           </RouterLink>
         </nav>
 
-        <!-- Right Actions -->
         <div class="header-actions">
 
-          <!-- User Dropdown Button -->
           <div v-if="isLogged" class="user-dropdown-trigger" @click="toggleUserDropdown">
             <div class="user-avatar">
               {{ store.loggedUser?.email?.charAt(0).toUpperCase() }}
@@ -103,7 +97,6 @@ const currentLanguage = computed(() => {
             <span class="dropdown-arrow" :class="{ open: userDropdownOpen }">▼</span>
           </div>
 
-          <!-- Hamburger Menu (Mobile) -->
           <button class="mobile-menu-btn" @click="toggleMobileMenu" aria-label="Menu">
             <span :class="{ active: mobileMenuOpen }"></span>
             <span :class="{ active: mobileMenuOpen }"></span>
@@ -113,12 +106,10 @@ const currentLanguage = computed(() => {
       </div>
     </header>
 
-    <!-- User Dropdown Menu -->
     <Transition name="fade">
       <div v-if="userDropdownOpen && isLogged" class="user-dropdown" @click.self="userDropdownOpen = false">
         <div class="dropdown-content">
 
-          <!-- User Profile Header -->
           <div class="dropdown-header">
             <div class="user-avatar-large">
               {{ store.loggedUser?.email?.charAt(0).toUpperCase() }}
@@ -129,19 +120,7 @@ const currentLanguage = computed(() => {
             </div>
           </div>
 
-          <!-- Stats Grid -->
-          <div class="stats-grid">
-            <div class="stat-card">
-              <span class="stat-label">{{ $t('header.strength') }}</span>
-              <span class="stat-value"><v-icon>mdi-lightning-bolt</v-icon> {{ store.loggedUser?.strength || 0 }}</span>
-            </div>
-            <div class="stat-card">
-              <span class="stat-label">{{ $t('header.gold') }}</span>
-              <span class="stat-value"><v-icon>mdi-gold</v-icon> {{ store.loggedUser?.gold || 0 }}</span>
-            </div>
-          </div>
 
-          <!-- Premium Status Card -->
           <div v-if="hasActiveSubscription" class="premium-card premium-active">
             <span class="premium-icon"><v-icon>mdi-check-circle</v-icon></span>
             <div>
@@ -160,20 +139,10 @@ const currentLanguage = computed(() => {
             </RouterLink>
           </div>
 
-          <!-- Menu Items -->
           <div class="dropdown-divider"></div>
 
           <RouterLink to="/profile" class="dropdown-item" @click="userDropdownOpen = false">
             <v-icon>mdi-cog</v-icon> {{ $t('profile_settings') }}
-          </RouterLink>
-          <RouterLink to="/achievements" class="dropdown-item" @click="userDropdownOpen = false">
-            <v-icon>mdi-trophy</v-icon> {{ $t('achievements_title') }}
-          </RouterLink>
-          <RouterLink to="/exercises" class="dropdown-item" @click="userDropdownOpen = false">
-            <v-icon>mdi-arm-flex</v-icon> {{ $t('exercises_title') }}
-          </RouterLink>
-          <RouterLink to="/body-metrics" class="dropdown-item" @click="userDropdownOpen = false">
-            <v-icon>mdi-chart-bar</v-icon> {{ $t('body_metrics_title') }}
           </RouterLink>
 
           <div class="dropdown-item language-selector">
@@ -191,7 +160,6 @@ const currentLanguage = computed(() => {
             <v-icon>mdi-account-group</v-icon> {{ $t('community') }}
           </RouterLink>
 
-          <!-- Logout Button -->
           <button class="logout-btn" @click="handleLogout">
             <v-icon>mdi-lightning-bolt</v-icon> {{ $t('logout') }}
           </button>
@@ -199,10 +167,8 @@ const currentLanguage = computed(() => {
       </div>
     </Transition>
 
-    <!-- Mobile Menu -->
     <nav v-show="mobileMenuOpen" class="nav-mobile">
 
-      <!-- User Summary (Mobile) -->
       <div v-if="isLogged && store.loggedUser" class="mobile-user-summary">
         <div>
           <p class="mobile-level">LV {{ store.loggedUser.level || 1 }}</p>
@@ -210,7 +176,6 @@ const currentLanguage = computed(() => {
         </div>
       </div>
 
-      <!-- Navigation Links -->
       <RouterLink to="/" class="mobile-nav-item" @click="handleNavClick"><v-icon>mdi-home</v-icon> {{ $t('home') }}</RouterLink>
       <RouterLink to="/room" class="mobile-nav-item" :class="{ disabled: !isLogged }" @click="handleNavClick"><v-icon>mdi-door</v-icon> {{ $t('rooms') }}
       </RouterLink>
@@ -227,7 +192,6 @@ const currentLanguage = computed(() => {
       <RouterLink to="/body-metrics" class="mobile-nav-item" :class="{ disabled: !isLogged }" @click="handleNavClick"><v-icon>mdi-chart-bar</v-icon>
         {{ $t('body_metrics_title') }}</RouterLink>
 
-      <!-- Premium Features (Mobile) -->
       <template v-if="isLogged && hasActiveSubscription">
         <RouterLink to="/CoachAi" class="mobile-nav-item premium-item" @click="handleNavClick"><v-icon>mdi-robot-outline</v-icon> {{ $t('coach_ai') }}</RouterLink>
         <RouterLink to="/calculator" class="mobile-nav-item premium-item" @click="handleNavClick"><v-icon>mdi-calculator</v-icon> {{ $t('calculator') }}
@@ -241,7 +205,6 @@ const currentLanguage = computed(() => {
       <RouterLink to="/user" class="mobile-nav-item" :class="{ disabled: !isLogged }" @click="handleNavClick"><v-icon>mdi-account-group</v-icon>
         {{ $t('community') }}</RouterLink>
 
-      <!-- Language Selector (Mobile) -->
       <div class="mobile-language">
         <span><v-icon>mdi-earth</v-icon> {{ $t('language') || 'Language' }}</span>
         <div class="lang-select-wrapper">
@@ -253,7 +216,6 @@ const currentLanguage = computed(() => {
         </div>
       </div>
 
-      <!-- Premium Status Card (Mobile) -->
       <div v-if="hasActiveSubscription" class="mobile-premium-card premium-active">
         <span class="mpc-icon"><v-icon>mdi-check-circle</v-icon></span>
         <p>{{ $t('premium_active') }}</p>
@@ -267,7 +229,6 @@ const currentLanguage = computed(() => {
         </RouterLink>
       </div>
 
-      <!-- Logout (Mobile) -->
       <button class="mobile-logout-btn" @click="handleLogout"><v-icon>mdi-lightning-bolt</v-icon> {{ $t('logout') }}</button>
          
     </nav>
@@ -320,10 +281,6 @@ const currentLanguage = computed(() => {
   text-decoration: none;
   flex-shrink: 0;
   transition: transform 0.3s ease;
-}
-
-.logo-section:hover {
-  transform: scale(1.04);
 }
 
 .logo-badge {
@@ -406,11 +363,25 @@ const currentLanguage = computed(() => {
   border-color: rgba(255, 204, 0, 0.2);
 }
 
-.nav-btn.router-link-active {
+.nav-btn.router-link-exact-active,
+.nav-btn.router-link-active:not([href="/"]) {
   color: #ffcc00;
-  background: rgba(255, 204, 0, 0.15);
-  border-color: rgba(255, 204, 0, 0.4);
-  box-shadow: 0 0 18px rgba(255, 204, 0, 0.15);
+  background: rgba(255, 204, 0, 0.18);
+  border-color: rgba(255, 204, 0, 0.45);
+  box-shadow: 0 0 20px rgba(255, 204, 0, 0.2), inset 0 0 12px rgba(255, 204, 0, 0.05);
+  position: relative;
+}
+
+.nav-btn.router-link-exact-active::after,
+.nav-btn.router-link-active:not([href="/"])::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 20%;
+  right: 20%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #ffcc00, transparent);
+  border-radius: 2px;
 }
 
 .nav-btn.disabled {
@@ -474,11 +445,6 @@ const currentLanguage = computed(() => {
   cursor: pointer;
   transition: all 0.2s;
   white-space: nowrap;
-}
-
-.user-dropdown-trigger:hover {
-  background: rgba(255, 204, 0, 0.13);
-  border-color: rgba(255, 204, 0, 0.45);
 }
 
 .user-avatar {
@@ -720,11 +686,6 @@ const currentLanguage = computed(() => {
   font-family: inherit;
 }
 
-.dropdown-item:hover {
-  background: rgba(255, 204, 0, 0.08);
-  color: #ffcc00;
-}
-
 .language-selector {
   justify-content: space-between;
 }
@@ -758,13 +719,6 @@ const currentLanguage = computed(() => {
   cursor: pointer;
   appearance: none;
   min-width: 120px;
-}
-
-.language-selector select:hover,
-.language-selector select:focus {
-  border-color: rgba(255, 204, 0, 0.7);
-  background: rgba(40, 40, 40, 0.95);
-  outline: none;
 }
 
 .language-selector select option {
@@ -848,11 +802,19 @@ const currentLanguage = computed(() => {
   border-left: 3px solid transparent;
 }
 
-.mobile-nav-item:hover,
-.mobile-nav-item.router-link-active {
+.mobile-nav-item:hover {
   color: #ffcc00;
-  background: rgba(255, 204, 0, 0.09);
-  border-left-color: #ffcc00;
+  background: rgba(255, 204, 0, 0.06);
+  border-left-color: rgba(255, 204, 0, 0.4);
+}
+
+.mobile-nav-item.router-link-exact-active,
+.mobile-nav-item.router-link-active:not([href="/"]) {
+  color: #ffcc00;
+  background: rgba(255, 204, 0, 0.12);
+  border-left: 3px solid #ffcc00;
+  box-shadow: inset 4px 0 12px rgba(255, 204, 0, 0.08);
+  padding-left: 1.75rem;
 }
 
 .mobile-nav-item.disabled {
@@ -891,13 +853,6 @@ const currentLanguage = computed(() => {
   cursor: pointer;
   appearance: none;
   min-width: 130px;
-}
-
-.mobile-language select:hover,
-.mobile-language select:focus {
-  border-color: rgba(255, 204, 0, 0.7);
-  background: rgba(40, 40, 40, 0.95);
-  outline: none;
 }
 
 .mobile-language select option {
@@ -990,15 +945,15 @@ const currentLanguage = computed(() => {
   }
 
   .nav-btn {
-    padding: 0.35rem;
-    gap: 0;
-    max-width: 32px;
-    overflow: hidden;
-    font-size: 0;
+    padding: 0.25rem 0.3rem;
+    gap: 0.15rem;
+    font-size: 0.65rem;
+    max-width: none;
+    overflow: visible;
   }
 
   .nav-btn :deep(.v-icon) {
-    font-size: 1.1rem;
+    font-size: 1rem;
   }
 
   .strength-badge {
@@ -1013,12 +968,13 @@ const currentLanguage = computed(() => {
 /* Tablet: 1200px and below */
 @media (max-width: 1200px) {
   .nav-btn {
-    padding: 0.3rem;
-    max-width: 28px;
+    padding: 0.2rem;
+    font-size: 0.6rem;
+    max-width: none;
   }
 
   .nav-btn :deep(.v-icon) {
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
 }
 
@@ -1029,12 +985,13 @@ const currentLanguage = computed(() => {
   }
 
   .nav-btn {
-    padding: 0.3rem;
-    max-width: 30px;
+    padding: 0.2rem;
+    font-size: 0.55rem;
+    max-width: none;
   }
 
   .nav-btn :deep(.v-icon) {
-    font-size: 1rem;
+    font-size: 0.8rem;
   }
 
   .brand-name {

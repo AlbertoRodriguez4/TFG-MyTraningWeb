@@ -8,6 +8,7 @@ import { computed, watch } from 'vue'
 import type { Item } from '@/components/Models/Item'
 import router from '@/router'
 import { useI18n } from 'vue-i18n'
+import { Icon } from '@iconify/vue'
 
 const { t } = useI18n()
 const store = useUserStore()
@@ -48,14 +49,10 @@ function scrollToTop() {
 </script>
 
 <template>
-  <v-app>
-    <v-main class="main-wrapper">
-      <!-- Background Effects -->
-      <div class="background-overlay"></div>
-
-      <v-container fluid class="content-container">
+  <div class="main-wrapper">
+    <v-container fluid class="content-container">
         <div class="welcome-banner" v-if="loggedUser">
-          <div class="banner-glow"></div>
+          <div ></div>
           <div class="banner-content">
             <div class="welcome-icon"><v-icon>mdi-arm-flex</v-icon></div>
             <div class="welcome-text">
@@ -71,10 +68,9 @@ function scrollToTop() {
           </div>
         </div>
 
-        <!-- Stats Section -->
         <section class="panel-section" v-if="loggedUser?.role !== 'userMaster'">
           <div class="section-header">
-            <v-icon class="section-icon" color="primary">mdi-chart-bar</v-icon>
+            <Icon icon="mdi:chart-bar" class="section-icon text-primary" width="32" height="32" />
             <h2 class="section-title">{{ $t('estadisticas') }}</h2>
             <div class="section-line"></div>
           </div>
@@ -83,10 +79,9 @@ function scrollToTop() {
           </div>
         </section>
 
-        <!-- Inventory Section -->
         <section class="panel-section" v-if="loggedUser?.role !== 'userMaster'">
           <div class="section-header">
-            <v-icon class="section-icon" color="purple">mdi-bag-personal</v-icon>
+            <v-icon class="section-icon" color="white">mdi-bag-personal</v-icon>
             <h2 class="section-title">{{ $t('inventario') }}</h2>
             <div class="section-line"></div>
           </div>
@@ -95,10 +90,9 @@ function scrollToTop() {
           </div>
         </section>
 
-        <!-- Admin Section -->
         <section class="panel-section admin-section" v-if="loggedUser?.role === 'userMaster'">
           <div class="section-header">
-            <v-icon class="section-icon admin-icon" color="grey">mdi-cog</v-icon>
+            <v-icon class="section-icon admin-icon" color="white">mdi-cog</v-icon>
             <h2 class="section-title admin-title">{{ $t('panel_admin') }}</h2>
             <div class="section-line admin-line"></div>
           </div>
@@ -107,9 +101,8 @@ function scrollToTop() {
           </div>
           
         </section>
-      </v-container>
-    </v-main>
-  </v-app>
+    </v-container>
+  </div>
 </template>
 
 <style scoped>
@@ -122,100 +115,12 @@ function scrollToTop() {
 /* Main Wrapper */
 .main-wrapper {
   position: relative;
-  min-height: 100vh;
   width: 100%;
-  background: var(--bg-primary);
+  background: transparent;
   overflow-x: hidden;
   overflow-y: auto;
 }
 
-/* Background Effects */
-.background-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: url('@/assets/imgs/gimansio-fondo.jpg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  opacity: 0.15;
-  z-index: 0;
-  pointer-events: none;
-}
-
-.grid-pattern {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image:
-    linear-gradient(rgba(13, 110, 253, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(13, 110, 253, 0.03) 1px, transparent 1px);
-  background-size: 50px 50px;
-  z-index: 1;
-  pointer-events: none;
-}
-
-/* Gradient Orbs */
-.gradient-orb {
-  position: fixed;
-  border-radius: 50%;
-  filter: blur(100px);
-  opacity: 0.15;
-  z-index: 1;
-  pointer-events: none;
-  animation: float-orb 20s ease-in-out infinite;
-}
-
-.orb-1 {
-  width: 500px;
-  height: 500px;
-  background: radial-gradient(circle, #0D6EFD, transparent);
-  top: -250px;
-  right: -250px;
-  animation-delay: 0s;
-}
-
-.orb-2 {
-  width: 400px;
-  height: 400px;
-  background: radial-gradient(circle, #6610f2, transparent);
-  bottom: -200px;
-  left: -200px;
-  animation-delay: 5s;
-}
-
-.orb-3 {
-  width: 300px;
-  height: 300px;
-  background: radial-gradient(circle, #0dcaf0, transparent);
-  top: 50%;
-  left: 50%;
-  animation-delay: 10s;
-}
-
-@keyframes float-orb {
-
-  0%,
-  100% {
-    transform: translate(0, 0) scale(1);
-  }
-
-  25% {
-    transform: translate(50px, -50px) scale(1.1);
-  }
-
-  50% {
-    transform: translate(-30px, 30px) scale(0.9);
-  }
-
-  75% {
-    transform: translate(40px, 40px) scale(1.05);
-  }
-}
 
 /* Particles */
 .particles {
@@ -235,28 +140,8 @@ function scrollToTop() {
   height: 4px;
   background: rgba(13, 110, 253, 0.6);
   border-radius: 50%;
-  animation: float-particle linear infinite;
+
   box-shadow: 0 0 10px rgba(13, 110, 253, 0.8);
-}
-
-@keyframes float-particle {
-  0% {
-    transform: translateY(100vh) translateX(0);
-    opacity: 0;
-  }
-
-  10% {
-    opacity: 1;
-  }
-
-  90% {
-    opacity: 1;
-  }
-
-  100% {
-    transform: translateY(-100px) translateX(100px);
-    opacity: 0;
-  }
 }
 
 /* Content Container */
@@ -281,21 +166,6 @@ function scrollToTop() {
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
-.banner-glow {
-  position: absolute;
-  inset: -2px;
-  background: linear-gradient(135deg, #0D6EFD, #6610f2);
-  border-radius: 24px;
-  opacity: 0;
-  filter: blur(20px);
-  transition: opacity 0.3s;
-  z-index: -1;
-}
-
-.welcome-banner:hover .banner-glow {
-  opacity: 0.3;
-}
-
 .banner-content {
   display: flex;
   align-items: center;
@@ -306,19 +176,7 @@ function scrollToTop() {
 .welcome-icon {
   font-size: 4rem;
   filter: drop-shadow(0 4px 12px rgba(13, 110, 253, 0.5));
-  animation: pulse-icon 2s ease-in-out infinite;
-}
 
-@keyframes pulse-icon {
-
-  0%,
-  100% {
-    transform: scale(1);
-  }
-
-  50% {
-    transform: scale(1.1);
-  }
 }
 
 .welcome-text {
@@ -373,7 +231,7 @@ function scrollToTop() {
 /* Panel Sections */
 .panel-section {
   margin-bottom: 3rem;
-  animation: fadeInUp 0.6s ease-out;
+
 }
 
 .panel-section:nth-child(2) {
@@ -386,18 +244,6 @@ function scrollToTop() {
 
 .panel-section:nth-child(4) {
   animation-delay: 0.3s;
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 .section-header {
@@ -448,10 +294,6 @@ function scrollToTop() {
   border-color: rgba(220, 53, 69, 0.3);
 }
 
-.admin-wrapper:hover .panel-glow {
-  background: linear-gradient(135deg, #dc3545, #c82333);
-}
-
 /* Panel Wrapper */
 .panel-wrapper {
   position: relative;
@@ -460,30 +302,7 @@ function scrollToTop() {
   border-radius: 20px;
   padding: 0.5rem;
   backdrop-filter: blur(10px);
-  transition: all 0.3s ease;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
-}
-
-.panel-wrapper:hover {
-  border-color: rgba(13, 110, 253, 0.5);
-  box-shadow: 0 8px 32px rgba(13, 110, 253, 0.3);
-  transform: translateY(-2px);
-}
-
-.panel-wrapper::before {
-  content: '';
-  position: absolute;
-  inset: -2px;
-  background: linear-gradient(135deg, #0D6EFD, #6610f2);
-  border-radius: 20px;
-  opacity: 0;
-  filter: blur(10px);
-  transition: opacity 0.3s;
-  z-index: -1;
-}
-
-.panel-wrapper:hover::before {
-  opacity: 0.2;
 }
 
 /* Floating Action Button */
@@ -508,14 +327,7 @@ function scrollToTop() {
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
-  animation: fab-pulse 2s ease-in-out infinite;
-}
 
-.fab:hover {
-  transform: translateY(-4px) scale(1.1);
-  box-shadow:
-    0 8px 24px rgba(13, 110, 253, 0.6),
-    0 0 0 8px rgba(13, 110, 253, 0.1);
 }
 
 .fab:active {
@@ -526,22 +338,6 @@ function scrollToTop() {
   font-size: 1.5rem;
   color: white;
   font-weight: bold;
-}
-
-@keyframes fab-pulse {
-
-  0%,
-  100% {
-    box-shadow:
-      0 4px 12px rgba(13, 110, 253, 0.4),
-      0 0 0 0 rgba(13, 110, 253, 0.5);
-  }
-
-  50% {
-    box-shadow:
-      0 4px 12px rgba(13, 110, 253, 0.4),
-      0 0 0 10px rgba(13, 110, 253, 0);
-  }
 }
 
 

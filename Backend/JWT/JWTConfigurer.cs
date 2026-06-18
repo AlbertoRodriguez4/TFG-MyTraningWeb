@@ -23,7 +23,7 @@ namespace AA2_CS.JWT
 
         public string GenerateToken(User user)
         {
-            // Obtener las estadísticas del usuario para incluirlas como claims en el token. Esto permite que el cliente tenga acceso a esta información
+            // Obtener las estadísticas del usuario para incluirlas como claims en el token.
             var (totalStrength, totalEndurance, xpRequiredForNextLevel, xpRemaining) = _userService.GetUserTokenStats(user);
 
             // Creación de claims para los tokens, se definen los campos que se van a pasar
@@ -45,9 +45,9 @@ namespace AA2_CS.JWT
                 new Claim("consistencystreak", user.consistencystreak.ToString()),
 
                 // Claims de experiencia
-                new Claim("experience", user.experience.ToString()),       // XP Actual
-                new Claim("xpRequired", xpRequiredForNextLevel.ToString()), // Meta del nivel
-                new Claim("xpRemaining", xpRemaining.ToString()),            // Cuánto falta
+                new Claim("experience", user.experience.ToString()),
+                new Claim("xpRequired", xpRequiredForNextLevel.ToString()),
+                new Claim("xpRemaining", xpRemaining.ToString()),
 
                 // Items equipados
                 new Claim("equippedStrengthItemId", user.equippedStrengthId?.ToString() ?? ""),

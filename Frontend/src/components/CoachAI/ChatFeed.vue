@@ -1,7 +1,6 @@
 <template>
   <div ref="feedEl" class="feed">
 
-    <!-- Welcome screen (shown when no messages) -->
     <div v-if="messages.length === 0" class="welcome">
       <div class="welcome-orb">
         <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
@@ -24,7 +23,6 @@
       </div>
     </div>
 
-    <!-- Message list -->
     <ChatBubble
       v-for="msg in messages"
       :key="msg.id"
@@ -89,7 +87,7 @@ watch(
   margin: auto;
   text-align: center;
   max-width: 400px;
-  animation: fadeSlideUp .5s ease forwards;
+
   padding: 20px 0;
 }
 
@@ -141,11 +139,5 @@ watch(
   cursor: pointer;
   transition: all .15s;
   font-family: inherit;
-}
-
-.chip:hover {
-  border-color: var(--c-accent);
-  color: var(--c-accent);
-  background: #fff1eb;
 }
 </style>

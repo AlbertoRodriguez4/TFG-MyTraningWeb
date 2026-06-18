@@ -116,7 +116,10 @@ namespace AA2_CS.Repository
 
         public List<User> FindAll()
         {
-            return _context.Users.AsNoTracking().ToList();
+            return _context.Users
+                .Include(u => u.EquippedStrengthItem)
+                .Include(u => u.EquippedEnduranceItem)
+                .ToList();
         }
 
         public User FindById(int id)

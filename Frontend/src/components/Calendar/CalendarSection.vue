@@ -1,7 +1,6 @@
 <template>
   <section class="calendar-section">
     <v-container>
-      <!-- Month Navigation -->
       <MonthNavigation
         :month-name="monthName"
         :year="currentDate.getFullYear()"
@@ -9,7 +8,6 @@
         @next="$emit('next-month')"
       />
 
-      <!-- Calendar Grid -->
       <CalendarGrid
         :days-of-week="daysOfWeek"
         :starting-day-of-week="startingDayOfWeek"
@@ -20,7 +18,6 @@
         @complete-routine="handleCompleteRoutine"
       />
 
-      <!-- Weekly Summary -->
       <WeeklySummary
         :completed-routines="completedRoutines"
         :userXP="userXP"
@@ -74,7 +71,7 @@ const handleCompleteRoutine = (day: number, routineId: number) => {
   padding: 0 0 4rem;
   position: relative;
   z-index: 2;
-  background: linear-gradient(135deg, rgba(26, 10, 46, 0.9) 0%, rgba(15, 10, 26, 0.95) 100%);
+  background: transparent;
 }
 
 /* Responsive Design */

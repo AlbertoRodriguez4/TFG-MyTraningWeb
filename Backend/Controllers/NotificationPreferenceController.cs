@@ -24,6 +24,7 @@ namespace AA2_CS.Controllers
         }
 
         [HttpGet("my-preferences")]
+        [Authorize]
         public async Task<IActionResult> GetMyPreferences()
         {
             try
@@ -41,6 +42,7 @@ namespace AA2_CS.Controllers
         }
 
         [HttpPut("my-preferences")]
+        [Authorize]
         public async Task<IActionResult> UpdateMyPreferences([FromBody] NotificationPreferenceDTO dto)
         {
             try
@@ -59,6 +61,7 @@ namespace AA2_CS.Controllers
         }
 
         [HttpPost("reset")]
+        [Authorize]
         public async Task<IActionResult> ResetDefaults()
         {
             try

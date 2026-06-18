@@ -133,7 +133,6 @@ const closeAchievementPopup = () => {
 
 <template>
   <v-container fluid class="admin-panel">
-    <!-- Particles background -->
     <div class="particles-bg">
       <div class="particle" v-for="i in 30" :key="i" :style="{ 
         left: Math.random() * 100 + '%', 
@@ -143,11 +142,9 @@ const closeAchievementPopup = () => {
       }"></div>
     </div>
 
-    <!-- Hero Header -->
     <div class="admin-hero">
-      <div class="hero-glow"></div>
+      <div ></div>
       
-      <!-- Crown Icon -->
       <div class="crown-container">
         <div class="crown-rings">
           <div class="crown-ring ring-1"></div>
@@ -157,7 +154,6 @@ const closeAchievementPopup = () => {
         <v-icon class="crown-icon">mdi-crown</v-icon>
       </div>
 
-      <!-- Title Section -->
       <div class="hero-title-section">
         <h1 class="hero-title">
           <span class="title-top">{{ $t('admin_panel') }}</span>
@@ -169,14 +165,12 @@ const closeAchievementPopup = () => {
         </div>
       </div>
 
-      <!-- Divider -->
       <div class="hero-divider">
         <div class="divider-line"></div>
         <v-icon class="divider-icon">mdi-lightning-bolt</v-icon>
         <div class="divider-line"></div>
       </div>
 
-      <!-- Stats Dashboard -->
       <div class="stats-dashboard">
         <div class="stat-mega-card stat-users">
           <div class="stat-bg-pattern"></div>
@@ -216,9 +210,7 @@ const closeAchievementPopup = () => {
       </div>
     </div>
 
-    <!-- Management Section -->
     <v-row class="management-section">
-      <!-- USERS PANEL -->
       <v-col cols="12" lg="6">
         <div class="panel-card panel-users">
           <div class="panel-header">
@@ -237,7 +229,6 @@ const closeAchievementPopup = () => {
           </div>
 
           <div class="panel-body">
-            <!-- Search Bar -->
             <div class="search-container">
               <v-text-field
                 v-model="userSearch"
@@ -249,12 +240,11 @@ const closeAchievementPopup = () => {
                 clearable
               >
                 <template v-slot:prepend-inner>
-                  <v-icon color="#00D2FF">mdi-magnify</v-icon>
+                  <v-icon color="white">mdi-magnify</v-icon>
                 </template>
               </v-text-field>
             </div>
 
-            <!-- Users List -->
             <div class="entity-list">
               <div 
                 v-for="(user, index) in filteredUsers" 
@@ -285,9 +275,8 @@ const closeAchievementPopup = () => {
                 </v-btn>
               </div>
 
-              <!-- Empty State -->
               <div v-if="filteredUsers.length === 0" class="empty-state">
-                <v-icon size="80" color="rgba(255,255,255,0.1)">mdi-account-off-outline</v-icon>
+                <v-icon size="80" color="white">mdi-account-off-outline</v-icon>
                 <p>{{ $t('no_users_found') }}</p>
               </div>
             </div>
@@ -295,7 +284,6 @@ const closeAchievementPopup = () => {
         </div>
       </v-col>
 
-      <!-- ITEMS PANEL -->
       <v-col cols="12" lg="6">
         <div class="panel-card panel-items">
           <div class="panel-header">
@@ -314,7 +302,6 @@ const closeAchievementPopup = () => {
           </div>
 
           <div class="panel-body">
-            <!-- Search Bar -->
             <div class="search-container d-flex gap-4">
               <v-text-field
                 v-model="itemSearch"
@@ -326,7 +313,7 @@ const closeAchievementPopup = () => {
                 clearable
               >
                 <template v-slot:prepend-inner>
-                  <v-icon color="#A855F7">mdi-magnify</v-icon>
+                  <v-icon color="white">mdi-magnify</v-icon>
                 </template>
               </v-text-field>
               <v-btn
@@ -341,7 +328,6 @@ const closeAchievementPopup = () => {
               </v-btn>
             </div>
 
-            <!-- Items List -->
             <div class="entity-list">
               <div 
                 v-for="(item, index) in filteredItems" 
@@ -352,7 +338,7 @@ const closeAchievementPopup = () => {
                 <div class="entity-avatar">
                   <div class="avatar-ring ring-purple"></div>
                   <img v-if="item.imageUrl" :src="item.imageUrl" class="avatar-img" alt="item" />
-                  <v-icon v-else color="#A855F7" size="24">mdi-gift</v-icon>
+                  <v-icon v-else color="white" size="24">mdi-gift</v-icon>
                 </div>
                 
                 <div class="entity-info">
@@ -373,9 +359,8 @@ const closeAchievementPopup = () => {
                 </v-btn>
               </div>
 
-              <!-- Empty State -->
               <div v-if="filteredItems.length === 0" class="empty-state">
-                <v-icon size="80" color="rgba(255,255,255,0.1)">mdi-package-variant-closed-remove</v-icon>
+                <v-icon size="80" color="white">mdi-package-variant-closed-remove</v-icon>
                 <p>{{ $t('no_items_found') }}</p>
               </div>
             </div>
@@ -384,7 +369,6 @@ const closeAchievementPopup = () => {
       </v-col>
     </v-row>
 
-    <!-- ACHIEVEMENTS PANEL -->
     <v-row class="management-section mt-4">
       <v-col cols="12">
         <div class="panel-card panel-achievements">
@@ -415,7 +399,7 @@ const closeAchievementPopup = () => {
                 clearable
               >
                 <template v-slot:prepend-inner>
-                  <v-icon color="#f59e0b">mdi-magnify</v-icon>
+                  <v-icon color="white">mdi-magnify</v-icon>
                 </template>
               </v-text-field>
               <v-btn
@@ -440,7 +424,7 @@ const closeAchievementPopup = () => {
                 <div class="entity-avatar" style="background: linear-gradient(135deg, rgba(245,158,11,0.2), rgba(217,119,6,0.2));">
                   <div class="avatar-ring" style="border-color: #f59e0b;"></div>
                   <img v-if="achievement.iconUrl && achievement.iconUrl.startsWith('http')" :src="achievement.iconUrl" class="avatar-img" alt="achievement" />
-                  <v-icon v-else color="#f59e0b" size="24">{{ achievement.iconUrl || 'mdi-trophy' }}</v-icon>
+                  <v-icon v-else color="white" size="24">{{ achievement.iconUrl || 'mdi-trophy' }}</v-icon>
                 </div>
 
                 <div class="entity-info">
@@ -467,7 +451,7 @@ const closeAchievementPopup = () => {
               </div>
 
               <div v-if="filteredAchievements.length === 0" class="empty-state">
-                <v-icon size="80" color="rgba(255,255,255,0.1)">mdi-trophy-off</v-icon>
+                <v-icon size="80" color="white">mdi-trophy-off</v-icon>
                 <p>{{ $t('no_achievements_found') }}</p>
               </div>
             </div>
@@ -476,12 +460,10 @@ const closeAchievementPopup = () => {
       </v-col>
     </v-row>
 
-    <!-- Error alert -->
     <v-snackbar v-model="showAdminError" :timeout="5000" color="error" location="top" rounded="pill">
       {{ adminError }}
     </v-snackbar>
 
-    <!-- Popups -->
     <EditItemPopup
       :visible="showItemPopup"
       :item="selectedItem"
@@ -537,24 +519,7 @@ const closeAchievementPopup = () => {
   height: 3px;
   background: rgba(139, 92, 246, 0.4);
   border-radius: 50%;
-  animation: particle-float linear infinite;
-}
 
-@keyframes particle-float {
-  0% {
-    transform: translate(0, 0) scale(0);
-    opacity: 0;
-  }
-  10% {
-    opacity: 1;
-  }
-  90% {
-    opacity: 1;
-  }
-  100% {
-    transform: translate(100px, -800px) scale(1);
-    opacity: 0;
-  }
 }
 
 /* Hero Section */
@@ -563,17 +528,6 @@ const closeAchievementPopup = () => {
   text-align: center;
   margin-bottom: 4rem;
   z-index: 1;
-}
-
-.hero-glow {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 1000px;
-  height: 1000px;
-  background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 70%);
-  pointer-events: none;
 }
 
 /* Crown Container */
@@ -599,7 +553,7 @@ const closeAchievementPopup = () => {
   transform: translate(-50%, -50%);
   border: 3px solid rgba(255, 215, 0, 0.3);
   border-radius: 50%;
-  animation: crown-ring-expand 4s ease-out infinite;
+
 }
 
 .ring-1 {
@@ -620,35 +574,11 @@ const closeAchievementPopup = () => {
   animation-delay: 2.6s;
 }
 
-@keyframes crown-ring-expand {
-  0% {
-    width: 100px;
-    height: 100px;
-    opacity: 1;
-  }
-  100% {
-    width: 250px;
-    height: 250px;
-    opacity: 0;
-  }
-}
-
 .crown-icon {
   font-size: 5rem !important;
   color: #FFD700;
   filter: drop-shadow(0 0 40px rgba(255, 215, 0, 0.8));
-  animation: crown-pulse 3s ease-in-out infinite;
-}
 
-@keyframes crown-pulse {
-  0%, 100% {
-    transform: scale(1) rotate(-5deg);
-    filter: drop-shadow(0 0 40px rgba(255, 215, 0, 0.8));
-  }
-  50% {
-    transform: scale(1.1) rotate(5deg);
-    filter: drop-shadow(0 0 60px rgba(255, 215, 0, 1));
-  }
 }
 
 /* Hero Title */
@@ -681,16 +611,7 @@ const closeAchievementPopup = () => {
   background-clip: text;
   letter-spacing: 4px;
   text-transform: uppercase;
-  animation: gradient-shift 4s ease infinite;
-}
 
-@keyframes gradient-shift {
-  0%, 100% {
-    background-position: 0% center;
-  }
-  50% {
-    background-position: 100% center;
-  }
 }
 
 .admin-badge {
@@ -727,18 +648,7 @@ const closeAchievementPopup = () => {
 .divider-icon {
   color: #8B5CF6;
   font-size: 2rem !important;
-  animation: lightning-pulse 2s ease-in-out infinite;
-}
 
-@keyframes lightning-pulse {
-  0%, 100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.7;
-    transform: scale(1.2);
-  }
 }
 
 /* Stats Dashboard */
@@ -760,18 +670,7 @@ const closeAchievementPopup = () => {
   overflow: hidden;
   transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   cursor: pointer;
-  animation: stat-entrance 0.8s ease-out backwards;
-}
 
-@keyframes stat-entrance {
-  0% {
-    opacity: 0;
-    transform: translateY(50px) scale(0.9);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
 }
 
 .stat-users {
@@ -790,22 +689,6 @@ const closeAchievementPopup = () => {
   border-color: #4ADE80;
   box-shadow: 0 10px 40px rgba(74, 222, 128, 0.2);
   animation-delay: 0.3s;
-}
-
-.stat-mega-card:hover {
-  transform: translateY(-10px) scale(1.02);
-}
-
-.stat-users:hover {
-  box-shadow: 0 20px 60px rgba(0, 210, 255, 0.4);
-}
-
-.stat-items:hover {
-  box-shadow: 0 20px 60px rgba(168, 85, 247, 0.4);
-}
-
-.stat-active:hover {
-  box-shadow: 0 20px 60px rgba(74, 222, 128, 0.4);
 }
 
 .stat-bg-pattern {
@@ -877,10 +760,6 @@ const closeAchievementPopup = () => {
   transition: left 0.6s;
 }
 
-.stat-mega-card:hover .stat-shine {
-  left: 100%;
-}
-
 /* Management Section */
 .management-section {
   position: relative;
@@ -911,10 +790,6 @@ const closeAchievementPopup = () => {
 
 .panel-achievements {
   border-color: rgba(245, 158, 11, 0.3);
-}
-
-.panel-card:hover {
-  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.5);
 }
 
 /* Panel Header */
@@ -1019,11 +894,6 @@ const closeAchievementPopup = () => {
   transition: all 0.3s ease;
 }
 
-:deep(.search-input .v-field:hover) {
-  border-color: rgba(0, 210, 255, 0.3) !important;
-  background: rgba(35, 35, 35, 0.7) !important;
-}
-
 :deep(.search-input .v-field--focused) {
   border-color: rgba(0, 210, 255, 0.6) !important;
   box-shadow: 
@@ -1031,19 +901,11 @@ const closeAchievementPopup = () => {
     0 0 20px rgba(0, 210, 255, 0.2) !important;
 }
 
-:deep(.panel-items .search-input .v-field:hover) {
-  border-color: rgba(168, 85, 247, 0.3) !important;
-}
-
 :deep(.panel-items .search-input .v-field--focused) {
   border-color: rgba(168, 85, 247, 0.6) !important;
   box-shadow: 
     inset 0 2px 8px rgba(0, 0, 0, 0.3),
     0 0 20px rgba(168, 85, 247, 0.2) !important;
-}
-
-:deep(.panel-achievements .search-input .v-field:hover) {
-  border-color: rgba(245, 158, 11, 0.3) !important;
 }
 
 :deep(.panel-achievements .search-input .v-field--focused) {
@@ -1080,18 +942,6 @@ const closeAchievementPopup = () => {
   border-radius: 4px;
 }
 
-.entity-list::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 210, 255, 0.6);
-}
-
-.panel-items .entity-list::-webkit-scrollbar-thumb:hover {
-  background: rgba(168, 85, 247, 0.6);
-}
-
-.panel-achievements .entity-list::-webkit-scrollbar-thumb:hover {
-  background: rgba(245, 158, 11, 0.6);
-}
-
 /* Entity Item */
 .entity-item {
   display: flex;
@@ -1103,35 +953,7 @@ const closeAchievementPopup = () => {
   padding: 1rem 1.25rem;
   margin-bottom: 1rem;
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  animation: item-fade-in 0.5s ease-out backwards;
-}
 
-@keyframes item-fade-in {
-  0% {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-.entity-item:hover {
-  background: rgba(30, 41, 59, 0.7);
-  border-color: rgba(0, 210, 255, 0.4);
-  transform: translateX(8px);
-  box-shadow: 0 4px 20px rgba(0, 210, 255, 0.2);
-}
-
-.item-item:hover {
-  border-color: rgba(168, 85, 247, 0.4);
-  box-shadow: 0 4px 20px rgba(168, 85, 247, 0.2);
-}
-
-.achievement-item:hover {
-  border-color: rgba(245, 158, 11, 0.4);
-  box-shadow: 0 4px 20px rgba(245, 158, 11, 0.2);
 }
 
 /* Entity Avatar */
@@ -1163,18 +985,7 @@ const closeAchievementPopup = () => {
   bottom: -4px;
   border: 2px solid;
   border-radius: 14px;
-  animation: avatar-pulse 2s ease-in-out infinite;
-}
 
-@keyframes avatar-pulse {
-  0%, 100% {
-    opacity: 0.5;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.05);
-  }
 }
 
 .ring-cyan {

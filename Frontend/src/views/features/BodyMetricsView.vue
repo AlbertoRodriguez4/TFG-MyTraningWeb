@@ -1,8 +1,6 @@
 <template>
-  <v-app>
-    <v-main class="body-metrics-page">
-      <v-container fluid class="pa-6">
-        <!-- Header -->
+  <div class="body-metrics-page">
+    <v-container fluid class="pa-6">
         <div class="page-header mb-8">
           <div class="header-icon">
             <v-icon size="48" color="white">mdi-trending-up</v-icon>
@@ -14,7 +12,6 @@
         </div>
 
         <v-row>
-          <!-- Formulario -->
           <v-col cols="12" md="4">
             <v-card class="metric-form-card" elevation="8">
               <v-card-title class="text-h6 text-white">
@@ -46,7 +43,6 @@
               </v-card-text>
             </v-card>
 
-            <!-- BMI Card -->
             <v-card v-if="latestBMI" class="mt-4 bmi-card" elevation="8">
               <v-card-text class="text-center pa-6">
                 <div class="text-overline text-grey-light">{{ $t('bmi_current') }}</div>
@@ -56,7 +52,6 @@
             </v-card>
           </v-col>
 
-          <!-- Gráficos y tabla -->
           <v-col cols="12" md="8">
             <v-card class="chart-card mb-6" elevation="8">
               <v-card-title class="text-white">
@@ -102,9 +97,8 @@
             </v-card>
           </v-col>
         </v-row>
-      </v-container>
-    </v-main>
-  </v-app>
+    </v-container>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -240,7 +234,7 @@ function renderChart() {
 
 <style scoped>
 .body-metrics-page {
-  background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
+  background: transparent;
   min-height: 100vh;
 }
 

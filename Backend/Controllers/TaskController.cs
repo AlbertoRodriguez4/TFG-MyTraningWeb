@@ -21,6 +21,7 @@ public class TaskController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize]
     public IActionResult AddTask([FromBody] Task task)
     {
         var userId = User.GetUserId();
@@ -36,6 +37,7 @@ public class TaskController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [Authorize]
     public IActionResult UpdateTask(int id, [FromBody] Task updatedTask)
     {
         if (id != updatedTask.id)
@@ -63,6 +65,7 @@ public class TaskController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize]
     public IActionResult GetAllTasks()
     {
         if (!User.IsAdmin())
@@ -75,6 +78,7 @@ public class TaskController : ControllerBase
     }
 
     [HttpGet("user/{userId}")]
+    [Authorize]
     public IActionResult GetTasksByUserId(int userId)
     {
         if (!User.IsSelfOrAdmin(userId))
@@ -87,6 +91,7 @@ public class TaskController : ControllerBase
     }
 
     [HttpGet("{id}")]
+    [Authorize]
     public IActionResult GetTaskById(int id)
     {
         var task = _tasksService.FindById(id);
@@ -104,6 +109,7 @@ public class TaskController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize]
     public IActionResult DeleteTask(int id)
     {
         var task = _tasksService.FindById(id);
@@ -122,6 +128,7 @@ public class TaskController : ControllerBase
     }
 
     [HttpPost("complete/{taskId}")]
+    [Authorize]
     public async Task<IActionResult> CompleteTask(int taskId)
     {
         var task = _tasksService.FindById(taskId);

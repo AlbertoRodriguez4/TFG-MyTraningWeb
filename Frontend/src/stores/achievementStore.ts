@@ -37,7 +37,10 @@ export const useAchievementStore = defineStore('achievement', () => {
   async function fetchAllAchievements() {
     loading.value = true;
     try {
-      const res = await fetch(`${API_BASE_URL}/api/achievement`);
+      const token = localStorage.getItem('token');
+      const res = await fetch(`${API_BASE_URL}/api/achievement`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       if (!res.ok) throw new Error('Error al cargar logros');
       achievements.value = await res.json();
     } catch (e: any) {

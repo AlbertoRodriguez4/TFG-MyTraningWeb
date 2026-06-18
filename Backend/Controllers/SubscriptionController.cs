@@ -10,6 +10,7 @@ namespace AA2_CS.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class SubscriptionController : ControllerBase
     {
         private readonly SubscriptionService _subscriptionService;
@@ -21,9 +22,7 @@ namespace AA2_CS.Controllers
             _serviceProvider = serviceProvider;
         }
 
-        /// <summary>
-        /// Obtiene todas las suscripciones activas (solo admin/master)
-        /// </summary>
+   
         [HttpGet]
         [Authorize(Roles = Roles.userMaster)]
         public IActionResult GetAllActiveSubscriptions()
@@ -39,9 +38,7 @@ namespace AA2_CS.Controllers
             }
         }
 
-        /// <summary>
-        /// Obtiene todas las suscripciones (historial completo, solo admin/master)
-        /// </summary>
+
         [HttpGet("all")]
         [Authorize(Roles = Roles.userMaster)]
         public IActionResult GetAllSubscriptions()
@@ -57,9 +54,7 @@ namespace AA2_CS.Controllers
             }
         }
 
-        /// <summary>
-        /// Obtiene la suscripción activa del usuario autenticado
-        /// </summary>
+
         [HttpGet("my-subscription")]
         [Authorize]
         public IActionResult GetMySubscription()
@@ -89,9 +84,7 @@ namespace AA2_CS.Controllers
             }
         }
 
-        /// <summary>
-        /// Obtiene el historial de suscripciones del usuario autenticado
-        /// </summary>
+
         [HttpGet("my-history")]
         [Authorize]
         public IActionResult GetMySubscriptionHistory()
@@ -116,9 +109,7 @@ namespace AA2_CS.Controllers
             }
         }
 
-        /// <summary>
-        /// Verifica si el usuario tiene una suscripción activa
-        /// </summary>
+   
         [HttpGet("check")]
         [Authorize]
         public IActionResult CheckActiveSubscription()
@@ -143,9 +134,6 @@ namespace AA2_CS.Controllers
             }
         }
 
-        /// <summary>
-        /// Compra una nueva suscripción premium mensual
-        /// </summary>
         [HttpPost("purchase")]
         [Authorize]
         public IActionResult PurchaseSubscription()
@@ -196,9 +184,7 @@ namespace AA2_CS.Controllers
             }
         }
 
-        /// <summary>
-        /// Renueva la suscripción premium mensual del usuario
-        /// </summary>
+
         [HttpPost("renew")]
         [Authorize]
         public IActionResult RenewSubscription()
@@ -230,9 +216,7 @@ namespace AA2_CS.Controllers
             }
         }
 
-        /// <summary>
-        /// Cancela una suscripción (solo admin/master o el propio usuario)
-        /// </summary>
+
         [HttpDelete("{id}")]
         [Authorize]
         public IActionResult CancelSubscription(int id)
@@ -277,9 +261,6 @@ namespace AA2_CS.Controllers
             }
         }
 
-        /// <summary>
-        /// Endpoint de mantenimiento: desactiva suscripciones expiradas
-        /// </summary>
         [HttpPost("deactivate-expired")]
         [Authorize(Roles = Roles.userMaster)]
         public IActionResult DeactivateExpiredSubscriptions()

@@ -1,8 +1,6 @@
 <template>
   <div class="calendar-container mt-8">
-    <!-- Desktop: Grid View -->
     <template v-if="!isMobile">
-      <!-- Week Headers -->
       <div class="week-headers">
         <div
           v-for="day in daysOfWeek"
@@ -16,16 +14,13 @@
         </div>
       </div>
 
-      <!-- Days Grid -->
       <div class="days-grid">
-        <!-- Empty days -->
         <div
           v-for="i in startingDayOfWeek"
           :key="'empty-' + i"
           class="day-item empty-day"
         ></div>
 
-        <!-- Active days -->
         <div
           v-for="day in daysInMonth"
           :key="day"
@@ -43,9 +38,7 @@
       </div>
     </template>
 
-    <!-- Mobile: List View -->
     <template v-else>
-      <!-- Compact Week Strip -->
       <div class="mobile-week-strip">
         <div
           v-for="day in daysOfWeek"
@@ -56,7 +49,6 @@
         </div>
       </div>
 
-      <!-- Compact Day Numbers Row (mini calendar) -->
       <div class="mobile-mini-grid">
         <div
           v-for="i in startingDayOfWeek"
@@ -74,10 +66,9 @@
         </div>
       </div>
 
-      <!-- Day List: show days with routines + today -->
       <div class="mobile-day-list">
         <div v-if="mobileVisibleDays.length === 0" class="mobile-empty-state">
-          <v-icon size="64" color="rgba(255,255,255,0.2)">mdi-calendar-blank</v-icon>
+          <v-icon size="64" color="white">mdi-calendar-blank</v-icon>
           <p class="mobile-empty-text">No hay rutinas este mes</p>
           <p class="mobile-empty-subtext">Toca un día en el calendario para crear una</p>
         </div>
@@ -89,24 +80,22 @@
           :class="{ 'card-completed': getRoutineForDay(day)?.iscompleted, 'card-pending': getRoutineForDay(day) && !getRoutineForDay(day)?.iscompleted, 'card-today': isToday(day) && !getRoutineForDay(day) }"
           @click="$emit('day-click', day)"
         >
-          <!-- Left: Day Number -->
           <div class="mobile-card-day">
             <span class="card-day-number">{{ day }}</span>
             <span v-if="isToday(day)" class="card-today-label">HOY</span>
           </div>
 
-          <!-- Center: Routine Info -->
           <div class="mobile-card-content">
             <template v-if="getRoutineForDay(day)">
               <div class="card-routine-header">
-                <v-icon :color="getRoutineForDay(day)?.iscompleted ? '#34d399' : '#fbbf24'" size="24">
+                <v-icon :color="white" size="24">
                   {{ getRoutineForDay(day)?.iscompleted ? 'mdi-check-circle' : 'mdi-dumbbell' }}
                 </v-icon>
                 <span class="card-routine-name">{{ getRoutineForDay(day)?.name }}</span>
               </div>
               <div class="card-routine-meta">
                 <span class="card-meta-item">
-                  <v-icon size="14" color="rgba(255,255,255,0.5)">mdi-star</v-icon>
+                  <v-icon size="14" color="white">mdi-star</v-icon>
                   +{{ getRoutineForDay(day)?.reward }} XP
                 </span>
                 <span v-if="getRoutineForDay(day)?.iscompleted" class="card-status-completed">
@@ -121,15 +110,14 @@
             </template>
             <template v-else>
               <div class="card-empty-state">
-                <v-icon size="20" color="rgba(255,255,255,0.3)">mdi-plus-circle-outline</v-icon>
+                <v-icon size="20" color="white">mdi-plus-circle-outline</v-icon>
                 <span>Día libre - Toca para añadir rutina</span>
               </div>
             </template>
           </div>
 
-          <!-- Right: Action Indicator -->
           <div class="mobile-card-action">
-            <v-icon size="20" color="rgba(255,255,255,0.3)">mdi-chevron-right</v-icon>
+            <v-icon size="20" color="white">mdi-chevron-right</v-icon>
           </div>
         </div>
       </div>
@@ -224,7 +212,7 @@ const handleCompleteRoutine = (day: number) => {
 
 <style scoped>
 .calendar-container {
-  background: linear-gradient(135deg, rgba(26, 10, 46, 0.9) 0%, rgba(15, 10, 26, 0.95) 100%);
+  background: linear-gradient(135deg, rgba(26, 10, 46, 0.5) 0%, rgba(15, 10, 26, 0.6) 100%);
   border-radius: 20px;
   padding: 2rem;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);

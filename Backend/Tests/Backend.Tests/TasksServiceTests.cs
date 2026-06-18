@@ -1,7 +1,7 @@
 using AA2_CS.Model.Entities;
 using AA2_CS.Repository;
 using AA2_CS.Service;
-using ModelTask = AA2_CS.Model.Task;
+using ModelTask = AA2_CS.Model.Entities.Task;
 
 namespace Backend.Tests;
 
@@ -156,13 +156,10 @@ public class TasksServiceTests
 
     private static TasksService CrearService(AA2_CS.Database.AppDbContext context)
     {
-        // Método auxiliar para crear una instancia de TasksService con los repositorios y servicios necesarios. Se espera que este método configure correctamente las dependencias para permitir la ejecución de las pruebas relacionadas con la gestión de tareas.
-        var tasksRepository = new TasksRepository(context);
-        var userRepository = new UserRepository(context);
         var purchaseRepository = new PurchaseRepository(context);
-        var userService = new UserService(userRepository, purchaseRepository);
-        var achievementRepository = new AchievementRepository(context);
-        var achievementService = new AchievementService(achievementRepository, userService);
-        return new TasksService(tasksRepository, userRepository, userService, achievementService);
+        var userRepository = new UserRepository(context, purchaseRepository);
+        var achievementRepository = new AchievementRepository(context, userRepository);
+        var tasksRepository = new TasksRepository(context, userRepository, achievementRepository);
+        return new TasksService(tasksRepository);
     }
 }

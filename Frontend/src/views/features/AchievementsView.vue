@@ -1,11 +1,9 @@
 <template>
-  <v-app>
-    <v-main class="achievements-page">
-      <v-container fluid class="pa-6">
-        <!-- Header -->
+  <div class="achievements-page">
+    <v-container fluid class="pa-6">
         <div class="page-header mb-8">
           <div class="header-icon">
-            <v-icon size="48" color="amber">mdi-trophy-variant</v-icon>
+            <v-icon size="48" color="white">mdi-trophy-variant</v-icon>
           </div>
           <div>
             <h1 class="text-h3 font-weight-bold text-white">{{ $t('achievements_title') }}</h1>
@@ -18,7 +16,6 @@
           </v-chip>
         </div>
 
-        <!-- Grid de logros -->
         <v-row v-if="!store.loading">
           <v-col
             v-for="achievement in store.achievements"
@@ -30,11 +27,11 @@
               :class="{ 'unlocked': isUnlocked(achievement.id), 'secret': achievement.isSecret && !isUnlocked(achievement.id) }"
               elevation="8"
             >
-              <div class="card-glow" v-if="isUnlocked(achievement.id)"></div>
+              <div  v-if="isUnlocked(achievement.id)"></div>
               <v-card-text class="pa-6 text-center">
                 <div class="achievement-icon mb-4">
                   <template v-if="achievement.isSecret && !isUnlocked(achievement.id)">
-                    <v-icon size="64" color="grey">mdi-lock</v-icon>
+                    <v-icon size="64" color="white">mdi-lock</v-icon>
                   </template>
                   <template v-else-if="isImageUrl(achievement.iconUrl)">
                     <img :src="achievement.iconUrl" :alt="achievement.name" class="achievement-icon-img" />
@@ -42,7 +39,7 @@
                   <template v-else>
                     <v-icon
                       size="64"
-                      :color="getCategoryColor(achievement.category)"
+                      :color="white"
                     >
                       {{ achievement.iconUrl || 'mdi-trophy' }}
                     </v-icon>
@@ -68,7 +65,7 @@
                 </div>
 
                 <div v-if="isUnlocked(achievement.id)" class="unlocked-date mt-3">
-                  <v-icon x-small color="success">mdi-check-circle</v-icon>
+                  <v-icon x-small color="white">mdi-check-circle</v-icon>
                   <span class="text-success-light text-caption">
                     {{ $t('achievement_unlocked') }} {{ formatDate(getUnlockedDate(achievement.id)) }}
                   </span>
@@ -88,9 +85,8 @@
         </v-row>
 
         <v-skeleton-loader v-else type="card" :loading="true" />
-      </v-container>
-    </v-main>
-  </v-app>
+    </v-container>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -172,7 +168,7 @@ function isImageUrl(url: string) {
 
 <style scoped>
 .achievements-page {
-  background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
+  background: transparent;
   min-height: 100vh;
 }
 .page-header {
@@ -197,23 +193,12 @@ function isImageUrl(url: string) {
   overflow: hidden;
   transition: all 0.3s ease;
 }
-.achievement-card:hover {
-  transform: translateY(-4px);
-}
 .achievement-card.unlocked {
   background: rgba(255, 255, 255, 0.1);
   border-color: rgba(102, 126, 234, 0.5);
 }
 .achievement-card.secret {
   opacity: 0.7;
-}
-.card-glow {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, #667eea, #764ba2);
 }
 .achievement-icon {
   width: 140px;

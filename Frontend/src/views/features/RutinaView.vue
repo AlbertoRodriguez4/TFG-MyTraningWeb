@@ -1,7 +1,5 @@
 <template>
-  <v-app>
-    <v-main class="workout-hub">
-      <!-- Hero Header Section -->
+  <div class="workout-hub">
       <HeroSection 
         :user-level="userLevel" 
         :user-x-p="userXP" 
@@ -13,7 +11,6 @@
         @create-routine="openCreateModal" 
       />
 
-      <!-- Calendar Section -->
       <CalendarSection 
         :current-date="currentDate" 
         :month-name="monthName" 
@@ -31,7 +28,6 @@
         @complete-routine="completeRoutine" 
       />
 
-      <!-- Create Routine Dialog -->
       <CreateRoutineDialog 
         v-model="showCreateModal" 
         :selected-day="selectedDay"
@@ -42,7 +38,6 @@
         @close="closeModal" 
       />
 
-      <!-- Routine Detail Dialog -->
       <RoutineDetailDialog 
         v-model="showDetailModal" 
         :routine="selectedRoutine" 
@@ -50,13 +45,10 @@
         @complete="handleCompleteFromDetail" 
       />
 
-      <!-- Level Up Dialog -->
       <LevelUpDialog v-model="showLevelUp" :user-level="userLevel" />
 
-      <!-- Success Snackbar -->
       <SuccessSnackbar v-model="showCompleted" />
 
-      <!-- Snackbar para notificaciones -->
       <v-snackbar v-model="snackbar.show" :color="snackbar.color" :timeout="3000" top>
         <div class="d-flex align-center">
           <v-icon class="mr-3">{{ snackbar.color === 'success' ? 'mdi-check-circle' : 'mdi-alert-circle' }}</v-icon>
@@ -65,9 +57,8 @@
         <template v-slot:actions>
           <v-btn variant="text" @click="snackbar.show = false" icon="mdi-close"></v-btn>
         </template>
-      </v-snackbar>
-    </v-main>
-  </v-app>
+    </v-snackbar>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -404,7 +395,7 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .workout-hub {
-  background: var(--bg-primary);
+  background: transparent;
   min-height: 100vh;
   width: 100%;
 }

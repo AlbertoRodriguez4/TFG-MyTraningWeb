@@ -2,7 +2,6 @@
   <div class="profile-hero">
     <v-container>
       <div class="hero-content">
-        <!-- Avatar Section -->
         <div class="avatar-section">
           <div class="avatar-wrapper">
             <v-avatar size="120" class="avatar-main" v-if="!store.loggedUser?.avatarUrl">
@@ -14,7 +13,6 @@
             <input ref="fileInput" type="file" accept="image/*" style="display: none" @change="handleFileSelect" />
           </div>
 
-          <!-- User Info -->
           <div class="user-info">
             <h1 class="user-name">{{ userName }}</h1>
             <p class="user-email">{{ userEmail }}</p>
@@ -25,7 +23,6 @@
           </div>
         </div>
 
-        <!-- Stats Section -->
         <div class="stats-section">
           <div class="stat-item">
             <span class="stat-icon"><v-icon>mdi-lightning-bolt</v-icon></span>
@@ -50,7 +47,6 @@
           </div>
         </div>
 
-        <!-- XP Progress -->
         <div class="xp-progress">
           <div class="xp-header">
             <span class="xp-label">{{ $t('experiencia') }}</span>
@@ -61,12 +57,10 @@
       </div>
     </v-container>
 
-    <!-- Upload Status / Error Dialog -->
     <v-snackbar v-model="showNotification" :color="notificationType" :timeout="3000" location="top">
       {{ notificationMessage }}
     </v-snackbar>
 
-    <!-- Image Preview Dialog -->
     <v-dialog v-model="showPreviewDialog" max-width="400">
       <v-card>
         <v-card-title class="dialog-title">
@@ -78,7 +72,7 @@
             <img :src="previewImage" alt="Preview" class="preview-image" />
           </div>
           <div v-else class="preview-empty">
-            <v-icon size="64" color="rgba(255, 255, 255, 0.5)">
+            <v-icon size="64" color="white">
               mdi-image
             </v-icon>
             <p>{{ $t('profile.selectImage') }}</p>
@@ -92,7 +86,7 @@
 
         <v-card-actions class="dialog-actions">
           <v-spacer />
-          <v-btn variant="text" @click="closePreviewDialog" :disabled="uploading">
+          <v-btn variant="text" @click="closePreviewDialog" :disabled="uploading" class="cancel-btn">
             {{ $t('common.cancel') }}
           </v-btn>
           <v-btn color="#ffcc00" text-color="#000" variant="flat" @click="uploadToCloudinary" :loading="uploading">
@@ -512,7 +506,9 @@ const showErrorNotification = (message: string) => {
   padding: 1rem;
   gap: 0.5rem;
 }
-
+.cancel-btn {
+    color:white  !important;   
+}
 /* Responsive */
 @media (max-width: 1024px) {
   .profile-hero {

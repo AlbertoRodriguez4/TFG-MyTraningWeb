@@ -64,7 +64,6 @@ const getEquipItem = () => {
 
 <template>
   <div class="podium-user" :class="`position-${position}`">
-    <!-- Crown for first place -->
     <div v-if="isGold" class="crown-wrapper">
       <v-icon class="crown-icon">mdi-crown</v-icon>
       <div class="crown-rays">
@@ -75,17 +74,14 @@ const getEquipItem = () => {
       </div>
     </div>
 
-    <!-- Position Ribbon -->
     <div class="position-ribbon" :class="ringClass">
       <span>{{ position }}º</span>
     </div>
 
     <div class="user-card" :class="cardClass" :style="{ width: `${config.width}px`, padding: config.padding }">
-      <!-- Card Glow Effect -->
-      <div class="card-glow" :style="{ background: `radial-gradient(ellipse at top, ${config.glowColor}, transparent 70%)` }"></div>
+      
       <div class="card-shine"></div>
 
-      <!-- Medal Badge -->
       <div
         class="medal-badge"
         :class="{ 'badge-gold': isGold }"
@@ -95,10 +91,9 @@ const getEquipItem = () => {
         <v-icon class="medal-icon" :style="{ color: config.medalColor }">
           {{ position === 1 ? 'mdi-trophy' : position === 2 ? 'mdi-medal' : 'mdi-medal-outline' }}
         </v-icon>
-        <div class="medal-glow" :style="{ background: `radial-gradient(circle, ${config.medalColor}44, transparent)` }"></div>
+        <div  :style="{ background: `radial-gradient(circle, ${config.medalColor}44, transparent)` }"></div>
       </div>
 
-      <!-- Avatar -->
       <div class="avatar-wrapper">
         <div class="avatar-ring-outer" :class="ringClass"></div>
         <div class="avatar-ring-inner" :class="ringClass"></div>
@@ -108,27 +103,23 @@ const getEquipItem = () => {
           class="avatar"
           :class="`avatar-${ringClass}`"
         />
-        <!-- Level Badge -->
         <div class="level-badge" :class="ringClass">
           <v-icon size="14">mdi-shield-star</v-icon>
           <span>{{ user.level }}</span>
         </div>
       </div>
 
-      <!-- User Info -->
       <h3 class="user-name" :class="{ 'name-gold': isGold }">
         <span class="name-text">{{ user.name }}</span>
         <div class="name-underline" v-if="isGold"></div>
       </h3>
 
-      <!-- Champion Badge -->
       <div v-if="isGold" class="champion-badge">
         <v-icon size="14">mdi-star</v-icon>
         <span>{{ badgeText }}</span>
         <v-icon size="14">mdi-star</v-icon>
       </div>
 
-      <!-- Stats Bar -->
       <div class="stats-bar">
         <div class="mini-stat strength">
           <div class="stat-icon-wrapper">
@@ -146,14 +137,13 @@ const getEquipItem = () => {
         </div>
       </div>
 
-      <!-- Equipment -->
       <div
         v-if="getEquipItem()"
         class="equipment"
         :class="{ 'equipment-gold': isGold }"
       >
         <div class="equip-icon">
-          <v-icon size="16" :color="isGold ? '#FFD700' : 'rgba(255,255,255,0.6)'">mdi-sword-cross</v-icon>
+          <v-icon size="16" :color="white">mdi-sword-cross</v-icon>
         </div>
         <span class="equip-name" :class="{ 'equip-gold': isGold }">
           {{ getEquipItem()?.name }}
@@ -164,7 +154,6 @@ const getEquipItem = () => {
       </div>
     </div>
 
-    <!-- Pedestal -->
     <div class="pedestal" :class="pedestalClass">
       <div class="pedestal-front">
         <span class="pedestal-num">{{ position }}</span>
@@ -173,8 +162,7 @@ const getEquipItem = () => {
       <div class="pedestal-top" :style="{ background: config.medalColor }"></div>
     </div>
 
-    <!-- Floor Shadow -->
-    <div class="floor-shadow" :style="{ background: `radial-gradient(ellipse, ${config.glowColor} 0%, transparent 70%)` }"></div>
+    
   </div>
 </template>
 
@@ -205,7 +193,7 @@ const getEquipItem = () => {
 .crown-wrapper {
   position: relative;
   margin-bottom: 0.5rem;
-  animation: crown-float 2s ease-in-out infinite;
+
 }
 
 .crown-icon {
@@ -235,17 +223,7 @@ const getEquipItem = () => {
   background: linear-gradient(to top, rgba(255, 215, 0, 0.8), transparent);
   transform-origin: center bottom;
   border-radius: 2px;
-  animation: ray-pulse 1.5s ease-in-out infinite;
-}
 
-@keyframes crown-float {
-  0%, 100% { transform: translateY(0) rotate(-5deg); }
-  50% { transform: translateY(-12px) rotate(5deg); }
-}
-
-@keyframes ray-pulse {
-  0%, 100% { opacity: 0.3; height: 15px; }
-  50% { opacity: 1; height: 25px; }
 }
 
 /* Position Ribbon */
@@ -263,7 +241,7 @@ const getEquipItem = () => {
   font-size: 1.1rem;
   color: #000;
   z-index: 10;
-  animation: ribbon-pulse 2s ease-in-out infinite;
+
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
@@ -282,11 +260,6 @@ const getEquipItem = () => {
   box-shadow: 0 0 20px rgba(205, 127, 50, 0.4);
 }
 
-@keyframes ribbon-pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-}
-
 /* User Card */
 .user-card {
   background: linear-gradient(135deg, rgba(20, 30, 48, 0.95) 0%, rgba(15, 23, 42, 0.98) 100%);
@@ -296,16 +269,6 @@ const getEquipItem = () => {
   position: relative;
   transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   overflow: hidden;
-}
-
-.card-glow {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 50%;
-  opacity: 0.5;
-  pointer-events: none;
 }
 
 .card-shine {
@@ -320,27 +283,12 @@ const getEquipItem = () => {
   opacity: 0;
 }
 
-.user-card:hover {
-  transform: translateY(-12px) scale(1.03);
-}
-
-.user-card:hover .card-shine {
-  opacity: 1;
-}
-
 .user-card.gold {
   border: 3px solid #FFD700;
   box-shadow:
     0 20px 60px rgba(255, 215, 0, 0.3),
     0 0 80px rgba(255, 215, 0, 0.2),
     inset 0 1px 0 rgba(255, 215, 0, 0.3);
-}
-
-.user-card.gold:hover {
-  box-shadow:
-    0 25px 70px rgba(255, 215, 0, 0.5),
-    0 0 100px rgba(255, 215, 0, 0.3),
-    inset 0 1px 0 rgba(255, 215, 0, 0.5);
 }
 
 .user-card.silver {
@@ -379,16 +327,7 @@ const getEquipItem = () => {
   height: 65px;
   top: -25px;
   right: 30px;
-  animation: badge-pulse 2s ease-in-out infinite;
-}
 
-@keyframes badge-pulse {
-  0%, 100% {
-    box-shadow: 0 4px 25px rgba(255, 215, 0, 0.5);
-  }
-  50% {
-    box-shadow: 0 4px 35px rgba(255, 215, 0, 0.8);
-  }
 }
 
 .medal-number {
@@ -403,17 +342,6 @@ const getEquipItem = () => {
   position: absolute;
   opacity: 0.15;
   font-size: 2.5rem !important;
-}
-
-.medal-glow {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  pointer-events: none;
 }
 
 /* Avatar Wrapper */
@@ -434,11 +362,11 @@ const getEquipItem = () => {
 }
 
 .avatar-ring-outer {
-  animation: ring-rotate 10s linear infinite;
+
 }
 
 .avatar-ring-inner {
-  animation: ring-rotate 8s linear infinite reverse;
+
 }
 
 .avatar-ring-outer.gold,
@@ -464,11 +392,6 @@ const getEquipItem = () => {
 .avatar-ring-inner {
   width: 100px;
   height: 100px;
-}
-
-@keyframes ring-rotate {
-  from { transform: translate(-50%, -50%) rotate(0deg); }
-  to { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
 .avatar {
@@ -500,10 +423,6 @@ const getEquipItem = () => {
   height: 70px;
   border: 3px solid #CD7F32;
   box-shadow: 0 0 20px rgba(205, 127, 50, 0.5);
-}
-
-.user-card:hover .avatar {
-  transform: scale(1.05);
 }
 
 /* Level Badge */
@@ -555,12 +474,7 @@ const getEquipItem = () => {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  animation: gradient-shift 4s ease infinite;
-}
 
-@keyframes gradient-shift {
-  0%, 100% { background-position: 0% center; }
-  50% { background-position: 100% center; }
 }
 
 .name-underline {
@@ -627,10 +541,6 @@ const getEquipItem = () => {
 
 .endurance-fill {
   background: linear-gradient(90deg, #00D2FF, #00A8CC);
-}
-
-.mini-stat:hover {
-  transform: translateY(-3px);
 }
 
 .stat-icon-wrapper {

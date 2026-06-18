@@ -8,6 +8,7 @@ namespace AA2_CS.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ItemController : ControllerBase
     {
         private readonly ItemService _itemService;

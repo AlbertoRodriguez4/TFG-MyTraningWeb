@@ -166,24 +166,12 @@ const register = async () => {
     <div class="orb orb-1"></div>
     <div class="orb orb-2"></div>
 
-    <!-- Grid lines futuristas -->
     <div class="grid-lines"></div>
 
     <div class="register-container">
-      <!-- Header -->
-      <div class="header-banner">
-        <div class="logo-container">
-          <div class="logo-icon">
-            <img src="@/assets/imgs/Logo.png" alt="Training Hub" class="main-logo" />
-          </div>
-        </div>
-        <h1 class="hero-title">{{ $t('slogan') }}</h1>
-        <p class="hero-subtitle">{{ $t('advanced_training_system') }}</p>
-      </div>
+      
 
-      <!-- Contenedor Principal -->
       <div class="content-grid">
-        <!-- Panel de Registro -->
         <div class="form-panel">
           <div class="form-card">
             <div class="form-header">
@@ -196,9 +184,7 @@ const register = async () => {
             </div>
 
             <v-form @submit.prevent="register" class="register-form">
-              <!-- Inputs -->
               <div class="inputs-grid">
-                <!-- Nombre -->
                 <div class="input-wrapper">
                   <label class="input-label">{{ $t('username_label') }}</label>
                   <v-text-field v-model="name" :placeholder="$t('username_placeholder')" variant="solo-filled"
@@ -206,7 +192,6 @@ const register = async () => {
                     maxlength="50" counter></v-text-field>
                 </div>
 
-                <!-- Email -->
                 <div class="input-wrapper">
                   <label class="input-label">{{ $t('email_label') }}</label>
                   <v-text-field v-model="email" type="email" :placeholder="$t('email_placeholder')"
@@ -214,14 +199,12 @@ const register = async () => {
                     hide-details="auto"></v-text-field>
                 </div>
 
-                <!-- Contraseña -->
                 <div class="input-wrapper">
                   <label class="input-label">{{ $t('password_label') }}</label>
                   <v-text-field v-model="password" type="password" :placeholder="$t('password_placeholder')"
                     variant="solo-filled" density="comfortable" color="purple-lighten-2" class="custom-input"
                     hide-details="auto" @input="updatePasswordStrength"></v-text-field>
 
-                  <!-- Password Strength Indicator -->
                   <div v-if="password" class="password-strength">
                     <div class="strength-bar">
                       <div class="strength-fill" :style="{
@@ -239,7 +222,6 @@ const register = async () => {
                   </div>
                 </div>
 
-                <!-- Confirmar -->
                 <div class="input-wrapper">
                   <label class="input-label">{{ $t('confirm_label') }}</label>
                   <v-text-field v-model="confirmPassword" type="password"
@@ -248,7 +230,6 @@ const register = async () => {
                 </div>
               </div>
 
-              <!-- Stats Preview -->
               <div class="stats-section">
                 <div class="stats-label">{{ $t('starting_stats') }}</div>
                 <div class="stats-grid">
@@ -275,13 +256,11 @@ const register = async () => {
                 </div>
               </div>
 
-              <!-- Error Alert -->
               <div v-if="errorMessage" class="error-alert">
                 <span class="error-icon"><v-icon>mdi-alert</v-icon></span>
                 <span class="error-text">{{ errorMessage }}</span>
               </div>
 
-              <!-- Submit Button -->
               <v-btn type="submit" size="x-large" class="submit-btn" :loading="isLoading" :disabled="isLoading" block>
                 <span v-if="!isLoading" class="btn-text">
                   <span>{{ $t('register_button') }}</span>
@@ -293,14 +272,12 @@ const register = async () => {
                 </span>
               </v-btn>
 
-              <!-- Separator -->
               <div class="separator">
                 <div class="separator-line"></div>
                 <span class="separator-text">{{ $t('or_separator') }}</span>
                 <div class="separator-line"></div>
               </div>
 
-              <!-- Login Link -->
               <div class="login-section">
                 <p class="login-text">{{ $t('already_have_account') }}</p>
                 <v-btn variant="outlined" size="large" class="login-btn" to="/login" block>
@@ -311,8 +288,12 @@ const register = async () => {
           </div>
         </div>
 
-        <!-- Info Panel -->
         <div class="info-panel">
+          <div class="adventure-message">
+            <h2 class="adventure-title">{{ $t('start_adventure') }}</h2>
+            <div class="adventure-line"></div>
+          </div>
+
           <div class="info-card">
             <div class="info-icon"><v-icon>mdi-controller-classic</v-icon></div>
             <h3 class="info-title">{{ $t('level_system') }}</h3>
@@ -334,7 +315,6 @@ const register = async () => {
       </div>
     </div>
 
-    <!-- Snackbar -->
     <v-snackbar v-model="snackbar" :color="snackbarColor" :timeout="4000" location="top" rounded="pill">
       <div class="snackbar-content">
         <span class="snackbar-icon">
@@ -358,7 +338,7 @@ const register = async () => {
 
 .register-wrapper {
   min-height: 100vh;
-  background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 50%, #0f0a1a 100%);
+  background: transparent;
   position: relative;
   overflow-x: hidden;
 }
@@ -370,7 +350,7 @@ const register = async () => {
   filter: blur(80px);
   pointer-events: none;
   z-index: 1;
-  animation: pulse 4s ease-in-out infinite;
+
 }
 
 .orb-1 {
@@ -388,20 +368,6 @@ const register = async () => {
   height: 400px;
   background: rgba(34, 211, 238, 0.15);
   animation-delay: 2s;
-}
-
-@keyframes pulse {
-
-  0%,
-  100% {
-    opacity: 0.5;
-    transform: scale(1);
-  }
-
-  50% {
-    opacity: 0.8;
-    transform: scale(1.1);
-  }
 }
 
 /* Grid lines */
@@ -428,19 +394,7 @@ const register = async () => {
 .header-banner {
   text-align: center;
   margin-bottom: 3rem;
-  animation: fadeIn 0.8s ease-out;
-}
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 .logo-container {
@@ -489,19 +443,7 @@ const register = async () => {
 
 /* Form Panel */
 .form-panel {
-  animation: slideUp 0.8s ease-out;
-}
 
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 .form-card {
@@ -534,19 +476,7 @@ const register = async () => {
   height: 8px;
   background: #22d3ee;
   border-radius: 50%;
-  animation: blink 2s ease-in-out infinite;
-}
 
-@keyframes blink {
-
-  0%,
-  100% {
-    opacity: 1;
-  }
-
-  50% {
-    opacity: 0.3;
-  }
 }
 
 .badge-text {
@@ -596,11 +526,6 @@ const register = async () => {
   border-radius: 12px !important;
   color: #f8fafc !important;
   transition: all 0.3s ease !important;
-}
-
-:deep(.custom-input .v-field:hover) {
-  border-color: rgba(139, 92, 246, 0.4) !important;
-  background: rgba(0, 0, 0, 0.4) !important;
 }
 
 :deep(.custom-input .v-field--focused) {
@@ -691,11 +616,6 @@ const register = async () => {
   transition: all 0.3s ease;
 }
 
-.stat-item:hover {
-  transform: translateY(-3px);
-  border-color: rgba(139, 92, 246, 0.3);
-}
-
 .stat-icon {
   font-size: 1.5rem;
   margin-bottom: 0.5rem;
@@ -725,23 +645,7 @@ const register = async () => {
   border-radius: 12px;
   padding: 1rem;
   margin-bottom: 1.5rem;
-  animation: shake 0.3s ease;
-}
 
-@keyframes shake {
-
-  0%,
-  100% {
-    transform: translateX(0);
-  }
-
-  25% {
-    transform: translateX(-10px);
-  }
-
-  75% {
-    transform: translateX(10px);
-  }
 }
 
 .error-icon {
@@ -844,7 +748,33 @@ const register = async () => {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  animation: fadeIn 0.8s ease-out 0.2s both;
+
+}
+
+.adventure-message {
+  text-align: center;
+  margin-bottom: 1rem;
+
+}
+
+.adventure-title {
+  font-size: 2rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #a78bfa, #22d3ee, #f472b6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.5px;
+  text-shadow: 0 0 30px rgba(139, 92, 246, 0.3);
+}
+
+.adventure-line {
+  height: 3px;
+  width: 60px;
+  background: linear-gradient(90deg, transparent, #22d3ee, transparent);
+  margin: 0 auto;
+  border-radius: 2px;
 }
 
 .info-card {
@@ -854,12 +784,6 @@ const register = async () => {
   border-radius: 16px;
   padding: 1.5rem;
   transition: all 0.3s ease;
-}
-
-.info-card:hover {
-  transform: translateY(-3px);
-  border-color: rgba(139, 92, 246, 0.3);
-  background: rgba(15, 15, 30, 0.6);
 }
 
 .info-icon {

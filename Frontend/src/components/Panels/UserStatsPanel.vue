@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { useUserStore } from '@/stores/userStore'
 import defaultAvatar from '@/assets/imgs/usuario.png'
 import type { User } from '@/components/Models/User'
+import { Icon } from '@iconify/vue'
 
 const { t } = useI18n()
 
@@ -20,9 +21,9 @@ const colorMap: Record<StatKey, string> = {
 }
 
 const iconMap: Record<StatKey, string> = {
-  strength: 'mdi-arm-flex',
-  endurance: 'mdi-run',
-  gold: 'mdi-coin',
+  strength: 'mdi:arm-flex',
+  endurance: 'mdi:run',
+  gold: 'mdi:coin',
 }
 
 const labelMap = computed<Record<StatKey, string>>(() => ({
@@ -64,10 +65,9 @@ const formatNumber = (value: number): string => {
 <template>
   <div v-if="loggedUser && loggedUser.role !== 'userMaster'" class="user-stats-container">
     <div class="stats-wrapper">
-      <!-- Card de Perfil -->
       <div class="profile-card">
         <div class="avatar-container">
-          <div class="avatar-glow"></div>
+          <div ></div>
           <div class="avatar-wrapper">
             <img
               :src="loggedUser.avatarUrl || defaultAvatar"
@@ -89,7 +89,6 @@ const formatNumber = (value: number): string => {
           </div>
         </div>
 
-        <!-- Barra de Experiencia -->
         <div class="xp-container">
           <div class="xp-header">
             <span class="xp-icon"><v-icon>mdi-star-four-points</v-icon></span>
@@ -114,16 +113,15 @@ const formatNumber = (value: number): string => {
         </div>
       </div>
 
-      <!-- Card de todas las estadísticas del usuario con los datos de fuerza, resistencia y oro  -->
       <div class="stats-card">
         <h2 class="stats-title">
-          <span class="title-icon"><v-icon>mdi-chart-bar</v-icon></span>
+          <span class="title-icon"><Icon icon="mdi:chart-bar" width="32" height="32" /></span>
           {{ $t('statistics') }}
         </h2>
         <div class="stats-grid">
           <div v-for="stat in statList" :key="stat" class="stat-item">
             <div class="stat-header">
-              <span class="stat-icon"><v-icon :class="['mdi', iconMap[stat]]"></v-icon></span>
+              <span class="stat-icon"><Icon :icon="iconMap[stat]" width="32" height="32" :style="{ color: colorMap[stat] }" /></span>
               <span class="stat-label">{{ labelMap[stat] }}</span>
             </div>
             <div class="progress-container">
@@ -191,12 +189,7 @@ const formatNumber = (value: number): string => {
   width: 200%;
   height: 200%;
   background: radial-gradient(circle, rgba(255, 193, 7, 0.1) 0%, transparent 70%);
-  animation: rotate 10s linear infinite;
-}
 
-@keyframes rotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
 }
 
 .avatar-container {
@@ -208,20 +201,6 @@ const formatNumber = (value: number): string => {
   z-index: 1;
 }
 
-.avatar-glow {
-  position: absolute;
-  width: 190px;
-  height: 190px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 193, 7, 0.4), transparent);
-  animation: pulse-glow 2s ease-in-out infinite;
-}
-
-@keyframes pulse-glow {
-  0%, 100% { transform: scale(1); opacity: 0.5; }
-  50% { transform: scale(1.1); opacity: 0.8; }
-}
-
 /* Nuevo wrapper para el borde animado del avatar */
 .avatar-wrapper {
   position: relative;
@@ -231,15 +210,9 @@ const formatNumber = (value: number): string => {
   padding: 4px;
   background: linear-gradient(135deg, #ffc107, #ff9800, #ffc107);
   background-size: 200% 200%;
-  animation: border-spin 3s linear infinite;
+
   box-shadow: 0 8px 32px rgba(255, 193, 7, 0.5);
   z-index: 1;
-}
-
-@keyframes border-spin {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
 }
 
 .avatar-image {
@@ -266,12 +239,7 @@ const formatNumber = (value: number): string => {
 
 .level-icon {
   font-size: 1.5rem;
-  animation: zap 1.5s ease-in-out infinite;
-}
 
-@keyframes zap {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.2); }
 }
 
 .user-info {
@@ -301,12 +269,7 @@ const formatNumber = (value: number): string => {
 
 .streak-icon {
   font-size: 1.2rem;
-  animation: flicker 2s ease-in-out infinite;
-}
 
-@keyframes flicker {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.7; }
 }
 
 /* XP Container */
@@ -328,12 +291,7 @@ const formatNumber = (value: number): string => {
 
 .xp-icon {
   font-size: 1.4rem;
-  animation: sparkle 2s ease-in-out infinite;
-}
 
-@keyframes sparkle {
-  0%, 100% { transform: scale(1) rotate(0deg); }
-  50% { transform: scale(1.15) rotate(10deg); }
 }
 
 .xp-label {
@@ -378,11 +336,7 @@ const formatNumber = (value: number): string => {
   width: 100%;
   height: 100%;
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-  animation: shine 2s infinite;
-}
 
-@keyframes shine {
-  to { left: 100%; }
 }
 
 .xp-values {
@@ -448,11 +402,6 @@ const formatNumber = (value: number): string => {
   transition: transform 0.3s ease;
 }
 
-.stat-item:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-}
-
 .stat-header {
   display: flex;
   align-items: center;
@@ -500,7 +449,7 @@ const formatNumber = (value: number): string => {
   width: 100%;
   height: 100%;
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-  animation: shine 2s infinite;
+
 }
 
 .stat-values {

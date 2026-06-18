@@ -55,12 +55,6 @@ const menuItems = [
   margin: 0.4rem 0;
 }
 
-.menu-item:hover {
-  background: rgba(255, 204, 0, 0.08) !important;
-  color: #ffcc00 !important;
-  border-left-color: rgba(255, 204, 0, 0.3);
-}
-
 .menu-item.v-list-item--active {
   background: rgba(255, 204, 0, 0.12) !important;
   color: #ffcc00 !important;

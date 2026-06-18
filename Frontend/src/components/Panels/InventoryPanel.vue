@@ -22,26 +22,26 @@ watch(loggedUser, (newUser) => {
 
 // Computed: Filtrar items por tipo
 const strengthItems = computed(() => {
-  return store.purchasedItems?.filter(item => 
-    item.itemType.toLowerCase() === 'strength' || 
-    item.itemType.toLowerCase() === 'fuerza'
-  ) || []
+  return store.purchasedItems?.filter(item => {
+    const type = item.itemType?.trim().toLowerCase()
+    return type === 'strength' || type === 'fuerza'
+  }) || []
 })
 
 const enduranceItems = computed(() => {
-  return store.purchasedItems?.filter(item => 
-    item.itemType.toLowerCase() === 'endurance' || 
-    item.itemType.toLowerCase() === 'resistencia'
-  ) || []
+  return store.purchasedItems?.filter(item => {
+    const type = item.itemType?.trim().toLowerCase()
+    return type === 'endurance' || type === 'resistencia'
+  }) || []
 })
 
 const totalItems = computed(() => store.purchasedItems?.length || 0)
 
 // Verificar si un item está equipado
 const isItemEquipped = (itemId: number, itemType: string) => {
-  if (!loggedUser.value) return false
+  if (!loggedUser.value || !itemType) return false
   
-  const typeLower = itemType.toLowerCase()
+  const typeLower = itemType.trim().toLowerCase()
   if (typeLower === 'strength' || typeLower === 'fuerza') {
     return loggedUser.value.equippedStrengthItemId === itemId
   }
@@ -53,7 +53,8 @@ const isItemEquipped = (itemId: number, itemType: string) => {
 
 // Manejar equipar/desequipar
 const handleItemClick = async (item: any) => {
-  const typeLower = item.itemType.toLowerCase()
+  if (!item.itemType) return;
+  const typeLower = item.itemType.trim().toLowerCase()
   const isEquipped = isItemEquipped(item.itemId, item.itemType)
   
   if (isEquipped) {
@@ -73,6 +74,7 @@ const getItemRarity = (bonus: number) => {
 }
 // Función para obtener un icono representativo del tipo de item (fuerza o resistencia), se puede expandir para más tipos si es necesario (para futuras actualizaciones en tal caso)
 const getItemIcon = (type: string) => {
+  if (!type) return 'mdi-gift'
   const icons: Record<string, string> = {
     'fuerza': 'mdi-arm-flex',
     'strength': 'mdi-arm-flex',
@@ -84,11 +86,12 @@ const getItemIcon = (type: string) => {
     'poder': 'mdi-star',
     'default': 'mdi-gift'
   }
-  return icons[type.toLowerCase()] || icons.default
+  return icons[type.trim().toLowerCase()] || icons.default
 }
 // Obtener tipo de item dependiendo de su tipo
 const getItemTypeClass = (type: string) => {
-  const typeLower = type.toLowerCase()
+  if (!type) return ''
+  const typeLower = type.trim().toLowerCase()
   if (typeLower === 'strength' || typeLower === 'fuerza') return 'type-strength'
   if (typeLower === 'endurance' || typeLower === 'resistencia') return 'type-endurance'
   return ''
@@ -111,27 +114,17 @@ const handleImageError = (event: Event) => {
     class="inventory-wrapper"
     fluid
   >
-    <div class="inventory-header">
-      <div class="header-decoration"></div>
-      <h2 class="inventory-title">
-        <span class="title-icon"><v-icon>mdi-bag-personal</v-icon></span>
-        {{ $t('inventario') }}
-        <span class="item-count">{{ totalItems }}</span>
-      </h2>
-      <div class="header-decoration"></div>
-    </div>
 
     <div v-if="totalItems === 0" class="empty-inventory">
-      <v-icon class="empty-icon" color="grey">mdi-package-variant</v-icon>
+      <v-icon class="empty-icon" color="white">mdi-package-variant</v-icon>
       <p class="empty-text">{{ $t('inventario_vacio') }}</p>
       <p class="empty-subtext">{{ $t('compra_items') }}</p>
     </div>
 
     <div v-else class="inventory-sections">
-      <!-- Sección de Fuerza -->
       <div class="section-container">
         <div class="section-header strength-header">
-          <v-icon class="section-icon" color="amber">mdi-arm-flex</v-icon>
+          <v-icon class="section-icon" color="white">mdi-arm-flex</v-icon>
           <h3 class="section-title">{{ $t('items_fuerza') }}</h3>
           <span class="section-count">{{ strengthItems.length }}</span>
         </div>
@@ -159,17 +152,14 @@ const handleImageError = (event: Event) => {
               ]"
               @click="handleItemClick(item)"
             >
-              <!-- Badge de equipado -->
               <div v-if="isItemEquipped(item.itemId, item.itemType)" class="equipped-badge">
                 <span><v-icon>mdi-sword-cross</v-icon> {{ $t('equipped_label') }}</span>
               </div>
 
-              <!-- Bonus -->
               <div class="bonus-badge">
                 +{{ item.itemBonus }}
               </div>
 
-              <!-- Imagen/Icono -->
               <div class="item-icon-wrapper">
                 <img
                   v-if="item.imageUrl"
@@ -183,13 +173,11 @@ const handleImageError = (event: Event) => {
                 </div>
               </div>
 
-              <!-- Nombre y tipo -->
               <div class="item-content">
                 <div class="item-name">{{ item.itemName }}</div>
                 <div class="item-type">{{ item.itemType }}</div>
               </div>
 
-              <!-- Botón de acción -->
               <div class="equip-action">
                 <span v-if="isItemEquipped(item.itemId, item.itemType)" class="action-text unequip">
                   {{ $t('unequip_label') }}
@@ -203,10 +191,9 @@ const handleImageError = (event: Event) => {
         </v-row>
       </div>
 
-      <!-- Sección de Resistencia -->
       <div class="section-container">
         <div class="section-header endurance-header">
-          <v-icon class="section-icon" color="blue">mdi-run</v-icon>
+          <v-icon class="section-icon" color="white">mdi-run</v-icon>
           <h3 class="section-title">{{ $t('items_resistencia') }}</h3>
           <span class="section-count">{{ enduranceItems.length }}</span>
         </div>
@@ -234,17 +221,14 @@ const handleImageError = (event: Event) => {
               ]"
               @click="handleItemClick(item)"
             >
-              <!-- Badge de equipado -->
               <div v-if="isItemEquipped(item.itemId, item.itemType)" class="equipped-badge">
                 <span><v-icon>mdi-sword-cross</v-icon> {{ $t('equipped_label') }}</span>
               </div>
 
-              <!-- Bonus -->
               <div class="bonus-badge">
                 +{{ item.itemBonus }}
               </div>
 
-              <!-- Imagen/Icono -->
               <div class="item-icon-wrapper">
                 <img
                   v-if="item.imageUrl"
@@ -258,13 +242,11 @@ const handleImageError = (event: Event) => {
                 </div>
               </div>
 
-              <!-- Nombre y tipo -->
               <div class="item-content">
                 <div class="item-name">{{ item.itemName }}</div>
                 <div class="item-type">{{ item.itemType }}</div>
               </div>
 
-              <!-- Botón de acción -->
               <div class="equip-action">
                 <span v-if="isItemEquipped(item.itemId, item.itemType)" class="action-text unequip">
                   {{ $t('unequip_label') }}
@@ -347,7 +329,7 @@ const handleImageError = (event: Event) => {
   font-size: 5rem;
   margin-bottom: 1rem;
   opacity: 0.7;
-  animation: float 3s ease-in-out infinite;
+
 }
 
 .empty-text {
@@ -361,11 +343,6 @@ const handleImageError = (event: Event) => {
 .empty-subtext {
   font-size: 1rem;
   color: rgba(255, 255, 255, 0.7);
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
 }
 
 /* Inventory Sections */
@@ -479,20 +456,10 @@ const handleImageError = (event: Event) => {
   align-items: center;
 }
 
-.item-card:hover {
-  transform: translateY(-10px) scale(1.03);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
-}
-
 /* Estado equipado */
 .item-card.equipped {
   border: 2px solid #fbbf24;
   box-shadow: 0 0 20px rgba(251, 191, 36, 0.4);
-}
-
-.item-card.equipped:hover {
-  box-shadow: 0 0 30px rgba(251, 191, 36, 0.6);
-  transform: translateY(-12px) scale(1.05);
 }
 
 /* Badge de equipado */
@@ -531,11 +498,6 @@ const handleImageError = (event: Event) => {
   font-weight: 900;
   z-index: 10;
   transition: all 0.3s ease;
-}
-
-.item-card:hover .bonus-badge {
-  transform: scale(1.1);
-  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.6);
 }
 
 .bonus-number {
@@ -598,11 +560,6 @@ const handleImageError = (event: Event) => {
   border-color: #f87171 !important;
 }
 
-.type-strength:hover {
-  border-color: #fca5a5 !important;
-  box-shadow: 0 16px 40px rgba(248, 113, 113, 0.3) !important;
-}
-
 .type-strength.equipped {
   border-color: #fbbf24 !important;
   box-shadow: 0 0 20px rgba(251, 191, 36, 0.4) !important;
@@ -610,11 +567,6 @@ const handleImageError = (event: Event) => {
 
 .type-endurance {
   border-color: #22d3ee !important;
-}
-
-.type-endurance:hover {
-  border-color: #67e8f9 !important;
-  box-shadow: 0 16px 40px rgba(34, 211, 238, 0.3) !important;
 }
 
 .type-endurance.equipped {
@@ -627,37 +579,17 @@ const handleImageError = (event: Event) => {
   border-color: #94a3b8;
 }
 
-.rarity-common:hover {
-  border-color: #cbd5e1;
-  box-shadow: 0 16px 40px rgba(148, 163, 184, 0.3);
-}
-
 .rarity-rare {
   border-color: #38bdf8;
-}
-
-.rarity-rare:hover {
-  border-color: #7dd3fc;
-  box-shadow: 0 16px 40px rgba(56, 189, 248, 0.3);
 }
 
 .rarity-epic {
   border-color: #f472b6;
 }
 
-.rarity-epic:hover {
-  border-color: #fb7185;
-  box-shadow: 0 16px 40px rgba(244, 114, 182, 0.3);
-}
-
 .rarity-legendary {
   border-color: #fbbf24;
   box-shadow: 0 0 15px rgba(251, 191, 36, 0.3);
-}
-
-.rarity-legendary:hover {
-  border-color: #fcd34d;
-  box-shadow: 0 0 25px rgba(251, 191, 36, 0.5);
 }
 
 /* Contenedor de imagen */
@@ -677,12 +609,6 @@ const handleImageError = (event: Event) => {
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.item-card:hover .item-icon-wrapper {
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-  transform: scale(1.05);
-  transition: all 0.3s ease;
-}
-
 .item-image {
   width: 100%;
   height: 100%;
@@ -695,11 +621,6 @@ const handleImageError = (event: Event) => {
   image-rendering: -webkit-optimize-contrast;
 }
 
-.item-card:hover .item-image {
-  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.4));
-  transform: scale(1.08) rotate(2deg);
-}
-
 /* Items equipados */
 .item-card.equipped .item-icon-wrapper {
   background: linear-gradient(135deg, #2d2a1f, #1f1b14);
@@ -707,16 +628,8 @@ const handleImageError = (event: Event) => {
   border-color: rgba(251, 191, 36, 0.5);
 }
 
-.item-card.equipped:hover .item-icon-wrapper {
-  box-shadow: 0 0 30px rgba(251, 191, 36, 0.5);
-}
-
 .item-card.equipped .item-image {
   filter: drop-shadow(0 6px 12px rgba(251, 191, 36, 0.3));
-}
-
-.item-card.equipped:hover .item-image {
-  filter: drop-shadow(0 10px 20px rgba(251, 191, 36, 0.5));
 }
 
 /* Fallback icon emoji */
@@ -731,10 +644,6 @@ const handleImageError = (event: Event) => {
 
 .item-icon-fallback {
   display: none;
-}
-
-.item-card:hover .item-icon {
-  transform: scale(1.15) rotate(8deg);
 }
 
 /* Item Content */

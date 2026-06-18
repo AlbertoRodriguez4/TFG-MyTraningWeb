@@ -66,7 +66,9 @@ export const useUserStore = defineStore('user', () => {
         gold: 0,
         experience: 0,
         avatarUrl: d.avatarUrl,
-        role: 'user'
+        role: 'user',
+        equippedStrengthItem: d.equippedStrengthItem,
+        equippedEnduranceItem: d.equippedEnduranceItem
       }));
     } catch (error) {
       logger.error("Error fetching community users:", error);
@@ -359,8 +361,7 @@ export const useUserStore = defineStore('user', () => {
       const response = await fetch(`${BASE_URL}/api/User/community-stats`, {
         method: 'GET',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          'Content-Type': 'application/json'
         }
       });
 

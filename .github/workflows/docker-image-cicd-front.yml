@@ -1,14 +1,18 @@
-name: Docker Image CICD - Frontend
+name: Docker Image CICD - Frontend (DISABLED - Local Only)
 
+# DESHABILITADO: El proyecto se ejecuta en local con docker-compose
+# Para reactivar, descomentar los triggers de abajo
+#on:
+#  push:
+#    branches: [ "main" ]
+#    paths:
+#      - 'Frontend/**'
+#  pull_request:
+#    branches: [ "main" ]
+#    paths:
+#      - 'Frontend/**'
 on:
-  push:
-    branches: [ "main" ]
-    paths:
-      - 'Frontend/**'
-  pull_request:
-    branches: [ "main" ]
-    paths:
-      - 'Frontend/**'
+  workflow_dispatch: # Solo ejecución manual
 
 env:
   EKS_CLUSTER_NAME: TheTrainingHubCluster

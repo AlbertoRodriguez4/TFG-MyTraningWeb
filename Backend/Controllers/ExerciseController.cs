@@ -4,6 +4,7 @@ using AA2_CS.Model.Entities;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class ExerciseController : ControllerBase
 {
     private readonly ExerciseService _service;
@@ -71,6 +72,7 @@ public class ExerciseController : ControllerBase
     }
 
     [HttpGet("task/{taskId}")]
+    [Authorize]
     public async Task<IActionResult> GetTaskExercises(int taskId)
     {
         var taskExercises = await _service.GetTaskExercisesAsync(taskId);

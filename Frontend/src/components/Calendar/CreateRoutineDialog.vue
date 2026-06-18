@@ -1,22 +1,20 @@
 <template>
-  <!-- ✅ CORRECTO -->
   <v-dialog :value="value" @input="(val: boolean) => $emit('input', val)" max-width="1100" persistent
     transition="dialog-transition" scrollable>
     <v-card rounded="xl" class="create-dialog" elevation="24">
-      <!-- Header épico con animación -->
       <div class="dialog-header">
         <div class="header-bg-animation"></div>
         <div class="header-content">
           <div class="header-icon-wrapper">
             <v-icon size="56" color="white" class="pulse-icon">mdi-dumbbell</v-icon>
-            <div class="icon-glow"></div>
+            <div ></div>
           </div>
           <div class="header-text">
             <div class="level-badge">
               <v-icon small color="white">mdi-star</v-icon>
               <span>{{ t('calendar.createRoutineTitle') }}</span>
             </div>
-            <h2 class="text-h3 font-weight-black white--text mb-2 title-glow">
+            <h2 class="text-h5 font-weight-black text-white mb-2" style="text-align: center; color: white !important;">
               {{ t('calendar.newEpicRoutine') }}
             </h2>
             <div class="d-flex align-center">
@@ -32,9 +30,7 @@
         </v-btn>
       </div>
 
-      <!-- Contenido del formulario -->
       <v-card-text class="pa-8 dialog-body">
-        <!-- Advertencia si la fecha es pasada -->
         <v-alert
           v-if="isPastDate"
           type="warning"
@@ -44,7 +40,7 @@
           class="mb-6"
         >
           <div class="d-flex align-center">
-            <v-icon color="amber" class="mr-3">mdi-calendar-remove</v-icon>
+            <v-icon color="white" class="mr-3">mdi-calendar-remove</v-icon>
             <div>
               <div class="font-weight-bold">{{ t('calendar.cannotCreatePast') }}</div>
               <div class="text-caption">{{ t('calendar.selectFutureDate') }}</div>
@@ -52,7 +48,6 @@
           </div>
         </v-alert>
 
-        <!-- Nombre de la rutina con efecto gaming -->
         <div class="form-section mb-8">
           <div class="section-header mb-4">
             <div class="section-icon-wrapper">
@@ -72,13 +67,13 @@
               dense color="purple" hide-details="auto" class="custom-textfield-epic">
               <template v-slot:prepend-inner>
                 <div class="input-icon-wrapper">
-                  <v-icon color="purple lighten-2">mdi-weight-lifter</v-icon>
+                  <v-icon color="white">mdi-weight-lifter</v-icon>
                 </div>
               </template>
               <template v-slot:append>
                 <v-fade-transition>
                   <div v-if="localRoutineName" class="success-indicator">
-                    <v-icon color="success">mdi-check-circle</v-icon>
+                    <v-icon color="white">mdi-check-circle</v-icon>
                   </div>
                 </v-fade-transition>
               </template>
@@ -89,7 +84,6 @@
           </div>
         </div>
 
-        <!-- NUEVO: Tipo de Entrenamiento -->
         <div class="form-section mb-8">
           <div class="section-header mb-4">
             <div class="section-icon-wrapper gradient-success">
@@ -109,7 +103,7 @@
               :class="['training-type-card', { 'active': trainingFocus === type.value }]"
               :style="{ '--type-color': type.color }">
               <div class="training-type-icon">
-                <v-icon :color="trainingFocus === type.value ? 'white' : type.color" size="36">
+                <v-icon color="white" size="36">
                   {{ type.icon }}
                 </v-icon>
               </div>
@@ -124,7 +118,6 @@
           </div>
         </div>
 
-        <!-- Ejercicios con diseño mejorado -->
         <div class="form-section mb-8">
           <div class="section-header mb-4">
             <div class="section-icon-wrapper gradient-secondary">
@@ -145,29 +138,27 @@
               outlined color="purple" hide-details="auto" rows="5" class="custom-textfield-epic" auto-grow>
               <template v-slot:prepend-inner>
                 <div class="input-icon-wrapper">
-                  <v-icon color="purple lighten-2">mdi-format-list-checks</v-icon>
+                  <v-icon color="white">mdi-format-list-checks</v-icon>
                 </div>
               </template>
               <template v-slot:append>
                 <v-fade-transition>
                   <div v-if="localRoutineExercises" class="success-indicator">
-                    <v-icon color="success">mdi-check-circle</v-icon>
+                    <v-icon color="white">mdi-check-circle</v-icon>
                   </div>
                 </v-fade-transition>
               </template>
             </v-textarea>
           </div>
           <div class="tips-box mt-3">
-            <v-icon small color="amber" class="mr-2">mdi-lightbulb-on</v-icon>
+            <v-icon small color="white" class="mr-2">mdi-lightbulb-on</v-icon>
             <span class="text-caption font-weight-medium">
               {{ t('calendar.proTip') }}
             </span>
           </div>
         </div>
 
-        <!-- Grid de opciones -->
         <v-row class="mb-8">
-          <!-- Nivel de dificultad rediseñado -->
           <v-col cols="12" md="6">
             <div class="form-section">
               <div class="section-header mb-4">
@@ -184,7 +175,7 @@
                   :class="['difficulty-card', { 'active': selectedDifficulty === level.value }]"
                   :style="{ '--card-color': level.color }">
                   <div class="difficulty-icon">
-                    <v-icon :color="selectedDifficulty === level.value ? 'white' : level.color" size="32">
+                    <v-icon color="white" size="32">
                       {{ level.icon }}
                     </v-icon>
                   </div>
@@ -195,7 +186,6 @@
             </div>
           </v-col>
 
-          <!-- Duración con visualización mejorada -->
           <v-col cols="12" md="6">
             <div class="form-section">
               <div class="section-header mb-4">
@@ -221,14 +211,13 @@
                 </template>
               </v-slider>
               <div class="duration-bonus mt-2">
-                <v-icon small color="success">mdi-plus-circle</v-icon>
+                <v-icon small color="white">mdi-plus-circle</v-icon>
                 <span>{{ t('calendar.durationBonus', { bonus: durationBonus }) }}</span>
               </div>
             </div>
           </v-col>
         </v-row>
 
-        <!-- Recompensas ÉPICAS - DINÁMICAS -->
         <div class="rewards-epic-section">
           <div class="rewards-epic-header">
             <div class="rewards-title-wrapper">
@@ -247,10 +236,9 @@
           </div>
 
           <v-row class="rewards-grid">
-            <!-- XP Card -->
             <v-col cols="12" sm="6" :md="rewardColumnSize">
               <div class="reward-card-epic reward-xp">
-                <div class="reward-glow"></div>
+                <div ></div>
                 <div class="reward-icon-container">
                   <v-icon size="48" color="white">mdi-star-circle</v-icon>
                 </div>
@@ -264,10 +252,9 @@
               </div>
             </v-col>
 
-            <!-- Monedas Card -->
             <v-col cols="12" sm="6" :md="rewardColumnSize">
               <div class="reward-card-epic reward-coins">
-                <div class="reward-glow"></div>
+                <div ></div>
                 <div class="reward-icon-container">
                   <v-icon size="48" color="white">mdi-cash-multiple</v-icon>
                 </div>
@@ -280,10 +267,9 @@
               </div>
             </v-col>
 
-            <!-- Fuerza Card (solo si aplica) -->
             <v-col v-if="calculatedRewards.strength > 0" cols="12" sm="6" :md="rewardColumnSize">
               <div class="reward-card-epic reward-strength">
-                <div class="reward-glow"></div>
+                <div ></div>
                 <div class="reward-icon-container">
                   <v-icon size="48" color="white">mdi-arm-flex</v-icon>
                 </div>
@@ -296,10 +282,9 @@
               </div>
             </v-col>
 
-            <!-- Resistencia Card (solo si aplica) -->
             <v-col v-if="calculatedRewards.endurance > 0" cols="12" sm="6" :md="rewardColumnSize">
               <div class="reward-card-epic reward-endurance">
-                <div class="reward-glow"></div>
+                <div ></div>
                 <div class="reward-icon-container">
                   <v-icon size="48" color="white">mdi-run-fast</v-icon>
                 </div>
@@ -312,10 +297,9 @@
               </div>
             </v-col>
 
-            <!-- Racha Card -->
             <v-col cols="12" sm="6" :md="rewardColumnSize">
               <div class="reward-card-epic reward-streak">
-                <div class="reward-glow"></div>
+                <div ></div>
                 <div class="reward-icon-container">
                   <v-icon size="48" color="white">mdi-fire</v-icon>
                 </div>
@@ -329,34 +313,32 @@
             </v-col>
           </v-row>
 
-          <!-- Barra de logros adicional -->
           <div class="achievements-preview">
             <div class="achievement-item">
-              <v-icon color="amber">mdi-medal</v-icon>
+              <v-icon color="white">mdi-medal</v-icon>
               <span>{{ t('calendar.achievementFirstRoutine') }}</span>
             </div>
             <div class="achievement-item">
-              <v-icon color="purple">mdi-crown</v-icon>
+              <v-icon color="white">mdi-crown</v-icon>
               <span>{{ t('calendar.achievementPremiumRooms') }}</span>
             </div>
             <div class="achievement-item">
-              <v-icon color="blue">mdi-account-group</v-icon>
+              <v-icon color="white">mdi-account-group</v-icon>
               <span>{{ t('calendar.achievementCommunityPoints') }}</span>
             </div>
           </div>
         </div>
       </v-card-text>
 
-      <!-- Footer épico -->
       <v-divider></v-divider>
       <v-card-actions class="pa-6 dialog-footer">
         <div class="footer-stats">
           <div class="stat-item">
-            <v-icon small color="grey darken-1">mdi-calendar-check</v-icon>
+            <v-icon small color="white">mdi-calendar-check</v-icon>
             <span>{{ t('calendar.footerDate', { date: formatDate }) }}</span>
           </div>
           <div class="stat-item">
-            <v-icon small color="grey darken-1">mdi-account</v-icon>
+            <v-icon small color="white">mdi-account</v-icon>
             <span>{{ t('calendar.footerPersonal') }}</span>
           </div>
         </div>
@@ -608,19 +590,7 @@ const handleCreate = async () => {
   background:
     radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
     radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.08) 0%, transparent 50%);
-  animation: headerPulse 4s ease-in-out infinite;
-}
 
-@keyframes headerPulse {
-
-  0%,
-  100% {
-    opacity: 0.5;
-  }
-
-  50% {
-    opacity: 1;
-  }
 }
 
 .header-content {
@@ -645,42 +615,8 @@ const handleCreate = async () => {
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
-.icon-glow {
-  position: absolute;
-  inset: -10px;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.4) 0%, transparent 70%);
-  border-radius: 28px;
-  animation: glowPulse 2s ease-in-out infinite;
-}
-
-@keyframes glowPulse {
-
-  0%,
-  100% {
-    opacity: 0.5;
-    transform: scale(1);
-  }
-
-  50% {
-    opacity: 1;
-    transform: scale(1.1);
-  }
-}
-
 .pulse-icon {
-  animation: iconBounce 2s ease-in-out infinite;
-}
 
-@keyframes iconBounce {
-
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(-5px);
-  }
 }
 
 .level-badge {
@@ -699,23 +635,6 @@ const handleCreate = async () => {
   border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-.title-glow {
-  text-shadow: 0 0 20px rgba(255, 255, 255, 0.5), 0 4px 12px rgba(0, 0, 0, 0.3);
-  animation: titleFloat 3s ease-in-out infinite;
-}
-
-@keyframes titleFloat {
-
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(-3px);
-  }
-}
-
 .date-chip {
   background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(10px);
@@ -732,6 +651,7 @@ const handleCreate = async () => {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   background: rgba(255, 255, 255, 0.1) !important;
   backdrop-filter: blur(10px);
+  color: white !important;
 }
 
 .close-btn:hover {
@@ -748,7 +668,7 @@ const handleCreate = async () => {
 
 /* ===== SECCIONES ===== */
 .form-section {
-  animation: slideInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) backwards;
+
 }
 
 .form-section:nth-child(1) {
@@ -765,18 +685,6 @@ const handleCreate = async () => {
 
 .form-section:nth-child(4) {
   animation-delay: 0.25s;
-}
-
-@keyframes slideInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 .section-header {
@@ -840,12 +748,6 @@ const handleCreate = async () => {
   padding: 0.5rem 1rem !important;
 }
 
-.custom-textfield-epic>>>.v-input__slot:hover {
-  border-color: rgba(139, 92, 246, 0.7) !important;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.2);
-}
-
 .custom-textfield-epic.v-input--is-focused>>>.v-input__slot {
   border-color: rgba(167, 139, 250, 0.9) !important;
   background: rgba(15, 10, 26, 0.8) !important;
@@ -880,21 +782,7 @@ const handleCreate = async () => {
 }
 
 .success-indicator {
-  animation: successPop 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
 
-@keyframes successPop {
-  0% {
-    transform: scale(0);
-  }
-
-  50% {
-    transform: scale(1.2);
-  }
-
-  100% {
-    transform: scale(1);
-  }
 }
 
 .char-counter {
@@ -943,12 +831,6 @@ const handleCreate = async () => {
   background: linear-gradient(135deg, var(--card-color), transparent);
   opacity: 0;
   transition: opacity 0.3s ease;
-}
-
-.difficulty-card:hover {
-  transform: translateY(-8px) scale(1.05);
-  box-shadow: 0 12px 32px rgba(139, 92, 246, 0.3);
-  border-color: rgba(139, 92, 246, 0.6);
 }
 
 .difficulty-card.active {
@@ -1078,7 +960,7 @@ const handleCreate = async () => {
   padding: 2.5rem;
   position: relative;
   overflow: hidden;
-  animation: slideInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.4s backwards;
+
 }
 
 .rewards-epic-section::before {
@@ -1089,17 +971,7 @@ const handleCreate = async () => {
   width: 200%;
   height: 200%;
   background: radial-gradient(circle, rgba(102, 126, 234, 0.1) 0%, transparent 70%);
-  animation: rotateGradient 20s linear infinite;
-}
 
-@keyframes rotateGradient {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
 }
 
 .rewards-epic-header {
@@ -1123,19 +995,7 @@ const handleCreate = async () => {
   align-items: center;
   justify-content: center;
   box-shadow: 0 8px 32px rgba(255, 215, 0, 0.4);
-  animation: trophyFloat 3s ease-in-out infinite;
-}
 
-@keyframes trophyFloat {
-
-  0%,
-  100% {
-    transform: translateY(0) rotate(0deg);
-  }
-
-  50% {
-    transform: translateY(-10px) rotate(5deg);
-  }
 }
 
 .rewards-epic-header h3 {
@@ -1174,23 +1034,6 @@ const handleCreate = async () => {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
   opacity: 0;
   transition: opacity 0.3s ease;
-}
-
-.reward-card-epic:hover {
-  transform: translateY(-12px) scale(1.05);
-  border-color: rgba(255, 255, 255, 0.3);
-}
-
-.reward-card-epic:hover::before {
-  opacity: 1;
-}
-
-.reward-glow {
-  position: absolute;
-  inset: -20px;
-  background: radial-gradient(circle, var(--glow-color) 0%, transparent 70%);
-  opacity: 0.3;
-  animation: glowPulse 2s ease-in-out infinite;
 }
 
 .reward-xp {
@@ -1239,19 +1082,7 @@ const handleCreate = async () => {
   margin: 0 auto 1.5rem;
   position: relative;
   z-index: 1;
-  animation: iconFloat 3s ease-in-out infinite;
-}
 
-@keyframes iconFloat {
-
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(-8px);
-  }
 }
 
 .reward-amount {
@@ -1325,12 +1156,6 @@ const handleCreate = async () => {
   font-weight: 600;
   font-size: 0.9rem;
   transition: all 0.3s ease;
-}
-
-.achievement-item:hover {
-  transform: translateY(-4px);
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.3);
 }
 
 /* ===== FOOTER - Tema Oscuro ===== */
@@ -1433,10 +1258,6 @@ const handleCreate = async () => {
   border: 2px solid #f1f1f1;
 }
 
-.dialog-body::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(135deg, #764ba2, #667eea);
-}
-
 /* ===== SELECTOR DE TIPO DE ENTRENAMIENTO - Tema Oscuro ===== */
 .training-type-selector {
   display: grid;
@@ -1464,12 +1285,6 @@ const handleCreate = async () => {
   background: linear-gradient(135deg, var(--type-color), transparent);
   opacity: 0;
   transition: opacity 0.3s ease;
-}
-
-.training-type-card:hover {
-  transform: translateY(-8px) scale(1.05);
-  box-shadow: 0 12px 32px rgba(139, 92, 246, 0.3);
-  border-color: rgba(139, 92, 246, 0.6);
 }
 
 .training-type-card.active {
@@ -1536,21 +1351,7 @@ const handleCreate = async () => {
   align-items: center;
   justify-content: center;
   z-index: 2;
-  animation: checkPop 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
 
-@keyframes checkPop {
-  0% {
-    transform: scale(0);
-  }
-
-  50% {
-    transform: scale(1.2);
-  }
-
-  100% {
-    transform: scale(1);
-  }
 }
 
 /* ===== RESPONSIVE ===== */
@@ -1650,20 +1451,10 @@ const handleCreate = async () => {
     font-size: 28px !important;
   }
 
-  .icon-glow {
-    inset: -6px;
-    border-radius: 20px;
-  }
-
   .level-badge {
     font-size: 0.65rem;
     padding: 0.3rem 0.75rem;
     margin-bottom: 0.25rem;
-  }
-
-  .title-glow {
-    font-size: 1.25rem !important;
-    margin-bottom: 0.5rem !important;
   }
 
   .date-chip {
@@ -2028,10 +1819,6 @@ const handleCreate = async () => {
 
   .pulse-icon {
     font-size: 24px !important;
-  }
-
-  .title-glow {
-    font-size: 1.1rem !important;
   }
 
   .dialog-body {

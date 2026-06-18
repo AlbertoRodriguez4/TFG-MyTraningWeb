@@ -5,6 +5,7 @@ import { useI18n } from 'vue-i18n'
 import { useSubscriptionStore } from '@/stores/SubscriptionStore'
 import { logger } from '@/utils/logger'
 import type { ValidationState } from '@/components/Models/Payment'
+import { Icon } from '@iconify/vue'
 
 const { t } = useI18n()
 
@@ -19,6 +20,7 @@ const cardNumber = ref('')
 const cardHolder = ref('')
 const expiryDate = ref('')
 const cvv = ref('')
+const selectedMethod = ref('visa')
 const isProcessing = ref(false)
 const showSuccess = ref(false)
 const errorMessage = ref('')
@@ -131,13 +133,11 @@ const handleSubmit = async () => {
 
 <template>
   <div class="card-form" :class="{ 'form-success': showSuccess }">
-    <!-- Encabezado del formulario -->
     <div class="form-header">
       <h2 class="form-title">{{ $t('payment_info') }}</h2>
       <p class="form-subtitle">{{ $t('data_protected_ssl') }}</p>
     </div>
 
-    <!-- Vista previa de tarjeta -->
     <div class="card-preview">
       <div class="card-top">
         <div class="card-chip"></div>
@@ -150,40 +150,38 @@ const handleSubmit = async () => {
       </div>
     </div>
 
-    <!-- Formulario -->
     <v-form @submit.prevent="handleSubmit" class="payment-form">
-      <!-- Número de tarjeta -->
-      <div class="form-group">
-        <label class="form-label">{{ $t('card_number') }}</label>
-        <div class="input-wrapper">
-          <v-text-field v-model="cardNumber" :placeholder="$t('payment.cardNumberPlaceholder')" maxlength="19"
-            variant="outlined" density="comfortable" class="form-input" :error="validationErrors.cardNumber"
-            @update:model-value="(val) => cardNumber = formatCardNumber(val)" />
-          <div class="card-icons">
-            <v-icon v-if="cardNumber" size="20" color="#4f46e5">mdi-credit-card</v-icon>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">{{ $t('card_number') }}</label>
+          <div class="input-wrapper">
+            <v-text-field v-model="cardNumber" :placeholder="$t('payment.cardNumberPlaceholder')" maxlength="19"
+              variant="outlined" density="comfortable" class="form-input" :error="validationErrors.cardNumber"
+              @update:model-value="(val) => cardNumber = formatCardNumber(val)" />
+            <div class="card-icons">
+              <v-icon v-if="cardNumber" size="20" color="white">mdi-credit-card</v-icon>
+            </div>
+          </div>
+          <div v-if="validationErrors.cardNumber" class="error-text">
+            {{ $t('card_number_invalid') }}
           </div>
         </div>
-        <div v-if="validationErrors.cardNumber" class="error-text">
-          {{ $t('card_number_invalid') }}
+
+        <div class="form-group">
+          <label class="form-label">{{ $t('card_holder') }}</label>
+          <div class="input-wrapper">
+            <v-text-field v-model="cardHolder" :placeholder="$t('card_holder_placeholder')" maxlength="50"
+              variant="outlined" density="comfortable" class="form-input" :error="validationErrors.cardHolder" />
+            <div class="card-icons">
+              <v-icon v-if="cardHolder" size="20" color="white">mdi-account</v-icon>
+            </div>
+          </div>
+          <div v-if="validationErrors.cardHolder" class="error-text">
+            {{ $t('card_holder_min_chars') }}
+          </div>
         </div>
       </div>
 
-      <!-- Nombre del titular -->
-      <div class="form-group">
-        <label class="form-label">{{ $t('card_holder') }}</label>
-        <div class="input-wrapper">
-          <v-text-field v-model="cardHolder" :placeholder="$t('card_holder_placeholder')" maxlength="50"
-            variant="outlined" density="comfortable" class="form-input" :error="validationErrors.cardHolder" />
-          <div class="card-icons">
-            <v-icon v-if="cardHolder" size="20" color="#4f46e5">mdi-account</v-icon>
-          </div>
-        </div>
-        <div v-if="validationErrors.cardHolder" class="error-text">
-          {{ $t('card_holder_min_chars') }}
-        </div>
-      </div>
-
-      <!-- Vencimiento y CVV -->
       <div class="form-row">
         <div class="form-group">
           <label class="form-label">{{ $t('expiry_date') }}</label>
@@ -192,7 +190,7 @@ const handleSubmit = async () => {
               variant="outlined" density="comfortable" class="form-input" :error="validationErrors.expiryDate"
               @update:model-value="(val) => expiryDate = formatExpiryDate(val)" />
             <div class="card-icons">
-              <v-icon v-if="expiryDate" size="20" color="#4f46e5">mdi-calendar</v-icon>
+              <v-icon v-if="expiryDate" size="20" color="white">mdi-calendar</v-icon>
             </div>
           </div>
           <div v-if="validationErrors.expiryDate" class="error-text">
@@ -209,7 +207,7 @@ const handleSubmit = async () => {
             <div class="card-icons">
               <v-tooltip :text="$t('cvv_tooltip')">
                 <template #activator="{ props }">
-                  <v-icon v-bind="props" size="20" color="#4f46e5">mdi-lock</v-icon>
+                  <v-icon v-bind="props" size="20" color="white">mdi-lock</v-icon>
                 </template>
               </v-tooltip>
             </div>
@@ -220,34 +218,32 @@ const handleSubmit = async () => {
         </div>
       </div>
 
-      <!-- Métodos de pago -->
       <div class="payment-methods">
-        <div class="method visa" title="Visa">
-          <v-icon size="28">mdi-visa</v-icon>
+        <div class="method visa" :class="{ selected: selectedMethod === 'visa' }" @click="selectedMethod = 'visa'" title="Visa">
+          <Icon icon="logos:visa" width="40" height="40" />
         </div>
-        <div class="method mastercard" title="Mastercard">
-          <v-icon size="28">mdi-mastercard</v-icon>
+        <div class="method mastercard" :class="{ selected: selectedMethod === 'mastercard' }" @click="selectedMethod = 'mastercard'" title="Mastercard">
+          <Icon icon="logos:mastercard" width="28" height="28" />
         </div>
-        <div class="method amex" title="American Express">
-          <v-icon size="28">mdi-american-credit-card</v-icon>
+        <div class="method amex" :class="{ selected: selectedMethod === 'amex' }" @click="selectedMethod = 'amex'" title="American Express">
+          <Icon icon="logos:amex" width="28" height="28" />
         </div>
       </div>
 
-      <!-- Mensaje de error -->
       <v-alert v-if="errorMessage" type="error" variant="tonal" closable class="error-alert">
         {{ errorMessage }}
       </v-alert>
 
-      <!-- Botón de envío -->
-      <v-btn type="submit" :loading="isProcessing" :disabled="isProcessing" block size="large" class="submit-btn">
-        <span v-if="!isProcessing">{{ $t('confirm_payment') }} €10,00</span>
-        <span v-else>{{ $t('processing_payment') }}</span>
-      </v-btn>
+      <div class="form-actions">
+        <v-btn type="submit" :loading="isProcessing" :disabled="isProcessing" block class="submit-btn">
+          <span v-if="!isProcessing">{{ $t('confirm_payment') }} €10,00</span>
+          <span v-else>{{ $t('processing_payment') }}</span>
+        </v-btn>
 
-      <!-- Pie de página -->
-      <p class="form-footer">
-        {{ $t('terms_acceptance') }}
-      </p>
+        <p class="form-footer">
+          {{ $t('terms_acceptance') }}
+        </p>
+      </div>
     </v-form>
   </div>
 </template>
@@ -257,22 +253,18 @@ const handleSubmit = async () => {
   background: white;
   border: 1px solid #e5e7eb;
   border-radius: 20px;
-  padding: 2.5rem;
+  padding: 2rem;
   height: 100%;
-  min-height: 600px;
+  min-height: auto;
   display: flex;
   flex-direction: column;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.card-form:hover {
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-}
-
 /* Encabezado */
 .form-header {
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 .form-title {
@@ -295,9 +287,9 @@ const handleSubmit = async () => {
 .card-preview {
   background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
   border-radius: 16px;
-  padding: 2.5rem;
-  margin-bottom: 2.5rem;
-  min-height: 180px;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+  min-height: 120px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -337,12 +329,12 @@ const handleSubmit = async () => {
 }
 
 .card-number-display {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 600;
   color: white;
   letter-spacing: 2px;
   font-family: 'Courier New', monospace;
-  margin: 1rem 0;
+  margin: 0.5rem 0;
 }
 
 .card-footer {
@@ -374,7 +366,7 @@ const handleSubmit = async () => {
 }
 
 .form-group {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   position: relative;
 }
 
@@ -403,10 +395,6 @@ const handleSubmit = async () => {
   background: white;
   border-radius: 10px;
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.form-input :deep(.v-field:hover) {
-  border-color: #d1d5db;
 }
 
 .form-input :deep(.v-field--focused) {
@@ -455,15 +443,15 @@ const handleSubmit = async () => {
 }
 
 .form-row .form-group {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 /* Métodos de pago */
 .payment-methods {
   display: flex;
   gap: 1rem;
-  margin: 2rem 0;
-  padding: 1.5rem 0;
+  margin: 1rem 0;
+  padding: 1rem 0;
   border-top: 1px solid #e5e7eb;
   border-bottom: 1px solid #e5e7eb;
 }
@@ -482,30 +470,29 @@ const handleSubmit = async () => {
   cursor: pointer;
 }
 
-.method:hover {
-  background: #f0f1f3;
-  color: #475569;
-}
-
 .method.visa:hover {
   border-color: #1a1f71;
   color: #1a1f71;
 }
 
-.method.mastercard:hover {
-  border-color: #eb001b;
-  color: #eb001b;
-}
-
-.method.amex:hover {
-  border-color: #006fcf;
-  color: #006fcf;
+.method.selected {
+  border-color: #6366f1;
+  background: rgba(99, 102, 241, 0.05);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
 }
 
 /* Alert de error */
 .error-alert {
   margin-bottom: 1.5rem;
   border-radius: 10px;
+}
+
+/* Acciones del formulario */
+.form-actions {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 /* Botón de envío */
@@ -517,9 +504,8 @@ const handleSubmit = async () => {
   text-transform: none;
   letter-spacing: 0.3px;
   border-radius: 10px !important;
+  height: 48px !important;
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  margin-top: auto;
-  margin-bottom: 1rem;
   box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
 }
 

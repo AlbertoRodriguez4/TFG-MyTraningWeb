@@ -196,7 +196,6 @@ const goBack = () => {
 
 <template>
   <div class="room-view-wrapper">
-    <!-- Header con botón volver -->
     <div class="view-header">
       <button @click="goBack" class="back-btn">
         <span class="back-icon"><v-icon>mdi-arrow-left</v-icon></span>
@@ -210,9 +209,8 @@ const goBack = () => {
     </div>
 
     <div v-else class="room-view-container">
-      <!-- Información de la Sala -->
       <div class="room-info-card" :class="`difficulty-${getRoomDifficulty(roomData.minlevel)}`">
-        <div class="info-card-glow"></div>
+        <div ></div>
 
         <div class="room-info-header">
           <div class="room-main-avatar">
@@ -228,7 +226,6 @@ const goBack = () => {
           </div>
         </div>
 
-        <!-- Descripción de la Sala -->
         <div class="room-description-box">
           <div class="description-box-header">
             <span class="description-box-icon"><v-icon>mdi-pencil</v-icon></span>
@@ -237,7 +234,6 @@ const goBack = () => {
           <p class="description-box-text">{{ roomData.description || $t('room_no_description') }}</p>
         </div>
 
-        <!-- Fecha -->
         <div class="room-date-box">
           <span class="date-box-icon"><v-icon>mdi-calendar</v-icon></span>
           <div class="date-box-content">
@@ -246,7 +242,6 @@ const goBack = () => {
           </div>
         </div>
 
-        <!-- Localización -->
         <div class="room-localization-box">
           <span class="localization-box-icon"><v-icon>mdi-map-marker</v-icon></span>
           <div class="localization-box-content">
@@ -279,7 +274,6 @@ const goBack = () => {
           </div>
         </div>
 
-        <!-- Botón de unirse/salir -->
         <div class="join-section">
           <div v-if="!canJoinRoom && !isJoined" class="requirements-warning">
             <span class="warning-icon"><v-icon>mdi-alert</v-icon></span>
@@ -299,7 +293,6 @@ const goBack = () => {
         </div>
       </div>
 
-      <!-- Usuarios en la Sala -->
       <div class="users-section">
         <div class="users-header">
           <h2 class="users-title">
@@ -310,7 +303,7 @@ const goBack = () => {
         </div>
 
         <div v-if="roomUsers.length === 0" class="empty-users">
-          <v-icon class="empty-icon" color="grey">mdi-account-outline</v-icon>
+          <v-icon class="empty-icon" color="white">mdi-account-outline</v-icon>
           <p>{{ $t('no_usuarios') }}</p>
         </div>
 
@@ -318,7 +311,6 @@ const goBack = () => {
           <div v-for="user in roomUsers" :key="user.id" class="user-card">
             <div class="user-card-header">
 
-              <!-- Avatar con imagen real -->
               <div class="user-avatar">
                 <img :src="user.avatarUrl || defaultAvatar" :alt="user.username" class="user-avatar-img"
                   @error="(e) => (e.target as HTMLImageElement).src = defaultAvatar" />
@@ -360,7 +352,6 @@ const goBack = () => {
               <span class="consistency-value">{{ user.consistency }} {{ $t('days_count') }}</span>
             </div>
 
-            <!-- Equipped Items Section -->
             <div v-if="user.equippedStrengthItem || user.equippedEnduranceItem" class="user-equipment">
               <div class="equipment-header">
                 <span class="equipment-icon"><v-icon>mdi-sword-cross</v-icon></span>
@@ -388,7 +379,6 @@ const goBack = () => {
       </div>
     </div>
 
-    <!-- Popup de Confirmación para Unirse -->
     <Transition name="popup">
       <div v-if="showJoinPopup" class="popup-overlay" @click="closeJoinPopup">
         <div class="popup-content" @click.stop>
@@ -424,7 +414,6 @@ const goBack = () => {
       </div>
     </Transition>
 
-    <!-- Diálogo de Confirmación para Salir -->
     <Transition name="popup">
       <div v-if="showLeaveConfirmDialog" class="popup-overlay" @click="closeLeaveConfirmDialog">
         <div class="popup-content confirm-leave-dialog" @click.stop>
@@ -453,7 +442,6 @@ const goBack = () => {
       </div>
     </Transition>
 
-    <!-- Snackbar -->
     <v-snackbar v-model="snackbar" :color="snackbarColor" :timeout="4000" location="top" multi-line>
       <div class="d-flex align-center">
         <v-icon :icon="snackbarColor === 'success' ? 'mdi-check-circle' : 'mdi-alert-circle'" class="mr-3"></v-icon>
@@ -548,13 +536,7 @@ const goBack = () => {
   border: 4px solid rgba(255, 255, 255, 0.1);
   border-top-color: #3b82f6;
   border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
 }
 
 .room-view-container {
@@ -573,28 +555,6 @@ const goBack = () => {
   border: 2px solid rgba(255, 255, 255, 0.1);
   overflow: hidden;
   height: fit-content;
-}
-
-.info-card-glow {
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
-  animation: glow-pulse 3s ease-in-out infinite;
-}
-
-@keyframes glow-pulse {
-
-  0%,
-  100% {
-    opacity: 0.5;
-  }
-
-  50% {
-    opacity: 1;
-  }
 }
 
 .room-info-header {
@@ -624,13 +584,7 @@ const goBack = () => {
   inset: -10px;
   border-radius: 50%;
   border: 3px solid rgba(59, 130, 246, 0.3);
-  animation: ring-rotate 3s linear infinite;
-}
 
-@keyframes ring-rotate {
-  to {
-    transform: rotate(360deg);
-  }
 }
 
 .room-title-section {
@@ -689,12 +643,6 @@ const goBack = () => {
   align-items: center;
   gap: 1rem;
   transition: all 0.3s ease;
-}
-
-.requirement-card:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.2);
-  transform: translateY(-2px);
 }
 
 .req-card-icon {
@@ -850,12 +798,6 @@ const goBack = () => {
   transition: all 0.3s ease;
 }
 
-.user-card:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.2);
-  transform: translateX(4px);
-}
-
 .user-card-header {
   display: flex;
   align-items: center;
@@ -880,10 +822,6 @@ const goBack = () => {
   background-color: #1e293b;
   display: block;
   transition: border-color 0.3s ease;
-}
-
-.user-card:hover .user-avatar-img {
-  border-color: rgba(59, 130, 246, 0.7);
 }
 
 .user-status-dot {
@@ -1009,29 +947,14 @@ const goBack = () => {
   transition: all 0.3s ease;
 }
 
-.equipment-item:hover {
-  transform: translateX(4px);
-  background: rgba(255, 255, 255, 0.08);
-}
-
 .item-strength {
   border-color: rgba(239, 68, 68, 0.3);
   background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
 }
 
-.item-strength:hover {
-  border-color: rgba(239, 68, 68, 0.5);
-  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
-}
-
 .item-endurance {
   border-color: rgba(59, 130, 246, 0.3);
   background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
-}
-
-.item-endurance:hover {
-  border-color: rgba(59, 130, 246, 0.5);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
 }
 
 .item-icon {
@@ -1111,19 +1034,7 @@ const goBack = () => {
 
 .popup-icon {
   font-size: 4rem;
-  animation: bounce 2s ease-in-out infinite;
-}
 
-@keyframes bounce {
-
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(-10px);
-  }
 }
 
 .popup-title {
@@ -1240,13 +1151,6 @@ const goBack = () => {
   transition: all 0.3s ease;
 }
 
-.room-description-box:hover {
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(139, 92, 246, 0.12));
-  border-color: rgba(99, 102, 241, 0.4);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.15);
-}
-
 .description-box-header {
   display: flex;
   align-items: center;
@@ -1288,13 +1192,6 @@ const goBack = () => {
   transition: all 0.3s ease;
 }
 
-.room-date-box:hover {
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(251, 146, 60, 0.12));
-  border-color: rgba(245, 158, 11, 0.4);
-  transform: translateX(4px);
-  box-shadow: 0 8px 20px rgba(245, 158, 11, 0.15);
-}
-
 .date-box-icon {
   font-size: 2rem;
   filter: drop-shadow(0 2px 6px rgba(245, 158, 11, 0.3));
@@ -1332,13 +1229,6 @@ const goBack = () => {
   border-radius: 16px;
   margin-bottom: 1.5rem;
   transition: all 0.3s ease;
-}
-
-.room-localization-box:hover {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(5, 150, 105, 0.12));
-  border-color: rgba(16, 185, 129, 0.4);
-  transform: translateX(4px);
-  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.15);
 }
 
 .localization-box-icon {

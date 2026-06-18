@@ -6,6 +6,7 @@ using AA2_CS.Services;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class AchievementController : ControllerBase
 {
     private readonly AchievementService _achievementService;
@@ -16,6 +17,7 @@ public class AchievementController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize]
     public async Task<IActionResult> GetAll()
     {
         var achievements = await _achievementService.GetAllAsync();
@@ -29,7 +31,6 @@ public class AchievementController : ControllerBase
         var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
         if (userId == 0) return Unauthorized();
 
-        // Evaluate achievements before returning to ensure any newly met criteria are unlocked
         await _achievementService.EvaluateUserAchievementsAsync(userId);
 
         var achievements = await _achievementService.GetUserAchievementsAsync(userId);

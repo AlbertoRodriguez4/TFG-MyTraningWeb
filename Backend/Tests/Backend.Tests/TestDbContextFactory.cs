@@ -1,5 +1,6 @@
 using AA2_CS.Database;
 using AA2_CS.Model.Entities;
+using AA2_CS.Model.Common;
 using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Tests;

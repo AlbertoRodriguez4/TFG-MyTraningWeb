@@ -213,7 +213,6 @@ const handleDelete = async () => {
 <template>
   <v-dialog v-model="dialogVisible" max-width="600" class="item-dialog">
     <v-card class="item-card">
-      <!-- Header personalizado -->
       <div class="item-header">
         <div class="header-content">
           <v-icon class="header-icon">mdi-shopping</v-icon>
@@ -230,7 +229,6 @@ const handleDelete = async () => {
       </div>
 
       <v-card-text class="item-content">
-        <!-- Error message -->
         <v-alert 
           v-if="errorMessage" 
           type="error" 
@@ -240,7 +238,6 @@ const handleDelete = async () => {
           {{ errorMessage }}
         </v-alert>
 
-        <!-- Nombre del ítem -->
         <div class="form-group">
           <label class="field-label">
             <v-icon size="small" class="label-icon">mdi-dumbbell</v-icon>
@@ -255,7 +252,6 @@ const handleDelete = async () => {
           />
         </div>
 
-        <!-- Imagen del ítem -->
         <div class="form-group">
           <label class="field-label">
             <v-icon size="small" class="label-icon">mdi-image</v-icon>
@@ -278,7 +274,6 @@ const handleDelete = async () => {
           </div>
         </div>
 
-        <!-- Selector de tipo con botones -->
         <div class="form-group">
           <label class="field-label">{{ $t('bonus_type') }}</label>
           <div class="type-selector">
@@ -301,7 +296,6 @@ const handleDelete = async () => {
           </div>
         </div>
 
-        <!-- Stats grid -->
         <div class="stats-grid">
           <div class="stat-card bonus-card">
             <div class="stat-header">
@@ -336,7 +330,6 @@ const handleDelete = async () => {
           </div>
         </div>
 
-        <!-- Vista previa -->
         <div class="preview-card">
           <div class="preview-label">{{ $t('preview') }}</div>
           <div class="preview-content">
@@ -358,7 +351,6 @@ const handleDelete = async () => {
         </div>
       </v-card-text>
 
-      <!-- Footer con acciones -->
       <v-card-actions class="item-actions">
         <v-btn
           v-if="isEdit"
@@ -392,7 +384,6 @@ const handleDelete = async () => {
     </v-card>
   </v-dialog>
 
-  <!-- Snackbar -->
   <v-snackbar
     v-model="snackbar"
     :color="snackbarColor"
@@ -819,10 +810,6 @@ const handleDelete = async () => {
   border-radius: 4px;
 }
 
-.item-content::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 184, 0.5);
-}
-
 /* Image upload */
 .image-upload-row {
   display: flex;
@@ -857,19 +844,7 @@ const handleDelete = async () => {
   object-fit: cover;
 }
 
-/* Animaciones */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
 .item-card {
-  animation: fadeIn 0.3s ease-out;
+
 }
 </style>
